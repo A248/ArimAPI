@@ -42,7 +42,7 @@ public class ExecutableQuery {
 	
 	@Override
 	public String toString() {
-		return "{[" + statement + "] with parameters [" + StringsUtil.concat(CollectionsUtil.convertAll(parameters, (param) -> param.toString()), ',') + "]}";
+		return "{[" + statement + "] with parameters [" + StringsUtil.concat(CollectionsUtil.convertAll(parameters, (param) -> param.toString(), String.class), ',') + "]}";
 	}
 	
 }

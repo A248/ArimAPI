@@ -107,11 +107,6 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>space.arim</groupId>
-				<artifactId>universal-util</artifactId>
-				<version>${universal.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.spigotmc</groupId>
 				<artifactId>spigot-api</artifactId>
 				<version>${spigot.version}</version>
