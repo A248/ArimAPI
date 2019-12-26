@@ -41,15 +41,13 @@ public final class FilesUtil {
 	 * @param target - the file to save to
 	 * @param input - the source from which to save. Use <code>YourClass.class.getResourceAsStream(File.separator + "config.yml")<code>
 	 * @return true if the saving was successful
-	 * @throws IOException if an error occurred
+	 * @throws IOException if an IO error occurred
 	 */
 	public static boolean saveFromStream(File target, InputStream input) throws IOException {
-		if (target.getParentFile().exists() || target.getParentFile().mkdirs()) {
-			if (target.createNewFile()) {
-				try (FileOutputStream output = new FileOutputStream(target)){
-					com.google.common.io.ByteStreams.copy(input, output);
-					return true;
-				}
+		if ((target.getParentFile().exists() || target.getParentFile().mkdirs()) && target.createNewFile()) {
+			try (FileOutputStream output = new FileOutputStream(target)){
+				com.google.common.io.ByteStreams.copy(input, output);
+				return true;
 			}
 		}
 		return false;
