@@ -9,7 +9,7 @@
 		1. Update property core.version
 		2. Update versions in all child modules
 	-->
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>ArimAPI</name>
@@ -21,8 +21,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
-		<core.version>0.1.0</core.version>
+		<core.version>0.2.0</core.version>
 		<universal.version>0.6.3-SNAPSHOT</universal.version>
+		<spigot.version>1.15.1-R0.1-SNAPSHOT</spigot.version>
 		<bungeecord.version>1.15-SNAPSHOT</bungeecord.version>
 		<guava.version>20.0</guava.version>
 	</properties>
@@ -60,12 +61,18 @@
 						<target>1.8</target>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.2.1</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
 	
 	<modules>
 		<module>api-core</module>
+		<module>api-plugin</module>
 	</modules>
 	
 	<distributionManagement>
@@ -83,8 +90,21 @@
 		<dependencies>
 			<dependency>
 				<groupId>space.arim</groupId>
+				<artifactId>arimapi-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim</groupId>
 				<artifactId>universal-registry</artifactId>
 				<version>${universal.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim</groupId>
+				<artifactId>universal-gpl</artifactId>
+				<version>${universal.version}</version>
+				<classifier>resources</classifier>
+				<type>zip</type>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>space.arim</groupId>
@@ -101,6 +121,7 @@
 				<groupId>net.md-5</groupId>
 				<artifactId>bungeecord-api</artifactId>
 				<version>${bungeecord.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.google.guava</groupId>
