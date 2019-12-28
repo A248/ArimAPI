@@ -23,10 +23,23 @@ import java.util.Set;
 
 import net.md_5.bungee.api.ProxyServer;
 
+/**
+ * Basic utility class with more methods added via contribution.
+ * 
+ * @author A248
+ *
+ */
 public final class BungeeUtil {
 
 	private BungeeUtil() {}
 	
+	/**
+	 * Iterates across online players, finds players matching the first argument in the args parameter, and returns applicable player names.
+	 * 
+	 * @param args command arguments to tab complete
+	 * @param proxy the proxy server, use {@link net.md_5.bungee.api.plugin.Plugin#getProxy() Plugin.getProxy()} for this parameter
+	 * @return Set tab-completion set
+	 */
 	public static Set<String> getPlayerNameTabComplete(String[] args, ProxyServer proxy) {
 		Set<String> playerNames = new HashSet<String>();
 		if (args.length == 0) {

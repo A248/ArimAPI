@@ -22,6 +22,17 @@ import space.arim.universal.util.collections.CollectionsUtil;
 
 import space.arim.api.util.StringsUtil;
 
+/**
+ * Represents an SQL query with unparameterised statement and parameters passed to the constructor <br>
+ * <br>
+ * {@link java.sql.PreparedStatement} objects should be based on {@link #statement()} with parameters {@link #parameters()}
+ * attached to the PreparedStatement using {@link java.sql.PreparedStatement#setObject(int, Object) PreparedStatement#setObject(int, Object)}
+ * 
+ * @implSpec immutable and thread-safe
+ * 
+ * @author A248
+ *
+ */
 public class ExecutableQuery {
 
 	private final String statement;

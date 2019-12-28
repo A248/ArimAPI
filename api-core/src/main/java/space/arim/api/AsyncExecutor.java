@@ -20,6 +20,12 @@ package space.arim.api;
 
 import space.arim.universal.registry.Registrable;
 
+/**
+ * A service designed to execute {@link java.lang.Runnable} objects.
+ * 
+ * @author A248
+ *
+ */
 public interface AsyncExecutor extends Registrable {
 
 	void execute(Runnable command);

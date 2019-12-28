@@ -39,7 +39,7 @@ public final class FilesUtil {
 	 * <b>If that class is not on the classpath do not call this method!</b>
 	 * 
 	 * @param target - the file to save to
-	 * @param input - the source from which to save. Use <code>YourClass.class.getResourceAsStream(File.separator + "config.yml")<code>
+	 * @param input - the source from which to save. Use <code>YourClass.class.getResourceAsStream(File.separator + "config.yml")</code>
 	 * @return true if the saving was successful
 	 * @throws IOException if an IO error occurred
 	 */

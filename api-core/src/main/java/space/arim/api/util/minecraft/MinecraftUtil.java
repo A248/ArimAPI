@@ -25,6 +25,13 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+/**
+ * * See {@link #parseJson(String)} for Minecraft json message handling <br>
+ * * See {@link #expandUUID(String)} for expanding shortened UUIDs
+ * 
+ * @author A248
+ *
+ */
 public final class MinecraftUtil {
 
 	private MinecraftUtil() {}
@@ -81,6 +88,14 @@ public final class MinecraftUtil {
 		return new String(b);
 	}
 	
+	/**
+	 * Converts a string formatted according to RezzedUp's json.sk into a {@link BaseComponent} array. <br>
+	 * <br>
+	 * Colors, tooltip tags, url tags, command tags, suggestion tags, and insertion tags are all parsed.
+	 * 
+	 * @param json the input string
+	 * @return BaseComponent[] sendable json array
+	 */
 	public static BaseComponent[] parseJson(String json) {
 		BaseComponent current = null;
 		ArrayList<BaseComponent> components = new ArrayList<BaseComponent>();

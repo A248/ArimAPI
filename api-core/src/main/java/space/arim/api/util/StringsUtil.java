@@ -24,6 +24,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Various String-based utilities.
+ * 
+ * @author A248
+ *
+ */
 public final class StringsUtil {
 	
 	private static final ThreadLocal<SimpleDateFormat> BASIC_DATE_FORMATTER = ThreadLocal.withInitial(() -> new SimpleDateFormat("dd-MM-yyyy"));
