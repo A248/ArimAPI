@@ -65,7 +65,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<outputFile>target/${project.name}.jar</outputFile>
+							<outputFile>target/ArimAPI.jar</outputFile>
 							<artifactSet>
 								<includes>
 									<include>space.arim:arimapi-core</include>
