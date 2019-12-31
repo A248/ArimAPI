@@ -16,7 +16,7 @@
  * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api;
+package space.arim.api.framework;
 
 import space.arim.universal.registry.Registrable;
 
@@ -28,6 +28,11 @@ import space.arim.universal.registry.Registrable;
  */
 public interface AsyncExecutor extends Registrable {
 
+	/**
+	 * Execute an asynchronous query
+	 * 
+	 * @param command the {@link java.lang.Runnable} to run
+	 */
 	void execute(Runnable command);
 	
 }

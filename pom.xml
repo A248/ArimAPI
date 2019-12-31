@@ -72,6 +72,7 @@
 	
 	<modules>
 		<module>api-core</module>
+		<module>api-framework</module>
 		<module>api-plugin</module>
 	</modules>
 	
@@ -91,6 +92,11 @@
 			<dependency>
 				<groupId>space.arim</groupId>
 				<artifactId>arimapi-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim</groupId>
+				<artifactId>arimapi-framework</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
