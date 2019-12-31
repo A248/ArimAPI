@@ -1,4 +1,4 @@
-name: ${project.name}
+name: ArimAPI
 main: ${project.groupId}.api.plugin.ArimApiPluginBungee
 version: ${project.version}
 author: A248
