@@ -24,7 +24,7 @@ import java.util.Set;
 import net.md_5.bungee.api.ProxyServer;
 
 /**
- * Basic utility class with more methods added via contribution.
+ * Basic BungeeCord utility class with more methods added via contribution.
  * 
  * @author A248
  *

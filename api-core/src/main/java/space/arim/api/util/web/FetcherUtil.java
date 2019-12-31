@@ -71,7 +71,7 @@ public final class FetcherUtil {
 		return getJsonFromUrl(ASHCON_API + Objects.requireNonNull(playeruuid, "UUID must not be null!"), Map.class).get("username").toString();
 	}
 	
-	public static String getLatestPluginVersion(final int resourceId) throws FetcherException, HttpStatusException {
+	public static String getLatestSpigotPluginVersion(final int resourceId) throws FetcherException, HttpStatusException {
 		final String url = SPIGOT_UPDATE_API + resourceId;
 		try (FetcherConnection conn = new FetcherConnection(url)) {
 			return conn.connect().getSimpleRaw();
