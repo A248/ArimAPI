@@ -1,5 +1,6 @@
 name: ${project.name}
-main: ${project.groupId}.api.ArimApiPluginBukkit
+main: ${project.groupId}.api.plugin.ArimApiPluginBukkit
 version: ${project.version}
 author: A248
 description: ${project.description}
+depend: [UniversalRegistryPlugin]
