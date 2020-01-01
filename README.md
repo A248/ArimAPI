@@ -5,7 +5,7 @@ An efficient, easy-to-use minecraft plugin library and framework.
 
 ## For Server Owners ##
 
-Download the plugin.
+Download the from SpigotMC.
 
 ## For Developers ##
 
