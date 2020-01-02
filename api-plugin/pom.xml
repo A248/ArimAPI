@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>space.arim</groupId>
 		<artifactId>arimapi</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
+		<version>0.4.0-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>arimapi-plugin</artifactId>
@@ -69,7 +69,6 @@
 							<artifactSet>
 								<includes>
 									<include>space.arim:arimapi-core</include>
-									<include>space.arim:arimapi-framework</include>
 								</includes>
 							</artifactSet>
 						</configuration>
@@ -83,10 +82,6 @@
 		<dependency>
 			<groupId>space.arim</groupId>
 			<artifactId>arimapi-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim</groupId>
-			<artifactId>arimapi-framework</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>space.arim</groupId>
