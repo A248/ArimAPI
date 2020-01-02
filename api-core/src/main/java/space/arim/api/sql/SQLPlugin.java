@@ -22,9 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * A kind of plugin or application which is able to execute queries <br>
+ * A kind of plugin or application which is able to execute queries. <br>
  * <br>
- * All methods throw {@link SQLException} to provide greater information to the caller.
+ * All methods throw {@link SQLException}
  * 
  * @author A248
  *
