@@ -19,6 +19,7 @@
 package space.arim.api.util.minecraft;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -127,9 +128,35 @@ public final class MinecraftUtil {
 		return components.toArray(new BaseComponent[] {});
 	}
 	
+	/**
+	 * Expands a shortened version of a UUID. <br>
+	 * <br>
+	 * Every UUID has 2 forms. Each form is unique. However, it is simpler to store UUIDs in short form
+	 * and expand them into long form. <br>
+	 * <br>
+	 * Example long form: ed5f12cd-6007-45d9-a4b9-940524ddaecf <br>
+	 * Example short form: ed5f12cd600745d9a4b9940524ddaecf <br>
+	 * <br>
+	 * <b>This method does not parse the UUID. See {@link #expandAndParseUUID(String)} or {@link UUID#fromString(String)} for a full UUID object.
+	 * 
+	 * @param uuid the string based short uuid
+	 * @return the lengthened uuid string
+	 */
 	public static String expandUUID(String uuid) {
 		return uuid.substring(0, 8) + "-" + uuid.substring(8, 12) + "-" + uuid.substring(12, 16)
 		+ "-" + uuid.substring(16, 20) + "-" + uuid.substring(20, 32);
+	}
+	
+	/**
+	 * Equivalent to calling <code>UUID.fromString(MinecraftUtil.expandUUID(uuid))</code> <br>
+	 * <br>
+	 * See {@link #expandUUID(String)} for details
+	 * 
+	 * @param uuid the short uuid string
+	 * @return a parsed UUID
+	 */
+	public static UUID expandAndParseUUID(String uuid) {
+		return UUID.fromString(expandUUID(uuid));
 	}
 	
 }
