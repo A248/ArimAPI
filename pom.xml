@@ -72,7 +72,6 @@
 	
 	<modules>
 		<module>api-core</module>
-		<module>api-framework</module>
 		<module>api-plugin</module>
 	</modules>
 	
