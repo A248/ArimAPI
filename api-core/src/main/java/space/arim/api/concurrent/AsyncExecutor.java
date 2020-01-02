@@ -18,10 +18,13 @@
  */
 package space.arim.api.concurrent;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+
 import space.arim.universal.registry.Registrable;
 
 /**
- * A service designed to execute {@link java.lang.Runnable} objects.
+ * A service designed to for multithreading.
  * 
  * @author A248
  *
@@ -34,5 +37,14 @@ public interface AsyncExecutor extends Registrable {
 	 * @param command the {@link java.lang.Runnable} to run
 	 */
 	void execute(Runnable command);
+	
+	/**
+	 * Submits a callabke.
+	 * 
+	 * @param <T> the type of the callable
+	 * @param task the callable itself
+	 * @return a future
+	 */
+	<T> Future<T> submit(Callable<T> task);
 	
 }
