@@ -18,8 +18,11 @@
  */
 package space.arim.api.concurrent;
 
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
 
 import space.arim.universal.registry.Registrable;
 
@@ -39,12 +42,16 @@ public interface AsyncExecutor extends Registrable {
 	void execute(Runnable command);
 	
 	/**
-	 * Submits a callabke.
+	 * Submits a callable.
 	 * 
 	 * @param <T> the type of the callable
 	 * @param task the callable itself
 	 * @return a future
 	 */
-	<T> Future<T> submit(Callable<T> task);
+	default <T> Future<T> submit(Callable<T> task) {
+        RunnableFuture<T> future = new FutureTask<T>(Objects.requireNonNull(task));
+        execute(future);
+        return future;
+	}
 	
 }
