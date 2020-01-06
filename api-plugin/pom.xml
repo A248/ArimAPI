@@ -101,5 +101,10 @@
 			<artifactId>bungeecord-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
