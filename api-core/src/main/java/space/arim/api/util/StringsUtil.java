@@ -83,6 +83,41 @@ public final class StringsUtil {
 		return concatRange(input, separator, 0, input.length);
 	}
 	
+	/**
+	 * Checks to ensure a string is not empty according to {@link String#isEmpty()} <br>
+	 * Similar to {@link Objects#requireNonNull(Object)}. <br>
+	 * Includes a null check.
+	 * 
+	 * @param input the string to check
+	 * @return the string
+	 * @throws IllegalArgumentException if the input string is empty
+	 * @throws NullPointerException if the input string is null
+	 */
+	public static String requireNonEmpty(String input) {
+		if (Objects.requireNonNull(input).isEmpty()) {
+			throw new IllegalArgumentException();
+		}
+		return input;
+	}
+	
+	/**
+	 * Checks to ensure a string is not empty according to {@link String#isEmpty()} <br>
+	 * Similar to {@link Objects#requireNonNull(Object, String)}. <br>
+	 * Includes a null check.
+	 * 
+	 * @param input the string to check
+	 * @param message the message to use for thrown exceptions if either requirement is not met
+	 * @return the string
+	 * @throws IllegalArgumentException if the input string is empty
+	 * @throws NullPointerException if the input string is null
+	 */
+	public static String requireNonEmpty(String input, String message) {
+		if (Objects.requireNonNull(input, message).isEmpty()) {
+			throw new IllegalArgumentException(message);
+		}
+		return input;
+	}
+	
 	public static String basicTodaysDate() {
 		return BASIC_DATE_FORMATTER.get().format(new Date());
 	}
