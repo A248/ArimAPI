@@ -23,12 +23,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.universal.registry.UniversalRegistry;
 
 import space.arim.api.concurrent.AsyncExecutor;
+import space.arim.api.concurrent.Synchroniser;
 
 public class ArimApiPlugin extends JavaPlugin {
-
+	
 	@Override
 	public void onLoad() {
 		UniversalRegistry.get().register(AsyncExecutor.class, new DefaultAsyncExecutor(this));
+		UniversalRegistry.get().register(Synchroniser.class, new DefaultSynchroniser(this));
 	}
 	
 }
