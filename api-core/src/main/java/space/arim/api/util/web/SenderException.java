@@ -1,6 +1,6 @@
 /* 
  * ArimAPI, a minecraft plugin library and framework.
- * Copyright © 2019 Anand Beh <https://www.arim.space>
+ * Copyright © 2020 Anand Beh <https://www.arim.space>
  * 
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,16 @@
  */
 package space.arim.api.util.web;
 
-public class FetcherException extends Exception {
-
-	private static final long serialVersionUID = -1621619586735818392L;
+public class SenderException extends Exception {
 	
-	public FetcherException(String message, Exception cause) {
-		super("Fetcher error: " + message, cause);
+	private static final long serialVersionUID = -4686424363835757048L;
+
+	public SenderException(String message, Exception cause) {
+		super("Sender error: " + message, cause);
 	}
 	
-	public FetcherException(String message) {
-		super("Fetcher error: " + message);
+	public SenderException(String message) {
+		super("Sender error: " + message);
 	}
-
+	
 }

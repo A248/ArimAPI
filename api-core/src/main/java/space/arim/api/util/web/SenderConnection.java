@@ -1,6 +1,6 @@
 /* 
  * ArimAPI, a minecraft plugin library and framework.
- * Copyright © 2019 Anand Beh <https://www.arim.space>
+ * Copyright © 2020 Anand Beh <https://www.arim.space>
  * 
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,12 @@
  */
 package space.arim.api.util.web;
 
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
+import java.io.OutputStreamWriter;
+import java.util.Map;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -29,32 +32,38 @@ import space.arim.universal.util.UniversalUtil;
 import space.arim.universal.util.exception.HttpStatusException;
 import space.arim.universal.util.web.HttpStatus;
 
-public class FetcherConnection extends AbstractConnection {
+public class SenderConnection extends AbstractConnection {
 	
-	FetcherConnection(String url) {
+	private Map<String, Object> response;
+	
+	SenderConnection(String url) {
 		super(url);
 	}
 	
-	FetcherConnection connect() throws IOException, HttpStatusException {
+	@SuppressWarnings("unchecked")
+	SenderConnection post(String...parameters) throws IOException, HttpStatusException, SenderException {
 		open();
-		connection().setRequestMethod("GET");
+		connection().setRequestMethod("POST");
 		setProperties();
-		connection().connect();
+		connection().setDoOutput(true);
+		try (DataOutputStream outputStream = new DataOutputStream(connection().getOutputStream()); BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"))) {
+			writer.write(String.join("&", parameters));
+			writer.flush();
+		}
 		HttpStatus status = HttpStatus.fromCode(connection().getResponseCode());
 		if (status != HttpStatus.OK) {
 			throw new HttpStatusException(status);
 		}
+		try (InputStreamReader reader = new InputStreamReader(inputStream(), "UTF-8")) {
+			response = UniversalUtil.COMMON_GSON.fromJson(reader, Map.class);
+		} catch (JsonSyntaxException | JsonIOException ex) {
+			throw new SenderException("Could not parse JSON response!", ex);
+		}
 		return this;
 	}
 	
-	<T> T getJson(Class<T> type) throws JsonSyntaxException, JsonIOException, IOException {
-		return UniversalUtil.COMMON_GSON.fromJson(new InputStreamReader(inputStream()), type);
-	}
-	
-	String getSimpleRaw() throws IOException {
-		try (Scanner scanner = new Scanner(inputStream())) {
-			return scanner.hasNext() ? scanner.next() : "";
-		}
+	Map<String, Object> response() {
+		return response;
 	}
 	
 }
