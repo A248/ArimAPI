@@ -1,6 +1,6 @@
 /* 
  * ArimAPI-plugin
- * Copyright © 2019 Anand Beh <https://www.arim.space>
+ * Copyright © 2020 Anand Beh <https://www.arim.space>
  * 
  * ArimAPI-plugin is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,28 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin;
+package space.arim.api.plugin.bungee;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import net.md_5.bungee.api.plugin.Plugin;
 
-public class ArimApiPluginBukkit extends JavaPlugin {
+import space.arim.universal.registry.RegistryPriority;
 
+import space.arim.api.concurrent.AsyncExecutor;
+
+public class DefaultAsyncExecutor extends BungeeRegistrable implements AsyncExecutor {
+	
+	public DefaultAsyncExecutor(Plugin plugin) {
+		super(plugin);
+	}
+	
+	@Override
+	public void execute(Runnable command) {
+		getPlugin().getProxy().getScheduler().runAsync(getPlugin(), command);
+	}
+	
+	@Override
+	public byte getPriority() {
+		return RegistryPriority.LOWEST;
+	}
+	
 }

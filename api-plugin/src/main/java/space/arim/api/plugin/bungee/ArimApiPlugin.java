@@ -16,10 +16,19 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin;
+package space.arim.api.plugin.bungee;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
-public class ArimApiPluginBungee extends Plugin {
+import space.arim.universal.registry.UniversalRegistry;
 
+import space.arim.api.concurrent.AsyncExecutor;
+
+public class ArimApiPlugin extends Plugin {
+
+	@Override
+	public void onLoad() {
+		UniversalRegistry.get().register(AsyncExecutor.class, new DefaultAsyncExecutor(this));
+	}
+	
 }

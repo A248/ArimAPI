@@ -1,5 +1,5 @@
 name: ArimAPI
-main: ${project.groupId}.api.plugin.ArimApiPluginBukkit
+main: ${project.groupId}.api.plugin.bukkit.ArimApiPlugin
 version: ${project.version}
 author: A248
 description: ${project.description}

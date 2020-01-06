@@ -16,19 +16,33 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin;
+package space.arim.api.plugin.sponge;
 
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.AsynchronousExecutor;
+import org.spongepowered.api.scheduler.SpongeExecutorService;
+
+import com.google.inject.Inject;
+
+import space.arim.universal.registry.UniversalRegistry;
+
+import space.arim.api.concurrent.AsyncExecutor;
+import space.arim.api.plugin.SimpleAsyncExecutor;
 
 @Plugin(id = "arimapiplugin", name = "ArimAPIPlugin", version = "see_plugin_jar_resource=plugin.yml")
-public class ArimApiPluginSponge {
+public class ArimApiPlugin {
 	
 	/*
-	 * I am so glad there is no implementation required here.
+	 * I am so glad there is very little implementation required here.
 	 * The Sponge API is just absolutely horrible.
 	 * 
 	 * So much of its access is disgustingly static. There are no plugin or server instances for use.
 	 * Worse, the extreme over-use of annotations for basic functionality is just appalling
 	 */
+	
+	@Inject
+	public ArimApiPlugin(@AsynchronousExecutor SpongeExecutorService async) {
+		UniversalRegistry.get().register(AsyncExecutor.class, new SimpleAsyncExecutor(async));
+	}
 	
 }
