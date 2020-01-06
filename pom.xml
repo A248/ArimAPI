@@ -25,6 +25,7 @@
 		<universal.version>0.6.6-SNAPSHOT</universal.version>
 		<spigot.version>1.15.1-R0.1-SNAPSHOT</spigot.version>
 		<bungeecord.version>1.15-SNAPSHOT</bungeecord.version>
+		<sponge.version>7.1.0</sponge.version>
 		<guava.version>20.0</guava.version>
 	</properties>
 	
@@ -124,6 +125,12 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
+				<groupId>org.spongepowered</groupId>
+				<artifactId>spongeapi</artifactId>
+				<version>${sponge.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
@@ -144,5 +151,9 @@
        		<id>bungeecord-repo</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
    		</repository>
+   		<repository>
+			<id>sponge-repo</id>
+			<url>https://repo.spongepowered.org/maven</url>
+		</repository>
 	</repositories>
 </project>
