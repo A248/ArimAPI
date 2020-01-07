@@ -39,7 +39,9 @@ public interface Synchroniser extends Registrable {
 	 * @param command the Runnable
 	 * @return a cancellable task
 	 */
-	Task runTask(Runnable command);
+	default Task runTask(Runnable command) {
+		return runTaskLater(command, 0L);
+	}
 	
 	/**
 	 * Submits a callable.
