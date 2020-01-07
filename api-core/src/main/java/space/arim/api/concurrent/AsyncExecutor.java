@@ -18,8 +18,8 @@
  */
 package space.arim.api.concurrent;
 
-import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
@@ -33,13 +33,26 @@ import space.arim.universal.registry.Registrable;
  *
  */
 public interface AsyncExecutor extends Registrable {
-
+	
 	/**
-	 * Execute an asynchronous query
+	 * Execute an asynchronous action
 	 * 
 	 * @param command the {@link java.lang.Runnable} to run
 	 */
 	void execute(Runnable command);
+	
+	/**
+	 * Execute an asynchronous action. <br>
+	 * Differs from {@link #execute} in that the returned {@link Future} provides the ability to cancel the task before completion.
+	 * 
+	 * @param command the {@link java.lang.Runnable} to run
+	 * @return a cancellable future which will return <code>null</code> on {@link Future#get()}
+	 */
+	default Future<?> submit(Runnable command) {
+		RunnableFuture<Void> task = new FutureTask<Void>(command, null);
+        execute(task);
+        return task;
+	}
 	
 	/**
 	 * Submits a callable.
@@ -49,7 +62,8 @@ public interface AsyncExecutor extends Registrable {
 	 * @return a future
 	 */
 	default <T> Future<T> submit(Callable<T> task) {
-        RunnableFuture<T> future = new FutureTask<T>(Objects.requireNonNull(task));
+		Executors.newCachedThreadPool().submit(task);
+        RunnableFuture<T> future = new FutureTask<T>(task);
         execute(future);
         return future;
 	}

@@ -18,6 +18,11 @@
  */
 package space.arim.api.concurrent;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.RunnableFuture;
+
 import space.arim.universal.registry.Registrable;
 
 /**
@@ -27,19 +32,30 @@ import space.arim.universal.registry.Registrable;
  *
  */
 public interface Synchroniser extends Registrable {
-
+	
 	/**
 	 * Runs a task synchronously.
 	 * 
 	 * @param command the Runnable
 	 * @return a cancellable task
 	 */
-	default Task runTask(Runnable command) {
-		return runTaskLater(command, 0L);
+	Task runTask(Runnable command);
+	
+	/**
+	 * Submits a callable.
+	 * 
+	 * @param <T> the type of the callable
+	 * @param task the callable itself
+	 * @return the future
+	 */
+	default <T> Future<T> submitTask(Callable<T> task) {
+        RunnableFuture<T> future = new FutureTask<T>(task);
+        runTask(future);
+        return future;
 	}
 	
 	/**
-	 * Runs a delayed task synchronously. The task may be cancelled.
+	 * Runs a delayed task synchronously.
 	 * 
 	 * @param command the Runnable
 	 * @param delay the delay
@@ -48,7 +64,7 @@ public interface Synchroniser extends Registrable {
 	Task runTaskLater(Runnable command, long delay);
 	
 	/**
-	 * Runs a task timer synchronously. <br>
+	 * Runs a task timer synchronously. The task may be cancelled. <br>
 	 * <br>
 	 * Using a synchronised task timer differs in one important regard from using an async timer which submits sync tasks.
 	 * The synchronised task timer's timing matches the timing (e.g., TPS) of the main thread.
