@@ -33,6 +33,11 @@ public class DefaultSynchroniser extends BukkitRegistrable implements Synchronis
 	}
 	
 	@Override
+	public Task runTask(Runnable command) {
+		return new TaskWrapper(getPlugin().getServer().getScheduler().runTask(getPlugin(), command));
+	}
+	
+	@Override
 	public Task runTaskLater(Runnable command, long delay) {
 		return new TaskWrapper(getPlugin().getServer().getScheduler().runTaskLater(getPlugin(), command, delay));
 	}
