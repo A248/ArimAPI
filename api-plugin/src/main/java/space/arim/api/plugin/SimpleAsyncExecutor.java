@@ -40,6 +40,11 @@ public class SimpleAsyncExecutor implements AsyncExecutor {
 	}
 	
 	@Override
+	public Future<?> submit(Runnable command) {
+		return threadPool.submit(command);
+	}
+	
+	@Override
 	public <T> Future<T> submit(Callable<T> task) {
 		return threadPool.submit(task);
 	}
