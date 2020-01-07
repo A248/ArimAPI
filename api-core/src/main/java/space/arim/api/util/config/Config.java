@@ -122,8 +122,13 @@ public abstract class Config {
 		return Collections.emptyMap();
 	}
 	
-	public <T> T getObject(String key, Class<T> type) {
+	private <T> T getFromMap(Map<String, Object> values, String key, Class<T> type) {
 		return UniversalUtil.getFromMapRecursive(values, key, type);
+	}
+	
+	public <T> T getObject(String key, Class<T> type) {
+		T obj = getFromMap(values, key, type);
+		return obj != null ? obj : getFromMap(defaults, key, type);
 	}
 	
 }
