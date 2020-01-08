@@ -19,27 +19,32 @@
 package space.arim.api.concurrent;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
 
 import space.arim.universal.registry.Registrable;
+import space.arim.universal.registry.RegistryPriority;
 
 /**
- * A service designed to for multithreading.
+ * A service designed to for multithreading. <br>
+ * <br>
+ * * AsyncExecutor is a {@link Registrable}, and thus requires {@link #getPriority()} <br>
+ * * AsyncExecutor is an {@link Executor}, and thus requires {@link #execute(Runnable)} <br>
+ * * AsyncExecutor contains default implementations for {@link #submit(Runnable)} and {@link #submit(Callable)}, which happen to be, but are not necessarily, identical to those in {@link AbstractExecutorService}. <br>
+ * <br>
+ * AsyncExecutor differs from {@link ExecutorService} in a few important ways. First, it is a Registrable.
+ * Second, AsyncExecutor is stripped to mere execution; it is not necessarily a thread pool.
+ * AsyncExecutor does not specify any of ExecutorService's methods relating to
+ * shutting down, termination, or invoking other callers' submissionse.
+ * In fact, the only required method related to execution of tasks is {@link #execute(Runnable)}.
  * 
  * @author A248
  *
  */
-public interface AsyncExecutor extends Registrable {
-	
-	/**
-	 * Execute an asynchronous action
-	 * 
-	 * @param command the {@link java.lang.Runnable} to run
-	 */
-	void execute(Runnable command);
+public interface AsyncExecutor extends Registrable, Executor {
 	
 	/**
 	 * Execute an asynchronous action. <br>
@@ -62,10 +67,40 @@ public interface AsyncExecutor extends Registrable {
 	 * @return a future
 	 */
 	default <T> Future<T> submit(Callable<T> task) {
-		Executors.newCachedThreadPool().submit(task);
         RunnableFuture<T> future = new FutureTask<T>(task);
         execute(future);
         return future;
+	}
+	
+	/**
+	 * Gets a simple implementation from an ExecutorService
+	 * 
+	 * @param threadPool the {@link ExecutorService} to use for executions
+	 * @return a basic AsyncExecutor implementation
+	 */
+	static AsyncExecutor fromThreadPool(ExecutorService threadPool) {
+		return new AsyncExecutor() {
+			
+			@Override
+			public void execute(Runnable command) {
+				threadPool.execute(command);
+			}
+			
+			@Override
+			public Future<?> submit(Runnable command) {
+				return threadPool.submit(command);
+			}
+			
+			@Override
+			public <T> Future<T> submit(Callable<T> task) {
+				return threadPool.submit(task);
+			}
+			
+			@Override
+			public byte getPriority() {
+				return RegistryPriority.LOWEST;
+			}
+		};
 	}
 	
 }

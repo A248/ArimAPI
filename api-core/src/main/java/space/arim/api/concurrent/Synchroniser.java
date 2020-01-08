@@ -26,7 +26,19 @@ import java.util.concurrent.RunnableFuture;
 import space.arim.universal.registry.Registrable;
 
 /**
- * A synchronising service.
+ * A synchronising service designed for compatibility with several types of server software.
+ * Synchroniser implementations should synchronise with the main thread or main scheduling manager. <br>
+ * <br>
+ * * Synchroniser is a {@link Registrable}, and thus requires {@link #getPriority()} <br>
+ * * Synchroniser enables advanced multithreading with {@link #submitTask(Callable)}.
+ * Most server plugins should have no need for this as it is usually sufficient to run
+ * <i>whatever must be run synchronously</i> synchronously, then move into asynchronous execution.
+ * However, some may wish to conduct all operation in an asynchronous thread while submitting tasks to the main thread when needed. <br>
+ * * Each of Synchroniser's remaining methods, all of which enable scheduling,
+ * returns a {@link Task} to provide basic cancellation. These comprise a Synchroniser's main purpose.
+ * {@link #runTaskLater(Runnable, long)} and {@link #runTaskTimerLater(Runnable, long, long)} are required,
+ * while {@link #runTask(Runnable)} and {@link #runTaskTimer(Runnable, long)} have default implementations
+ * which call the required methods, but may be overriden where the underlying Synchroniser implementation supports it.
  * 
  * @author A248
  *
