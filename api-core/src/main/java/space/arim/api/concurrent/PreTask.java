@@ -18,19 +18,19 @@
  */
 package space.arim.api.concurrent;
 
-/**
- * A task executed by a {@link Scheduler} which may be cancelled via {@link #cancel()}
- * 
- * @author A248
- *
- */
-public interface Task {
+class PreTask implements Task {
 	
-	/**
-	 * Cancels the task. Cancellation should not stop a single pending execution of a task.
-	 * Rather, a {@link Scheduler} should cease scheduling of the task in timed or delayed executions.
-	 * 
-	 */
-	void cancel();
+	private Task value;
+	
+	void setValue(Task value) {
+		this.value = value;
+	}
+	
+	@Override
+	public void cancel() {
+		if (value != null) {
+			value.cancel();
+		}
+	}
 	
 }

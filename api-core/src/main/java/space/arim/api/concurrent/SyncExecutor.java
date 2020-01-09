@@ -18,19 +18,17 @@
  */
 package space.arim.api.concurrent;
 
+import space.arim.universal.registry.Registrable;
+
 /**
- * A task executed by a {@link Scheduler} which may be cancelled via {@link #cancel()}
+ * A complement to {@link AsyncExecutor} designed to provide: <br>
+ * * Resynchronisation (execution on the main thread) via the specifications of {@link BasicExecutor}.
+ * If the application has no main thread, concurrent execution is an acceptable implementation.<br>
+ * * Task scheduling according to superinterface {@link Scheduler}.
  * 
  * @author A248
  *
  */
-public interface Task {
-	
-	/**
-	 * Cancels the task. Cancellation should not stop a single pending execution of a task.
-	 * Rather, a {@link Scheduler} should cease scheduling of the task in timed or delayed executions.
-	 * 
-	 */
-	void cancel();
-	
+public interface SyncExecutor extends Registrable, BasicExecutor, Scheduler {
+
 }
