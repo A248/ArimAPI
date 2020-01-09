@@ -27,8 +27,8 @@ package space.arim.api.concurrent;
 public interface Task {
 	
 	/**
-	 * Cancels the task. Cancellation should not stop a single pending execution of a task.
-	 * Rather, a {@link Scheduler} should cease scheduling of the task in timed or delayed executions.
+	 * Cancels the task. Cancellation need not stop a single pending execution of a task if execution has initiated (i.e., no interruption required).
+	 * Only, a {@link Scheduler} should cease further scheduling of the task in timed or delayed executions.
 	 * 
 	 */
 	void cancel();

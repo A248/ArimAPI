@@ -27,16 +27,19 @@ import java.util.concurrent.RunnableFuture;
 /**
  * A {@link Executor} with upgraded concurrent functionality. Differs from {@link java.util.concurrent.ExecutorService} in that it contains
  * no methods for thread pool management (such as shutdown, await termination, etc.) but focuses specifically on concurrent execution. <br>
- * Specifications: <br>
- * * {@link #submit(Runnable)} <br>
- * * {@link #submit(Callable)} <br>
- * BasicExecutor provides default implementations for all of its specifications. <br>
- * <b>Thus, the only required method is the transitive {@link #execute(Runnable)}. </b><br>
+ * <br>
+ * <b>Specifications:</b> <br>
+ * * Requires {@link #execute(Runnable)} <br>
+ * * EnhancedExecutor provides default implementations for all of its own specifications. <br>
+ * <br>
+ * <b>Default implementations:</b> <br>
+ * Adds {@link #submit(Runnable)} and {@link #submit(Callable)}.
+ * Both of these methods' default implementations are pulled from {@link AbstractExecutorService}.
  * 
  * @author A248
  *
  */
-public interface BasicExecutor extends Executor {
+public interface EnhancedExecutor extends Executor {
 
 	/**
 	 * Execute an asynchronous action. <br>

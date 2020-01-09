@@ -21,23 +21,24 @@ package space.arim.api.concurrent;
 import java.util.function.Consumer;
 
 /**
- * A scheduler designed for creating delayed tasks.
+ * A scheduler designed for creating delayed and timed tasks.
  * <br>
- * Requirements:
- * {@link #runTaskLater(Runnable, long)}
- * {@link #runTaskTimerLater(Runnable, long, long)}
+ * <b>Specifications:</b> <br>
+ * * Requires {@link #runTaskLater(Runnable, long)} <br>
+ * * Requires {@link #runTaskTimerLater(Runnable, long, long)} <br>
+ * * Default implementations: See below <br>
  * <br>
- * Each method specified by Scheduler itself returns a {@link Task} to provide basic cancellation. <br>
+ * <b>Contract:</b> <br>
+ * * Each method returns a {@link Task} representing the scheduled task.
+ * Such returned Task objects' {@link Task#cancel()} method should succeed in ceasing further scheduling of the task. <br>
+ * * All time units are in <i>milliseconds</i> to provide compatibility with implementing platforms which do not support other units. <br>
  * <br>
- * All time units are in <b>MILLISECONDS</b> to provide compatibility with implementing platforms which do not support other units.
- * <br>
- * All methods accept either a basic {@link Runnable} or a {@link Consumer} as the task to schedule. <br>
- * The consumer may be used so that the executing task can cancel its own scheduling. <br>
- * <br>
- * {@link #runTaskLater(Runnable, long)} and {@link #runTaskTimerLater(Runnable, long, long)}
- * are required, while {@link #runTask(Runnable)} and {@link #runTaskTimer(Runnable, long)} have default implementations
- * which call the required methods, but may be overriden where the underlying Scheduler implementation supports it.
- * The methods accepting Consumer instead of Runnable parameters need never be overriden.
+ * <b>Default implementations:</b> <br>
+ * * {@link #runTaskTimer(Runnable, long)} calls {@link #runTaskTimerLater} with <code>delay</code> parameter as <code>0</code>.
+ * This may be overriden if doing so increases efficiency. <br>
+ * * All methods accept either a basic {@link Runnable} or a {@link Consumer} as the task to schedule.
+ * Callers may use the method accepting a consumer parameter so that the executing task can cancel its own scheduling.
+ * Default implementations need never be overriden. They derive from the corresponding methods accepting Runnable parameters.
  * 
  * @author A248
  *
@@ -69,7 +70,9 @@ public interface Scheduler {
 	}
 	
 	/**
-	 * Runs a task timer. The task may be cancelled.
+	 * Runs a timed repeating task. The task may be cancelled. <br>
+	 * <br>
+	 * Default implementation: returns {@link #runTaskTimerLater(Runnable, long, long)} with the <code>delay</code> parameter (2nd param) set to zero.
 	 * 
 	 * @param command the execution
 	 * @param period the timespan between executions
@@ -95,7 +98,7 @@ public interface Scheduler {
 	}
 	
 	/**
-	 * Same as {@link #runTaskTimer(Consumer, long)} but includes an initial delay.
+	 * Runs a timed repeating task with an additional initial delay. The task may be cancelled to stop further scheduling.
 	 * 
 	 * @param command the execution
 	 * @param period the timespan between executions

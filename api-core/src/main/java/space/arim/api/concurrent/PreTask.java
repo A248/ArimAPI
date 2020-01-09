@@ -18,6 +18,13 @@
  */
 package space.arim.api.concurrent;
 
+/**
+ * Internal class used for default implementations of {@link Scheduler} methods which accept a {@link Consumer} as the task parameter.
+ * This object is passed to the Consumer parameters and then its {@link #cancel()}
+ * 
+ * @author A248
+ *
+ */
 class PreTask implements Task {
 	
 	private Task value;
@@ -26,6 +33,15 @@ class PreTask implements Task {
 		this.value = value;
 	}
 	
+	/**
+	 * Cancels the PreTask. <br>
+	 * <br>
+	 * There are 2 possibilities: <br>
+	 * * The underlying task has been created and passed to the PreTask, in which case its cancel method is called.
+	 * * The underlying task has not been passed. In this rare yet unavoidable race condition, the underlying task is not cancelled.
+	 * In most cases, this should not be a problem, since timed tasks won't be cancelling themselves ASAP.
+	 * 
+	 */
 	@Override
 	public void cancel() {
 		if (value != null) {

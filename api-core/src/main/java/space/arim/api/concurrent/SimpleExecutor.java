@@ -22,12 +22,12 @@ import java.util.concurrent.Executor;
 
 /**
  * 
- * A simple implementation of {@link BasicExecutor}
+ * A simple implementation of {@link EnhancedExecutor}
  * 
  * @author A248
  *
  */
-public class SimpleExecutor implements BasicExecutor {
+public class SimpleExecutor implements EnhancedExecutor {
 
 	private Executor executor;
 	
