@@ -16,34 +16,35 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.sponge;
+package space.arim.api.plugin.bukkit;
 
-import java.util.concurrent.TimeUnit;
-
-import org.spongepowered.api.scheduler.SpongeExecutorService;
-import org.spongepowered.api.scheduler.SpongeExecutorService.SpongeFuture;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import space.arim.universal.registry.RegistryPriority;
 
-import space.arim.api.concurrent.Synchroniser;
+import space.arim.api.concurrent.SyncExecutor;
 import space.arim.api.concurrent.Task;
 
-public class DefaultSynchroniser implements Synchroniser {
+public class DefaultSyncExecutor extends BukkitRegistrable implements SyncExecutor {
 	
-	private final SpongeExecutorService threadPool;
+	public DefaultSyncExecutor(JavaPlugin plugin) {
+		super(plugin);
+	}
 	
-	DefaultSynchroniser(SpongeExecutorService threadPool) {
-		this.threadPool = threadPool;
+	@Override
+	public void execute(Runnable command) {
+		getPlugin().getServer().getScheduler().runTask(getPlugin(), command);
 	}
 	
 	@Override
 	public Task runTaskLater(Runnable command, long delay) {
-		return new TaskWrapper(threadPool.schedule(command, delay, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(getPlugin().getServer().getScheduler().runTaskLater(getPlugin(), command, delay));
 	}
 	
 	@Override
 	public Task runTaskTimerLater(Runnable command, long delay, long period) {
-		return new TaskWrapper(threadPool.scheduleAtFixedRate(command, delay, period, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(getPlugin().getServer().getScheduler().runTaskTimer(getPlugin(), command, delay, period));
 	}
 	
 	@Override
@@ -55,15 +56,15 @@ public class DefaultSynchroniser implements Synchroniser {
 
 class TaskWrapper implements Task {
 	
-	private final SpongeFuture<?> task;
+	private final BukkitTask task;
 	
-	TaskWrapper(SpongeFuture<?> task) {
+	TaskWrapper(BukkitTask task) {
 		this.task = task;
 	}
 	
 	@Override
 	public void cancel() {
-		task.cancel(true);
+		task.cancel();
 	}
 	
 }

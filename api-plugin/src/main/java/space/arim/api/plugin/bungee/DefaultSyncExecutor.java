@@ -25,13 +25,18 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import space.arim.universal.registry.RegistryPriority;
 
-import space.arim.api.concurrent.Synchroniser;
+import space.arim.api.concurrent.SyncExecutor;
 import space.arim.api.concurrent.Task;
 
-public class DefaultSynchroniser extends BungeeRegistrable implements Synchroniser {
+public class DefaultSyncExecutor extends BungeeRegistrable implements SyncExecutor {
 
-	public DefaultSynchroniser(Plugin plugin) {
+	public DefaultSyncExecutor(Plugin plugin) {
 		super(plugin);
+	}
+	
+	@Override
+	public void execute(Runnable command) {
+		getPlugin().getProxy().getScheduler().runAsync(getPlugin(), command);
 	}
 
 	@Override

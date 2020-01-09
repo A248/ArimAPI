@@ -1,6 +1,6 @@
 /* 
  * ArimAPI-plugin
- * Copyright © 2019 Anand Beh <https://www.arim.space>
+ * Copyright © 2020 Anand Beh <https://www.arim.space>
  * 
  * ArimAPI-plugin is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +16,24 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bukkit;
+package space.arim.api.plugin.sponge;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.concurrent.Executor;
 
-import space.arim.universal.registry.UniversalRegistry;
+import space.arim.universal.registry.RegistryPriority;
 
 import space.arim.api.concurrent.AsyncExecutor;
-import space.arim.api.concurrent.SyncExecutor;
+import space.arim.api.concurrent.SimpleExecutor;
 
-public class ArimApiPlugin extends JavaPlugin {
+public class DefaultAsyncExecutor extends SimpleExecutor implements AsyncExecutor {
 	
-	@Override
-	public void onLoad() {
-		UniversalRegistry.get().register(AsyncExecutor.class, new DefaultAsyncExecutor(this));
-		UniversalRegistry.get().register(SyncExecutor.class, new DefaultSyncExecutor(this));
+	public DefaultAsyncExecutor(Executor executor) {
+		super(executor);
 	}
 	
+	@Override
+	public byte getPriority() {
+		return RegistryPriority.LOWEST;
+	}
+
 }

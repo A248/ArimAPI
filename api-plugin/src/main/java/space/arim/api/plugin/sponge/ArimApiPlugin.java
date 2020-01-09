@@ -28,7 +28,7 @@ import com.google.inject.Inject;
 import space.arim.universal.registry.UniversalRegistry;
 
 import space.arim.api.concurrent.AsyncExecutor;
-import space.arim.api.concurrent.Synchroniser;
+import space.arim.api.concurrent.SyncExecutor;
 
 @Plugin(id = "arimapiplugin", name = "ArimAPIPlugin", version = "see_plugin_jar_resource=plugin.yml")
 public class ArimApiPlugin {
@@ -45,8 +45,8 @@ public class ArimApiPlugin {
 	
 	@Inject
 	public ArimApiPlugin(@AsynchronousExecutor SpongeExecutorService async, @SynchronousExecutor SpongeExecutorService sync) {
-		UniversalRegistry.get().register(AsyncExecutor.class, AsyncExecutor.fromThreadPool(async));
-		UniversalRegistry.get().register(Synchroniser.class, new DefaultSynchroniser(sync));
+		UniversalRegistry.get().register(AsyncExecutor.class, new DefaultAsyncExecutor(async));
+		UniversalRegistry.get().register(SyncExecutor.class, new DefaultSyncExecutor(sync));
 	}
 	
 }
