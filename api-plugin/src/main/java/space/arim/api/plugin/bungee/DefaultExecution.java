@@ -16,39 +16,38 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.sponge;
+package space.arim.api.plugin.bungee;
 
 import java.util.concurrent.TimeUnit;
 
-import org.spongepowered.api.scheduler.SpongeExecutorService;
-import org.spongepowered.api.scheduler.SpongeExecutorService.SpongeFuture;
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import space.arim.universal.registry.RegistryPriority;
 
-import space.arim.api.concurrent.SyncExecutor;
+import space.arim.api.concurrent.AsyncExecution;
+import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.concurrent.Task;
 
-public class DefaultSyncExecutor implements SyncExecutor {
+public class DefaultExecution extends BungeeRegistrable implements AsyncExecution, SyncExecution {
 	
-	private final SpongeExecutorService threadPool;
-	
-	DefaultSyncExecutor(SpongeExecutorService threadPool) {
-		this.threadPool = threadPool;
+	public DefaultExecution(Plugin plugin) {
+		super(plugin);
 	}
 	
 	@Override
 	public void execute(Runnable command) {
-		threadPool.execute(command);
+		getPlugin().getProxy().getScheduler().runAsync(getPlugin(), command);
 	}
 	
 	@Override
 	public Task runTaskLater(Runnable command, long delay) {
-		return new TaskWrapper(threadPool.schedule(command, delay, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, TimeUnit.MILLISECONDS));
 	}
 	
 	@Override
 	public Task runTaskTimerLater(Runnable command, long delay, long period) {
-		return new TaskWrapper(threadPool.scheduleAtFixedRate(command, delay, period, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, period, TimeUnit.MILLISECONDS));
 	}
 	
 	@Override
@@ -60,15 +59,15 @@ public class DefaultSyncExecutor implements SyncExecutor {
 
 class TaskWrapper implements Task {
 	
-	private final SpongeFuture<?> task;
+	private final ScheduledTask task;
 	
-	TaskWrapper(SpongeFuture<?> task) {
+	TaskWrapper(ScheduledTask task) {
 		this.task = task;
 	}
 	
 	@Override
 	public void cancel() {
-		task.cancel(true);
+		task.cancel();
 	}
 	
 }

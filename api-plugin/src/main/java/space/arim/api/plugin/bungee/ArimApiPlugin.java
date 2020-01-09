@@ -22,15 +22,16 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 import space.arim.universal.registry.UniversalRegistry;
 
-import space.arim.api.concurrent.AsyncExecutor;
-import space.arim.api.concurrent.SyncExecutor;
+import space.arim.api.concurrent.AsyncExecution;
+import space.arim.api.concurrent.SyncExecution;
 
 public class ArimApiPlugin extends Plugin {
 	
 	@Override
 	public void onLoad() {
-		UniversalRegistry.get().register(AsyncExecutor.class, new DefaultAsyncExecutor(this));
-		UniversalRegistry.get().register(SyncExecutor.class, new DefaultSyncExecutor(this));
+		DefaultExecution execution = new DefaultExecution(this);
+		UniversalRegistry.get().register(AsyncExecution.class, execution);
+		UniversalRegistry.get().register(SyncExecution.class, execution);
 	}
 	
 }

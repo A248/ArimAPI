@@ -16,28 +16,38 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bungee;
+package space.arim.api.plugin.bukkit;
 
-import net.md_5.bungee.api.plugin.Plugin;
-
+import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.universal.registry.RegistryPriority;
 
-import space.arim.api.concurrent.AsyncExecutor;
+import space.arim.api.concurrent.AsyncExecution;
+import space.arim.api.concurrent.Task;
 
-public class DefaultAsyncExecutor extends BungeeRegistrable implements AsyncExecutor {
+public class DefaultAsyncExecution extends BukkitRegistrable implements AsyncExecution {
 	
-	public DefaultAsyncExecutor(Plugin plugin) {
+	public DefaultAsyncExecution(JavaPlugin plugin) {
 		super(plugin);
 	}
 	
 	@Override
 	public void execute(Runnable command) {
-		getPlugin().getProxy().getScheduler().runAsync(getPlugin(), command);
+		getPlugin().getServer().getScheduler().runTaskAsynchronously(getPlugin(), command);
+	}
+	
+	@Override
+	public Task runTaskLater(Runnable command, long delay) {
+		return new TaskWrapper(getPlugin().getServer().getScheduler().runTaskLaterAsynchronously(getPlugin(), command, delay));
+	}
+	
+	@Override
+	public Task runTaskTimerLater(Runnable command, long delay, long period) {
+		return new TaskWrapper(getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(getPlugin(), command, delay, period));
 	}
 	
 	@Override
 	public byte getPriority() {
 		return RegistryPriority.LOWEST;
 	}
-	
+
 }

@@ -19,16 +19,15 @@
 package space.arim.api.plugin.bukkit;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 import space.arim.universal.registry.RegistryPriority;
 
-import space.arim.api.concurrent.SyncExecutor;
+import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.concurrent.Task;
 
-public class DefaultSyncExecutor extends BukkitRegistrable implements SyncExecutor {
+public class DefaultSyncExecution extends BukkitRegistrable implements SyncExecution {
 	
-	public DefaultSyncExecutor(JavaPlugin plugin) {
+	public DefaultSyncExecution(JavaPlugin plugin) {
 		super(plugin);
 	}
 	
@@ -50,21 +49,6 @@ public class DefaultSyncExecutor extends BukkitRegistrable implements SyncExecut
 	@Override
 	public byte getPriority() {
 		return RegistryPriority.LOWEST;
-	}
-	
-}
-
-class TaskWrapper implements Task {
-	
-	private final BukkitTask task;
-	
-	TaskWrapper(BukkitTask task) {
-		this.task = task;
-	}
-	
-	@Override
-	public void cancel() {
-		task.cancel();
 	}
 	
 }

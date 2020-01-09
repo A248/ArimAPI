@@ -16,39 +16,42 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bungee;
+package space.arim.api.plugin.sponge;
 
 import java.util.concurrent.TimeUnit;
 
-import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
+import org.spongepowered.api.scheduler.SpongeExecutorService;
+import org.spongepowered.api.scheduler.SpongeExecutorService.SpongeFuture;
 
 import space.arim.universal.registry.RegistryPriority;
 
-import space.arim.api.concurrent.SyncExecutor;
+import space.arim.api.concurrent.AsyncExecution;
+import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.concurrent.Task;
 
-public class DefaultSyncExecutor extends BungeeRegistrable implements SyncExecutor {
-
-	public DefaultSyncExecutor(Plugin plugin) {
-		super(plugin);
+public class DefaultExecution implements AsyncExecution, SyncExecution {
+	
+	private final SpongeExecutorService threadPool;
+	
+	DefaultExecution(SpongeExecutorService threadPool) {
+		this.threadPool = threadPool;
 	}
 	
 	@Override
 	public void execute(Runnable command) {
-		getPlugin().getProxy().getScheduler().runAsync(getPlugin(), command);
+		threadPool.execute(command);
 	}
-
+	
 	@Override
 	public Task runTaskLater(Runnable command, long delay) {
-		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(threadPool.schedule(command, delay, TimeUnit.MILLISECONDS));
 	}
 	
 	@Override
 	public Task runTaskTimerLater(Runnable command, long delay, long period) {
-		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, period, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(threadPool.scheduleAtFixedRate(command, delay, period, TimeUnit.MILLISECONDS));
 	}
-
+	
 	@Override
 	public byte getPriority() {
 		return RegistryPriority.LOWEST;
@@ -58,15 +61,15 @@ public class DefaultSyncExecutor extends BungeeRegistrable implements SyncExecut
 
 class TaskWrapper implements Task {
 	
-	private final ScheduledTask task;
+	private final SpongeFuture<?> task;
 	
-	TaskWrapper(ScheduledTask task) {
+	TaskWrapper(SpongeFuture<?> task) {
 		this.task = task;
 	}
 	
 	@Override
 	public void cancel() {
-		task.cancel();
+		task.cancel(true);
 	}
 	
 }
