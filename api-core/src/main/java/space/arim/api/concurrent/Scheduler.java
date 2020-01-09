@@ -29,6 +29,8 @@ import java.util.function.Consumer;
  * <br>
  * Each method specified by Scheduler itself returns a {@link Task} to provide basic cancellation. <br>
  * <br>
+ * All time units are in <b>MILLISECONDS</b> to provide compatibility with implementing platforms which do not support other units.
+ * <br>
  * All methods accept either a basic {@link Runnable} or a {@link Consumer} as the task to schedule. <br>
  * The consumer may be used so that the executing task can cancel its own scheduling. <br>
  * <br>
