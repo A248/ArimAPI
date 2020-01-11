@@ -29,7 +29,7 @@ import com.google.gson.JsonSyntaxException;
 import space.arim.universal.util.exception.HttpStatusException;
 import space.arim.universal.util.web.HttpStatus;
 
-import space.arim.api.util.minecraft.MinecraftUtil;
+import space.arim.api.util.MinecraftUtil;
 
 public final class FetcherUtil {
 	

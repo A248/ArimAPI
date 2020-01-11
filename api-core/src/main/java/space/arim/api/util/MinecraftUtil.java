@@ -16,7 +16,7 @@
  * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.minecraft;
+package space.arim.api.util;
 
 import java.util.ArrayList;
 import java.util.UUID;
