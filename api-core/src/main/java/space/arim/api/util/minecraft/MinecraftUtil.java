@@ -79,6 +79,13 @@ public final class MinecraftUtil {
 		return builder.toString();
 	}
 	
+	/**
+	 * Identical to <code>ChatColor.translateAlternateColorCodes('&', colorable);</code>. <br>
+	 * Does not accept uppercase color codes (e.g., &A instead of &a).
+	 * 
+	 * @param colorable the string to add color codes to
+	 * @return the colored string
+	 */
 	public static String encode(String colorable) {
 		char[] b = colorable.toCharArray();
 		for (int n = 0; n < b.length - 1; ++n) {
@@ -87,6 +94,16 @@ public final class MinecraftUtil {
 			}
 		}
 		return new String(b);
+	}
+	
+	/**
+	 * Similar to {@link #encode(String)}, but additionally converts to a {@link BaseComponent} array for BungeeCord message sending.
+	 * 
+	 * @param colorable the string to add color codes to
+	 * @return the colored BaseComponent array
+	 */
+	public static BaseComponent[] encodeBungee(String colorable) {
+		return TextComponent.fromLegacyText(encode(colorable));
 	}
 	
 	/**
