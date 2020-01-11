@@ -16,7 +16,7 @@
  * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.config;
+package space.arim.api.config;
 
 import java.io.File;
 import java.util.logging.Level;
