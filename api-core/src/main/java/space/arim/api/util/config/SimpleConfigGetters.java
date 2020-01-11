@@ -24,6 +24,12 @@ public interface SimpleConfigGetters {
 	
 	<T> T getObject(String key, Class<T> type);
 	
+	@SuppressWarnings("unchecked")
+	default <T> List<T> getObjects(String key, Class<T> type) {
+		List<?> obj = getObject(key, List.class);
+		return obj.isEmpty() || type.isInstance(obj.get(0)) ? (List<T>) obj : null;
+	}
+	
 	default String getString(String key) {
 		return getObject(key, String.class);
 	}
@@ -36,13 +42,12 @@ public interface SimpleConfigGetters {
 		return getObject(key, Boolean.class);
 	}
 	
-	@SuppressWarnings("unchecked")
-	default List<String> getStringList(String key) {
-		return getObject(key, List.class);
+	default List<String> getStrings(String key) {
+		return getObjects(key, String.class);
 	}
 	
-	default String[] getStringArray(String key) {
-		return getStringList(key).toArray(new String[] {});
+	default List<Integer> getInts(String key) {
+		return getObjects(key, Integer.class);
 	}
 	
 }
