@@ -28,6 +28,7 @@ import space.arim.universal.registry.RegistryPriority;
 import space.arim.api.concurrent.AsyncExecution;
 import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.concurrent.Task;
+import space.arim.api.server.bungee.BungeeRegistrable;
 
 public class DefaultExecution extends BungeeRegistrable implements AsyncExecution, SyncExecution {
 	

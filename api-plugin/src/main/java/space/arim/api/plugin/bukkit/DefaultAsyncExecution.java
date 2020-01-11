@@ -23,6 +23,7 @@ import space.arim.universal.registry.RegistryPriority;
 
 import space.arim.api.concurrent.AsyncExecution;
 import space.arim.api.concurrent.Task;
+import space.arim.api.server.bukkit.BukkitRegistrable;
 
 public class DefaultAsyncExecution extends BukkitRegistrable implements AsyncExecution {
 	

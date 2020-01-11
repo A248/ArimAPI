@@ -20,6 +20,7 @@ package space.arim.api.plugin.sponge;
 
 import java.util.concurrent.TimeUnit;
 
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
 import org.spongepowered.api.scheduler.SpongeExecutorService.SpongeFuture;
 
@@ -28,12 +29,14 @@ import space.arim.universal.registry.RegistryPriority;
 import space.arim.api.concurrent.AsyncExecution;
 import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.concurrent.Task;
+import space.arim.api.server.sponge.SpongeRegistrable;
 
-public class DefaultExecution implements AsyncExecution, SyncExecution {
+public class DefaultExecution extends SpongeRegistrable implements AsyncExecution, SyncExecution {
 	
 	private final SpongeExecutorService threadPool;
 	
-	DefaultExecution(SpongeExecutorService threadPool) {
+	DefaultExecution(PluginContainer plugin, SpongeExecutorService threadPool) {
+		super(plugin);
 		this.threadPool = threadPool;
 	}
 	

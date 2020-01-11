@@ -24,6 +24,7 @@ import space.arim.universal.registry.RegistryPriority;
 
 import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.concurrent.Task;
+import space.arim.api.server.bukkit.BukkitRegistrable;
 
 public class DefaultSyncExecution extends BukkitRegistrable implements SyncExecution {
 	
