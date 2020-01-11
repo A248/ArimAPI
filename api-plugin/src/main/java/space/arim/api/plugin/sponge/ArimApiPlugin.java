@@ -18,7 +18,9 @@
  */
 package space.arim.api.plugin.sponge;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.AsynchronousExecutor;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
 import org.spongepowered.api.scheduler.SynchronousExecutor;
@@ -29,8 +31,9 @@ import space.arim.universal.registry.UniversalRegistry;
 
 import space.arim.api.concurrent.AsyncExecution;
 import space.arim.api.concurrent.SyncExecution;
+import space.arim.api.server.TPSMeter;
 
-@Plugin(id = "arimapiplugin", name = "ArimAPIPlugin", version = "see_plugin_jar_resource=plugin.yml")
+@Plugin(id = "arimapiplugin", name = "ArimAPIPlugin")
 public class ArimApiPlugin {
 	
 	/*
@@ -39,14 +42,15 @@ public class ArimApiPlugin {
 	 * 
 	 * So much of its access is disgustingly static. There are no server instances for use.
 	 * Worse, the extreme over-use of annotations for basic functionality is just appalling.
-	 * As a result of the explosion of annotations, there are no plugin instances, either.
 	 * Further, you cannot use simple maven resources filtering in a plugin.yml, because Sponge doesn't use a plugin.yml.
 	 */
 	
 	@Inject
 	public ArimApiPlugin(@AsynchronousExecutor SpongeExecutorService async, @SynchronousExecutor SpongeExecutorService sync) {
-		UniversalRegistry.get().register(AsyncExecution.class, new DefaultExecution(async));
-		UniversalRegistry.get().register(SyncExecution.class, new DefaultExecution(sync));
+		PluginContainer plugin = Sponge.getPluginManager().getPlugin("arimapiplugin").get();
+		UniversalRegistry.get().register(AsyncExecution.class, new DefaultExecution(plugin, async));
+		UniversalRegistry.get().register(SyncExecution.class, new DefaultExecution(plugin, sync));
+		UniversalRegistry.get().register(TPSMeter.class, new DefaultTPSMeter(plugin));
 	}
 	
 }

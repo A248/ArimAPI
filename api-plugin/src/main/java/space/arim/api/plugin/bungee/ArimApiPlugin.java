@@ -24,6 +24,7 @@ import space.arim.universal.registry.UniversalRegistry;
 
 import space.arim.api.concurrent.AsyncExecution;
 import space.arim.api.concurrent.SyncExecution;
+import space.arim.api.server.TPSMeter;
 
 public class ArimApiPlugin extends Plugin {
 	
@@ -32,6 +33,7 @@ public class ArimApiPlugin extends Plugin {
 		DefaultExecution execution = new DefaultExecution(this);
 		UniversalRegistry.get().register(AsyncExecution.class, execution);
 		UniversalRegistry.get().register(SyncExecution.class, execution);
+		UniversalRegistry.get().register(TPSMeter.class, new DefaultTPSMeter(this));
 	}
 	
 }

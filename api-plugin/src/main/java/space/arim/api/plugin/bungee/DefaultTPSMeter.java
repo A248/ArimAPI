@@ -1,6 +1,6 @@
 /* 
  * ArimAPI-plugin
- * Copyright © 2019 Anand Beh <https://www.arim.space>
+ * Copyright © 2020 Anand Beh <https://www.arim.space>
  * 
  * ArimAPI-plugin is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,23 +16,29 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bukkit;
+package space.arim.api.plugin.bungee;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import net.md_5.bungee.api.plugin.Plugin;
 
-import space.arim.universal.registry.UniversalRegistry;
+import space.arim.universal.registry.RegistryPriority;
 
-import space.arim.api.concurrent.AsyncExecution;
-import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.server.TPSMeter;
+import space.arim.api.server.bungee.BungeeRegistrable;
 
-public class ArimApiPlugin extends JavaPlugin {
-	
-	@Override
-	public void onLoad() {
-		UniversalRegistry.get().register(AsyncExecution.class, new DefaultAsyncExecution(this));
-		UniversalRegistry.get().register(SyncExecution.class, new DefaultSyncExecution(this));
-		UniversalRegistry.get().register(TPSMeter.class, new DefaultTPSMeter(this));
+public class DefaultTPSMeter extends BungeeRegistrable implements TPSMeter {
+
+	public DefaultTPSMeter(Plugin plugin) {
+		super(plugin);
 	}
 	
+	@Override
+	public double getTPS() {
+		return 20D; 
+	}
+
+	@Override
+	public byte getPriority() {
+		return RegistryPriority.LOWEST;
+	}
+
 }
