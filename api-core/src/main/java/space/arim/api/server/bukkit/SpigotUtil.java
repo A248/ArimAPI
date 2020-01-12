@@ -16,60 +16,59 @@
  * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.server.bungee;
+package space.arim.api.server.bukkit;
 
-import java.util.HashSet;
-import java.util.Set;
+//import org.spongepowered.api.Platform;
 
-import net.md_5.bungee.api.ProxyServer;
+import org.bukkit.event.EventHandler;
+
 import net.md_5.bungee.api.chat.BaseComponent;
+
+import space.arim.universal.util.exception.HttpStatusException;
 
 import space.arim.api.annotation.Platform;
 import space.arim.api.server.ChatUtil;
+import space.arim.api.util.web.FetcherException;
+import space.arim.api.util.web.FetcherUtil;
 
 /**
- * Basic BungeeCord utility class with more methods added via contribution.
+ * Basic Spigot utility class with more methods added via contribution.
  * 
  * @author A248
  *
  */
-@Platform(Platform.Type.BUNGEE)
-public final class BungeeUtil {
+@Platform(Platform.Type.SPIGOT)
+public final class SpigotUtil {
 
-	private BungeeUtil() {}
+	private SpigotUtil() {}
 	
 	/**
-	 * Iterates across online players, finds players matching the first argument in the args parameter, and returns applicable player names.
+	 * Retrieves the latest version of a posted spigot plugin according to its resourceId. <br>
+	 * <b>Be sure to call this method in an asynchronous task to avoid stalling the main thread.</b> <br>
+	 * <br>
+	 * E.g., for AdvancedBan (resourceId bolded): <br>
+	 * * plugin url = https://www.spigotmc.org/resources/advancedban.<b>8695</b>/ <br>
+	 * * <code>String latestVersion = SpigotUtil.getLatestSpigotPluginVersion(<b>8695</b>);</code>
 	 * 
-	 * @param args command arguments to tab complete
-	 * @param proxy the proxy server, use {@link net.md_5.bungee.api.plugin.Plugin#getProxy() plugin.getProxy()} for this parameter
-	 * @return tab completable set
+	 * @param resourceId the spigot plugin id
+	 * @return String the latest version
+	 * @throws FetcherException if a miscellaneous web problem occured, such as IOException
+	 * @throws HttpStatusException if the http status code was not 200
 	 */
-	public static Set<String> getPlayerNameTabComplete(String[] args, ProxyServer proxy) {
-		Set<String> playerNames = new HashSet<String>();
-		if (args.length == 0) {
-			proxy.getPlayers().forEach((player) -> {
-				playerNames.add(player.getName());
-			});
-		} else if (args.length == 1) {
-			proxy.getPlayers().forEach((player) -> {
-				if (player.getName().toLowerCase().startsWith(args[0])) {
-					playerNames.add(player.getName());
-				}
-			});
-		}
-		return playerNames;
+	public static String getLatestPluginVersion(int resourceId) throws FetcherException, HttpStatusException {
+		return FetcherUtil.getLatestSpigotPluginVersion(resourceId);
 	}
 	
 	/**
 	 * Adds color to a message according to '&' color codes. <br>
-	 * See {@link ChatUtil#colorBungee(String)} for more information.
+	 * See {@link ChatUtil#color(String)} for more information.
 	 * 
-	 * @param colorable the input string
-	 * @return a colored BaseComponent array
+	 * @param colorable
+	 * @return
 	 */
-	public static BaseComponent[] color(String colorable) {
-		return ChatUtil.colorBungee(colorable);
+	@EventHandler
+	public static String color(String colorable) {
+		return ChatUtil.color(colorable);
 	}
 	
 	/**
@@ -89,9 +88,9 @@ public final class BungeeUtil {
 	 * <b>Example usage:</b> <br>
 	 * <pre>
 	 * <code>
-	 * public void sendJsonMessage(ProxiedPlayer player, String json) {
+	 * public void sendJsonMessage(Player player, String json) {
 	 *   // Woohoo! Now we can send json messages!
-	 *   player.sendMessage(BungeeUtil.parseJson(json));
+	 *   player.spigot().sendMessage(SpigotUtil.parseJson(json));
 	 * }
 	 * </code>
 	 * </pre>

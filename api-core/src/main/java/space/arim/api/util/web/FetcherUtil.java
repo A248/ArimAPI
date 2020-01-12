@@ -29,7 +29,7 @@ import com.google.gson.JsonSyntaxException;
 import space.arim.universal.util.exception.HttpStatusException;
 import space.arim.universal.util.web.HttpStatus;
 
-import space.arim.api.util.MinecraftUtil;
+import space.arim.api.uuid.UUIDUtil;
 
 public final class FetcherUtil {
 	
@@ -53,8 +53,13 @@ public final class FetcherUtil {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	private static Map<String, Object> getJsonMapFromUrl(String url) throws FetcherException, HttpStatusException {
+		return getJsonFromUrl(url, Map.class);
+	}
+	
 	public static UUID mojangApi(final String name) throws FetcherException, HttpStatusException {
-		return UUID.fromString(MinecraftUtil.expandUUID(getJsonFromUrl(MOJANG_API_FROM_NAME + Objects.requireNonNull(name, "Name must not be null!"), Map.class).get("id").toString()));
+		return UUID.fromString(UUIDUtil.expand(getJsonMapFromUrl(MOJANG_API_FROM_NAME + Objects.requireNonNull(name, "Name must not be null!")).get("id").toString()));
 	}
 	
 	public static String mojangApi(final UUID playeruuid) throws FetcherException, HttpStatusException {
@@ -64,11 +69,11 @@ public final class FetcherUtil {
 	}
 	
 	public static UUID ashconApi(final String name) throws FetcherException, HttpStatusException {
-		return UUID.fromString(getJsonFromUrl(ASHCON_API + Objects.requireNonNull(name, "Name must not be null!"), Map.class).get("uuid").toString());
+		return UUID.fromString(getJsonMapFromUrl(ASHCON_API + Objects.requireNonNull(name, "Name must not be null!")).get("uuid").toString());
 	}
 	
 	public static String ashconApi(final UUID playeruuid) throws FetcherException, HttpStatusException {
-		return getJsonFromUrl(ASHCON_API + Objects.requireNonNull(playeruuid, "UUID must not be null!"), Map.class).get("username").toString();
+		return getJsonMapFromUrl(ASHCON_API + Objects.requireNonNull(playeruuid, "UUID must not be null!")).get("username").toString();
 	}
 	
 	public static String getLatestSpigotPluginVersion(final int resourceId) throws FetcherException, HttpStatusException {
@@ -83,8 +88,7 @@ public final class FetcherUtil {
 	public static GeoIpInfo ipStack(final String address, final String key) throws FetcherException, RateLimitException, HttpStatusException {
 		final String url = IPSTACK.getUrl(address).replace("$KEY", Objects.requireNonNull(key, "Key must not be null!"));
 		try {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> json = getJsonFromUrl(url, Map.class);
+			Map<String, Object> json = getJsonMapFromUrl(url);
 			return new GeoIpInfo(address, json.get("country_code").toString(), json.get("country_name").toString(), json.get("region_code").toString(), json.get("region_name").toString(), json.get("city").toString(), json.get("zip").toString(), Double.parseDouble(json.get("latitude").toString()), Double.parseDouble(json.get("longitude").toString()));
 		} catch (HttpStatusException ex) {
 			if (ex.status == HttpStatus.UNASSIGNED_104) {
@@ -99,8 +103,7 @@ public final class FetcherUtil {
 	public static GeoIpInfo freeGeoIp(final String address) throws FetcherException, RateLimitException, HttpStatusException {
 		final String url = FREEGEOIP.getUrl(address);
 		try {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> json = getJsonFromUrl(url, Map.class);
+			Map<String, Object> json = getJsonMapFromUrl(url);
 			return new GeoIpInfo(address, json.get("country_code").toString(), json.get("country_name").toString(), json.get("region_code").toString(), json.get("region_name").toString(), json.get("city").toString(), json.get("zip_code").toString(), Double.parseDouble(json.get("latitude").toString()), Double.parseDouble(json.get("longitude").toString()));
 		} catch (HttpStatusException ex) {
 			if (ex.status == HttpStatus.FORBIDDEN) {
@@ -115,8 +118,7 @@ public final class FetcherUtil {
 	public static GeoIpInfo ipApi(final String address) throws FetcherException, RateLimitException, HttpStatusException {
 		final String url = IPAPI.getUrl(address);
 		try {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> json = getJsonFromUrl(url, Map.class);
+			Map<String, Object> json = getJsonMapFromUrl(url);
 			return new GeoIpInfo(address, json.get("country").toString(), json.get("country_name").toString(), json.get("region_code").toString(), json.get("region").toString(), json.get("city").toString(), json.get("postal").toString(), Double.parseDouble(json.get("latitude").toString()), Double.parseDouble(json.get("longitude").toString()));
 		} catch (HttpStatusException ex) {
 			if (ex.status == HttpStatus.TOO_MANY_REQUESTS) {
