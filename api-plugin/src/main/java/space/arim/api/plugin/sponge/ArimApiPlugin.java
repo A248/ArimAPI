@@ -35,16 +35,7 @@ import space.arim.api.server.TPSMeter;
 
 @Plugin(id = "arimapiplugin", name = "ArimAPIPlugin")
 public class ArimApiPlugin {
-	
-	/*
-	 * I am so glad there is very little implementation required here.
-	 * The Sponge API is just absolutely horrible.
-	 * 
-	 * So much of its access is disgustingly static. There are no server instances for use.
-	 * Worse, the extreme over-use of annotations for basic functionality is just appalling.
-	 * Further, you cannot use simple maven resources filtering in a plugin.yml, because Sponge doesn't use a plugin.yml.
-	 */
-	
+
 	@Inject
 	public ArimApiPlugin(@AsynchronousExecutor SpongeExecutorService async, @SynchronousExecutor SpongeExecutorService sync) {
 		PluginContainer plugin = Sponge.getPluginManager().getPlugin("arimapiplugin").get();
