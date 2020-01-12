@@ -104,6 +104,17 @@ public final class SpigotUtil {
 	}
 	
 	/**
+	 * Parses Json messages based on RezzedUp's json.sk format. <br>
+	 * <b>Differs from {@link #parseJson(String)} in that this assumes the string is already colored.
+	 * 
+	 * @param jsonable the input string
+	 * @return a BaseComponent array
+	 */
+	public static BaseComponent[] parseColoredJson(String jsonable) {
+		return ChatUtil.parseColoredJson(jsonable);
+	}
+	
+	/**
 	 * Removes json formatting from an input string. <br>
 	 * Useful for sending messages to the console with formatting removed. <br>
 	 * See {@link ChatUtil#stripJson(String)} for more information.

@@ -251,22 +251,23 @@ public final class ChatUtil {
 	 */
 	@Platform({Platform.Type.BUNGEE, Platform.Type.SPIGOT})
 	public static BaseComponent[] parseJson(String jsonable) {
-		return parseJsonDirect(color(jsonable));
+		return parseColoredJson(color(jsonable));
 	}
 	
 	/**
-	 * Converts a formatted string into a {@link BaseComponent} array. <br>
+	 * Converts a colored AND formatted string into a {@link BaseComponent} array. <br>
 	 * <br>
-	 * Colors, tooltip tags, url tags, command tags, suggestion tags, and insertion tags are all parsed. <br>
+	 * See {@link #parseJson(String)}
 	 * <b>Colors are parsed according to '§' color codes.</b>
 	 * 
 	 * @param json the input string
 	 * @return a formatted BaseComponent array
 	 */
-	private static BaseComponent[] parseJsonDirect(String jsonable) {
+	@Platform({Platform.Type.BUNGEE, Platform.Type.SPIGOT})
+	public static BaseComponent[] parseColoredJson(String coloredJsonable) {
 		BaseComponent current = null;
 		ArrayList<BaseComponent> components = new ArrayList<BaseComponent>();
-		for (String node : jsonable.split("||")) {
+		for (String node : coloredJsonable.split("||")) {
 			TagType tag = jsonTag(node);
 			if (tag.equals(TagType.NONE)) {
 				if (current != null) {
