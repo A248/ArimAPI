@@ -43,11 +43,11 @@ public interface SimpleConfigGetters {
 		return getObject(key, String.class);
 	}
 	
-	default int getInt(String key) {
+	default Integer getInt(String key) {
 		return getObject(key, Integer.class);
 	}
 	
-	default boolean getBoolean(String key) {
+	default Boolean getBoolean(String key) {
 		return getObject(key, Boolean.class);
 	}
 	
