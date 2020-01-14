@@ -35,8 +35,8 @@ import space.arim.api.util.FilesUtil;
  */
 public abstract class ConfigWithLog extends Config {
 	
-	protected ConfigWithLog(File folder, String filename, int version, String versionKey) {
-		super(folder, filename, version, versionKey);
+	protected ConfigWithLog(File folder, String filename, String versionKey) {
+		super(folder, filename, versionKey);
 	}
 	
 	protected abstract void logEvent(ConfigEvent evt);
@@ -51,7 +51,7 @@ public abstract class ConfigWithLog extends Config {
 	File startVersionCheck(File source) {
 		logEvent(ConfigEvent.VERSION_UPDATE_START);
 		Integer ver = super.getObject(versionKey, Integer.class);
-		if (ver == null || ver.intValue() != version) {
+		if (ver == null || ver.intValue() != getDefaultObject(versionKey, Integer.class)) {
 			logEvent(super.initVersionUpdate(source) ? ConfigEvent.VERSION_UPDATE_SUCCESS : ConfigEvent.VERSION_UPDATE_FAILED);
 		}
 		return source;

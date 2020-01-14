@@ -28,13 +28,13 @@ public class SimpleConfigWithLog extends ConfigWithLog {
 	
 	private final Logger logger;
 	
-	public SimpleConfigWithLog(Logger logger, File folder, String filename, int version, String versionKey) {
-		super(folder, filename, version, versionKey);
+	public SimpleConfigWithLog(Logger logger, File folder, String filename, String versionKey) {
+		super(folder, filename, versionKey);
 		this.logger = logger;
 	}
 	
-	public SimpleConfigWithLog(Logger logger, File folder, int version, String versionKey) {
-		this(logger, folder, "config.yml", version, versionKey);
+	public SimpleConfigWithLog(Logger logger, File folder, String versionKey) {
+		this(logger, folder, "config.yml", versionKey);
 	}
 	
 	@Override

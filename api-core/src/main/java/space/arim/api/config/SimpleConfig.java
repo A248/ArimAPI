@@ -29,12 +29,26 @@ import space.arim.api.util.FilesUtil;
  */
 public class SimpleConfig extends Config implements SimpleConfigGetters {
 	
-	public SimpleConfig(File folder, String filename, int version, String versionKey) {
-		super(folder, filename, version, versionKey);
+	/**
+	 * Initialises with given configuration folder, filename, and yaml version key.
+	 * 
+	 * @param folder the configuration folder
+	 * @param filename the name of the file, e.g. "config.yml"
+	 * @param versionKey the yaml key corresponding to the config version
+	 */
+	public SimpleConfig(File folder, String filename, String versionKey) {
+		super(folder, filename, versionKey);
 	}
 	
-	public SimpleConfig(File folder, int version, String versionKey) {
-		this(folder, "config.yml", version, versionKey);
+	/**
+	 * Initialises with given configuration folder and yaml version key. <br>
+	 * "config.yml" is used as the filename.
+	 * 
+	 * @param folder the configuration folder
+	 * @param versionKey the yaml key corresponding to the config version
+	 */
+	public SimpleConfig(File folder, String versionKey) {
+		this(folder, "config.yml", versionKey);
 	}
 	
 	@Override

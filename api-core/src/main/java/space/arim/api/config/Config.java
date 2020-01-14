@@ -35,7 +35,10 @@ import space.arim.api.util.FilesUtil;
 /**
  * A simple helper class for SnakeYAML configurations. <br>
  * <br>
- * <b>This class is not thread safe.</b>
+ * <b>This class is not thread safe.</b> However, synchronisation will not be practical
+ * in most applications, since it is not humanly possible to instruct a plugin
+ * to reload its config (e.g., with /plugin reload) fast enough to trigger race conditions. <br>
+ * Accordingly, reloading need not be synchronised; nevertheless, it <i><b>is</b></i> recommended to <i>initialise</i> synchronously.
  * 
  * @author A248
  *
@@ -44,16 +47,14 @@ public abstract class Config {
 	
 	protected final File folder;
 	protected final String filename;
-	protected final int version;
 	protected final String versionKey;
 	
 	private final Map<String, Object> defaults;
 	private final ConcurrentHashMap<String, Object> values = new ConcurrentHashMap<String, Object>();
 	
-	protected Config(File folder, String filename, int version, String versionKey) {
+	protected Config(File folder, String filename, String versionKey) {
 		this.folder = folder;
 		this.filename = filename;
-		this.version = version;
 		this.versionKey = versionKey;
 		
 		if (!folder.isDirectory() && !folder.mkdirs()) {
@@ -82,7 +83,7 @@ public abstract class Config {
 	
 	File startVersionCheck(File source) {
 		Object ver = values.get(versionKey);
-		if (!(ver instanceof Integer) || (Integer) ver != version) {
+		if (!(ver instanceof Integer) || (Integer) ver != getDefaultObject(versionKey, Integer.class)) {
 			initVersionUpdate(source);
 		}
 		return source;
@@ -126,9 +127,13 @@ public abstract class Config {
 		return UniversalUtil.getFromMapRecursive(values, key, type);
 	}
 	
+	<T> T getDefaultObject(String key, Class<T> type) {
+		return getFromMap(defaults, key, type);
+	}
+	
 	public <T> T getObject(String key, Class<T> type) {
 		T obj = getFromMap(values, key, type);
-		return obj != null ? obj : getFromMap(defaults, key, type);
+		return obj != null ? obj : getDefaultObject(key, type);
 	}
 	
 }
