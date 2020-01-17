@@ -24,6 +24,8 @@ import org.spongepowered.api.plugin.PluginContainer;
 
 import space.arim.universal.registry.Registrable;
 
+import space.arim.api.annotation.Platform;
+
 /**
  * A helper class for resources registered on Sponge. <br>
  * Subclassing SpongeRegistrable provides useful default implementations of {@link Registrable#getName()}, {@link Registrable#getAuthor()}, and {@link Registrable#getVersion()}
@@ -68,6 +70,7 @@ import space.arim.universal.registry.Registrable;
  * @author A248
  *
  */
+@Platform(Platform.Type.SPONGE)
 public abstract class SpongeRegistrable implements Registrable {
 
 	private final PluginContainer plugin;

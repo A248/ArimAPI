@@ -22,6 +22,8 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 import space.arim.universal.registry.Registrable;
 
+import space.arim.api.annotation.Platform;
+
 /**
  * A helper class for resources registered on BungeeCord. <br>
  * Subclassing BungeeRegistrable provides useful default implementations of {@link Registrable#getName()}, {@link Registrable#getAuthor()}, and {@link Registrable#getVersion()}
@@ -60,6 +62,7 @@ import space.arim.universal.registry.Registrable;
  * Good, now you don't have to worry about overriding #getName, #getAuthor, and #getVersion in your SuperChat resource.
  * BungeeRegistrable automatically takes care of all of that.
  */
+@Platform(Platform.Type.BUNGEE)
 public abstract class BungeeRegistrable implements Registrable {
 
 	private final Plugin plugin;

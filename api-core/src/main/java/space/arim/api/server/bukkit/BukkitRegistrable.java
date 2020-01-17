@@ -24,6 +24,8 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 import space.arim.universal.registry.Registrable;
 
+import space.arim.api.annotation.Platform;
+
 /**
  * A helper class for resources registered on Bukkit. <br>
  * Subclassing BukkitRegistrable provides useful default implementations of {@link Registrable#getName()}, {@link Registrable#getAuthor()}, and {@link Registrable#getVersion()}
@@ -62,6 +64,7 @@ import space.arim.universal.registry.Registrable;
  * Good, now you don't have to worry about overriding #getName, #getAuthor, and #getVersion in your SuperChat resource.
  * BukkitRegistrable automatically takes care of all of that.
  */
+@Platform(Platform.Type.SPIGOT)
 public abstract class BukkitRegistrable implements Registrable {
 	
 	private final JavaPlugin plugin;
