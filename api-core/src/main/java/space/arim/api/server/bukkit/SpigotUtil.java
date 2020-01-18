@@ -18,6 +18,8 @@
  */
 package space.arim.api.server.bukkit;
 
+import org.bukkit.entity.EntityType;
+
 //import org.spongepowered.api.Platform;
 
 import org.bukkit.event.EventHandler;
@@ -124,6 +126,23 @@ public final class SpigotUtil {
 	 */
 	public static String stripJson(String json) {
 		return ChatUtil.stripJson(json);
+	}
+	
+	/**
+	 * Parses an entity type from a string. <br>
+	 * Useful for enabling String based, version specific entity types in configuration values.
+	 * 
+	 * @param type the string to parse from
+	 * @return the EntityType if found
+	 * @throws IllegalArgumentException if not entity type is found.
+	 */
+	public static EntityType parseEntityType(String type) {
+		for (EntityType entityType : EntityType.values()) {
+			if (entityType.name().equalsIgnoreCase(type)) {
+				return entityType;
+			}
+		}
+		throw new IllegalArgumentException("Invalid entity type: " + type);
 	}
 	
 }
