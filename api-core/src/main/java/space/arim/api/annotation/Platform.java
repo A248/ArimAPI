@@ -26,6 +26,13 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * Denotes a field, method, or class should <b>ONLY</b> <i>ever</i> be accessed on a specific platform or environment. <br>
+ * The caller should be certain they are operating within the exact context as specified by the value of the annotation.
+ * 
+ * @author A248
+ *
+ */
 @Retention(CLASS)
 @Target({ TYPE, FIELD, METHOD })
 public @interface Platform {
@@ -34,8 +41,20 @@ public @interface Platform {
 	
 	public enum Type {
 
+		/**
+		 * Applies to servers implementing the Bukkit and Spigot APIs.
+		 * 
+		 */
 		SPIGOT,
+		/**
+		 * Applies to servers implementing the BungeeCord API.
+		 * 
+		 */
 		BUNGEE,
+		/**
+		 * Applies to servers implementing of the SpongeAPI.
+		 * 
+		 */
 		SPONGE;
 		
 	}
