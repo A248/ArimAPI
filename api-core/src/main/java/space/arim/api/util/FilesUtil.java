@@ -53,44 +53,40 @@ public final class FilesUtil {
 		return false;
 	}
 	
-	private static void ensureDir(File folder) {
+	private static File ensureDir(File folder) {
 		if (!folder.exists() && !folder.mkdirs()) {
 			throw new IllegalStateException("Directory creation of " + folder.getPath() + " failed.");
 		} else if (!folder.isDirectory()) {
 			throw new IllegalArgumentException(folder.getPath() + " is not a directory!");
 		}
+		return folder;
 	}
 	
 	public static File dateSuffixedFile(File folder, String filename) {
-		ensureDir(folder);
-		return new File(folder, filename + StringsUtil.basicTodaysDate());
+		return new File(ensureDir(folder), filename + StringsUtil.basicTodaysDate());
 	}
 	
 	public static File dateSuffixedFile(File folder, String filename, String subFolder) {
-		ensureDir(folder);
-		return new File(folder, (subFolder.endsWith(File.separator)) ? subFolder : (subFolder + File.separator) + filename + StringsUtil.basicTodaysDate());
+		return new File(ensureDir(folder), (subFolder.endsWith(File.separator)) ? subFolder : (subFolder + File.separator) + filename + StringsUtil.basicTodaysDate());
 	}
 	
 	public static File datePrefixedFile(File folder, String filename) {
-		ensureDir(folder);
-		return new File(folder, StringsUtil.basicTodaysDate() + filename);
+		return new File(ensureDir(folder), StringsUtil.basicTodaysDate() + filename);
 	}
 	
 	public static File datePrefixedFile(File folder, String filename, String subFolder) {
-		ensureDir(folder);
-		return new File(folder, (subFolder.startsWith(File.separator) ? subFolder : File.separator + subFolder) + StringsUtil.basicTodaysDate() + filename);
+		return new File(ensureDir(folder), (subFolder.startsWith(File.separator) ? subFolder : File.separator + subFolder) + StringsUtil.basicTodaysDate() + filename);
 	}
 	
 	public static boolean generateBlankFile(File file) {
-		if (file.exists() && file.canRead() && file.canWrite()) {
+		ensureDir(file.getParentFile());
+		if (file.exists()) {
 			return true;
-		} else if (file.exists()) {
-			file.delete();
 		}
 		try {
 			return file.createNewFile();
 		} catch (IOException ex) {
-			return false;
+			return file.exists();
 		}
 	}
 	
