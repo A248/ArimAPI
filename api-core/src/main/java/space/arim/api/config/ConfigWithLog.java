@@ -28,7 +28,9 @@ import org.yaml.snakeyaml.Yaml;
 import space.arim.api.util.FilesUtil;
 
 /**
- * A {@link Config} with logging of certain events enabled.
+ * A {@link Config} with logging of certain events enabled. <br>
+ * <br>
+ * <b>Usage:</b> Extend this class.
  * 
  * @author A248
  *

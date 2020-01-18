@@ -24,7 +24,15 @@ import java.util.logging.Logger;
 
 import space.arim.api.util.FilesUtil;
 
-public class SimpleConfigWithLog extends ConfigWithLog {
+/**
+ * A simple implementation of {@link ConfigWithLog}. <br>
+ * <br>
+ * <b>Usage:</b> Extend this class.
+ * 
+ * @author A248
+ *
+ */
+public abstract class SimpleConfigWithLog extends ConfigWithLog {
 	
 	private final Logger logger;
 	

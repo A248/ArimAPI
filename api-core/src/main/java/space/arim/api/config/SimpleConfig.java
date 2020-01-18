@@ -22,12 +22,14 @@ import java.io.File;
 import space.arim.api.util.FilesUtil;
 
 /**
- * A simple implementation of {@link Config}
+ * A simple implementation of {@link Config}. <br>
+ * <br>
+ * <b>Usage:</b> Extend this class.
  * 
  * @author A248
  *
  */
-public class SimpleConfig extends Config implements SimpleConfigGetters {
+public abstract class SimpleConfig extends Config implements SimpleConfigGetters {
 	
 	/**
 	 * Initialises with given configuration folder, filename, and yaml version key.

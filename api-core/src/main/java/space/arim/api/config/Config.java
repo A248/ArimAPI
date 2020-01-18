@@ -35,6 +35,8 @@ import space.arim.api.util.FilesUtil;
 /**
  * A simple helper class for SnakeYAML configurations. <br>
  * <br>
+ * <b>Usage:</b> Extend this class. <br>
+ * <br>
  * <b>This class is not thread safe.</b> However, synchronisation will not be practical
  * in most applications, since it is not humanly possible to instruct a plugin
  * to reload its config (e.g., with /plugin reload) fast enough to trigger race conditions. <br>
@@ -67,7 +69,7 @@ public abstract class Config {
 	
 	protected abstract File getBackupLocation();
 	
-	public final void reload() {
+	public void reload() {
 		reloadConfig();
 	}
 	
