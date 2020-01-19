@@ -20,10 +20,6 @@ package space.arim.api.server.bukkit;
 
 import org.bukkit.entity.EntityType;
 
-//import org.spongepowered.api.Platform;
-
-import org.bukkit.event.EventHandler;
-
 import net.md_5.bungee.api.chat.BaseComponent;
 
 import space.arim.universal.util.exception.HttpStatusException;
@@ -62,30 +58,30 @@ public final class SpigotUtil {
 	}
 	
 	/**
-	 * Adds color to a message according to '&' color codes. <br>
-	 * See {@link ChatUtil#color(String)} for more information.
+	 * Adds colour to a message according to '&' colour codes. <br>
+	 * See {@link ChatUtil#colour(String)} for more information.
 	 * 
-	 * @param colorable
-	 * @return
+	 * @param colourable
+	 * @return the coloured string
 	 */
-	@EventHandler
-	public static String color(String colorable) {
-		return ChatUtil.color(colorable);
+	public static String colour(String colourable) {
+		return ChatUtil.colour(colourable);
 	}
 	
 	/**
-	 * Removes color from a message according to '&' color codes. <br>
-	 * See {@link ChatUtil#stripColor(String)} for more information.
+	 * Removes colour from a message according to '&' colour codes. <br>
+	 * See {@link ChatUtil#stripColour(String)} for more information.
 	 * 
-	 * @param colorable the input string
+	 * @param colourable the input string
 	 * @return an uncoloured string
 	 */
-	public static String stripColor(String colorable) {
-		return ChatUtil.stripColor(colorable);
+	public static String stripColour(String colourable) {
+		return ChatUtil.stripColour(colourable);
 	}
 	
 	/**
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
+	 * Colors are parsed according to '&' color codes. <br>
 	 * <br>
 	 * <b>Example usage:</b> <br>
 	 * <pre>
@@ -107,13 +103,14 @@ public final class SpigotUtil {
 	
 	/**
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
-	 * <b>Differs from {@link #parseJson(String)} in that this assumes the string is already colored.
+	 * <b>Differs from {@link #parseJson(String)} in that this assumes
+	 * the string is already coloured according to '§' color codes.
 	 * 
 	 * @param jsonable the input string
 	 * @return a BaseComponent array
 	 */
-	public static BaseComponent[] parseColoredJson(String jsonable) {
-		return ChatUtil.parseColoredJson(jsonable);
+	public static BaseComponent[] parseColouredJson(String jsonable) {
+		return ChatUtil.parseColouredJson(jsonable);
 	}
 	
 	/**

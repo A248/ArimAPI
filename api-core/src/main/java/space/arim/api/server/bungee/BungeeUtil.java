@@ -62,25 +62,25 @@ public final class BungeeUtil {
 	}
 	
 	/**
-	 * Adds color to a message according to '&' color codes. <br>
-	 * See {@link ChatUtil#colorBungee(String)} for more information.
+	 * Adds colour to a message according to '&' colour codes. <br>
+	 * See {@link ChatUtil#colourBungee(String)} for more information.
 	 * 
-	 * @param colorable the input string
-	 * @return a colored BaseComponent array
+	 * @param colourable the input string
+	 * @return a coloured BaseComponent array
 	 */
-	public static BaseComponent[] color(String colorable) {
-		return ChatUtil.colorBungee(colorable);
+	public static BaseComponent[] colour(String colourable) {
+		return ChatUtil.colourBungee(colourable);
 	}
 	
 	/**
-	 * Removes color from a message according to '&' color codes. <br>
-	 * See {@link ChatUtil#stripColor(String)} for more information.
+	 * Removes colour from a message according to '&' colour codes. <br>
+	 * See {@link ChatUtil#stripColour(String)} for more information.
 	 * 
-	 * @param colorable the input string
+	 * @param colourable the input string
 	 * @return an uncoloured string
 	 */
-	public static String stripColor(String colorable) {
-		return ChatUtil.stripColor(colorable);
+	public static String stripColour(String colourable) {
+		return ChatUtil.stripColour(colourable);
 	}
 	
 	/**
@@ -106,13 +106,13 @@ public final class BungeeUtil {
 	
 	/**
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
-	 * <b>Differs from {@link #parseJson(String)} in that this assumes the string is already colored.
+	 * <b>Differs from {@link #parseJson(String)} in that this assumes the string is already coloured.
 	 * 
 	 * @param jsonable the input string
 	 * @return a BaseComponent array
 	 */
-	public static BaseComponent[] parseColoredJson(String jsonable) {
-		return ChatUtil.parseColoredJson(jsonable);
+	public static BaseComponent[] parseColouredJson(String jsonable) {
+		return ChatUtil.parseColouredJson(jsonable);
 	}
 	
 	/**

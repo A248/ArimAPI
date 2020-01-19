@@ -35,25 +35,25 @@ public final class SpongeUtil {
 	private SpongeUtil() {}
 	
 	/**
-	 * Adds color to a message according to '&' color codes. <br>
-	 * <b>See {@link ChatUtil#colorSponge(String)}</b> for more information.
+	 * Adds colour to a message according to '&' colour codes. <br>
+	 * <b>See {@link ChatUtil#colourSponge(String)}</b> for more information.
 	 * 
-	 * @param colorable the input string
-	 * @return a colored Text object
+	 * @param colourable the input string
+	 * @return a coloured Text object
 	 */
-	public static Text color(String colorable) {
-		return ChatUtil.colorSponge(colorable);
+	public static Text colour(String colourable) {
+		return ChatUtil.colourSponge(colourable);
 	}
 	
 	/**
-	 * Removes color from a message according to '&' color codes. <br>
-	 * See {@link ChatUtil#stripColor(String)} for more information.
+	 * Removes colour from a message according to '&' colour codes. <br>
+	 * See {@link ChatUtil#stripColour(String)} for more information.
 	 * 
-	 * @param colorable the input string
+	 * @param colourable the input string
 	 * @return an uncoloured string
 	 */
-	public static String stripColor(String colorable) {
-		return ChatUtil.stripColor(colorable);
+	public static String stripColour(String colourable) {
+		return ChatUtil.stripColour(colourable);
 	}
 	
 }

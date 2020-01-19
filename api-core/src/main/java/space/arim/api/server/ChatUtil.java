@@ -40,23 +40,24 @@ import space.arim.api.annotation.Platform;
 import space.arim.api.util.StringsUtil;
 
 /**
- * Utility class for formatting chat messages and parsing colors. <br>
+ * Utility class for formatting chat messages and parsing colours. <br>
  * Accepts uppercase and lowercase chars. <br>
  * <br>
  * <b>Notice:</b> <br>
  * Some methods are platform dependent! It is recommended to instead use {@link SpigotUtil}, {@link BungeeUtil}, or {@link SpongeUtil} depending on your platform. <br>
  * <br>
- * <b>Color Parsing:</b> <br>
- * * Parses '&' color codes. <br>
- * * Spigot usage: {@link #color(String)}. <br>
- * * BungeeCord usage: {@link #colorBungee(String)}. <br>
- * * Sponge usage: {@link #colorSponge(String)}. <br>
- * * Removing color: {@link #stripColor(String)}. <br>
- * * Converting from '§' color codes: {@link #replaceColor(String)}. <br>
+ * <b>Colour Parsing:</b> <br>
+ * * Parses '&' colour codes. <br>
+ * * Spigot usage: {@link #colour(String)}. <br>
+ * * BungeeCord usage: {@link #colourBungee(String)}. <br>
+ * * Sponge usage: {@link #colourSponge(String)}. <br>
+ * * Removing colour: {@link #stripColour(String)}. <br>
+ * * Converting from '§' colour codes: {@link #replaceColour(String)}. <br>
+ * * A string is considered <i>colored</i> when it uses '§' color codes. <br>
  * <br>
  * <b>Json Messages:</b> <br>
  * * Parses json based on RezzedUp's json.sk format <br>
- * * Includes color parsing. <br>
+ * * Includes colour parsing. <br>
  * * Requires <i>Spigot</i> or <i>BungeeCord</i>. <br>
  * * Usage: {@link #parseJson(String)}. <br>
  * * Removing formatting: {@link #stripJson(String)}
@@ -68,60 +69,89 @@ public final class ChatUtil {
 
 	private ChatUtil() {}
 	
-	private static final Pattern RAW_COLOR_PATTERN = Pattern.compile("§[0-9A-Fa-fK-Rk-r]]");
-	private static final Pattern COLOR_PATTERN = Pattern.compile("&[0-9A-Fa-fK-Rk-r]]");
+	private static final Pattern SECTION_PATTERN = Pattern.compile("§[0-9A-Fa-fK-Rk-r]]");
+	private static final Pattern AMPERSAND_PATTERN = Pattern.compile("&[0-9A-Fa-fK-Rk-r]]");
 	
 	/**
-	 * Replaces valid '§' color codes. <br>
+	 * Replaces valid '§' colour codes. <br>
 	 * 
-	 * @param colored the input string
-	 * @return the same string with '&' color codes instead
+	 * @param coloured the input string
+	 * @return the same string with '&' colour codes instead
 	 */
-	public static String replaceColor(String colored) {
-		return RAW_COLOR_PATTERN.matcher(colored).replaceAll("&$2");
+	public static String replaceColour(String coloured) {
+		return SECTION_PATTERN.matcher(coloured).replaceAll("&$2");
 	}
 	
 	/**
-	 * Removes color from a message.
+	 * Removes colour from a message.
 	 * 
-	 * @param colorable the string to remove color from
+	 * @param colourable the string to remove colour from
 	 * @return an uncoloured string
 	 */
-	public static String stripColor(String colorable) {
-		return COLOR_PATTERN.matcher(colorable).replaceAll("");
+	public static String stripColour(String colourable) {
+		return AMPERSAND_PATTERN.matcher(colourable).replaceAll("");
 	}
 	
 	/**
-	 * Adds color to a message. <br>
-	 * The <i>input</i> uses '&' color codes. <br>
-	 * The <i>result</i> uses '§' color codes.
+	 * Adds colour to a message. <br>
+	 * The <i>input</i> uses '&' colour codes. <br>
+	 * The <i>result</i> uses '§' colour codes.
 	 * 
-	 * @param colorable the string to add color to
-	 * @return the colored string
+	 * @param colourable the string to add colour to
+	 * @return the coloured string
 	 */
-	public static String color(String colorable) {
-		return COLOR_PATTERN.matcher(colorable).replaceAll("§$2");
+	public static String colour(String colourable) {
+		return AMPERSAND_PATTERN.matcher(colourable).replaceAll("§$2");
 	}
 	
 	/**
-	 * Adds color to a message. <br>
-	 * <b>Similar to {@link #color(String)}</b> but additionally converts to a BaseComponent array.
+	 * Adds colour to a message then centers it precisely. <br>
+	 * See {@link #colour(String)} <br>
+	 * See {@link #center(String)}
 	 * 
-	 * @param colorable the input string
-	 * @return a colored BaseComponent array
+	 * @param colourable the string to operate on
+	 * @return the coloured and centered string
+	 */
+	public static String colourAndCenter(String colourable) {
+		return center(colour(colourable));
+	}
+	
+	/**
+	 * Adds colour to a message. <br>
+	 * <b>Similar to {@link #colour(String)}</b> but additionally converts to a BaseComponent array.
+	 * 
+	 * @param colourable the input string
+	 * @return a coloured BaseComponent array
 	 */
 	@Platform({Platform.Type.BUNGEE, Platform.Type.SPIGOT})
-	public static BaseComponent[] colorBungee(String colorable) {
+	public static BaseComponent[] colourBungee(String colourable) {
+		return colourBungeeProcessor(colourable, AMPERSAND_PATTERN);
+	}
+	
+	/**
+	 * Adds colour to a message then centers it precisely. <br>
+	 * See {@link #colour(String)} <br>
+	 * See {@link #center(String)}
+	 * 
+	 * @param colourable the string to operate on
+	 * @return the coloured and centered string
+	 */
+	@Platform({Platform.Type.BUNGEE, Platform.Type.SPIGOT})
+	public static BaseComponent[] colourAndCenterBungee(String colourable) {
+		return colourBungeeProcessor(center(colour(colourable)), SECTION_PATTERN);
+	}
+	
+	private static BaseComponent[] colourBungeeProcessor(String colourable, Pattern processor) {
 		ArrayList<BaseComponent> components = new ArrayList<BaseComponent>();
 		
 		/*
 		 * Approach:
 		 * Group the input string by segments of text separated by formatting codes.
 		 * When a match is found, the current segment is the text before the current match (but after the previous match).
-		 * Add the current segment to the builder using the current color and styles.
-		 * Then, update the current color and styles according to the match.
+		 * Add the current segment to the builder using the current colour and styles.
+		 * Then, update the current colour and styles according to the match.
 		 */
-		Matcher matcher = ChatUtil.COLOR_PATTERN.matcher(colorable);
+		Matcher matcher = processor.matcher(colourable);
 		int beginIndex = 0; // the starting index of the current segment
 		
 		// start without any formatting
@@ -139,7 +169,7 @@ public final class ChatUtil {
 		
 		while (matcher.find()) {
 			// get the current segment and add it to the builder
-			String segment = colorable.substring(beginIndex, matcher.start());
+			String segment = colourable.substring(beginIndex, matcher.start());
 			TextComponent current = new TextComponent(segment);
 			current.setColor(currentColor);
 			current.setObfuscated(styles[0]);
@@ -162,7 +192,7 @@ public final class ChatUtil {
 					styles[styleIndex] = true;
 				}
 			} else {
-				currentColor = getColor(code);
+				currentColor = getColour(code);
 			}
 		}
 		return components.toArray(new BaseComponent[] {});
@@ -173,25 +203,25 @@ public final class ChatUtil {
 	}
 	
 	private static int getStyle(String code) {
-		switch (code.toLowerCase()) {
-		case "&k":
+		switch (code.toLowerCase().charAt(1)) {
+		case 'k':
 			return 0;
-		case "&l":
+		case 'l':
 			return 1;
-		case "&m":
+		case 'm':
 			return 2;
-		case "&n":
+		case 'n':
 			return 3;
-		case "&o":
+		case 'o':
 			return 4;
-		case "&r":
+		case 'r':
 			return 5;
 		default:
 			return -1;
 		}
 	}
 	
-	private static ChatColor getColor(String code) {
+	private static ChatColor getColour(String code) {
 		return ChatColor.getByChar(code.toLowerCase().charAt(1));
 	}
 	
@@ -247,40 +277,44 @@ public final class ChatUtil {
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
 	 * <br>
 	 * The following json tags are parsed: <code>ttp</code>, <code>url</code>, <code>cmd</code>, <code>sgt</code>, and <code>ins</code>. <br>
-	 * <b>Usage:</b> <br>
+	 * <b>Colours are parsed according to '&' colour codes.</b>
 	 * 
 	 * @param json the input string
 	 * @return a formatted BaseComponent array
 	 */
 	@Platform({Platform.Type.BUNGEE, Platform.Type.SPIGOT})
 	public static BaseComponent[] parseJson(String jsonable) {
-		return parseColoredJson(color(jsonable));
+		return parseColouredJsonProcessor(jsonable, AMPERSAND_PATTERN);
 	}
 	
 	/**
-	 * Converts a colored AND formatted string into a {@link BaseComponent} array. <br>
+	 * Converts a coloured AND formatted string into a {@link BaseComponent} array. <br>
 	 * <br>
 	 * See {@link #parseJson(String)}
-	 * <b>Colors are parsed according to '§' color codes.</b>
+	 * <b>Colours are parsed according to '§' colour codes.</b>
 	 * 
 	 * @param json the input string
 	 * @return a formatted BaseComponent array
 	 */
 	@Platform({Platform.Type.BUNGEE, Platform.Type.SPIGOT})
-	public static BaseComponent[] parseColoredJson(String coloredJsonable) {
+	public static BaseComponent[] parseColouredJson(String colouredJsonable) {
+		return parseColouredJsonProcessor(colouredJsonable, SECTION_PATTERN);
+	}
+	
+	private static BaseComponent[] parseColouredJsonProcessor(String jsonable, Pattern processor) {
 		BaseComponent current = null;
 		ArrayList<BaseComponent> components = new ArrayList<BaseComponent>();
-		for (String node : coloredJsonable.split("||")) {
+		for (String node : jsonable.split("||")) {
 			TagType tag = jsonTag(node);
 			if (tag.equals(TagType.NONE)) {
 				if (current != null) {
 					components.add(current);
 				}
-				current = new TextComponent(colorBungee(node));
+				current = new TextComponent(colourBungeeProcessor(node, processor));
 			} else if (current != null) {
 				String value = node.substring(4);
 				if (tag.equals(TagType.TTP)) {
-					current.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, colorBungee(value)));
+					current.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, colourBungee(value)));
 				} else if (tag.equals(TagType.URL)) {
 					if (!value.startsWith("https://") && !value.startsWith("http://")) {
 						value = "http://" + value;
@@ -299,35 +333,39 @@ public final class ChatUtil {
 	}
 	
 	/**
-	 * Adds color to a message. <br>
-	 * <b>Similar to {@link #color(String)}</b> but additionally converts to a Sponge Text object.
+	 * Adds colour to a message. <br>
+	 * <b>Similar to {@link #colour(String)}</b> but additionally converts to a Sponge Text object.
 	 * 
-	 * @param colorable the input string
-	 * @return a colored Text object
+	 * @param colourable the input string
+	 * @return a coloured Text object
 	 */
 	@Platform(Platform.Type.SPONGE)
-	public static Text colorSponge(String colorable) {
+	public static Text colourSponge(String colourable) {
+		return colourSpongeProcessor(colourable, AMPERSAND_PATTERN);
+	}
+	
+	private static Text colourSpongeProcessor(String colourable, Pattern processor) {
 		Text.Builder builder = Text.builder();
 		
 		/*
 		 * Approach:
 		 * Group the input string by segments of text separated by formatting codes.
 		 * When a match is found, the current segment is the text before the current match (but after the previous match).
-		 * Add the current segment to the builder using the current color and styles.
-		 * Then, update the current color and styles according to the match.
+		 * Add the current segment to the builder using the current colour and styles.
+		 * Then, update the current colour and styles according to the match.
 		 */
-		Matcher matcher = ChatUtil.COLOR_PATTERN.matcher(colorable);
+		Matcher matcher = processor.matcher(colourable);
 		int beginIndex = 0; // the starting index of the current segment
 		
 		// start without any formatting
 		ArrayList<TextStyle> currentStyles = new ArrayList<TextStyle>();
 		currentStyles.add(TextStyles.NONE);
-		TextColor currentColor = TextColors.NONE;
+		TextColor currentColour = TextColors.NONE;
 		
 		while (matcher.find()) {
 			// get the current segment and add it to the builder
-			String segment = colorable.substring(beginIndex, matcher.start());
-			builder.append(Text.builder(segment).color(currentColor).style(currentStyles.toArray(new TextStyle[] {})).build());
+			String segment = colourable.substring(beginIndex, matcher.start());
+			builder.append(Text.builder(segment).color(currentColour).style(currentStyles.toArray(new TextStyle[] {})).build());
 			
 			// prepare for the next segment by updating the starting index
 			beginIndex = matcher.end() + 1;
@@ -341,7 +379,7 @@ public final class ChatUtil {
 				}
 				currentStyles.add(style); // add the current style to the list of running styles
 			} else {
-				currentColor = getSpongeColor(code); // just replace the old color with the new running color
+				currentColour = getSpongeColour(code); // just replace the old colour with the new running colour
 			}
 		}
 		return builder.build();
@@ -352,83 +390,66 @@ public final class ChatUtil {
 	}
 	
 	private static TextStyle getSpongeStyle(String code) {
-		switch (code.toLowerCase()) {
-		case "&k":
+		switch (code.toLowerCase().charAt(1)) {
+		case 'k':
 			return TextStyles.OBFUSCATED;
-		case "&l":
+		case 'l':
 			return TextStyles.BOLD;
-		case "&m":
+		case 'm':
 			return TextStyles.STRIKETHROUGH;
-		case "&n":
+		case 'n':
 			return TextStyles.UNDERLINE;
-		case "&o":
+		case 'o':
 			return TextStyles.ITALIC;
-		case "&r":
+		case 'r':
 			return TextStyles.RESET;
 		default:
 			return TextStyles.NONE;
 		}
 	}
 	
-	private static TextColor getSpongeColor(String code) {
-		switch (code.toLowerCase()) {
-		case "&0":
+	private static TextColor getSpongeColour(String code) {
+		switch (code.toLowerCase().charAt(1)) {
+		case '0':
 			return TextColors.BLACK;
-		case "&1":
+		case '1':
 			return TextColors.DARK_BLUE;
-		case "&2":
+		case '2':
 			return TextColors.DARK_GREEN;
-		case "&3":
+		case '3':
 			return TextColors.AQUA;
-		case "&4":
+		case '4':
 			return TextColors.DARK_RED;
-		case "&5":
+		case '5':
 			return TextColors.DARK_PURPLE;
-		case "&6":
+		case '6':
 			return TextColors.GOLD;
-		case "&7":
+		case '7':
 			return TextColors.GRAY;
-		case "&8":
+		case '8':
 			return TextColors.DARK_GRAY;
-		case "&9":
+		case '9':
 			return TextColors.DARK_AQUA;
-		case "&a":
+		case 'a':
 			return TextColors.GREEN;
-		case "&b":
+		case 'b':
 			return TextColors.BLUE;
-		case "&c":
+		case 'c':
 			return TextColors.RED;
-		case "&d":
+		case 'd':
 			return TextColors.LIGHT_PURPLE;
-		case "&e":
+		case 'e':
 			return TextColors.YELLOW;
-		case "&f":
+		case 'f':
 			return TextColors.WHITE;
-		case "&r":
+		case 'r':
 			return TextColors.RESET;
 		default:
 			return TextColors.NONE;
 		}
 	}
 	
-	/**
-	 * Centers a message after it has been colored according to '§' color codes.
-	 * 
-	 * @param message the message to center
-	 * @return a centered message
-	 */
-	public static String centerMessage(String message){
-		if (message == null || message.isEmpty()) {
-			return message;
-		} else if (message.contains("\n")) {
-			/* 
-			 * Handling with multi-line messages:
-			 * 1. take the message apart according to new lines.
-			 * 2. center each message.
-			 * 3. concatenate the results.
-			 */
-			return StringsUtil.concat(CollectionsUtil.wrapAll(message.split("\n"), ChatUtil::centerMessage), '\n');
-		}
+	private static StringBuilder centeredMessageBuffer(String message) {
 		int messagePxSize = 0;
 		boolean previousCode = false;
 		boolean isBold = false;
@@ -453,9 +474,33 @@ public final class ChatUtil {
 		int spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
 		StringBuilder builder = new StringBuilder();
 		for (int compensated = 0; compensated < toCompensate; compensated += spaceLength) {
-			builder.append(" ");
+			builder.append(' ');
 		}
-		return builder.append(message).toString();
+		return builder;
+	}
+	
+	/**
+	 * Centers a message after it has been coloured with '§' colour codes. <br>
+	 * <br>
+	 * The centering is precise, taking into account individual character lengths and applied colour codes. <br>
+	 * Messages with line breaks (<code>'\n'</code>) are treated properly; each individual line is centered.
+	 * 
+	 * @param message the message to center
+	 * @return a centered message
+	 */
+	private static String center(String message){
+		if (message == null || message.isEmpty()) {
+			return message;
+		} else if (message.contains("\n")) {
+			/* 
+			 * Handling with multi-line messages:
+			 * 1. take the message apart according to new lines.
+			 * 2. center each message.
+			 * 3. concatenate the results.
+			 */
+			return StringsUtil.concat(CollectionsUtil.wrapAll(message.split("\n"), ChatUtil::center), '\n');
+		}
+		return centeredMessageBuffer(message).append(message).toString();
 	}
 	
 	private enum DefaultFontInfo {
