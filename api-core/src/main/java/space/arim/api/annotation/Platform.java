@@ -52,7 +52,7 @@ public @interface Platform {
 		 */
 		BUNGEE,
 		/**
-		 * Applies to servers implementing of the SpongeAPI.
+		 * Applies to servers implementing the SpongeAPI.
 		 * 
 		 */
 		SPONGE;
