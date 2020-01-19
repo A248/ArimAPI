@@ -19,6 +19,7 @@
 package space.arim.api.concurrent;
 
 import java.util.concurrent.ExecutorService;
+
 import space.arim.universal.registry.Registrable;
 
 /**
