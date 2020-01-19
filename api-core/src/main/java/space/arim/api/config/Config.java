@@ -30,6 +30,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import space.arim.universal.util.UniversalUtil;
 
+import space.arim.api.util.CommonInstancesUtil;
 import space.arim.api.util.FilesUtil;
 
 /**
@@ -74,7 +75,7 @@ public abstract class Config {
 	}
 	
 	private Yaml yaml() {
-		return UniversalUtil.COMMON_SNAKE_YAML.get();
+		return CommonInstancesUtil.SNAKE_YAML.get();
 	}
 	
 	void reloadConfig() {

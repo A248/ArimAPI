@@ -25,9 +25,10 @@ import java.util.Scanner;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-import space.arim.universal.util.UniversalUtil;
 import space.arim.universal.util.exception.HttpStatusException;
 import space.arim.universal.util.web.HttpStatus;
+
+import space.arim.api.util.CommonInstancesUtil;
 
 public class FetcherConnection extends AbstractConnection {
 	
@@ -48,7 +49,7 @@ public class FetcherConnection extends AbstractConnection {
 	}
 	
 	<T> T getJson(Class<T> type) throws JsonSyntaxException, JsonIOException, IOException {
-		return UniversalUtil.COMMON_GSON.fromJson(new InputStreamReader(inputStream()), type);
+		return CommonInstancesUtil.GSON.fromJson(new InputStreamReader(inputStream()), type);
 	}
 	
 	String getSimpleRaw() throws IOException {

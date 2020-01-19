@@ -28,9 +28,10 @@ import java.util.Map;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-import space.arim.universal.util.UniversalUtil;
 import space.arim.universal.util.exception.HttpStatusException;
 import space.arim.universal.util.web.HttpStatus;
+
+import space.arim.api.util.CommonInstancesUtil;
 
 public class SenderConnection extends AbstractConnection {
 	
@@ -55,7 +56,7 @@ public class SenderConnection extends AbstractConnection {
 			throw new HttpStatusException(status);
 		}
 		try (InputStreamReader reader = new InputStreamReader(inputStream(), "UTF-8")) {
-			response = UniversalUtil.COMMON_GSON.fromJson(reader, Map.class);
+			response = CommonInstancesUtil.GSON.fromJson(reader, Map.class);
 		} catch (JsonSyntaxException | JsonIOException ex) {
 			throw new SenderException("Could not parse JSON response!", ex);
 		}
