@@ -24,16 +24,12 @@ import java.sql.SQLException;
 import space.arim.universal.util.sql.WrappedConnection;
 
 public abstract class SimpleLoggingSql extends LoggingSql {
-
-	private final Connection connection;
 	
-	protected SimpleLoggingSql(Connection connection) {
-		this.connection = connection;
-	}
+	protected abstract Connection getUnderlyingConnection();
 	
 	@Override
 	protected final Connection getConnection() {
-		return new FakeclosableConnection(connection);
+		return new FakeclosableConnection(getUnderlyingConnection());
 	}
 
 }
