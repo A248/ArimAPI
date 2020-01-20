@@ -69,6 +69,10 @@
 							<artifactSet>
 								<includes>
 									<include>space.arim:arimapi-core</include>
+									<include>org.hsqldb:hsqldb</include>
+									<include>com.zaxxer:HikariCP</include>
+									<include>org.slf4j:slf4j-api</include>
+									<include>org.slf4j:slf4j-nop</include>
 								</includes>
 							</artifactSet>
 						</configuration>
