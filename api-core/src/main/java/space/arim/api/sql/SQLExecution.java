@@ -29,7 +29,7 @@ import java.sql.SQLException;
  * @author A248
  *
  */
-public interface SQLPlugin {
+public interface SQLExecution {
 	
 	void executionQueries(ExecutableQuery...queries) throws SQLException;
 	
