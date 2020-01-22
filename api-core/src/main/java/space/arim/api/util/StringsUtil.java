@@ -20,8 +20,8 @@ package space.arim.api.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -60,7 +60,7 @@ public final class StringsUtil {
 		return Arrays.copyOfRange(Objects.requireNonNull(input, "Input array must not be null!"), start, end);
 	}
 	
-	public static String concatRange(List<String> input, char separator, int start, int end) {
+	public static String concatRange(Collection<String> input, char separator, int start, int end) {
 		return concatRange(Objects.requireNonNull(input, "Input list must not be null!").toArray(new String[] {}), separator, start, end);
 	}
 	
@@ -75,7 +75,7 @@ public final class StringsUtil {
 		return builder.length() == 0 ? "" : builder.toString().substring(1);
 	}
 	
-	public static String concat(List<String> input, char separator) {
+	public static String concat(Collection<String> input, char separator) {
 		return concatRange(input, separator, 0, input.size());
 	}
 	
