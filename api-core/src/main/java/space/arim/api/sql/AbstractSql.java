@@ -53,10 +53,12 @@ public abstract class AbstractSql implements SQLExecution {
 		try (Connection connection = getConnection()) {
 			PreparedStatement[] statements = new PreparedStatement[queries.length];
 			for (int n = 0; n < queries.length; n++) {
-				statements[n] = connection.prepareStatement(queries[n].statement());
-				replaceParams(statements[n], queries[n].parameters());
-				statements[n].execute();
-				statements[n].close();
+				if (queries[n] != null) {
+					statements[n] = connection.prepareStatement(queries[n].statement());
+					replaceParams(statements[n], queries[n].parameters());
+					statements[n].execute();
+					statements[n].close();
+				}
 			}
 		}
 	}
@@ -78,11 +80,15 @@ public abstract class AbstractSql implements SQLExecution {
 			PreparedStatement[] statements = new PreparedStatement[queries.length];
 			CachedRowSet[] results = new CachedRowSet[queries.length];
 			for (int n = 0; n < queries.length; n++) {
-				statements[n] = connection.prepareStatement(queries[n].statement());
-				replaceParams(statements[n], queries[n].parameters());
-				results[n] = createCachedRowSet();
-				results[n].populate(statements[n].executeQuery());
-				statements[n].close();
+				if (queries[n] == null) {
+					results[n] = null;
+				} else {
+					statements[n] = connection.prepareStatement(queries[n].statement());
+					replaceParams(statements[n], queries[n].parameters());
+					results[n] = createCachedRowSet();
+					results[n].populate(statements[n].executeQuery());
+					statements[n].close();
+				}
 			}
 			return results;
 		}
