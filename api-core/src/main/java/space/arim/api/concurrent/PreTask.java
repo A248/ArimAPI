@@ -32,7 +32,7 @@ class PreTask implements Task {
 	
 	void fill(Task value) {
 		this.value = value;
-		if (isCancelled()) {
+		if (cancelled) {
 			value.cancel();
 		}
 	}
