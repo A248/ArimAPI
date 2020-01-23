@@ -22,6 +22,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Scanner;
+import java.util.function.Consumer;
+
+import space.arim.universal.util.function.erring.ErringConsumer;
 
 /**
  * Files utility.
@@ -49,6 +56,32 @@ public final class FilesUtil {
 				com.google.common.io.ByteStreams.copy(input, output);
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	public static boolean readLines(File file, Consumer<String> processor, Consumer<IOException> exceptionHandler) {
+		if (file.exists()) {
+			try (Scanner scanner = new Scanner(file, "UTF-8")) {
+				while (scanner.hasNextLine()) {
+					processor.accept(scanner.nextLine());
+				}
+				return true;
+			} catch (IOException ex) {
+				exceptionHandler.accept(ex);
+			}
+		}
+		return false;
+	}
+	
+	public static boolean writeTo(File file, ErringConsumer<Writer, IOException> printer, Consumer<IOException> exceptionHandler) {
+		if (file.exists() || generateBlankFile(file)) {
+			try (OutputStream output = new FileOutputStream(file); OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8")) {
+				printer.accept(writer);
+			} catch (IOException ex) {
+				exceptionHandler.accept(ex);
+			}
+			return true;
 		}
 		return false;
 	}
