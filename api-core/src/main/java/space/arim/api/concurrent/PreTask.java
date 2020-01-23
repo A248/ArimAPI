@@ -28,7 +28,7 @@ package space.arim.api.concurrent;
 class PreTask implements Task {
 	
 	private Task value;
-	private boolean cancelled;
+	private boolean cancelled = false;
 	
 	void fill(Task value) {
 		this.value = value;
