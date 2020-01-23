@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.yaml.snakeyaml.Yaml;
 
-import space.arim.universal.util.UniversalUtil;
+import space.arim.universal.util.collections.CollectionsUtil;
 import space.arim.universal.util.lang.AutoClosable;
 
 import space.arim.api.util.CommonInstancesUtil;
@@ -128,7 +128,7 @@ public abstract class Config implements AutoClosable {
 	}
 	
 	private <T> T getFromMap(Map<String, Object> values, String key, Class<T> type) {
-		return UniversalUtil.getFromMapRecursive(values, key, type);
+		return CollectionsUtil.getFromMapRecursive(values, key, type);
 	}
 	
 	<T> T getDefaultObject(String key, Class<T> type) {
