@@ -16,31 +16,28 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bukkit;
+package space.arim.api.plugin.sponge;
 
-import org.bukkit.scheduler.BukkitTask;
+import org.spongepowered.api.scheduler.SpongeExecutorService.SpongeFuture;
 
 import space.arim.api.concurrent.Task;
 
 class TaskWrapper implements Task {
-
-	private final BukkitTask task;
 	
-	private boolean cancelled = false;
+	private final SpongeFuture<?> task;
 	
-	TaskWrapper(BukkitTask task) {
+	TaskWrapper(SpongeFuture<?> task) {
 		this.task = task;
 	}
 	
 	@Override
 	public void cancel() {
-		cancelled = true;
-		task.cancel();
+		task.cancel(false);
 	}
 
 	@Override
 	public boolean isCancelled() {
-		return cancelled;
+		return task.isCancelled();
 	}
 	
 }

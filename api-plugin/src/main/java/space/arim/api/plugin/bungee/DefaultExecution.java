@@ -21,7 +21,6 @@ package space.arim.api.plugin.bungee;
 import java.util.concurrent.TimeUnit;
 
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import space.arim.universal.registry.RegistryPriority;
 
@@ -54,21 +53,6 @@ public class DefaultExecution extends BungeeRegistrable implements AsyncExecutio
 	@Override
 	public byte getPriority() {
 		return RegistryPriority.LOWEST;
-	}
-	
-}
-
-class TaskWrapper implements Task {
-	
-	private final ScheduledTask task;
-	
-	TaskWrapper(ScheduledTask task) {
-		this.task = task;
-	}
-	
-	@Override
-	public void cancel() {
-		task.cancel();
 	}
 	
 }

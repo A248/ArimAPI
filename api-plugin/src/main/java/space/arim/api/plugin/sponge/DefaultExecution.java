@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
-import org.spongepowered.api.scheduler.SpongeExecutorService.SpongeFuture;
 
 import space.arim.universal.registry.RegistryPriority;
 
@@ -58,21 +57,6 @@ public class DefaultExecution extends SpongeRegistrable implements AsyncExecutio
 	@Override
 	public byte getPriority() {
 		return RegistryPriority.LOWEST;
-	}
-	
-}
-
-class TaskWrapper implements Task {
-	
-	private final SpongeFuture<?> task;
-	
-	TaskWrapper(SpongeFuture<?> task) {
-		this.task = task;
-	}
-	
-	@Override
-	public void cancel() {
-		task.cancel(true);
 	}
 	
 }
