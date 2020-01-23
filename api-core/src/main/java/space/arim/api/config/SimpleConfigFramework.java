@@ -24,12 +24,14 @@ import java.util.List;
  * Simple default implementations of getX(String) methods, such as {@link #getString(String)} and {@link #getInt(String)}. <br>
  * <br>
  * This interface is designed for implementation with <code>Config</code> ({@link Config}) and its subclasses. <br>
- * As such, the only required method is {@link #getObject(String, Class)}, which is already implemented in <code>Config</code>.
+ * As such, the only required methods are {@link #reload()} and {@link #getObject(String, Class)}, which are already implemented in <code>Config</code>.
  * 
  * @author A248
  *
  */
-public interface SimpleConfigGetters {
+public interface SimpleConfigFramework {
+
+	void reload();
 	
 	<T> T getObject(String key, Class<T> type);
 	

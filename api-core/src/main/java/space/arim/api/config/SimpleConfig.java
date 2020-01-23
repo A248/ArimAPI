@@ -29,7 +29,7 @@ import space.arim.api.util.FilesUtil;
  * @author A248
  *
  */
-public abstract class SimpleConfig extends Config implements SimpleConfigGetters {
+public abstract class SimpleConfig extends Config implements SimpleConfigFramework {
 	
 	/**
 	 * Initialises with given configuration folder, filename, and yaml version key.
