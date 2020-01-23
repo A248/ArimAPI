@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.yaml.snakeyaml.Yaml;
 
 import space.arim.universal.util.UniversalUtil;
+import space.arim.universal.util.lang.AutoClosable;
 
 import space.arim.api.util.CommonInstancesUtil;
 import space.arim.api.util.FilesUtil;
@@ -46,7 +47,7 @@ import space.arim.api.util.FilesUtil;
  * @author A248
  *
  */
-public abstract class Config {
+public abstract class Config implements AutoClosable {
 	
 	protected final File folder;
 	protected final String filename;

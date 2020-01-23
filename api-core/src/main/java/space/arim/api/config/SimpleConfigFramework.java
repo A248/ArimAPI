@@ -20,6 +20,8 @@ package space.arim.api.config;
 
 import java.util.List;
 
+import space.arim.universal.util.lang.AutoClosable;
+
 /**
  * Simple default implementations of getX(String) methods, such as {@link #getString(String)} and {@link #getInt(String)}. <br>
  * <br>
@@ -29,7 +31,7 @@ import java.util.List;
  * @author A248
  *
  */
-public interface SimpleConfigFramework {
+public interface SimpleConfigFramework extends AutoClosable {
 
 	void reload();
 	
