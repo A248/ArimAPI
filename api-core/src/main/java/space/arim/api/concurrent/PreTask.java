@@ -28,9 +28,13 @@ package space.arim.api.concurrent;
 class PreTask implements Task {
 	
 	private Task value;
+	private boolean cancelled;
 	
-	void setValue(Task value) {
+	void fill(Task value) {
 		this.value = value;
+		if (isCancelled()) {
+			value.cancel();
+		}
 	}
 	
 	/**
@@ -44,9 +48,15 @@ class PreTask implements Task {
 	 */
 	@Override
 	public void cancel() {
+		cancelled = true;
 		if (value != null) {
 			value.cancel();
 		}
+	}
+	
+	@Override
+	public boolean isCancelled() {
+		return cancelled;
 	}
 	
 }
