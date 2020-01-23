@@ -65,7 +65,7 @@ public interface Scheduler {
 	default Task runTaskLater(Consumer<Task> command, long delay) {
 		PreTask pre = new PreTask();
 		Task result = runTaskLater(() -> command.accept(pre), delay);
-		pre.setValue(result);
+		pre.fill(result);
 		return result;
 	}
 	
@@ -93,7 +93,7 @@ public interface Scheduler {
 	default Task runTaskTimer(Consumer<Task> command, long period) {
 		PreTask pre = new PreTask();
 		Task result = runTaskTimer(() -> command.accept(pre), period);
-		pre.setValue(result);
+		pre.fill(result);
 		return result;
 	}
 	
@@ -119,7 +119,7 @@ public interface Scheduler {
 	default Task runTaskTimerLater(Consumer<Task> command, long delay, long period) {
 		PreTask pre = new PreTask();
 		Task result = runTaskTimerLater(() -> command.accept(pre), delay, period);
-		pre.setValue(result);
+		pre.fill(result);
 		return result;
 	}
 	
