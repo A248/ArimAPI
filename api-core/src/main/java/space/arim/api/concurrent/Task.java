@@ -33,4 +33,11 @@ public interface Task {
 	 */
 	void cancel();
 	
+	/**
+	 * Checks whether the task was cancelled using {@link #cancel()}
+	 * 
+	 * @return true if the task is cancelled, false otherwise
+	 */
+	boolean isCancelled();
+	
 }
