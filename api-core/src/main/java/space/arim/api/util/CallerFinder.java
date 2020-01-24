@@ -20,7 +20,7 @@ package space.arim.api.util;
 
 /**
  * A simple approach to getting the class which called a particular method. <br>
- * <b>Use {@link CallerFinderImpl} for an instance.</b>
+ * <b>Use {@link CallerFinderProvider} for an instance.</b>
  * 
  * @author A248
  *

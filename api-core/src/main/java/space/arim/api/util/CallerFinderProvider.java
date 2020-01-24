@@ -26,9 +26,9 @@ import space.arim.universal.util.function.LazySingleton;
  * @author A248
  *
  */
-public class CallerFinderImpl extends SecurityManager implements CallerFinder {
+public class CallerFinderProvider extends SecurityManager implements CallerFinder {
 	
-	private static final LazySingleton<CallerFinderImpl> INSTANCE = new LazySingleton<CallerFinderImpl>(() -> new CallerFinderImpl());
+	private static final LazySingleton<CallerFinderProvider> INSTANCE = new LazySingleton<CallerFinderProvider>(() -> new CallerFinderProvider());
 	
 	/**
 	 * Retrieves the singleton instance
