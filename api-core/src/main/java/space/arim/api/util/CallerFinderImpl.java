@@ -18,51 +18,33 @@
  */
 package space.arim.api.util;
 
+import space.arim.universal.util.function.LazySingleton;
+
 /**
- * A simple approach to getting the class which called a particular method.
+ * Gets an instance for {@link CallerFinder}
  * 
  * @author A248
  *
  */
-public class CallerGetter extends SecurityManager {
-
-	private static final CallerGetter INSTANCE = new CallerGetter();
+public class CallerFinderImpl extends SecurityManager implements CallerFinder {
 	
-	private CallerGetter() {}
+	private static final LazySingleton<CallerFinderImpl> INSTANCE = new LazySingleton<CallerFinderImpl>(() -> new CallerFinderImpl());
 	
 	/**
 	 * Retrieves the singleton instance
 	 * 
 	 * @return the instance
 	 */
-	public static CallerGetter get() {
-		return INSTANCE;
+	public static CallerFinder get() {
+		return INSTANCE.get();
 	}
 	
-	/**
-	 * Gets the class calling a method. <br>
-	 * Equivalent to {@link #getCallerClass(int)} with parameter <code>3</code>.<br>
-	 * <br>
-	 * <b>Example</b>: <br>
-	 * A third party class (the caller) calls your API method.
-	 * In your API method, use this method to get the caller.
-	 * 
-	 * @return the caller of the method you're using this method in
-	 */
+	@Override
 	public Class<?> getCallerClass() {
 		return getClassContext()[2];
 	}
 	
-	/**
-	 * Gets the caller class with a specified level of depth. <br>
-	 * 0: returns this class <br>
-	 * 1: returns your class <br>
-	 * 2: returns the class which called your class <br>
-	 * ... and so on
-	 * 
-	 * @param level the depth to check
-	 * @return the caller class at a certain depth
-	 */
+	@Override
 	public Class<?> getCallerClass(int level) {
 		return getClassContext()[level];
 	}
