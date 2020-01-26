@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import space.arim.universal.util.exception.HttpStatusException;
 
+import space.arim.api.annotation.Blocking;
 import space.arim.api.util.StringsUtil;
 
 public class NamelessHandler {
@@ -55,6 +56,7 @@ public class NamelessHandler {
 	 * @throws HttpStatusException if an http response code other than 200 is returned
 	 * @throws SenderException if a miscellaneous connection problem occured
 	 */
+	@Blocking
 	public boolean updateUsername(UUID uuid, String name) throws HttpStatusException, SenderException {
 		return postParams("updateUsername", (new ParameterBuilder()).add("uuid", Objects.requireNonNull(uuid, "UUID must not be null!").toString().replace("-", "")).add("username", StringsUtil.requireNonEmpty(name, "Name must not be null!")).getParams());
 	}
@@ -68,6 +70,7 @@ public class NamelessHandler {
 	 * @throws HttpStatusException if an http response code other than 200 is returned
 	 * @throws SenderException if a miscellaneous connection problem occured
 	 */
+	@Blocking
 	public boolean setGroup(UUID uuid, String groupId) throws HttpStatusException, SenderException {
 		return postParams("setGroup", (new ParameterBuilder()).add("uuid", Objects.requireNonNull(uuid, "UUID must not be null!")).add("group_id", StringsUtil.requireNonEmpty(groupId, "Group id must not be null!")).getParams());
 	}

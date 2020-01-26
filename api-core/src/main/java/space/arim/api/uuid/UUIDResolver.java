@@ -22,6 +22,14 @@ import java.util.UUID;
 
 import space.arim.universal.registry.Registrable;
 
+import space.arim.api.annotation.Blocking;
+
+/**
+ * Maps names to UUIDs, or vice versa.
+ * 
+ * @author A248
+ *
+ */
 public interface UUIDResolver extends Registrable {
 	
 	/**
@@ -35,6 +43,7 @@ public interface UUIDResolver extends Registrable {
 	 * @return the uuid of the corresponding player
 	 * @throws PlayerNotFoundException if the name could not be resolved to a uuid
 	 */
+	@Blocking
 	UUID resolveName(String name, boolean query) throws PlayerNotFoundException;
 	
 	/**
@@ -48,6 +57,7 @@ public interface UUIDResolver extends Registrable {
 	 * @return the name of the corresponding player
 	 * @throws PlayerNotFoundException if the uuid could not be resolved to a name
 	 */
+	@Blocking
 	String resolveUUID(UUID uuid, boolean query) throws PlayerNotFoundException;
 	
 }

@@ -21,6 +21,8 @@ package space.arim.api.sql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import space.arim.api.annotation.Blocking;
+
 /**
  * A kind of plugin or application which is able to execute queries. <br>
  * <br>
@@ -31,12 +33,44 @@ import java.sql.SQLException;
  */
 public interface SQLExecution {
 	
+	/**
+	 * Executes a given set of queries. This is a blocking operation.
+	 * 
+	 * @param queries the {@link ExecutableQuery} objects to run
+	 * @throws SQLException if something went wrong
+	 */
+	@Blocking
 	void executionQueries(ExecutableQuery...queries) throws SQLException;
 	
+	/**
+	 * Executes a single query. This is a blocking operation.
+	 * 
+	 * @param query the SQL statement before parameterisation
+	 * @param parameters the parameters to add to the statement
+	 * @throws SQLException if something went wrong
+	 */
+	@Blocking
 	void executionQuery(String query, Object...parameters) throws SQLException;
 	
+	/**
+	 * Executes a given set of queries and returns the results. This is a blocking operation.
+	 * 
+	 * @param queries the {@link ExecutableQuery} objects to run
+	 * @return result array ordered according to the order of the parameter array
+	 * @throws SQLException if something went wrong
+	 */
+	@Blocking
 	ResultSet[] selectionQueries(ExecutableQuery...queries) throws SQLException;
 	
+	/**
+	 * Executes a single query and returns the result. This is a blocking operation.
+	 * 
+	 * @param query the SQL statement before parameterisation
+	 * @param parameters the parameters to add to the statement
+	 * @return the result set
+	 * @throws SQLException if something went wrong
+	 */
+	@Blocking
 	ResultSet selectionQuery(String query, Object...parameters) throws SQLException;
 	
 }
