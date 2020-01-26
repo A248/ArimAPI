@@ -51,7 +51,7 @@ public final class FilesUtil {
 	 * @throws IOException if an IO error occurred
 	 */
 	public static boolean saveFromStream(File target, InputStream input) throws IOException {
-		if ((target.getParentFile().exists() || target.getParentFile().mkdirs()) && target.createNewFile()) {
+		if (makeDir(target.getParentFile()) && target.createNewFile()) {
 			try (FileOutputStream output = new FileOutputStream(target)){
 				com.google.common.io.ByteStreams.copy(input, output);
 				return true;
@@ -60,12 +60,41 @@ public final class FilesUtil {
 		return false;
 	}
 	
+	/**
+	 * Reads lines from a file easily.
+	 * 
+	 * @param file the file
+	 * @param processor handle the lines
+	 * @param exceptionHandler handle a possible IOException
+	 * @return true if everything went successfully, false otherwise
+	 */
 	public static boolean readLines(File file, Consumer<String> processor, Consumer<IOException> exceptionHandler) {
-		if (file.exists()) {
+		if (makeDir(file.getParentFile()) && file.exists()) {
 			try (Scanner scanner = new Scanner(file, "UTF-8")) {
 				while (scanner.hasNextLine()) {
 					processor.accept(scanner.nextLine());
 				}
+				return true;
+			} catch (IOException ex) {
+				exceptionHandler.accept(ex);
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Writes to a file easily.
+	 * 
+	 * @param file the file
+	 * @param printer essentially a Consumer for a {@link Writer}
+	 * @param exceptionHandler handle a possible IOException
+	 * @return true if everything went successfully, false otherwise
+	 */
+	public static boolean writeTo(File file, ErringConsumer<Writer, IOException> printer, Consumer<IOException> exceptionHandler) {
+		if (file.exists() || generateBlankFile(file)) {
+			try (OutputStream output = new FileOutputStream(file); OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8")) {
+				printer.accept(writer);
 				return true;
 			} catch (IOException ex) {
 				exceptionHandler.accept(ex);
@@ -74,45 +103,43 @@ public final class FilesUtil {
 		return false;
 	}
 	
-	public static boolean writeTo(File file, ErringConsumer<Writer, IOException> printer, Consumer<IOException> exceptionHandler) {
-		if (file.exists() || generateBlankFile(file)) {
-			try (OutputStream output = new FileOutputStream(file); OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8")) {
-				printer.accept(writer);
-			} catch (IOException ex) {
-				exceptionHandler.accept(ex);
-			}
-			return true;
-		}
-		return false;
+	private static boolean makeDir(File folder) {
+		return folder.isDirectory() || folder.mkdirs();
 	}
 	
-	private static File ensureDir(File folder) {
-		if (!folder.exists() && !folder.mkdirs()) {
+	/**
+	 * Checks if the specified File is a folder. <br>
+	 * If it does not exist, the File is attempted to be created as a directory. <br>
+	 * If the File is still not a folder, an unchecked exception is thrown.
+	 * 
+	 * @param folder the File to check
+	 * @return true if and only if the file is a folder or could be created
+	 */
+	public static File requireDirectory(File folder) {
+		if (makeDir(folder)) {
 			throw new IllegalStateException("Directory creation of " + folder.getPath() + " failed.");
-		} else if (!folder.isDirectory()) {
-			throw new IllegalArgumentException(folder.getPath() + " is not a directory!");
 		}
 		return folder;
 	}
 	
 	public static File dateSuffixedFile(File folder, String filename) {
-		return new File(ensureDir(folder), filename + StringsUtil.basicTodaysDate());
+		return new File(requireDirectory(folder), filename + StringsUtil.basicTodaysDate());
 	}
 	
 	public static File dateSuffixedFile(File folder, String filename, String subFolder) {
-		return new File(ensureDir(folder), (subFolder.endsWith(File.separator)) ? subFolder : (subFolder + File.separator) + filename + StringsUtil.basicTodaysDate());
+		return new File(requireDirectory(folder), (subFolder.endsWith(File.separator)) ? subFolder : (subFolder + File.separator) + filename + StringsUtil.basicTodaysDate());
 	}
 	
 	public static File datePrefixedFile(File folder, String filename) {
-		return new File(ensureDir(folder), StringsUtil.basicTodaysDate() + filename);
+		return new File(requireDirectory(folder), StringsUtil.basicTodaysDate() + filename);
 	}
 	
 	public static File datePrefixedFile(File folder, String filename, String subFolder) {
-		return new File(ensureDir(folder), (subFolder.startsWith(File.separator) ? subFolder : File.separator + subFolder) + StringsUtil.basicTodaysDate() + filename);
+		return new File(requireDirectory(folder), (subFolder.startsWith(File.separator) ? subFolder : File.separator + subFolder) + StringsUtil.basicTodaysDate() + filename);
 	}
 	
 	public static boolean generateBlankFile(File file) {
-		ensureDir(file.getParentFile());
+		requireDirectory(file.getParentFile());
 		if (file.exists()) {
 			return true;
 		}
