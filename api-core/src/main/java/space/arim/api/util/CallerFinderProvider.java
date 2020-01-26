@@ -18,27 +18,16 @@
  */
 package space.arim.api.util;
 
-import space.arim.universal.util.function.LazySingleton;
+import space.arim.universal.registry.RegistryPriority;
 
 /**
- * Gets an instance for {@link CallerFinder}
+ * Implementation of {@link CallerFinder}
  * 
  * @author A248
  *
  */
 public class CallerFinderProvider extends SecurityManager implements CallerFinder {
-	
-	private static final LazySingleton<CallerFinderProvider> INSTANCE = new LazySingleton<CallerFinderProvider>(() -> new CallerFinderProvider());
-	
-	/**
-	 * Retrieves the singleton instance
-	 * 
-	 * @return the instance
-	 */
-	public static CallerFinder get() {
-		return INSTANCE.get();
-	}
-	
+		
 	@Override
 	public Class<?> getCallerClass() {
 		return getClassContext()[2];
@@ -47,6 +36,11 @@ public class CallerFinderProvider extends SecurityManager implements CallerFinde
 	@Override
 	public Class<?> getCallerClass(int level) {
 		return getClassContext()[level];
+	}
+	
+	@Override
+	public byte getPriority() {
+		return RegistryPriority.LOWER;
 	}
 	
 }

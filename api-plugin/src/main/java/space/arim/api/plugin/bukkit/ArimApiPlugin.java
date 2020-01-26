@@ -25,11 +25,14 @@ import space.arim.universal.registry.UniversalRegistry;
 import space.arim.api.concurrent.AsyncExecution;
 import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.server.TPSMeter;
+import space.arim.api.util.CallerFinder;
+import space.arim.api.util.CallerFinderProvider;
 
 public class ArimApiPlugin extends JavaPlugin {
 	
 	@Override
 	public void onLoad() {
+		UniversalRegistry.get().register(CallerFinder.class, new CallerFinderProvider());
 		UniversalRegistry.get().register(AsyncExecution.class, new DefaultAsyncExecution(this));
 		UniversalRegistry.get().register(SyncExecution.class, new DefaultSyncExecution(this));
 		UniversalRegistry.get().register(TPSMeter.class, new DefaultTPSMeter(this));

@@ -32,12 +32,15 @@ import space.arim.universal.registry.UniversalRegistry;
 import space.arim.api.concurrent.AsyncExecution;
 import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.server.TPSMeter;
+import space.arim.api.util.CallerFinder;
+import space.arim.api.util.CallerFinderProvider;
 
 @Plugin(id = "arimapiplugin", name = "ArimAPIPlugin")
 public class ArimApiPlugin {
 
 	@Inject
 	public ArimApiPlugin(@AsynchronousExecutor SpongeExecutorService async, @SynchronousExecutor SpongeExecutorService sync) {
+		UniversalRegistry.get().register(CallerFinder.class, new CallerFinderProvider());
 		PluginContainer plugin = Sponge.getPluginManager().getPlugin("arimapiplugin").get();
 		UniversalRegistry.get().register(AsyncExecution.class, new DefaultExecution(plugin, async));
 		UniversalRegistry.get().register(SyncExecution.class, new DefaultExecution(plugin, sync));
