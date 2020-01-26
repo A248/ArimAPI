@@ -27,6 +27,7 @@ import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.server.TPSMeter;
 import space.arim.api.util.CallerFinder;
 import space.arim.api.util.CallerFinderProvider;
+import space.arim.api.uuid.UUIDResolver;
 
 public class ArimApiPlugin extends JavaPlugin {
 	
@@ -35,6 +36,7 @@ public class ArimApiPlugin extends JavaPlugin {
 		UniversalRegistry.get().register(CallerFinder.class, new CallerFinderProvider());
 		UniversalRegistry.get().register(AsyncExecution.class, new DefaultAsyncExecution(this));
 		UniversalRegistry.get().register(SyncExecution.class, new DefaultSyncExecution(this));
+		UniversalRegistry.get().register(UUIDResolver.class, new DefaultUUIDResolver(this));
 		UniversalRegistry.get().register(TPSMeter.class, new DefaultTPSMeter(this));
 	}
 	
