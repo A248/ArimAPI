@@ -24,11 +24,6 @@
 			<artifactId>universal-registry</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 		</dependency>
@@ -39,6 +34,11 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-nop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.md-5</groupId>
