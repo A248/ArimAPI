@@ -18,6 +18,9 @@
  */
 package space.arim.api.sql;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import space.arim.universal.util.collections.CollectionsUtil;
 
 import space.arim.api.util.StringsUtil;
@@ -37,8 +40,8 @@ public class ExecutableQuery {
 	private final Object[] parameters;
 	
 	public ExecutableQuery(String statement, Object...parameters) {
-		this.statement = statement;
-		this.parameters = parameters;
+		this.statement = Objects.requireNonNull(statement, "Statement must not be null!");
+		this.parameters = parameters == null ? new Object[] {} : parameters;
 	}
 	
 	public String statement() {
@@ -52,6 +55,24 @@ public class ExecutableQuery {
 	@Override
 	public String toString() {
 		return "{[" + statement + "] with parameters [" + StringsUtil.concat(CollectionsUtil.convertAllToString(parameters), ',') + "]}";
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.deepHashCode(parameters);
+		result = prime * result + ((statement == null) ? 0 : statement.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ExecutableQuery) {
+			ExecutableQuery other = (ExecutableQuery) obj;
+			return statement.equals(other.statement) && Arrays.deepEquals(parameters, other.parameters);
+		}
+		return false;
 	}
 	
 }
