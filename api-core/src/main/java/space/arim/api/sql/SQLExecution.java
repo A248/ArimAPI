@@ -20,6 +20,8 @@ package space.arim.api.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.List;
 
 import space.arim.api.annotation.Blocking;
 
@@ -43,6 +45,17 @@ public interface SQLExecution {
 	void executionQueries(ExecutableQuery...queries) throws SQLException;
 	
 	/**
+	 * Same as {@link #executionQueries(ExecutableQuery...)} but accepts a <code>Collection</code> instead.
+	 * 
+	 * @param queries the queries to run
+	 * @throws SQLException if something went wrong
+	 */
+	@Blocking
+	default void executionQueries(Collection<ExecutableQuery> queries) throws SQLException {
+		executionQueries(queries.toArray(new ExecutableQuery[] {}));
+	}
+	
+	/**
 	 * Executes a single query. This is a blocking operation.
 	 * 
 	 * @param query the SQL statement before parameterisation
@@ -61,6 +74,18 @@ public interface SQLExecution {
 	 */
 	@Blocking
 	ResultSet[] selectionQueries(ExecutableQuery...queries) throws SQLException;
+	
+	/**
+	 * Same as {@link #selectionQueries(ExecutableQuery...)} but accepts a <code>List</code> instead.
+	 * 
+	 * @param queries the queries to run
+	 * @return result array ordering according to the order of the parameter list
+	 * @throws SQLException if something went wrong
+	 */
+	@Blocking
+	default ResultSet[] selectionQueries(List<ExecutableQuery> queries) throws SQLException {
+		return selectionQueries(queries.toArray(new ExecutableQuery[] {}));
+	}
 	
 	/**
 	 * Executes a single query and returns the result. This is a blocking operation.
