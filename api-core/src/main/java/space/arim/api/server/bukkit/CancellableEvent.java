@@ -16,25 +16,25 @@
  * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.server.bungee.events;
+package space.arim.api.server.bukkit;
 
-import net.md_5.bungee.api.plugin.Cancellable;
-import net.md_5.bungee.api.plugin.Event;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 
 import space.arim.api.annotation.Platform;
 
 /**
- * A simple helper class for cancellable Bungee events. <br>
+ * A simple helper class for cancellable Spigot events. <br>
  * <br>
  * <b>Advantage</b>: No need to ever create a <code>cancelled</code> boolean field again! <br>
- * <b>Usage</b>: Let your Bungee events extend this class.
+ * <b>Usage</b>: Let your Spigot events extend this class.
  * 
  * @author A248
  *
  */
-@Platform(Platform.Type.BUNGEE)
-public class CancellableEvent extends Event implements Cancellable {
-
+@Platform(Platform.Type.SPIGOT)
+public abstract class CancellableEvent extends Event implements Cancellable {
+	
 	private boolean cancelled = false;
 	
 	@Override
