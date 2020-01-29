@@ -77,7 +77,9 @@ public abstract class SpongeRegistrable implements Registrable {
 	
 	/**
 	 * Initialises the abstract class from a provided {@link PluginContainer}. 
-	 * The Sponge plugin which is registering a resource should use its own PluginContainer.
+	 * The Sponge plugin which is registering a resource should use its own PluginContainer. <br>
+	 * <br>
+	 * The <code>PluginContainer</code> will be used for {@link Registrable#getName()}, {@link Registrable#getAuthor()}, and {@link Registrable#getVersion()}.
 	 * 
 	 * @param plugin the plugin main
 	 */

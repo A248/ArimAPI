@@ -69,7 +69,9 @@ public abstract class BungeeRegistrable implements Registrable {
 	
 	/**
 	 * Initialises the abstract class from a provided {@link Plugin}. 
-	 * The plugin should be your own plugin main, of course!.
+	 * The plugin should be your own plugin main, of course. <br>
+	 * <br>
+	 * The <code>Plugin</code> will be used for {@link Registrable#getName()}, {@link Registrable#getAuthor()}, and {@link Registrable#getVersion()}.
 	 * 
 	 * @param plugin the plugin main
 	 */

@@ -18,9 +18,7 @@
  */
 package space.arim.api.server.bukkit;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
-import net.md_5.bungee.api.plugin.Plugin;
+import org.bukkit.plugin.Plugin;
 
 import space.arim.universal.registry.Registrable;
 
@@ -29,12 +27,12 @@ import space.arim.api.annotation.Platform;
 /**
  * A helper class for resources registered on Bukkit. <br>
  * Subclassing BukkitRegistrable provides useful default implementations of {@link Registrable#getName()}, {@link Registrable#getAuthor()}, and {@link Registrable#getVersion()}
- * based on the corresponding {@link JavaPlugin}. See {@link #getName()}, {@link #getAuthor()}, and {@link #getVersion()} for details. <br>
+ * based on the corresponding {@link Plugin}. See {@link #getName()}, {@link #getAuthor()}, and {@link #getVersion()} for details. <br>
  * <br>
  * <b>Usage:</b> <br>
  * 1. The service type must be an interface to use BukkitRegistrable. <br>
  * 2. Let your registered implementation <code>extend</code> BukkitRegistrable. <br>
- * 4. Provide super constructor {@link #BukkitRegistrable(JavaPlugin)} with your plugin main. <br>
+ * 4. Provide super constructor {@link #BukkitRegistrable(Plugin)} with your plugin main. <br>
  * <br>
  * <b>Example:</b> <br>
  * You want your resource called 'SuperChat' to be registered as a ChatProvider (Note that ChatProvider must be an interface which extends Registrable). <br>
@@ -67,15 +65,17 @@ import space.arim.api.annotation.Platform;
 @Platform(Platform.Type.SPIGOT)
 public abstract class BukkitRegistrable implements Registrable {
 	
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
 	
 	/**
-	 * Initialises the abstract class from a provided {@link Plugin}. 
-	 * The plugin should be your own plugin main, of course!.
+	 * Initialises from a provided {@link Plugin}. 
+	 * The plugin should be your own plugin main, of course. <br>
+	 * <br>
+	 * The <code>Plugin</code> will be used for {@link Registrable#getName()}, {@link Registrable#getAuthor()}, and {@link Registrable#getVersion()}.
 	 * 
 	 * @param plugin the plugin main
 	 */
-	public BukkitRegistrable(JavaPlugin plugin) {
+	public BukkitRegistrable(Plugin plugin) {
 		this.plugin = plugin;
 	}
 	
@@ -114,7 +114,7 @@ public abstract class BukkitRegistrable implements Registrable {
 	 * 
 	 * @return the plugin
 	 */
-	protected final JavaPlugin getPlugin() {
+	protected final Plugin getPlugin() {
 		return plugin;
 	}
 	
