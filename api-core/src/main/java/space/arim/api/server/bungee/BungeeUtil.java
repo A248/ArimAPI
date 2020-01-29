@@ -18,11 +18,11 @@
  */
 package space.arim.api.server.bungee;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import space.arim.api.annotation.Platform;
 import space.arim.api.server.ChatUtil;
@@ -45,20 +45,8 @@ public final class BungeeUtil {
 	 * @param proxy the proxy server, use {@link net.md_5.bungee.api.plugin.Plugin#getProxy() plugin.getProxy()} for this parameter
 	 * @return tab completable set
 	 */
-	public static Set<String> getPlayerNameTabComplete(String[] args, ProxyServer proxy) {
-		Set<String> playerNames = new HashSet<String>();
-		if (args.length == 0) {
-			proxy.getPlayers().forEach((player) -> {
-				playerNames.add(player.getName());
-			});
-		} else if (args.length == 1) {
-			proxy.getPlayers().forEach((player) -> {
-				if (player.getName().toLowerCase().startsWith(args[0])) {
-					playerNames.add(player.getName());
-				}
-			});
-		}
-		return playerNames;
+	public static Iterable<String> getPlayerNameTabComplete(String[] args, Collection<ProxiedPlayer> players) {
+		return (args.length > 0) ? players.stream().map((player) -> player.getName()).filter((name) -> name.toLowerCase().startsWith(args[0])).collect(Collectors.toSet()) : players.stream().map((player) -> player.getName()).collect(Collectors.toSet());
 	}
 	
 	/**
