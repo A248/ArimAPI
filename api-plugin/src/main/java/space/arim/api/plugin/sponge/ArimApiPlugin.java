@@ -18,35 +18,9 @@
  */
 package space.arim.api.plugin.sponge;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.scheduler.AsynchronousExecutor;
-import org.spongepowered.api.scheduler.SpongeExecutorService;
-import org.spongepowered.api.scheduler.SynchronousExecutor;
-
-import com.google.inject.Inject;
-
-import space.arim.universal.registry.UniversalRegistry;
-
-import space.arim.api.concurrent.AsyncExecution;
-import space.arim.api.concurrent.SyncExecution;
-import space.arim.api.server.TPSMeter;
-import space.arim.api.util.CallerFinder;
-import space.arim.api.util.CallerFinderProvider;
-import space.arim.api.uuid.UUIDResolver;
 
 @Plugin(id = "arimapiplugin", name = "ArimAPI")
 public class ArimApiPlugin {
-
-	@Inject
-	public ArimApiPlugin(@AsynchronousExecutor SpongeExecutorService async, @SynchronousExecutor SpongeExecutorService sync) {
-		UniversalRegistry.get().register(CallerFinder.class, new CallerFinderProvider());
-		PluginContainer plugin = Sponge.getPluginManager().getPlugin("arimapiplugin").get();
-		UniversalRegistry.get().register(AsyncExecution.class, new DefaultExecution(plugin, async));
-		UniversalRegistry.get().register(SyncExecution.class, new DefaultExecution(plugin, sync));
-		UniversalRegistry.get().register(UUIDResolver.class, new DefaultUUIDResolver(plugin));
-		UniversalRegistry.get().register(TPSMeter.class, new DefaultTPSMeter(plugin));
-	}
 	
 }

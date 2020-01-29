@@ -16,19 +16,19 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bungee;
+package space.arim.api.server.bukkit;
 
-import net.md_5.bungee.api.scheduler.ScheduledTask;
+import org.bukkit.scheduler.BukkitTask;
 
 import space.arim.api.concurrent.Task;
 
 class TaskWrapper implements Task {
-	
-	private final ScheduledTask task;
+
+	private final BukkitTask task;
 	
 	private boolean cancelled = false;
 	
-	TaskWrapper(ScheduledTask task) {
+	TaskWrapper(BukkitTask task) {
 		this.task = task;
 	}
 	
@@ -37,7 +37,7 @@ class TaskWrapper implements Task {
 		cancelled = true;
 		task.cancel();
 	}
-	
+
 	@Override
 	public boolean isCancelled() {
 		return cancelled;

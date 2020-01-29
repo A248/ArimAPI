@@ -16,7 +16,7 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bungee;
+package space.arim.api.server.bungee;
 
 import java.util.UUID;
 
@@ -32,8 +32,20 @@ import space.arim.api.util.web.FetcherUtil;
 import space.arim.api.uuid.PlayerNotFoundException;
 import space.arim.api.uuid.UUIDResolver;
 
+/**
+ * A default implementation of {@link UUIDResolver} on the BungeeCord platform.
+ * Simply checks against existing players for uuid to name or name to uuid lookups.
+ * 
+ * @author A248
+ *
+ */
 public class DefaultUUIDResolver extends BungeeRegistrable implements UUIDResolver {
 
+	/**
+	 * Creates the instance. See {@link BungeeRegistrable#BungeeRegistrable(Plugin)} for more information.
+	 * 
+	 * @param plugin the plugin to use for Registrable information
+	 */
 	public DefaultUUIDResolver(Plugin plugin) {
 		super(plugin);
 	}

@@ -16,29 +16,38 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bungee;
+package space.arim.api.server.bungee;
+
+import java.util.concurrent.TimeUnit;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
 
-import space.arim.api.server.TPSMeter;
+import space.arim.api.concurrent.Task;
 import space.arim.api.server.bungee.BungeeRegistrable;
 
-public class DefaultTPSMeter extends BungeeRegistrable implements TPSMeter {
-
-	public DefaultTPSMeter(Plugin plugin) {
+class DefaultExecution extends BungeeRegistrable {
+	
+	DefaultExecution(Plugin plugin) {
 		super(plugin);
 	}
 	
-	@Override
-	public double getTPS() {
-		return 20D; 
+	public void execute(Runnable command) {
+		getPlugin().getProxy().getScheduler().runAsync(getPlugin(), command);
 	}
-
+	
+	public Task runTaskLater(Runnable command, long delay) {
+		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, TimeUnit.MILLISECONDS));
+	}
+	
+	public Task runTaskTimerLater(Runnable command, long delay, long period) {
+		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, period, TimeUnit.MILLISECONDS));
+	}
+	
 	@Override
 	public byte getPriority() {
 		return RegistryPriority.LOWEST;
 	}
-
+	
 }

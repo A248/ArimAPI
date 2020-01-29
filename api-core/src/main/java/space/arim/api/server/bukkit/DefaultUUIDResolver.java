@@ -16,25 +16,36 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bukkit;
+package space.arim.api.server.bukkit;
 
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
 import space.arim.universal.util.exception.HttpStatusException;
 
-import space.arim.api.server.bukkit.BukkitRegistrable;
 import space.arim.api.util.web.FetcherException;
 import space.arim.api.util.web.FetcherUtil;
 import space.arim.api.uuid.PlayerNotFoundException;
 import space.arim.api.uuid.UUIDResolver;
 
+/**
+ * A default implementation of {@link UUIDResolver} on the Bukkit platform.
+ * Simply checks against existing players for uuid to name or name to uuid lookups.
+ * 
+ * @author A248
+ *
+ */
 public class DefaultUUIDResolver extends BukkitRegistrable implements UUIDResolver {
 
-	public DefaultUUIDResolver(JavaPlugin plugin) {
+	/**
+	 * Creates the instance. See {@link BukkitRegistrable#BukkitRegistrable(Plugin)} for more information.
+	 * 
+	 * @param plugin the plugin to use for Registrable information
+	 */
+	public DefaultUUIDResolver(Plugin plugin) {
 		super(plugin);
 	}
 	

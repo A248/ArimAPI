@@ -16,29 +16,42 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bukkit;
+package space.arim.api.server.bukkit;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
+import space.arim.universal.registry.Registry;
 import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.registry.UniversalRegistry;
 
+import space.arim.api.annotation.RequireRegistration;
 import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.server.TPSMeter;
-import space.arim.api.server.bukkit.BukkitRegistrable;
 
+/**
+ * A default implementation of {@link TPSMeter} on the Bukkit platform.
+ * Simply runs a task repeating every tick to calculate TPS manually.
+ * 
+ * @author A248
+ *
+ */
 public class DefaultTPSMeter extends BukkitRegistrable implements TPSMeter {
 
 	private long last = System.currentTimeMillis();
 	private double tps = 20D;
 	
-	public DefaultTPSMeter(JavaPlugin plugin) {
+	/**
+	 * Creates the instance. See {@link BukkitRegistrable#BukkitRegistrable(Plugin)} for more information.
+	 * 
+	 * @param plugin the plugin to use for Registrable information
+	 * @param registry the {@link Registry} to use. It must have a registration for {@link SyncExecution} as specified by the annotation.
+	 */
+	public DefaultTPSMeter(Plugin plugin, @RequireRegistration(SyncExecution.class) Registry registry) {
 		super(plugin);
-		UniversalRegistry.get().getRegistration(SyncExecution.class).runTaskTimer(() -> {
+		registry.getRegistration(SyncExecution.class).runTaskTimer(() -> {
 			long current = System.currentTimeMillis();
-			tps = 1000L/(current - last);
+			tps = 1000D/(current - last);
 			last = current;
-		}, 20L);
+		}, 50L);
 	}
 	
 	@Override

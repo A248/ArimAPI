@@ -16,38 +16,37 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bungee;
+package space.arim.api.server.sponge;
 
 import java.util.concurrent.TimeUnit;
 
-import net.md_5.bungee.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.SpongeExecutorService;
 
 import space.arim.universal.registry.RegistryPriority;
 
-import space.arim.api.concurrent.AsyncExecution;
-import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.concurrent.Task;
-import space.arim.api.server.bungee.BungeeRegistrable;
+import space.arim.api.server.sponge.SpongeRegistrable;
 
-public class DefaultExecution extends BungeeRegistrable implements AsyncExecution, SyncExecution {
+class DefaultExecution extends SpongeRegistrable {
 	
-	public DefaultExecution(Plugin plugin) {
+	private final SpongeExecutorService threadPool;
+	
+	DefaultExecution(PluginContainer plugin, SpongeExecutorService threadPool) {
 		super(plugin);
+		this.threadPool = threadPool;
 	}
 	
-	@Override
 	public void execute(Runnable command) {
-		getPlugin().getProxy().getScheduler().runAsync(getPlugin(), command);
+		threadPool.execute(command);
 	}
 	
-	@Override
 	public Task runTaskLater(Runnable command, long delay) {
-		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(threadPool.schedule(command, delay, TimeUnit.MILLISECONDS));
 	}
 	
-	@Override
 	public Task runTaskTimerLater(Runnable command, long delay, long period) {
-		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, period, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(threadPool.scheduleAtFixedRate(command, delay, period, TimeUnit.MILLISECONDS));
 	}
 	
 	@Override

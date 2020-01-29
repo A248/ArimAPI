@@ -16,7 +16,7 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.sponge;
+package space.arim.api.server.sponge;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -28,14 +28,25 @@ import org.spongepowered.api.plugin.PluginContainer;
 import space.arim.universal.registry.RegistryPriority;
 import space.arim.universal.util.exception.HttpStatusException;
 
-import space.arim.api.server.sponge.SpongeRegistrable;
 import space.arim.api.util.web.FetcherException;
 import space.arim.api.util.web.FetcherUtil;
 import space.arim.api.uuid.PlayerNotFoundException;
 import space.arim.api.uuid.UUIDResolver;
 
+/**
+ * A default implementation of {@link UUIDResolver} on the Sponge platform.
+ * Simply checks against existing players for uuid to name or name to uuid lookups.
+ * 
+ * @author A248
+ *
+ */
 public class DefaultUUIDResolver extends SpongeRegistrable implements UUIDResolver {
 
+	/**
+	 * Creates the instance. See {@link SpongeRegistrable#SpongeRegistrable(PluginContainer)} for more information.
+	 * 
+	 * @param plugin the plugin to use for Registrable information
+	 */
 	public DefaultUUIDResolver(PluginContainer plugin) {
 		super(plugin);
 	}

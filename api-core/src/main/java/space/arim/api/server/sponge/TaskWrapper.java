@@ -16,7 +16,7 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.sponge;
+package space.arim.api.server.sponge;
 
 import org.spongepowered.api.scheduler.SpongeExecutorService.SpongeFuture;
 

@@ -20,24 +20,6 @@ package space.arim.api.plugin.bukkit;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import space.arim.universal.registry.UniversalRegistry;
-
-import space.arim.api.concurrent.AsyncExecution;
-import space.arim.api.concurrent.SyncExecution;
-import space.arim.api.server.TPSMeter;
-import space.arim.api.util.CallerFinder;
-import space.arim.api.util.CallerFinderProvider;
-import space.arim.api.uuid.UUIDResolver;
-
 public class ArimApiPlugin extends JavaPlugin {
-	
-	@Override
-	public void onLoad() {
-		UniversalRegistry.get().register(CallerFinder.class, new CallerFinderProvider());
-		UniversalRegistry.get().register(AsyncExecution.class, new DefaultAsyncExecution(this));
-		UniversalRegistry.get().register(SyncExecution.class, new DefaultSyncExecution(this));
-		UniversalRegistry.get().register(UUIDResolver.class, new DefaultUUIDResolver(this));
-		UniversalRegistry.get().register(TPSMeter.class, new DefaultTPSMeter(this));
-	}
 	
 }

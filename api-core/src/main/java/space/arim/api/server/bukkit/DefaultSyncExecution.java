@@ -16,19 +16,29 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bukkit;
+package space.arim.api.server.bukkit;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
 
 import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.concurrent.Task;
-import space.arim.api.server.bukkit.BukkitRegistrable;
 
+/**
+ * A default implementation of {@link SyncExecution} on the Bukkit platform. Uses the server's inbuilt scheduling.
+ * 
+ * @author A248
+ *
+ */
 public class DefaultSyncExecution extends BukkitRegistrable implements SyncExecution {
 	
-	public DefaultSyncExecution(JavaPlugin plugin) {
+	/**
+	 * Creates the instance. See {@link BukkitRegistrable#BukkitRegistrable(Plugin)} for more information.
+	 * 
+	 * @param plugin the plugin to use for Registrable information
+	 */
+	public DefaultSyncExecution(Plugin plugin) {
 		super(plugin);
 	}
 	

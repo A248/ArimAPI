@@ -16,47 +16,51 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.sponge;
+package space.arim.api.server.bukkit;
 
-import java.util.concurrent.TimeUnit;
-
-import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.scheduler.SpongeExecutorService;
+import org.bukkit.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
 
 import space.arim.api.concurrent.AsyncExecution;
-import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.concurrent.Task;
-import space.arim.api.server.sponge.SpongeRegistrable;
+import space.arim.api.server.bukkit.BukkitRegistrable;
 
-public class DefaultExecution extends SpongeRegistrable implements AsyncExecution, SyncExecution {
+/**
+ * A default implementation of {@link AsyncExecution} on the Bukkit platform. Uses the server's inbuilt scheduling.
+ * 
+ * @author A248
+ *
+ */
+public class DefaultAsyncExecution extends BukkitRegistrable implements AsyncExecution {
 	
-	private final SpongeExecutorService threadPool;
-	
-	DefaultExecution(PluginContainer plugin, SpongeExecutorService threadPool) {
+	/**
+	 * Creates the instance. See {@link BukkitRegistrable#BukkitRegistrable(Plugin)} for more information.
+	 * 
+	 * @param plugin the plugin to use for Registrable information
+	 */
+	public DefaultAsyncExecution(Plugin plugin) {
 		super(plugin);
-		this.threadPool = threadPool;
 	}
 	
 	@Override
 	public void execute(Runnable command) {
-		threadPool.execute(command);
+		getPlugin().getServer().getScheduler().runTaskAsynchronously(getPlugin(), command);
 	}
 	
 	@Override
 	public Task runTaskLater(Runnable command, long delay) {
-		return new TaskWrapper(threadPool.schedule(command, delay, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(getPlugin().getServer().getScheduler().runTaskLaterAsynchronously(getPlugin(), command, delay));
 	}
 	
 	@Override
 	public Task runTaskTimerLater(Runnable command, long delay, long period) {
-		return new TaskWrapper(threadPool.scheduleAtFixedRate(command, delay, period, TimeUnit.MILLISECONDS));
+		return new TaskWrapper(getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(getPlugin(), command, delay, period));
 	}
 	
 	@Override
 	public byte getPriority() {
 		return RegistryPriority.LOWEST;
 	}
-	
+
 }
