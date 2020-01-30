@@ -18,8 +18,8 @@
  */
 package space.arim.api.server.sponge;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.scheduler.SpongeExecutorService;
 
 import space.arim.api.concurrent.SyncExecution;
 
@@ -35,10 +35,9 @@ public class DefaultSyncExecution extends DefaultExecution implements SyncExecut
 	 * Creates the instance. See {@link SpongeRegistrable#SpongeRegistrable(PluginContainer)} for more information.
 	 * 
 	 * @param plugin the plugin to use for Registrable information
-	 * @param threadPool the SpongeExecutorService used for execution. <b>It MUST be an SYNC executor!</b>
 	 */
-	public DefaultSyncExecution(PluginContainer plugin, SpongeExecutorService threadPool) {
-		super(plugin, threadPool);
+	public DefaultSyncExecution(PluginContainer plugin) {
+		super(plugin, Sponge.getScheduler().createSyncExecutor(plugin.getInstance().get()));
 	}
 
 }
