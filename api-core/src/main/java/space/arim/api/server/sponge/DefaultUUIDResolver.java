@@ -23,7 +23,9 @@ import java.util.UUID;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.user.UserStorageService;
 
 import space.arim.universal.registry.RegistryPriority;
 import space.arim.universal.util.exception.HttpStatusException;
@@ -57,6 +59,13 @@ public class DefaultUUIDResolver extends SpongeRegistrable implements UUIDResolv
 		if (player.isPresent()) {
 			return player.get().getUniqueId();
 		}
+		Optional<UserStorageService> storage = Sponge.getServiceManager().provide(UserStorageService.class);
+		if (storage.isPresent()) {
+			Optional<User> offlinePlayer = storage.get().get(name);
+			if (offlinePlayer.isPresent()) {
+				return offlinePlayer.get().getUniqueId();
+			}
+		}
 		if (query) {
 			try {
 				return FetcherUtil.ashconApi(name);
@@ -73,6 +82,13 @@ public class DefaultUUIDResolver extends SpongeRegistrable implements UUIDResolv
 		Optional<Player> player = Sponge.getServer().getPlayer(uuid);
 		if (player.isPresent()) {
 			return player.get().getName();
+		}
+		Optional<UserStorageService> storage = Sponge.getServiceManager().provide(UserStorageService.class);
+		if (storage.isPresent()) {
+			Optional<User> offlinePlayer = storage.get().get(uuid);
+			if (offlinePlayer.isPresent()) {
+				return offlinePlayer.get().getName();
+			}
 		}
 		if (query) {
 			try {

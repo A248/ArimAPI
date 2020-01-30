@@ -20,7 +20,7 @@ package space.arim.api.server.bukkit;
 
 import java.util.UUID;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
@@ -51,7 +51,7 @@ public class DefaultUUIDResolver extends BukkitRegistrable implements UUIDResolv
 	
 	@Override
 	public UUID resolveName(String name, boolean query) throws PlayerNotFoundException {
-		for (Player player : getPlugin().getServer().getOnlinePlayers()) {
+		for (OfflinePlayer player : getPlugin().getServer().getOfflinePlayers()) {
 			if (player.getName().equalsIgnoreCase(name)) {
 				return player.getUniqueId();
 			}
@@ -69,7 +69,7 @@ public class DefaultUUIDResolver extends BukkitRegistrable implements UUIDResolv
 	
 	@Override
 	public String resolveUUID(UUID uuid, boolean query) throws PlayerNotFoundException {
-		for (Player player : getPlugin().getServer().getOnlinePlayers()) {
+		for (OfflinePlayer player : getPlugin().getServer().getOfflinePlayers()) {
 			if (player.getUniqueId().equals(uuid)) {
 				return player.getName();
 			}
