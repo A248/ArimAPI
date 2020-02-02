@@ -18,6 +18,12 @@
  */
 package space.arim.api.server.sponge;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.spongepowered.api.Server;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 
 import space.arim.api.annotation.Platform;
@@ -33,6 +39,19 @@ import space.arim.api.server.ChatUtil;
 public final class SpongeUtil {
 
 	private SpongeUtil() {}
+	
+	/**
+	 * Iterates across online players, finds players matching the first argument,
+	 * and returns applicable player names in alphabetical order.
+	 * 
+	 * @param args command arguments to tab complete
+	 * @param server the server, use {@link Sponge#getServer()} for this parameter
+	 * @return a list per the Sponge API
+	 */
+	public static List<String> getPlayerNameTabComplete(String[] args, Server server) {
+		Stream<String> names = server.getOnlinePlayers().stream().map((player) -> player.getName());
+		return names.filter((name) -> name.toLowerCase().startsWith((args.length > 0) ? args[args.length - 1] : "")).sorted().collect(Collectors.toList());
+	}
 	
 	/**
 	 * Adds colour to a message according to '&' colour codes. <br>
@@ -54,6 +73,50 @@ public final class SpongeUtil {
 	 */
 	public static String stripColour(String colourable) {
 		return ChatUtil.stripColour(colourable);
+	}
+	
+	/**
+	 * Parses Json messages based on RezzedUp's json.sk format. <br>
+	 * <br>
+	 * <b>Example usage:</b> <br>
+	 * <pre>
+	 * <code>
+	 * public void sendJsonMessage(Player player, String json) {
+	 *   // Woohoo! Now we can send json messages!
+	 *   player.sendMessage(SpongeUtil.parseJson(json));
+	 * }
+	 * </code>
+	 * </pre>
+	 * See {@link ChatUtil#parseJsonSponge(String)} for more information.
+	 * 
+	 * @param jsonable the input string
+	 * @return a formatted Text object
+	 */
+	public static Text parseJson(String jsonable) {
+		return ChatUtil.parseJsonSponge(jsonable);
+	}
+	
+	/**
+	 * Parses Json messages based on RezzedUp's json.sk format. <br>
+	 * <b>Differs from {@link #parseJsonSponge(String)} in that this assumes the string is already coloured.
+	 * 
+	 * @param jsonable the input string
+	 * @return a formatted Text object
+	 */
+	public static Text parseColouredJson(String jsonable) {
+		return ChatUtil.parseColouredJsonSponge(jsonable);
+	}
+	
+	/**
+	 * Removes json formatting from an input string. <br>
+	 * Useful for sending messages to the console with formatting removed. <br>
+	 * See {@link ChatUtil#stripJson(String)} for more information.
+	 * 
+	 * @param json the input string
+	 * @return a string stripped of all json tags
+	 */
+	public static String stripJson(String json) {
+		return ChatUtil.stripJson(json);
 	}
 	
 }

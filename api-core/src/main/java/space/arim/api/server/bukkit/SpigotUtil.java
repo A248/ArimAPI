@@ -18,6 +18,11 @@
  */
 package space.arim.api.server.bukkit;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.bukkit.Server;
 import org.bukkit.entity.EntityType;
 
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -39,6 +44,19 @@ import space.arim.api.util.web.FetcherUtil;
 public final class SpigotUtil {
 
 	private SpigotUtil() {}
+	
+	/**
+	 * Iterates across online players, finds players matching the first argument,
+	 * and returns applicable player names in alphabetical order.
+	 * 
+	 * @param args command arguments to tab complete
+	 * @param server the server, use {@link org.bukkit.plugin.Plugin#getServer() plugin.getServer()} for this parameter
+	 * @return a list per the Spigot API
+	 */
+	public static List<String> getPlayerNameTabComplete(String[] args, Server server) {
+		Stream<String> names = server.getOnlinePlayers().stream().map((player) -> player.getName());
+		return names.filter((name) -> name.toLowerCase().startsWith((args.length > 0) ? args[args.length - 1] : "")).sorted().collect(Collectors.toList());
+	}
 	
 	/**
 	 * Retrieves the latest version of a posted spigot plugin according to its resourceId. <br>

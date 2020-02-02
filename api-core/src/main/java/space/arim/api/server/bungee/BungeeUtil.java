@@ -18,11 +18,11 @@
  */
 package space.arim.api.server.bungee;
 
-import java.util.Collection;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import space.arim.api.annotation.Platform;
 import space.arim.api.server.ChatUtil;
@@ -39,14 +39,16 @@ public final class BungeeUtil {
 	private BungeeUtil() {}
 	
 	/**
-	 * Iterates across online players, finds players matching the first argument in the args parameter, and returns applicable player names.
+	 * Iterates across online players, finds players matching the first argument,
+	 * and returns applicable player names in alphabetical order.
 	 * 
 	 * @param args command arguments to tab complete
-	 * @param proxy the proxy server, use {@link net.md_5.bungee.api.plugin.Plugin#getProxy() plugin.getProxy()} for this parameter
-	 * @return tab completable set
+	 * @param server the proxy server, use {@link net.md_5.bungee.api.plugin.Plugin#getProxy() plugin.getProxy()} for this parameter
+	 * @return an iterable per the BungeeCord API
 	 */
-	public static Iterable<String> getPlayerNameTabComplete(String[] args, Collection<ProxiedPlayer> players) {
-		return (args.length > 0) ? players.stream().map((player) -> player.getName()).filter((name) -> name.toLowerCase().startsWith(args[0])).collect(Collectors.toSet()) : players.stream().map((player) -> player.getName()).collect(Collectors.toSet());
+	public static Iterable<String> getPlayerNameTabComplete(String[] args, ProxyServer server) {
+		Stream<String> names = server.getPlayers().stream().map((player) -> player.getName());
+		return names.filter((name) -> name.toLowerCase().startsWith((args.length > 0) ? args[args.length - 1] : "")).sorted().collect(Collectors.toList());
 	}
 	
 	/**

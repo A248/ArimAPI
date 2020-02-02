@@ -18,11 +18,14 @@
  */
 package space.arim.api.server;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyle;
@@ -333,6 +336,61 @@ public final class ChatUtil {
 	}
 	
 	/**
+	 * Identical in purpose to {@link #parseJson(String)}, but designed for the Sponge API instead.
+	 * 
+	 * @param hsonable the input string
+	 * @return a formatted Text object
+	 */
+	@Platform(Platform.Type.SPONGE)
+	public static Text parseJsonSponge(String hsonable) {
+		return parseColouredJsonSpongeProcessor(hsonable, AMPERSAND_PATTERN);
+	}
+	
+	/**
+	 * Identical in purpose to {@link #parseColouredJson(String)}, but designed for the Sponge API instead.
+	 * 
+	 * @param colouredJsonable the input string
+	 * @return a formatted Text object
+	 */
+	@Platform(Platform.Type.SPONGE)
+	public static Text parseColouredJsonSponge(String colouredJsonable) {
+		return parseColouredJsonSpongeProcessor(colouredJsonable, SECTION_PATTERN);
+	}
+	
+	private static Text parseColouredJsonSpongeProcessor(String jsonable, Pattern processor) {
+		Text.Builder current = null;
+		Text.Builder parent = Text.builder();
+		for (String node : jsonable.split("||")) {
+			TagType tag = jsonTag(node);
+			if (tag.equals(TagType.NONE)) {
+				if (current != null) {
+					parent.append(current.build());
+				}
+				current = colourSpongeProcessor(jsonable, processor);
+			} else if (current != null) {
+				String value = node.substring(4);
+				if (tag.equals(TagType.TTP)) {
+					current.onHover(TextActions.showText(colourSpongeProcessor(value, processor).build()));
+				} else if (tag.equals(TagType.URL)) {
+					if (!value.startsWith("https://") && !value.startsWith("http://")) {
+						value = "http://" + value;
+					}
+					try {
+						current.onClick(TextActions.openUrl(new URL(value)));
+					} catch (MalformedURLException ex) {}
+				} else if (tag.equals(TagType.CMD)) {
+					current.onClick(TextActions.runCommand(value));
+				} else if (tag.equals(TagType.SGT)) {
+					current.onClick(TextActions.suggestCommand(value));
+				} else if (tag.equals(TagType.INS)) {
+					current.onShiftClick(TextActions.insertText(value));
+				}
+			}
+		}
+		return parent.build();
+	}
+	
+	/**
 	 * Adds colour to a message. <br>
 	 * <b>Similar to {@link #colour(String)}</b> but additionally converts to a Sponge Text object.
 	 * 
@@ -341,10 +399,10 @@ public final class ChatUtil {
 	 */
 	@Platform(Platform.Type.SPONGE)
 	public static Text colourSponge(String colourable) {
-		return colourSpongeProcessor(colourable, AMPERSAND_PATTERN);
+		return colourSpongeProcessor(colourable, AMPERSAND_PATTERN).build();
 	}
 	
-	private static Text colourSpongeProcessor(String colourable, Pattern processor) {
+	private static Text.Builder colourSpongeProcessor(String colourable, Pattern processor) {
 		Text.Builder builder = Text.builder();
 		
 		/*
@@ -382,7 +440,7 @@ public final class ChatUtil {
 				currentColour = getSpongeColour(code); // just replace the old colour with the new running colour
 			}
 		}
-		return builder.build();
+		return builder;
 	}
 	
 	private static boolean isSpongeStyle(String code) {
