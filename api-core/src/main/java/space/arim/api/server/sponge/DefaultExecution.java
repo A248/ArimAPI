@@ -49,6 +49,13 @@ class DefaultExecution extends SpongeRegistrable {
 		return new TaskWrapper(threadPool.scheduleAtFixedRate(command, delay, period, TimeUnit.MILLISECONDS));
 	}
 	
+	void gracefulShutdown() {
+		threadPool.shutdown();
+		try {
+			threadPool.awaitTermination(25, TimeUnit.SECONDS);
+		} catch (InterruptedException ex) {}
+	}
+	
 	@Override
 	public byte getPriority() {
 		return RegistryPriority.LOWEST;

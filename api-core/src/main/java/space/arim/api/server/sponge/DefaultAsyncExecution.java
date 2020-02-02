@@ -40,5 +40,10 @@ public class DefaultAsyncExecution extends DefaultExecution implements AsyncExec
 	public DefaultAsyncExecution(PluginContainer plugin, SpongeExecutorService async) {
 		super(plugin,async);
 	}
-
+	
+	@Override
+	public void gracefulShutdown() {
+		super.gracefulShutdown();
+	}
+	
 }
