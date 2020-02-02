@@ -61,8 +61,7 @@ import space.arim.api.util.StringsUtil;
  * <b>Json Messages:</b> <br>
  * * Parses json based on RezzedUp's json.sk format <br>
  * * Includes colour parsing. <br>
- * * Requires <i>Spigot</i> or <i>BungeeCord</i>. <br>
- * * Usage: {@link #parseJson(String)}. <br>
+ * * Usage: {@link #parseJson(String)} or {@link #parseJsonSponge(String)}. <br>
  * * Removing formatting: {@link #stripJson(String)}
  * 
  * @author A248
@@ -338,12 +337,12 @@ public final class ChatUtil {
 	/**
 	 * Identical in purpose to {@link #parseJson(String)}, but designed for the Sponge API instead.
 	 * 
-	 * @param hsonable the input string
+	 * @param jsonable the input string
 	 * @return a formatted Text object
 	 */
 	@Platform(Platform.Type.SPONGE)
-	public static Text parseJsonSponge(String hsonable) {
-		return parseColouredJsonSpongeProcessor(hsonable, AMPERSAND_PATTERN);
+	public static Text parseJsonSponge(String jsonable) {
+		return parseColouredJsonSpongeProcessor(jsonable, AMPERSAND_PATTERN);
 	}
 	
 	/**
