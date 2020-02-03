@@ -19,8 +19,6 @@
 package space.arim.api.server.bukkit;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.bukkit.Server;
 import org.bukkit.entity.EntityType;
@@ -31,6 +29,7 @@ import space.arim.universal.util.exception.HttpStatusException;
 
 import space.arim.api.annotation.Platform;
 import space.arim.api.server.ChatUtil;
+import space.arim.api.server.ServerUtil;
 import space.arim.api.util.web.FetcherException;
 import space.arim.api.util.web.FetcherUtil;
 
@@ -54,8 +53,7 @@ public final class SpigotUtil {
 	 * @return a list per the Spigot API
 	 */
 	public static List<String> getPlayerNameTabComplete(String[] args, Server server) {
-		Stream<String> names = server.getOnlinePlayers().stream().map((player) -> player.getName());
-		return names.filter((name) -> name.toLowerCase().startsWith((args.length > 0) ? args[args.length - 1] : "")).sorted().collect(Collectors.toList());
+		return ServerUtil.getPlayerNameTabComplete(server.getOnlinePlayers().stream().map((player) -> player.getName()), args);
 	}
 	
 	/**

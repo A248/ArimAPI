@@ -19,8 +19,6 @@
 package space.arim.api.server.sponge;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
@@ -28,6 +26,7 @@ import org.spongepowered.api.text.Text;
 
 import space.arim.api.annotation.Platform;
 import space.arim.api.server.ChatUtil;
+import space.arim.api.server.ServerUtil;
 
 /**
  * Basic Sponge utility class with more methods added via contribution.
@@ -49,8 +48,7 @@ public final class SpongeUtil {
 	 * @return a list per the Sponge API
 	 */
 	public static List<String> getPlayerNameTabComplete(String[] args, Server server) {
-		Stream<String> names = server.getOnlinePlayers().stream().map((player) -> player.getName());
-		return names.filter((name) -> name.toLowerCase().startsWith((args.length > 0) ? args[args.length - 1] : "")).sorted().collect(Collectors.toList());
+		return ServerUtil.getPlayerNameTabComplete(server.getOnlinePlayers().stream().map((player) -> player.getName()), args);
 	}
 	
 	/**

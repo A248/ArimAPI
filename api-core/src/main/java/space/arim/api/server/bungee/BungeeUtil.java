@@ -18,14 +18,14 @@
  */
 package space.arim.api.server.bungee;
 
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.List;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 import space.arim.api.annotation.Platform;
 import space.arim.api.server.ChatUtil;
+import space.arim.api.server.ServerUtil;
 
 /**
  * Basic BungeeCord utility class with more methods added via contribution.
@@ -44,11 +44,10 @@ public final class BungeeUtil {
 	 * 
 	 * @param args command arguments to tab complete
 	 * @param server the proxy server, use {@link net.md_5.bungee.api.plugin.Plugin#getProxy() plugin.getProxy()} for this parameter
-	 * @return an iterable per the BungeeCord API
+	 * @return a list (for compatibility with abstractions)
 	 */
-	public static Iterable<String> getPlayerNameTabComplete(String[] args, ProxyServer server) {
-		Stream<String> names = server.getPlayers().stream().map((player) -> player.getName());
-		return names.filter((name) -> name.toLowerCase().startsWith((args.length > 0) ? args[args.length - 1] : "")).sorted().collect(Collectors.toList());
+	public static List<String> getPlayerNameTabComplete(String[] args, ProxyServer server) {
+		return ServerUtil.getPlayerNameTabComplete(server.getPlayers().stream().map((player) -> player.getName()), args);
 	}
 	
 	/**
