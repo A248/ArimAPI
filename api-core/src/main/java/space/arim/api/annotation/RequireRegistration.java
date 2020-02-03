@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
 import space.arim.universal.registry.Registrable;
 
 /**
- * Denotes a requirement that specific service types be registered in a {@link Registry}. <br>
+ * Denotes a requirement that specific service types be registered in a {@link space.arim.universal.registry.Registry Registry}. <br>
  * Therefore, this annotation should be applied to <code>Registry</code> parameters or method specifications (e.g., in interfaces) returning a <code>Registry</code>. <br>
  * <br>
  * If applied to a parameter, the parameter supplied should have the service types registered. <br>
