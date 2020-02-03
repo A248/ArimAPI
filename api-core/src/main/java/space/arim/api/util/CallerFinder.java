@@ -22,7 +22,7 @@ import space.arim.universal.registry.Registrable;
 
 /**
  * A simple approach to getting the class which called a particular method. <br>
- * <b>Use {@link CallerFinderProvider} for an instance.</b>
+ * <b>Use {@link CallerFinderProvider} for an implementation.</b>
  * 
  * @author A248
  *
