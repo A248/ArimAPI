@@ -26,7 +26,6 @@ import space.arim.universal.registry.RegistryPriority;
 import space.arim.api.annotation.RequireRegistration;
 import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.server.TPSMeter;
-import space.arim.api.server.bukkit.BukkitRegistrable;
 import space.arim.api.server.bungee.BungeeRegistrable;
 
 /**
@@ -40,7 +39,7 @@ import space.arim.api.server.bungee.BungeeRegistrable;
 public class DefaultTPSMeter extends BungeeRegistrable implements TPSMeter {
 
 	/**
-	 * Creates the instance. See {@link BukkitRegistrable#BukkitRegistrable(Plugin)} for more information. <br>
+	 * Creates the instance. See {@link BungeeRegistrable#BungeeRegistrable(Plugin)} for more information. <br>
 	 * Since the current implementation simply returns 20 TPS regardless, the second parameter would not normally be required.
 	 * However, it must be supplied should future changes to this implementation may use it to calculate TPS.
 	 * 

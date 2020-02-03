@@ -49,7 +49,7 @@ public final class UUIDUtil {
 	 * Example long form: ed5f12cd-6007-45d9-a4b9-940524ddaecf <br>
 	 * Example short form: ed5f12cd600745d9a4b9940524ddaecf <br>
 	 * <br>
-	 * <b>This method does not parse the UUID. See {@link #expandAndParse(String)} or {@link UUID#fromString(String)} for a full UUID object.
+	 * <b>This method does not parse the UUID. See {@link #expandAndParse(String)} or {@link UUID#fromString(String)} for a full UUID object. </b>
 	 * 
 	 * @param uuid the string based short uuid
 	 * @return the lengthened uuid string

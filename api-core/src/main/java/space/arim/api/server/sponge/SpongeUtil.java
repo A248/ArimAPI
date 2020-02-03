@@ -52,7 +52,7 @@ public final class SpongeUtil {
 	}
 	
 	/**
-	 * Adds colour to a message according to '&' colour codes. <br>
+	 * Adds colour to a message according to '&amp;' colour codes. <br>
 	 * <b>See {@link ChatUtil#colourSponge(String)}</b> for more information.
 	 * 
 	 * @param colourable the input string
@@ -63,7 +63,7 @@ public final class SpongeUtil {
 	}
 	
 	/**
-	 * Removes colour from a message according to '&' colour codes. <br>
+	 * Removes colour from a message according to '&amp;' colour codes. <br>
 	 * See {@link ChatUtil#stripColour(String)} for more information.
 	 * 
 	 * @param colourable the input string
@@ -96,7 +96,7 @@ public final class SpongeUtil {
 	
 	/**
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
-	 * <b>Differs from {@link #parseJsonSponge(String)} in that this assumes the string is already coloured.
+	 * <b>Differs from {@link #parseJson(String)} in that this assumes the string is already coloured.</b>
 	 * 
 	 * @param jsonable the input string
 	 * @return a formatted Text object

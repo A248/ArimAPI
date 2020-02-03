@@ -64,8 +64,8 @@ public class NamelessHandler {
 	/**
 	 * Updates a player's group on the NamelessMC site.
 	 * 
-	 * @param uuid
-	 * @param groupId
+	 * @param uuid the player UUID
+	 * @param groupId the group
 	 * @return true if successful
 	 * @throws HttpStatusException if an http response code other than 200 is returned
 	 * @throws SenderException if a miscellaneous connection problem occured

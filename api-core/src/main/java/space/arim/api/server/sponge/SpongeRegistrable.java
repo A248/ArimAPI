@@ -34,7 +34,7 @@ import space.arim.api.server.PluginRegistrable;
  * <b>Usage:</b> <br>
  * 1. The service type must be an interface to use SpongeRegistrable. <br>
  * 2. Let your registered implementation of the service type <code>extend</code> SpongeRegistrable. <br>
- * 3. Use {@link PluginManager} to retrieve a {@link PluginContainer} for your plugin. <br>
+ * 3. Use the Sponge plugin manager (<code>Sponge.getPluginManager()</code>) to retrieve a {@link PluginContainer} for your plugin. <br>
  * 4. Provide super constructor {@link #SpongeRegistrable(PluginContainer)} with your PluginContainer. <br>
  * <br>
  * <b>Example:</b> <br>

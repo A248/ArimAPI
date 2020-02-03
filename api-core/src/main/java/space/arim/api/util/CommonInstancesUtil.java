@@ -33,18 +33,14 @@ public final class CommonInstancesUtil {
 	private CommonInstancesUtil() {}
 	
 	/**
-	 * Since Gson is thread safe, this is a common Gson for any class to use. <br>
-	 * <br>
-	 * <b>Gson is an optional dependency of UniversalUtil. <br>
-	 * If using this field, please be sure Gson is on the classpath!
+	 * Since Gson is thread safe, this is a common Gson for any class to use.
+	 * 
 	 */
 	public static final Gson GSON = new Gson();
 	
 	/**
-	 * Since SnakeYAML is not thread safe, this is a thread local supplier for SnakeYAML instances. <br>
-	 * <br>
-	 * <b>SnakeYAML is an optional dependency of UniversalUtil. <br>
-	 * If using this field, please be sure SnakeYAML is on the classpath!
+	 * Since SnakeYAML is not thread safe, this is a thread local supplier for SnakeYAML instances.
+	 * 
 	 */
 	public static final ThreadLocal<Yaml> SNAKE_YAML = ThreadLocal.withInitial(() -> new Yaml());
 	

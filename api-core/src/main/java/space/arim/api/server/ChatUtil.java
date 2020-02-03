@@ -47,10 +47,10 @@ import space.arim.api.util.StringsUtil;
  * Accepts uppercase and lowercase chars. <br>
  * <br>
  * <b>Notice:</b> <br>
- * Some methods are platform dependent! It is recommended to instead use {@link SpigotUtil}, {@link BungeeUtil}, or {@link SpongeUtil} depending on your platform. <br>
+ * Some methods are platform dependent! It is recommended to instead use {@link space.arim.api.server.bukkit.SpigotUtil}, {@link space.arim.api.server.bungee.BungeeUtil}, or {@link space.arim.api.server.sponge.SpongeUtil} depending on your platform. <br>
  * <br>
  * <b>Colour Parsing:</b> <br>
- * * Parses '&' colour codes. <br>
+ * * Parses '&amp;' colour codes. <br>
  * * Spigot usage: {@link #colour(String)}. <br>
  * * BungeeCord usage: {@link #colourBungee(String)}. <br>
  * * Sponge usage: {@link #colourSponge(String)}. <br>
@@ -78,7 +78,7 @@ public final class ChatUtil {
 	 * Replaces valid '§' colour codes. <br>
 	 * 
 	 * @param coloured the input string
-	 * @return the same string with '&' colour codes instead
+	 * @return the same string with '&amp;' colour codes instead
 	 */
 	public static String replaceColour(String coloured) {
 		return SECTION_PATTERN.matcher(coloured).replaceAll("&$2");
@@ -96,7 +96,7 @@ public final class ChatUtil {
 	
 	/**
 	 * Adds colour to a message. <br>
-	 * The <i>input</i> uses '&' colour codes. <br>
+	 * The <i>input</i> uses '&amp;' colour codes. <br>
 	 * The <i>result</i> uses '§' colour codes.
 	 * 
 	 * @param colourable the string to add colour to
@@ -279,9 +279,9 @@ public final class ChatUtil {
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
 	 * <br>
 	 * The following json tags are parsed: <code>ttp</code>, <code>url</code>, <code>cmd</code>, <code>sgt</code>, and <code>ins</code>. <br>
-	 * <b>Colours are parsed according to '&' colour codes.</b>
+	 * <b>Colours are parsed according to '&amp;' colour codes.</b>
 	 * 
-	 * @param json the input string
+	 * @param jsonable the input string
 	 * @return a formatted BaseComponent array
 	 */
 	@Platform({Platform.Type.BUNGEE, Platform.Type.SPIGOT})
@@ -295,7 +295,7 @@ public final class ChatUtil {
 	 * See {@link #parseJson(String)}
 	 * <b>Colours are parsed according to '§' colour codes.</b>
 	 * 
-	 * @param json the input string
+	 * @param colouredJsonable the input string
 	 * @return a formatted BaseComponent array
 	 */
 	@Platform({Platform.Type.BUNGEE, Platform.Type.SPIGOT})

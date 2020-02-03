@@ -108,7 +108,7 @@ public interface Scheduler {
 	Task runTaskTimerLater(Runnable command, long delay, long period);
 	
 	/**
-	 * Same as {@link #runTaskTimerLater(Runnable, long)} but with the ability to access the task
+	 * Same as {@link #runTaskTimerLater(Runnable, long, long)} but with the ability to access the task
 	 * (and thus cancel further scheduling of it) from within the execution itself.
 	 * 
 	 * @param command the execution

@@ -37,6 +37,7 @@ public abstract class DecoupledCommand implements CommandCallable {
 	 * 
 	 * @param sender the command sender (player, console, etc.)
 	 * @param args the arguments
+	 * @return true if the command executed successfully
 	 */
 	protected abstract boolean execute(CommandSource sender, String[] args);
 	
