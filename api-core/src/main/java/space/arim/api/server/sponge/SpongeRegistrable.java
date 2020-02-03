@@ -18,13 +18,13 @@
  */
 package space.arim.api.server.sponge;
 
-import java.util.List;
-
 import org.spongepowered.api.plugin.PluginContainer;
 
 import space.arim.universal.registry.Registrable;
 
 import space.arim.api.annotation.Platform;
+import space.arim.api.server.PluginInformation;
+import space.arim.api.server.PluginRegistrable;
 
 /**
  * A helper class for resources registered on Sponge. <br>
@@ -71,7 +71,7 @@ import space.arim.api.annotation.Platform;
  *
  */
 @Platform(Platform.Type.SPONGE)
-public abstract class SpongeRegistrable implements Registrable {
+public abstract class SpongeRegistrable extends PluginRegistrable {
 
 	private final PluginContainer plugin;
 	
@@ -84,40 +84,8 @@ public abstract class SpongeRegistrable implements Registrable {
 	 * @param plugin the plugin main
 	 */
 	public SpongeRegistrable(PluginContainer plugin) {
+		super(PluginInformation.getFor(plugin));
 		this.plugin = plugin;
-	}
-	
-	/**
-	 * Returns the value of {@link PluginContainer#getName()}.
-	 * 
-	 * @return the plugin name
-	 */
-	@Override
-	public String getName() {
-		return plugin.getName();
-	}
-	
-	/**
-	 * Returns the first author if included in the {@link org.spongepowered.api.plugin.Plugin} annotation. <br>
-	 * Otherwise returns the default implementation of {@link Registrable#getAuthor()}
-	 * 
-	 * @return the first author if specified by the plugin
-	 */
-	@Override
-	public String getAuthor() {
-		List<String> authors = plugin.getAuthors();
-		return !authors.isEmpty() ? authors.get(0) : Registrable.super.getAuthor();
-	}
-	
-	/**
-	 * Returns the plugin version if included in the {@link org.spongepowered.api.plugin.Plugin} annotation. <br>
-	 * Otherwise returns the default implementation of {@link Registrable#getVersion()}
-	 * 
-	 * @return the version if specified by the plugin
-	 */
-	@Override
-	public String getVersion() {
-		return plugin.getVersion().orElseGet(() -> Registrable.super.getVersion());
 	}
 	
 	/**

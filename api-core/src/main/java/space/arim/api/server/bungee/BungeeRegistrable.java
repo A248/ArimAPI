@@ -23,6 +23,8 @@ import net.md_5.bungee.api.plugin.Plugin;
 import space.arim.universal.registry.Registrable;
 
 import space.arim.api.annotation.Platform;
+import space.arim.api.server.PluginInformation;
+import space.arim.api.server.PluginRegistrable;
 
 /**
  * A helper class for resources registered on BungeeCord. <br>
@@ -63,7 +65,7 @@ import space.arim.api.annotation.Platform;
  * BungeeRegistrable automatically takes care of all of that.
  */
 @Platform(Platform.Type.BUNGEE)
-public abstract class BungeeRegistrable implements Registrable {
+public abstract class BungeeRegistrable extends PluginRegistrable {
 
 	private final Plugin plugin;
 	
@@ -76,37 +78,8 @@ public abstract class BungeeRegistrable implements Registrable {
 	 * @param plugin the plugin main
 	 */
 	public BungeeRegistrable(Plugin plugin) {
+		super(PluginInformation.getFor(plugin.getDescription()));
 		this.plugin = plugin;
-	}
-	
-	/**
-	 * Returns the value of <code>plugin.getDescription().getName()</code> where <i>plugin</i> was supplied to the constructor.
-	 * 
-	 * @return the plugin name
-	 */
-	@Override
-	public String getName() {
-		return plugin.getDescription().getName();
-	}
-	
-	/**
-	 * Returns the plugin's author as defined in plugin.yml / bungee.yml
-	 * 
-	 * @return the author's name
-	 */
-	@Override
-	public String getAuthor() {
-		return plugin.getDescription().getAuthor();
-	}
-	
-	/**
-	 * Returns the plugin's version as defined in plugin.yml / bungee.yml
-	 * 
-	 * @return the version
-	 */
-	@Override
-	public String getVersion() {
-		return plugin.getDescription().getVersion();
 	}
 	
 	/**

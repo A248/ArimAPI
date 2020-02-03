@@ -23,6 +23,8 @@ import org.bukkit.plugin.Plugin;
 import space.arim.universal.registry.Registrable;
 
 import space.arim.api.annotation.Platform;
+import space.arim.api.server.PluginRegistrable;
+import space.arim.api.server.PluginInformation;
 
 /**
  * A helper class for resources registered on Bukkit. <br>
@@ -63,7 +65,7 @@ import space.arim.api.annotation.Platform;
  * BukkitRegistrable automatically takes care of all of that.
  */
 @Platform(Platform.Type.SPIGOT)
-public abstract class BukkitRegistrable implements Registrable {
+public abstract class BukkitRegistrable extends PluginRegistrable {
 	
 	private final Plugin plugin;
 	
@@ -76,37 +78,8 @@ public abstract class BukkitRegistrable implements Registrable {
 	 * @param plugin the plugin main
 	 */
 	public BukkitRegistrable(Plugin plugin) {
+		super(PluginInformation.getFor(plugin.getDescription()));
 		this.plugin = plugin;
-	}
-	
-	/**
-	 * Returns the value of <code>plugin.getDescription().getName()</code> where <i>plugin</i> was supplied to the constructor.
-	 * 
-	 * @return the plugin name
-	 */
-	@Override
-	public String getName() {
-		return plugin.getDescription().getName();
-	}
-	
-	/**
-	 * Returns the plugin's author as defined in plugin.yml / bungee.yml
-	 * 
-	 * @return the author's name
-	 */
-	@Override
-	public String getAuthor() {
-		return plugin.getDescription().getAuthors().get(0);
-	}
-	
-	/**
-	 * Returns the plugin's version as defined in plugin.yml / bungee.yml
-	 * 
-	 * @return the version
-	 */
-	@Override
-	public String getVersion() {
-		return plugin.getDescription().getVersion();
 	}
 	
 	/**
