@@ -34,7 +34,7 @@ import java.util.concurrent.RunnableFuture;
  * <br>
  * <b>Default implementations:</b> <br>
  * Adds {@link #submit(Runnable)} and {@link #submit(Callable)}.
- * Both of these methods' default implementations are pulled from {@link java.util.concurrentAbstractExecutorService AbstractExecutorService}.
+ * Both of these methods' default implementations are pulled from {@link java.util.concurrent.AbstractExecutorService AbstractExecutorService}.
  * 
  * @author A248
  *
