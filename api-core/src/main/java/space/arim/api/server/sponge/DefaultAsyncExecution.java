@@ -22,6 +22,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
 
 import space.arim.api.concurrent.AsyncExecution;
+import space.arim.api.concurrent.Shutdownable;
 
 /**
  * A default implementation of {@link AsyncExecution} on the Sponge platform. Uses the server's inbuilt scheduling.
@@ -29,7 +30,7 @@ import space.arim.api.concurrent.AsyncExecution;
  * @author A248
  *
  */
-public class DefaultAsyncExecution extends DefaultExecution implements AsyncExecution {
+public class DefaultAsyncExecution extends DefaultExecution implements AsyncExecution, Shutdownable {
 
 	/**
 	 * Creates the instance. See {@link SpongeRegistrable#SpongeRegistrable(PluginContainer)} for more information.
@@ -42,8 +43,13 @@ public class DefaultAsyncExecution extends DefaultExecution implements AsyncExec
 	}
 	
 	@Override
-	public void gracefulShutdown() {
-		super.gracefulShutdown();
+	public void shutdown() {
+		super.shutdown();
+	}
+	
+	@Override
+	public void shutdownAndWait() {
+		super.shutdownAndWait();
 	}
 	
 }
