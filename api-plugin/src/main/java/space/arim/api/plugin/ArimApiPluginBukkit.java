@@ -1,6 +1,6 @@
 /* 
  * ArimAPI-plugin
- * Copyright © 2020 Anand Beh <https://www.arim.space>
+ * Copyright © 2019 Anand Beh <https://www.arim.space>
  * 
  * ArimAPI-plugin is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,10 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.sponge;
+package space.arim.api.plugin;
 
-import org.spongepowered.api.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
-@Plugin(id = "arimapiplugin", name = "ArimAPI")
-public class ArimApiPlugin {
+public class ArimApiPluginBukkit extends JavaPlugin {
 	
 }

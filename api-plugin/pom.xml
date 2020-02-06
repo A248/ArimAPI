@@ -13,6 +13,15 @@
 	<name>ArimAPI-Plugin</name>
 	<description>The plugin installation of ArimAPI.</description>
 	
+	<properties>
+		<plugin.name>ArimAPI</plugin.name>
+		<plugin.version>${core.version}</plugin.version>
+		<plugin.author>${core.author}</plugin.author>
+		<plugin.spongeid>arimapiplugin</plugin.spongeid> <!-- Corresponds with the @Plugin annotation -->
+		<plugin.url>${project.url}</plugin.url>
+		<plugin.description>${project.description}</plugin.description>
+	</properties>
+	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<finalName>${project.name}_v${core.version}_unshaded</finalName>
@@ -26,6 +35,19 @@
 			</resource>
 		</resources>
 		<plugins>
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<id>add-sponge-info</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -68,9 +90,6 @@
 							<outputFile>target/ArimAPI.jar</outputFile>
 							<artifactSet>
 								<includes>
-									<include>space.arim:universal-registry</include>
-									<include>space.arim:universal-events</include>
-									<include>space.arim:universal-util</include>
 									<include>space.arim:arimapi-core</include>
 									<include>org.hsqldb:hsqldb</include>
 									<include>com.zaxxer:HikariCP</include>

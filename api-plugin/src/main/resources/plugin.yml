@@ -1,6 +1,7 @@
-name: ArimAPI
-main: ${project.groupId}.api.plugin.bukkit.ArimApiPlugin
-version: ${project.version}
-author: A248
-description: ${project.description}
+name: ${plugin.name}
+main: space.arim.api.plugin.ArimApiPluginBukkit
+version: ${plugin.version}
+author: ${plugin.author}
+website: ${plugin.url}
+description: ${plugin.description}
 depend: [UniversalRegistryPlugin]

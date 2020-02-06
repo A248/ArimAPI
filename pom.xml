@@ -22,6 +22,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
 		<core.version>0.6.0</core.version>
+		<core.author>A248</core.author>
 		<arimapi.version>0.4.1-SNAPSHOT</arimapi.version>
 		<universal.version>0.6.7-SNAPSHOT</universal.version>
 		<hsqldb.version>2.5.0</hsqldb.version>

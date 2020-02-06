@@ -16,10 +16,10 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bukkit;
+package space.arim.api.plugin;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import net.md_5.bungee.api.plugin.Plugin;
 
-public class ArimApiPlugin extends JavaPlugin {
+public class ArimApiPluginBungee extends Plugin {
 	
 }

@@ -1,6 +1,6 @@
 /* 
  * ArimAPI-plugin
- * Copyright © 2019 Anand Beh <https://www.arim.space>
+ * Copyright © 2020 Anand Beh <https://www.arim.space>
  * 
  * ArimAPI-plugin is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,12 @@
  * along with ArimAPI-plugin. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.plugin.bungee;
+package space.arim.api.plugin;
 
-import net.md_5.bungee.api.plugin.Plugin;
+import org.spongepowered.api.plugin.Dependency;
+import org.spongepowered.api.plugin.Plugin;
 
-public class ArimApiPlugin extends Plugin {
+@Plugin(id = "${plugin.spongeid}", name = "${plugin.name}", version = "${plugin.version}", authors = {"${plugin.author}"}, description = "${plugin.description}", url = "${plugin.url}", dependencies = {@Dependency(id = "universalregistryplugin")})
+public class ArimApiPluginSponge {
 	
 }
