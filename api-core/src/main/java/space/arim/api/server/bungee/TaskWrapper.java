@@ -20,7 +20,7 @@ package space.arim.api.server.bungee;
 
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
-import space.arim.api.concurrent.Task;
+import space.arim.universal.util.concurrent.Task;
 
 class TaskWrapper implements Task {
 	

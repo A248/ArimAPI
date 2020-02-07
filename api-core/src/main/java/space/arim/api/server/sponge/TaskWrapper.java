@@ -20,7 +20,7 @@ package space.arim.api.server.sponge;
 
 import org.spongepowered.api.scheduler.SpongeExecutorService.SpongeFuture;
 
-import space.arim.api.concurrent.Task;
+import space.arim.universal.util.concurrent.Task;
 
 class TaskWrapper implements Task {
 	
@@ -34,7 +34,7 @@ class TaskWrapper implements Task {
 	public void cancel() {
 		task.cancel(false);
 	}
-
+	
 	@Override
 	public boolean isCancelled() {
 		return task.isCancelled();

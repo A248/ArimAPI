@@ -20,7 +20,7 @@ package space.arim.api.server.bukkit;
 
 import org.bukkit.scheduler.BukkitTask;
 
-import space.arim.api.concurrent.Task;
+import space.arim.universal.util.concurrent.Task;
 
 class TaskWrapper implements Task {
 
