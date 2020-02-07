@@ -25,8 +25,8 @@ import java.util.Scanner;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-import space.arim.universal.util.exception.HttpStatusException;
 import space.arim.universal.util.web.HttpStatus;
+import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.util.CommonInstancesUtil;
 
