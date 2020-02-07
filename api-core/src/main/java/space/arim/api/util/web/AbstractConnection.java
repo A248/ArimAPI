@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import space.arim.universal.util.lang.AutoClosable;
+import space.arim.universal.util.AutoClosable;
 
 public abstract class AbstractConnection implements AutoClosable {
 

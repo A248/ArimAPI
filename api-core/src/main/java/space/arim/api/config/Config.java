@@ -28,8 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.yaml.snakeyaml.Yaml;
 
+import space.arim.universal.util.AutoClosable;
 import space.arim.universal.util.collections.CollectionsUtil;
-import space.arim.universal.util.lang.AutoClosable;
 
 import space.arim.api.util.CommonInstancesUtil;
 import space.arim.api.util.FilesUtil;

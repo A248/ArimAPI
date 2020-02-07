@@ -20,7 +20,7 @@ package space.arim.api.config;
 
 import java.util.List;
 
-import space.arim.universal.util.lang.AutoClosable;
+import space.arim.universal.util.AutoClosable;
 
 /**
  * Simple default implementations of getX(String) methods, such as {@link #getString(String)} and {@link #getInt(String)}. <br>
