@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
-import space.arim.universal.util.exception.HttpStatusException;
+import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.annotation.Blocking;
 import space.arim.api.util.StringsUtil;
