@@ -25,7 +25,7 @@ import org.bukkit.entity.EntityType;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 
-import space.arim.universal.util.exception.HttpStatusException;
+import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.annotation.Platform;
 import space.arim.api.server.ChatUtil;
