@@ -58,7 +58,7 @@ public interface YmlLoader {
 	 * @return a configuration map
 	 */
 	@SuppressWarnings("unchecked")
-	default Map<String, Object> loadResource(String filename, Consumer<IOException> exceptionHandler) {
+	default Map<String, Object> loadResource(String filename, Consumer<? super IOException> exceptionHandler) {
 		try (InputStream stream = getClass().getResourceAsStream(File.separator + filename)) {
 			return (Map<String, Object>) CommonInstancesUtil.SNAKE_YAML.get().load(stream);
 		} catch (IOException ex) {
