@@ -21,7 +21,7 @@ package space.arim.api.sql;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import space.arim.universal.util.sql.WrappedConnection;
+import space.arim.universal.util.proxy.ProxiedConnection;
 
 public abstract class SimpleLoggingSql extends LoggingSql {
 	
@@ -34,7 +34,7 @@ public abstract class SimpleLoggingSql extends LoggingSql {
 
 }
 
-class FakeclosableConnection extends WrappedConnection  {
+class FakeclosableConnection extends ProxiedConnection  {
 	
 	FakeclosableConnection(Connection connection) {
 		super(connection);
