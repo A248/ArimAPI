@@ -18,6 +18,9 @@
  */
 package space.arim.api.concurrent;
 
+import space.arim.universal.util.concurrent.EnhancedExecutor;
+import space.arim.universal.util.concurrent.Scheduler;
+
 import space.arim.api.annotation.Blocking;
 
 /**
