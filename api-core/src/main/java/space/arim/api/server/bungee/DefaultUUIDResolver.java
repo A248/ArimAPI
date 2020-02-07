@@ -24,7 +24,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.util.exception.HttpStatusException;
+import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.server.bungee.BungeeRegistrable;
 import space.arim.api.util.web.FetcherException;

@@ -21,9 +21,9 @@ package space.arim.api.server.bukkit;
 import org.bukkit.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
+import space.arim.universal.util.concurrent.Task;
 
 import space.arim.api.concurrent.SyncExecution;
-import space.arim.api.concurrent.Task;
 
 /**
  * A default implementation of {@link SyncExecution} on the Bukkit platform. Uses the server's inbuilt scheduling.

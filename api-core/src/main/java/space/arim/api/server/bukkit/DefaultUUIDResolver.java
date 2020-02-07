@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.util.exception.HttpStatusException;
+import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.util.web.FetcherException;
 import space.arim.api.util.web.FetcherUtil;

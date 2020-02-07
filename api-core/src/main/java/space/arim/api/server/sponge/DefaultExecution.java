@@ -24,8 +24,8 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
 
 import space.arim.universal.registry.RegistryPriority;
+import space.arim.universal.util.concurrent.Task;
 
-import space.arim.api.concurrent.Task;
 import space.arim.api.server.sponge.SpongeRegistrable;
 
 class DefaultExecution extends SpongeRegistrable {

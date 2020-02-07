@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
+import space.arim.universal.util.concurrent.Task;
 
-import space.arim.api.concurrent.Task;
 import space.arim.api.server.bungee.BungeeRegistrable;
 
 class DefaultExecution extends BungeeRegistrable {

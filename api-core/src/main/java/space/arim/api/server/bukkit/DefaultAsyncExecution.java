@@ -21,9 +21,9 @@ package space.arim.api.server.bukkit;
 import org.bukkit.plugin.Plugin;
 
 import space.arim.universal.registry.RegistryPriority;
+import space.arim.universal.util.concurrent.Task;
 
 import space.arim.api.concurrent.AsyncExecution;
-import space.arim.api.concurrent.Task;
 import space.arim.api.server.bukkit.BukkitRegistrable;
 
 /**

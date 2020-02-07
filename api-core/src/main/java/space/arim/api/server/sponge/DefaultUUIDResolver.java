@@ -28,7 +28,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.user.UserStorageService;
 
 import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.util.exception.HttpStatusException;
+import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.util.web.FetcherException;
 import space.arim.api.util.web.FetcherUtil;
