@@ -78,7 +78,7 @@ public abstract class BukkitRegistrable extends PluginRegistrable {
 	 * @param plugin the plugin main
 	 */
 	public BukkitRegistrable(Plugin plugin) {
-		super(PluginInformation.getFor(plugin.getDescription()));
+		super(PluginInformation.getForSpigot(plugin.getDescription()));
 		this.plugin = plugin;
 	}
 	

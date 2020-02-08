@@ -78,7 +78,7 @@ public abstract class BungeeRegistrable extends PluginRegistrable {
 	 * @param plugin the plugin main
 	 */
 	public BungeeRegistrable(Plugin plugin) {
-		super(PluginInformation.getFor(plugin.getDescription()));
+		super(PluginInformation.getForBungee(plugin.getDescription()));
 		this.plugin = plugin;
 	}
 	

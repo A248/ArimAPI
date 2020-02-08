@@ -84,7 +84,7 @@ public abstract class SpongeRegistrable extends PluginRegistrable {
 	 * @param plugin the plugin main
 	 */
 	public SpongeRegistrable(PluginContainer plugin) {
-		super(PluginInformation.getFor(plugin));
+		super(PluginInformation.getForSponge(plugin));
 		this.plugin = plugin;
 	}
 	
