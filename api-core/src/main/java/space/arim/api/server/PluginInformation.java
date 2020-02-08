@@ -94,17 +94,17 @@ public final class PluginInformation {
 	}
 	
 	@Platform(Platform.Type.SPIGOT)
-	public static PluginInformation getFor(PluginDescriptionFile bukkitDescription) {
+	public static PluginInformation getForSpigot(PluginDescriptionFile bukkitDescription) {
 		return new PluginInformation(bukkitDescription.getName(), bukkitDescription.getVersion(), bukkitDescription.getAuthors().toArray(new String[] {}), bukkitDescription.getWebsite(), bukkitDescription.getDescription());
 	}
 	
 	@Platform(Platform.Type.BUNGEE)
-	public static PluginInformation getFor(PluginDescription bungeeDescription) {
+	public static PluginInformation getForBungee(PluginDescription bungeeDescription) {
 		return new PluginInformation(bungeeDescription.getName(), bungeeDescription.getVersion(), bungeeDescription.getAuthor() == null ? new String[] {} : new String[] {bungeeDescription.getAuthor()}, null, bungeeDescription.getDescription());
 	}
 	
 	@Platform(Platform.Type.SPONGE)
-	public static PluginInformation getFor(PluginContainer spongePlugin) {
+	public static PluginInformation getForSponge(PluginContainer spongePlugin) {
 		return new PluginInformation(spongePlugin.getId(), Objects.requireNonNull(spongePlugin.getVersion().orElse(null), "Version must not be null!"), spongePlugin.getAuthors().toArray(new String[] {}), spongePlugin.getUrl().orElse(null), spongePlugin.getDescription().orElse(null));
 	}
 	
