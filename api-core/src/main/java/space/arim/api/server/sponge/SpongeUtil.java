@@ -52,7 +52,7 @@ public final class SpongeUtil {
 	}
 	
 	/**
-	 * Adds colour to a message according to '&amp;' colour codes. <br>
+	 * Adds colour to a message according to '{@literal &}' colour codes. <br>
 	 * <b>See {@link ChatUtil#colourSponge(String)}</b> for more information.
 	 * 
 	 * @param colourable the input string
@@ -63,7 +63,7 @@ public final class SpongeUtil {
 	}
 	
 	/**
-	 * Removes colour from a message according to '&amp;' colour codes. <br>
+	 * Removes colour from a message according to '{@literal &}' colour codes. <br>
 	 * See {@link ChatUtil#stripColour(String)} for more information.
 	 * 
 	 * @param colourable the input string

@@ -74,7 +74,7 @@ public final class SpigotUtil {
 	}
 	
 	/**
-	 * Adds colour to a message according to '&amp;' colour codes. <br>
+	 * Adds colour to a message according to '{@literal &}' colour codes. <br>
 	 * See {@link ChatUtil#colour(String)} for more information.
 	 * 
 	 * @param colourable the input string
@@ -85,7 +85,7 @@ public final class SpigotUtil {
 	}
 	
 	/**
-	 * Removes colour from a message according to '&amp;' colour codes. <br>
+	 * Removes colour from a message according to '{@literal &}' colour codes. <br>
 	 * See {@link ChatUtil#stripColour(String)} for more information.
 	 * 
 	 * @param colourable the input string
@@ -97,7 +97,7 @@ public final class SpigotUtil {
 	
 	/**
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
-	 * Colors are parsed according to '&amp;' color codes. <br>
+	 * Colors are parsed according to '{@literal &}' color codes. <br>
 	 * <br>
 	 * <b>Example usage:</b> <br>
 	 * <pre>
