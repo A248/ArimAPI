@@ -35,13 +35,13 @@ public class LoggerConverter {
 	 * Converts a JUL logger to a slf4j Logger. <br>
 	 * <br>
 	 * Level mappings are identical to those specified by the SLF4JBridgeHandler docs: <br>
-	 * FINEST  -> TRACE <br>
-	 * FINER   -> DEBUG <br>
-	 * FINE    -> DEBUG <br>
-	 * CONFIG  -> INFO <br>
-	 * INFO    -> INFO <br>
-	 * WARNING -> WARN <br>
-	 * SEVERE  -> ERROR <br>
+	 * FINEST  = TRACE <br>
+	 * FINER   = DEBUG <br>
+	 * FINE    = DEBUG <br>
+	 * CONFIG  = INFO <br>
+	 * INFO    = INFO <br>
+	 * WARNING = WARN <br>
+	 * SEVERE  = ERROR <br>
 	 * 
 	 * @param julLogger the JUL logger
 	 * @return a slf4j Logger
