@@ -113,10 +113,10 @@ public final class FilesUtil {
 	 * If the File is still not a folder, an unchecked exception is thrown.
 	 * 
 	 * @param folder the File to check
-	 * @return true if and only if the file is a folder or could be created
+	 * @return the same file
 	 */
 	public static File requireDirectory(File folder) {
-		if (makeDir(folder)) {
+		if (!makeDir(folder)) {
 			throw new IllegalStateException("Directory creation of " + folder.getPath() + " failed.");
 		}
 		return folder;
