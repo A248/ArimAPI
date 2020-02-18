@@ -90,6 +90,7 @@
 							<outputFile>target/ArimAPI.jar</outputFile>
 							<artifactSet>
 								<includes>
+									<include>space.arim:arimapi-chat</include>
 									<include>space.arim:arimapi-core</include>
 									<include>org.hsqldb:hsqldb</include>
 									<include>com.zaxxer:HikariCP</include>
@@ -105,6 +106,10 @@
 	</build>
 	
 	<dependencies>
+		<dependency>
+			<groupId>space.arim</groupId>
+			<artifactId>arimapi-chat</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>space.arim</groupId>
 			<artifactId>arimapi-core</artifactId>
