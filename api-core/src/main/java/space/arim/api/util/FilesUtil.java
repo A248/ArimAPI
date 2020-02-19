@@ -122,6 +122,28 @@ public final class FilesUtil {
 		return folder;
 	}
 	
+	/**
+	 * Deletes the file or directory according to {@link File#delete()}. <br>
+	 * <br>
+	 * If a directory, and not empty, its contents will first be deleted, and then it will be deleted. <br>
+	 * Otherwise, there is no difference between this and <code>file.delete()</code>. <br>
+	 * <br>
+	 * <b>Useful because <code>file.delete()</code> requires the target directory to be empty if the file is a directory.</b>
+	 * 
+	 * @param file the file
+	 * @return true if successful, false otherwise
+	 */
+	public static boolean delete(File file) {
+		if (file.isDirectory()) {
+			for (File subFile : file.listFiles()) {
+				if (!delete(subFile)) {
+					return false;
+				}
+			}
+		}
+		return file.delete();
+	}
+	
 	public static File dateSuffixedFile(File folder, String filename) {
 		return new File(requireDirectory(folder), filename + StringsUtil.basicTodaysDate());
 	}
