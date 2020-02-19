@@ -43,15 +43,6 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 		this.ins = ins;
 	}
 	
-	/**
-	 * Removes JSON formatting and changes to a regular Component
-	 * 
-	 * @return a fresh Component with JSON removed
-	 */
-	public Component stripJson() {
-		return new Component(getText(), getColour(), getStyles());
-	}
-	
 	@Override
 	public Message getTtp() {
 		return ttp;
@@ -77,9 +68,45 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 		return ins;
 	}
 	
+	/**
+	 * Creates a new Component with all colour formatting removed. <br>
+	 * JSON formatting is carried over.
+	 * 
+	 * @return a fresh Component with colour removed
+	 */
 	@Override
-	public String toString() {
-		return toStringMe();
+	public JsonComponent stripColour() {
+		return new JsonComponent(getText(), null, getStyles(), getTtp(), getUrl(), getCmd(), getSgt(), getIns());
+	}
+	
+	/**
+	 * Creates a new Component with all styles formatting removed. <br>
+	 * JSON formatting is carried over.
+	 * 
+	 * @return a fresh Component with styles removed
+	 */
+	@Override
+	public JsonComponent stripStyles() {
+		return new JsonComponent(getText(), getColour(), null, getTtp(), getUrl(), getCmd(), getSgt(), getIns());
+	}
+	
+	/**
+	 * Creates a new Component with all JSON formatting removed
+	 * 
+	 * @return a fresh Component with JSON removed
+	 */
+	public Component stripJson() {
+		return new Component(getText(), getColour(), getStyles());
+	}
+	
+	/**
+	 * Creates a new Component with all colour, styles, and JSON formatting removed. <br>
+	 * 
+	 * @return a fresh Component with colour, styles, and JSON removed
+	 */
+	@Override
+	public Component stripAll() {
+		return stripJson().stripAll();
 	}
 	
 	/**
@@ -90,6 +117,11 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 	 */
 	public class Builder extends JsonComponentBuilder {
 		
+	}
+	
+	@Override
+	public String toString() {
+		return toStringMe();
 	}
 
 }

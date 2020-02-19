@@ -18,6 +18,8 @@
  */
 package space.arim.api.chat;
 
+import java.util.function.UnaryOperator;
+
 import space.arim.universal.util.collections.ArraysUtil;
 
 /**
@@ -34,17 +36,58 @@ public class Message {
 		this.components = components;
 	}
 	
+	private Message convertEach(UnaryOperator<Component> converter) {
+		Component[] converted = new Component[components.length - 1];
+		for (int n = 0; n < components.length; n++) {
+			converted[n] = converter.apply(components[n]);
+		}
+		return new Message(converted);
+	}
+	
 	/**
-	 * Removes any JSON formatting from this message
+	 * Gets all the components which comprise this message. <br>
+	 * Some or all the components may be json components if the message is a JSON message.
+	 * 
+	 * @return the array of components
+	 */
+	public Component[] getComponents() {
+		return components;
+	}
+	
+	/**
+	 * Creates a new Message with all colour formatting removed
+	 * 
+	 * @return a fresh Message with colour removed
+	 */
+	public Message stripColour() {
+		return convertEach((component) -> component.stripColour());
+	}
+	
+	/**
+	 * Creates a new Message with all styles formatting removed
+	 * 
+	 * @return a fresh Message with styles removed
+	 */
+	public Message stripStyles() {
+		return convertEach((component) -> component.stripStyles());
+	}
+	
+	/**
+	 * Creates a new Message with all JSON formatting removed
 	 * 
 	 * @return a fresh Message with JSON removed
 	 */
 	public Message stripJson() {
-		Component[] stripped = new Component[] {};
-		for (int n = 0; n < components.length; n++) {
-			stripped[n] = (components[n] instanceof JsonComponent) ? ((JsonComponent) components[n]).stripJson() : components[n];
-		}
-		return new Message(stripped);
+		return convertEach((component) -> (component instanceof JsonComponent) ? ((JsonComponent) component).stripJson() : component);
+	}
+	
+	/**
+	 * Creates a new Message with all colour, styles, and JSON formatting removed. <br>
+	 * 
+	 * @return a fresh Message with colour, styles, and JSON removed
+	 */
+	public Message stripAll() {
+		return convertEach((component) -> component.stripAll());
 	}
 	
 	/**

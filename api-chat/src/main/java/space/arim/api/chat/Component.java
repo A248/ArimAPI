@@ -55,9 +55,31 @@ public class Component implements ComponentFramework {
 		return styles;
 	}
 	
-	@Override
-	public String toString() {
-		return toStringMe();
+	/**
+	 * Creates a new Component with all colour formatting removed
+	 * 
+	 * @return a fresh Component with colour removed
+	 */
+	public Component stripColour() {
+		return new Component(getText(), null, getStyles());
+	}
+	
+	/**
+	 * Creates a new Component with all styles formatting removed
+	 * 
+	 * @return a fresh Component with styles removed
+	 */
+	public Component stripStyles() {
+		return new Component(getText(), getColour(), null);
+	}
+	
+	/**
+	 * Creates a new Component with all colour and styles formatting removed. <br>
+	 * 
+	 * @return a fresh Component with colour and styles removed
+	 */
+	public Component stripAll() {
+		return new Component(getText(), null, null);
 	}
 	
 	/**
@@ -68,6 +90,11 @@ public class Component implements ComponentFramework {
 	 */
 	public class Builder extends ComponentBuilder {
 		
+	}
+	
+	@Override
+	public String toString() {
+		return toStringMe();
 	}
 	
 }
