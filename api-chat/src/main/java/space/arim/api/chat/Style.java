@@ -33,9 +33,8 @@ public class Style extends Format {
 	public static final Style STRIKETHROUGH = new Style('m');
 	public static final Style UNDERLINE = new Style('n');
 	public static final Style ITALIC = new Style('o');
-	public static final Style RESET = new Style('r');
 	
-	private static final Style[] VALUES = new Style[] {MAGIC, BOLD, STRIKETHROUGH, UNDERLINE, ITALIC, RESET};
+	private static final Style[] VALUES = new Style[] {MAGIC, BOLD, STRIKETHROUGH, UNDERLINE, ITALIC};
 	
 	private Style(char code) {
 		super(code, true);
