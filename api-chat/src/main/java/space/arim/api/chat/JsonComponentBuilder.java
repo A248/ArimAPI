@@ -137,7 +137,7 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 	 * @return the builder
 	 */
 	public JsonComponentBuilder tooltip(Message ttp) {
-		this.ttp = ttp;
+		this.ttp = ttp.stripJson();
 		return this;
 	}
 	
