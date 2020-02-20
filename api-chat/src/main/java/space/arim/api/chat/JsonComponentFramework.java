@@ -36,11 +36,29 @@ public interface JsonComponentFramework extends ComponentFramework {
 	Message getTooltip();
 	
 	/**
+	 * Checks whether a tooltip is set
+	 * 
+	 * @return true if the JsonComponent has a tooltip, false otherwise
+	 */
+	default boolean hasTooltip() {
+		return getTooltip() != null;
+	}
+	
+	/**
 	 * Gets the link of this JsonComponent
 	 * 
 	 * @return the link or <code>null</code> if none is set
 	 */
 	String getUrl();
+	
+	/**
+	 * Checks whether a url is set
+	 * 
+	 * @return true if the JsonComponent has a url, false otherwise
+	 */
+	default boolean hasUrl() {
+		return getUrl() != null;
+	}
 	
 	/**
 	 * Gets the command of this JsonComponent
@@ -50,6 +68,15 @@ public interface JsonComponentFramework extends ComponentFramework {
 	String getCommand();
 	
 	/**
+	 * Checks whether a command is set
+	 * 
+	 * @return true if the JsonComponent has a command, false otherwise
+	 */
+	default boolean hasCommand() {
+		return getCommand() != null;
+	}
+	
+	/**
 	 * Gets the suggestion of this JsonComponent
 	 * 
 	 * @return the suggestion or <code>null</code> if none is set
@@ -57,11 +84,29 @@ public interface JsonComponentFramework extends ComponentFramework {
 	String getSuggestion();
 	
 	/**
+	 * Checks whether a suggestion is set
+	 * 
+	 * @return true if the JsonComponent has a suggestion, false otherwise
+	 */
+	default boolean hasSuggestion() {
+		return getSuggestion() != null;
+	}
+	
+	/**
 	 * Gets the insertion of this JsonComponent
 	 * 
 	 * @return the insertion or <code>null</code> if none is set
 	 */
 	String getInsertion();
+	
+	/**
+	 * Checks whether an insertion is set
+	 * 
+	 * @return true if the JsonComponent has an insertion, false otherwise
+	 */
+	default boolean hasInsertion() {
+		return getInsertion() != null;
+	}
 	
 	@Override
 	default String toStringMe() {

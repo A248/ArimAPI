@@ -45,7 +45,7 @@ public interface ComponentFramework extends Stringable {
 	Colour getColour();
 	
 	/**
-	 * Checks whether colour is set
+	 * Checks whether a colour is set
 	 * 
 	 * @return true if the Component has a colour, false otherwise
 	 */
