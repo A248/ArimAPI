@@ -44,7 +44,7 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 	}
 	
 	@Override
-	public Message getTtp() {
+	public Message getTooltip() {
 		return ttp;
 	}
 	
@@ -54,17 +54,17 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 	}
 	
 	@Override
-	public String getCmd() {
+	public String getCommand() {
 		return cmd;
 	}
 	
 	@Override
-	public String getSgt() {
+	public String getSuggestion() {
 		return sgt;
 	}
 	
 	@Override
-	public String getIns() {
+	public String getInsertion() {
 		return ins;
 	}
 	
@@ -76,7 +76,7 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 	 */
 	@Override
 	public JsonComponent stripColour() {
-		return new JsonComponent(getText(), null, getStyles(), getTtp(), getUrl(), getCmd(), getSgt(), getIns());
+		return new JsonComponent(getText(), null, getStyles(), getTooltip(), getUrl(), getCommand(), getSuggestion(), getInsertion());
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 	 */
 	@Override
 	public JsonComponent stripStyles() {
-		return new JsonComponent(getText(), getColour(), null, getTtp(), getUrl(), getCmd(), getSgt(), getIns());
+		return new JsonComponent(getText(), getColour(), null, getTooltip(), getUrl(), getCommand(), getSuggestion(), getInsertion());
 	}
 	
 	/**

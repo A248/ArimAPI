@@ -33,7 +33,7 @@ public interface JsonComponentFramework extends ComponentFramework {
 	 * 
 	 * @return the tooltip or <code>null</code> if none is set
 	 */
-	Message getTtp();
+	Message getTooltip();
 	
 	/**
 	 * Gets the link of this JsonComponent
@@ -47,25 +47,25 @@ public interface JsonComponentFramework extends ComponentFramework {
 	 * 
 	 * @return the command or <code>null</code> if none is set
 	 */
-	String getCmd();
+	String getCommand();
 	
 	/**
 	 * Gets the suggestion of this JsonComponent
 	 * 
 	 * @return the suggestion or <code>null</code> if none is set
 	 */
-	String getSgt();
+	String getSuggestion();
 	
 	/**
 	 * Gets the insertion of this JsonComponent
 	 * 
 	 * @return the insertion or <code>null</code> if none is set
 	 */
-	String getIns();
+	String getInsertion();
 	
 	@Override
 	default String toStringMe() {
-		return "{text:" + getText() + ",colour:" + getColour() + ",style:" + ArraysUtil.toString(getStyles()) + ",ttp:" + getTtp() + ",url:" + getUrl() + ",cmd:" + getCmd() + ",sgt:" + getSgt() + ",ins:" + getIns() + "}";
+		return "{text:" + getText() + ",colour:" + getColour() + ",style:" + ArraysUtil.toString(getStyles()) + ",ttp:" + getTooltip() + ",url:" + getUrl() + ",cmd:" + getCommand() + ",sgt:" + getSuggestion() + ",ins:" + getInsertion() + "}";
 	}
 	
 }

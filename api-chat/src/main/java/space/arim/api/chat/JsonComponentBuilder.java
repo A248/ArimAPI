@@ -73,15 +73,15 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 	}
 	
 	private void copyJsonAttributes(JsonComponentFramework component) {
-		ttp = component.getTtp();
+		ttp = component.getTooltip();
 		url = component.getUrl();
-		cmd = component.getCmd();
-		sgt = component.getSgt();
-		ins = component.getIns();
+		cmd = component.getCommand();
+		sgt = component.getSuggestion();
+		ins = component.getInsertion();
 	}
 	
 	@Override
-	public Message getTtp() {
+	public Message getTooltip() {
 		return ttp;
 	}
 
@@ -91,17 +91,17 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 	}
 
 	@Override
-	public String getCmd() {
+	public String getCommand() {
 		return cmd;
 	}
 
 	@Override
-	public String getSgt() {
+	public String getSuggestion() {
 		return sgt;
 	}
 
 	@Override
-	public String getIns() {
+	public String getInsertion() {
 		return ins;
 	}
 	
@@ -220,19 +220,19 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 	 * @param ins the insertion
 	 * @return the builder
 	 */
-	public JsonComponentBuilder insertion(String ins) {
+	public JsonComponentBuilder insert(String ins) {
 		this.ins = ins;
 		return this;
 	}
 	
 	/**
-	 * Equivalent to {@link #insertion(String)}
+	 * Equivalent to {@link #insert(String)}
 	 * 
 	 * @param ins the insertion
 	 * @return the builder
 	 */
 	public JsonComponentBuilder ins(String ins) {
-		return insertion(ins);
+		return insert(ins);
 	}
 	
 	/**
