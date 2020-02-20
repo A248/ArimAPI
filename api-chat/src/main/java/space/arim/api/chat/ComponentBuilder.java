@@ -120,6 +120,17 @@ public class ComponentBuilder implements ComponentFramework {
 	}
 	
 	/**
+	 * Enables the style if specified, otherwise, disables the style.
+	 * 
+	 * @param style the style
+	 * @param enable whether to toggle the style on or off
+	 * @return the builder
+	 */
+	public ComponentBuilder style(Style style, boolean enable) {
+		return (enable) ? style(style) : unstyle(style);
+	}
+	
+	/**
 	 * Removes the specified style, removing it from the list of styles if present
 	 * 
 	 * @param style the style
