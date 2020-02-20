@@ -30,9 +30,8 @@ import space.arim.universal.util.collections.CollectionsUtil;
  * @author A248
  *
  */
-public class MessageJsonBuilder {
+public class MessageJsonBuilder extends AbstractMessageBuilder {
 
-	private final List<Component> components;
 	private final List<ComponentBuilder> builders = new ArrayList<ComponentBuilder>();
 	
 	/**
@@ -40,7 +39,7 @@ public class MessageJsonBuilder {
 	 * 
 	 */
 	public MessageJsonBuilder() {
-		components = new ArrayList<Component>();
+		
 	}
 	
 	/**
@@ -49,27 +48,17 @@ public class MessageJsonBuilder {
 	 * @param components the components
 	 */
 	public MessageJsonBuilder(List<Component> components) {
-		this.components = new ArrayList<Component>(components);
+		super(components);
 	}
 	
-	/**
-	 * Adds another Component
-	 * 
-	 * @param component the next component
-	 * @return the builder
-	 */
+	@Override
 	public MessageJsonBuilder append(Component component) {
 		reset();
 		components.add(component);
 		return this;
 	}
 	
-	/**
-	 * Adds more Components
-	 * 
-	 * @param components the next components
-	 * @return the builder
-	 */
+	@Override
 	public MessageJsonBuilder append(Component...components) {
 		reset();
 		for (Component component : components) {
@@ -94,43 +83,28 @@ public class MessageJsonBuilder {
 	 * 
 	 * @return the builder
 	 */
+	@Override
 	public MessageJsonBuilder reset() {
 		builders.forEach((builder) -> components.add(builder.build()));
 		builders.clear();
 		return this;
 	}
 	
-	/**
-	 * Adds the given text, carrying over previous colouring and formatting. <br>
-	 * To reset formatting, use {@link #reset()}
-	 * 
-	 * @param text the content to add
-	 * @return the builder
-	 */
+	@Override
 	public MessageJsonBuilder add(String text) {
 		freshenBuilder().text(text);
 		return this;
 	}
 	
-	/**
-	 * Sets the colour of any future content added with {@link #add(String)}
-	 * 
-	 * @param colour the colour for following text
-	 * @return the builder
-	 */
-	public MessageJsonBuilder color(Colour colour) {
+	@Override
+	public MessageJsonBuilder colour(Colour colour) {
 		if (builders.isEmpty() || !currentBuilder().getColour().equals(colour)) {
 			freshenBuilder().colour(colour);
 		}
 		return this;
 	}
 	
-	/**
-	 * Adds the specified style for any future content
-	 * 
-	 * @param style the style for following text
-	 * @return the builder
-	 */
+	@Override
 	public MessageJsonBuilder style(Style style) {
 		if (builders.isEmpty() || !CollectionsUtil.checkForAnyMatches(currentBuilder().getStyles(), style::equals)) {
 			freshenBuilder().style(style);
@@ -138,12 +112,12 @@ public class MessageJsonBuilder {
 		return this;
 	}
 	
-	/**
-	 * Removes the specified style for any future content
-	 * 
-	 * @param style the style to remove for following text
-	 * @return the builder
-	 */
+	@Override
+	public MessageJsonBuilder style(Style style, boolean enable) {
+		return (enable) ? style(style) : unstyle(style);
+	}
+	
+	@Override
 	public MessageJsonBuilder unstyle(Style style) {
 		if (builders.isEmpty() || CollectionsUtil.checkForAnyMatches(currentBuilder().getStyles(), style::equals)) {
 			freshenBuilder().unstyle(style);
@@ -266,11 +240,7 @@ public class MessageJsonBuilder {
 		return insertion(ins);
 	}
 	
-	/**
-	 * Builds this MessageJsonBuilder into a fresh Message
-	 * 
-	 * @return a formed Message
-	 */
+	@Override
 	public Message build() {
 		return new Message(components.toArray(new Component[] {}));
 	}

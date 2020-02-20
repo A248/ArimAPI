@@ -18,7 +18,6 @@
  */
 package space.arim.api.chat;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import space.arim.universal.util.collections.CollectionsUtil;
@@ -29,9 +28,8 @@ import space.arim.universal.util.collections.CollectionsUtil;
  * @author A248
  *
  */
-public class MessageBuilder {
+public class MessageBuilder extends AbstractMessageBuilder {
 	
-	private final List<Component> components;
 	private ComponentBuilder builder;
 	
 	/**
@@ -39,7 +37,7 @@ public class MessageBuilder {
 	 * 
 	 */
 	public MessageBuilder() {
-		components = new ArrayList<Component>();
+		
 	}
 	
 	/**
@@ -48,27 +46,17 @@ public class MessageBuilder {
 	 * @param components the components
 	 */
 	public MessageBuilder(List<Component> components) {
-		this.components = new ArrayList<Component>(components);
+		super(components);
 	}
 	
-	/**
-	 * Adds another Component
-	 * 
-	 * @param component the next component
-	 * @return the builder
-	 */
+	@Override
 	public MessageBuilder append(Component component) {
 		reset();
 		components.add(component);
 		return this;
 	}
 	
-	/**
-	 * Adds more Components
-	 * 
-	 * @param components the next components
-	 * @return the builder
-	 */
+	@Override
 	public MessageBuilder append(Component...components) {
 		reset();
 		for (Component component : components) {
@@ -87,12 +75,7 @@ public class MessageBuilder {
 		return builder;
 	}
 	
-	/**
-	 * Resets all formatting established. <br>
-	 * Any text following with {@link #add(String)} will be unformatted.
-	 * 
-	 * @return the builder
-	 */
+	@Override
 	public MessageBuilder reset() {
 		if (builder != null) {
 			components.add(builder.build());
@@ -101,37 +84,21 @@ public class MessageBuilder {
 		return this;
 	}
 	
-	/**
-	 * Adds the given text, carrying over previous colouring and formatting. <br>
-	 * To reset formatting, use {@link #reset()}
-	 * 
-	 * @param text the content to add
-	 * @return the builder
-	 */
+	@Override
 	public MessageBuilder add(String text) {
 		freshenBuilder().text(text);
 		return this;
 	}
 	
-	/**
-	 * Sets the colour of any future content added with {@link #add(String)}
-	 * 
-	 * @param colour the colour for following text
-	 * @return the builder
-	 */
-	public MessageBuilder color(Colour colour) {
+	@Override
+	public MessageBuilder colour(Colour colour) {
 		if (!builder.getColour().equals(colour)) {
 			freshenBuilder().colour(colour);
 		}
 		return this;
 	}
 	
-	/**
-	 * Adds the specified style for any future content
-	 * 
-	 * @param style the style for following text
-	 * @return the builder
-	 */
+	@Override
 	public MessageBuilder style(Style style) {
 		if (!CollectionsUtil.checkForAnyMatches(builder.getStyles(), style::equals)) {
 			freshenBuilder().style(style);
@@ -139,12 +106,7 @@ public class MessageBuilder {
 		return this;
 	}
 	
-	/**
-	 * Removes the specified style for any future content
-	 * 
-	 * @param style the style to remove for following text
-	 * @return the builder
-	 */
+	@Override
 	public MessageBuilder unstyle(Style style) {
 		if (CollectionsUtil.checkForAnyMatches(builder.getStyles(), style::equals)) {
 			freshenBuilder().unstyle(style);
@@ -152,11 +114,7 @@ public class MessageBuilder {
 		return this;
 	}
 	
-	/**
-	 * Builds this MessageBuilder into a fresh Message
-	 * 
-	 * @return a formed Message
-	 */
+	@Override
 	public Message build() {
 		return new Message(components.toArray(new Component[] {}));
 	}
