@@ -18,6 +18,8 @@
  */
 package space.arim.api.chat;
 
+import space.arim.universal.util.collections.ArraysUtil;
+
 /**
  * Some kind of formatting, whether a {@link Colour} or {@link Style}
  * 
@@ -34,6 +36,8 @@ public class Format {
 	 * 
 	 */
 	public static final Format RESET = new Format('r', true);
+	
+	private static final Format[] values = ArraysUtil.combine(new Format[] {RESET}, Style.values(), Colour.values());
 	
 	private final char identifier;
 	private final boolean style;
@@ -68,6 +72,15 @@ public class Format {
 	 */
 	public boolean isStyle() {
 		return style;
+	}
+	
+	/**
+	 * Gets all formats.
+	 * 
+	 * @return an array of all formats
+	 */
+	public static Format[] values() {
+		return values;
 	}
 	
 	/**
