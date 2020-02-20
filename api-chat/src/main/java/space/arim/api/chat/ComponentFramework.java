@@ -20,6 +20,7 @@ package space.arim.api.chat;
 
 import space.arim.universal.util.Stringable;
 import space.arim.universal.util.collections.ArraysUtil;
+import space.arim.universal.util.collections.CollectionsUtil;
 
 /**
  * Contains common documentation for {@link Component} and {@link ComponentBuilder}
@@ -44,11 +45,30 @@ public interface ComponentFramework extends Stringable {
 	Colour getColour();
 	
 	/**
+	 * Checks whether colour is set
+	 * 
+	 * @return true if the Component has a colour, false otherwise
+	 */
+	default boolean hasColour() {
+		return getColour() != null;
+	}
+	
+	/**
 	 * Gets the style
 	 * 
 	 * @return the style, <code>null</code> indicates not set
 	 */
 	Style[] getStyles();
+	
+	/**
+	 * Checks whether the specified style is set
+	 * 
+	 * @param style the style to check for
+	 * @return true if the style is set, false otherwise
+	 */
+	default boolean hasStyle(Style style) {
+		return CollectionsUtil.checkForAnyMatches(getStyles(), style::equals);
+	}
 	
 	@Override
 	default String toStringMe() {
