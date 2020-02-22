@@ -108,6 +108,15 @@ public interface JsonComponentFramework extends ComponentFramework {
 		return getInsertion() != null;
 	}
 	
+	/**
+	 * Checks whether any JSON features are set. <br>
+	 * 
+	 * @return true if a tooltip, url, command, suggestion, or insertion is set, false otherwise
+	 */
+	default boolean hasAnyJsonFeatures() {
+		return hasTooltip() || hasUrl() || hasCommand() || hasSuggestion() || hasInsertion();
+	}
+	
 	@Override
 	default String toStringMe() {
 		return "{text:" + getText() + ",colour:" + getColour() + ",style:" + ArraysUtil.toString(getStyles()) + ",ttp:" + getTooltip() + ",url:" + getUrl() + ",cmd:" + getCommand() + ",sgt:" + getSuggestion() + ",ins:" + getInsertion() + "}";
