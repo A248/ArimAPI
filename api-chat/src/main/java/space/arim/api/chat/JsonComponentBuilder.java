@@ -126,6 +126,11 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 	}
 	
 	@Override
+	public JsonComponentBuilder style(Style style, boolean enable) {
+		return (JsonComponentBuilder) super.style(style, enable);
+	}
+	
+	@Override
 	public JsonComponentBuilder unstyle(Style style) {
 		return (JsonComponentBuilder) super.unstyle(style);
 	}
