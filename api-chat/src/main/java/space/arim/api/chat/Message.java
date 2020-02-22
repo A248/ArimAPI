@@ -18,12 +18,16 @@
  */
 package space.arim.api.chat;
 
+import java.util.Arrays;
 import java.util.function.UnaryOperator;
 
 import space.arim.universal.util.collections.ArraysUtil;
 
 /**
- * A sendable message comprised of an array of {@link Component} or {@link JsonComponent} objects
+ * A sendable message comprised of an array of {@link Component} or {@link JsonComponent} objects. <br>
+ * <br>
+ * Each <code>Component</code> is considered distinct. No formatting from the first <code>Component</code> affects the next. <br>
+ * Accordingly, no {@link Format#RESET} codes need be applied at the start or end of a <code>Component</code>.
  * 
  * @author A248
  *
@@ -91,12 +95,32 @@ public class Message {
 	}
 	
 	/**
+	 * Creates a new Message with the specified content appended.
+	 * 
+	 * @param components the components to add
+	 * @return a combined Message
+	 */
+	public Message concat(Component...components) {
+		return new Message(ArraysUtil.combine(Component.class, getComponents(), components));
+	}
+	
+	/**
+	 * Creates a new Message with the content of the specified Message appended.
+	 * 
+	 * @param message the message to add
+	 * @return a combined Message
+	 */
+	public Message concat(Message message) {
+		return concat(message.getComponents());
+	}
+	
+	/**
 	 * Identical to {@link MessageBuilder}
 	 * 
 	 * @author A248
 	 *
 	 */
-	public class Builder extends MessageBuilder {
+	public class SimpleBuilder extends MessageBuilder {
 		
 	}
 	
@@ -108,6 +132,19 @@ public class Message {
 	 */
 	public class JsonBuilder extends MessageJsonBuilder {
 		
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(components);
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		return object instanceof Message && Arrays.equals(((Message) object).getComponents(), getComponents());
 	}
 	
 	@Override
