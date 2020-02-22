@@ -28,7 +28,7 @@ import space.arim.universal.util.collections.CollectionsUtil;
  * @author A248
  *
  */
-public class MessageBuilder extends AbstractMessageBuilder {
+public class MessageBuilder extends AbstractMessageBuilder implements MessageBuilderFramework {
 	
 	private ComponentBuilder builder;
 	
@@ -116,6 +116,7 @@ public class MessageBuilder extends AbstractMessageBuilder {
 	
 	@Override
 	public Message build() {
+		reset();
 		return new Message(components.toArray(new Component[] {}));
 	}
 	

@@ -30,7 +30,7 @@ import space.arim.universal.util.collections.CollectionsUtil;
  * @author A248
  *
  */
-public class MessageJsonBuilder extends AbstractMessageBuilder {
+public class MessageJsonBuilder extends AbstractMessageBuilder implements MessageBuilderFramework {
 
 	private final List<ComponentBuilder> builders = new ArrayList<ComponentBuilder>();
 	
@@ -114,7 +114,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder {
 	
 	@Override
 	public MessageJsonBuilder style(Style style, boolean enable) {
-		return (enable) ? style(style) : unstyle(style);
+		return (MessageJsonBuilder) MessageBuilderFramework.super.style(style, enable);
 	}
 	
 	@Override
@@ -240,8 +240,36 @@ public class MessageJsonBuilder extends AbstractMessageBuilder {
 		return insertion(ins);
 	}
 	
+	/**
+	 * Builds into a fresh Message, but uses <code>Component</code> objects instead of <code>JsonComponent</code> objects where possible. <br>
+	 * <br>
+	 * <b>All JsonComponent objects without any JSON features are changed to regular Component objects.</b> <br>
+	 * <br>
+	 * If built normally with {@link #build}, the result may contain a Component <i>without any</i> tooltips, urls, commands, suggestions, or insertions. <br>
+	 * However, programmers may not want Message whose Component array contains JsonComponent objects without any JSON features enabled,
+	 * since this conveys the false impression that some JSON features are enabled in the Component (since it is a JsonComponent). <br>
+	 * Accordingly, this method is provided to change JsonComponent objects with no JSON in them to regular Component objects prior to building.
+	 * 
+	 * @return a formed Message with <code>JsonComponent</code> objects converted to regular <code>Component</code> objects where possible
+	 */
+	public Message cleanBuild() {
+		reset();
+		return new Message(components.stream().map(this::cleanUnusedJson).toArray(Component[]::new));
+	}
+	
+	private Component cleanUnusedJson(Component component) {
+		if (component instanceof JsonComponent) {
+			JsonComponent json = (JsonComponent) component;
+			if (!json.hasAnyJsonFeatures()) {
+				return json.stripJson();
+			}
+		}
+		return component;
+	}
+	
 	@Override
 	public Message build() {
+		reset();
 		return new Message(components.toArray(new Component[] {}));
 	}
 	
