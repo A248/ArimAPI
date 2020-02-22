@@ -116,7 +116,6 @@ public class MessageBuilder extends AbstractMessageBuilder implements MessageBui
 	
 	@Override
 	public Message build() {
-		reset();
 		return new Message(components.toArray(new Component[] {}));
 	}
 	
