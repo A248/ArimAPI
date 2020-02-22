@@ -1,122 +1,104 @@
 /* 
- * ArimAPI, a minecraft plugin library and framework.
+ * ArimAPI-chat
  * Copyright © 2020 Anand Beh <https://www.arim.space>
  * 
- * ArimAPI is free software: you can redistribute it and/or modify
+ * ArimAPI-chat is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * ArimAPI is distributed in the hope that it will be useful,
+ * ArimAPI-chat is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
+ * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
 package space.arim.api.chat;
 
-import java.util.List;
-
-import space.arim.universal.util.collections.CollectionsUtil;
-
 /**
- * Helper class for creating Messages.
+ * Contains common documentation for {@link SimpleMessageBuilder} and {@link JsonMessageBuilder}
  * 
  * @author A248
  *
  */
-public class MessageBuilder extends AbstractMessageBuilder implements MessageBuilderFramework {
-	
-	private ComponentBuilder builder;
+public interface MessageBuilder {
+
+	/**
+	 * Adds another Component
+	 * 
+	 * @param component the next component
+	 * @return the builder
+	 */
+	MessageBuilder append(Component component);
 	
 	/**
-	 * Creates an empty builder
+	 * Adds more Components
 	 * 
+	 * @param components the next components
+	 * @return the builder
 	 */
-	public MessageBuilder() {
-		
+	MessageBuilder append(Component...components);
+	
+	/**
+	 * Resets all formatting established. <br>
+	 * Any text following with {@link #add(String)} will be unformatted.
+	 * 
+	 * @return the builder
+	 */
+	MessageBuilder reset();
+	
+	/**
+	 * Adds the given text, carrying over previous colouring and formatting. <br>
+	 * To reset formatting, use {@link #reset()}
+	 * 
+	 * @param text the content to add
+	 * @return the builder
+	 */
+	MessageBuilder add(String text);
+	
+	/**
+	 * Sets the colour of any future content added with {@link #add(String)}
+	 * 
+	 * @param colour the colour for following text
+	 * @return the builder
+	 */
+	MessageBuilder colour(Colour colour);
+	
+	/**
+	 * Adds the specified style for any future content
+	 * 
+	 * @param style the style for following text
+	 * @return the builder
+	 */
+	MessageBuilder style(Style style);
+	
+	/**
+	 * Enables the style if specified, otherwise, disables the style.
+	 * 
+	 * @param style the style
+	 * @param enable whether to toggle the style on or off
+	 * @return the builder
+	 */
+	default MessageBuilder style(Style style, boolean enable) {
+		return (enable) ? style(style) : unstyle(style);
 	}
 	
 	/**
-	 * Creates a builder with the given components
+	 * Removes the specified style for any future content
 	 * 
-	 * @param components the components
+	 * @param style the style to remove for following text
+	 * @return the builder
 	 */
-	public MessageBuilder(List<Component> components) {
-		super(components);
-	}
+	MessageBuilder unstyle(Style style);
 	
-	@Override
-	public MessageBuilder append(Component component) {
-		reset();
-		components.add(component);
-		return this;
-	}
-	
-	@Override
-	public MessageBuilder append(Component...components) {
-		reset();
-		for (Component component : components) {
-			this.components.add(component);
-		}
-		return this;
-	}
-	
-	private ComponentBuilder freshenBuilder() {
-		if (builder != null) {
-			components.add(builder.build());
-			builder = new ComponentBuilder(builder);
-		} else {
-			builder = new ComponentBuilder();
-		}
-		return builder;
-	}
-	
-	@Override
-	public MessageBuilder reset() {
-		if (builder != null) {
-			components.add(builder.build());
-			builder = null;
-		}
-		return this;
-	}
-	
-	@Override
-	public MessageBuilder add(String text) {
-		freshenBuilder().text(text);
-		return this;
-	}
-	
-	@Override
-	public MessageBuilder colour(Colour colour) {
-		if (!builder.getColour().equals(colour)) {
-			freshenBuilder().colour(colour);
-		}
-		return this;
-	}
-	
-	@Override
-	public MessageBuilder style(Style style) {
-		if (!CollectionsUtil.checkForAnyMatches(builder.getStyles(), style::equals)) {
-			freshenBuilder().style(style);
-		}
-		return this;
-	}
-	
-	@Override
-	public MessageBuilder unstyle(Style style) {
-		if (CollectionsUtil.checkForAnyMatches(builder.getStyles(), style::equals)) {
-			freshenBuilder().unstyle(style);
-		}
-		return this;
-	}
-	
-	@Override
-	public Message build() {
-		return new Message(components.toArray(new Component[] {}));
-	}
+	/**
+	 * Builds into a fresh Message
+	 * 
+	 * @return a formed Message
+	 */
+	Message build();
 	
 }

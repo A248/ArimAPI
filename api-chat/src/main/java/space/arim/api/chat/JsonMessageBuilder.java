@@ -30,7 +30,7 @@ import space.arim.universal.util.collections.CollectionsUtil;
  * @author A248
  *
  */
-public class MessageJsonBuilder extends AbstractMessageBuilder implements MessageBuilderFramework {
+public class JsonMessageBuilder extends AbstractMessageBuilder implements MessageBuilder {
 
 	private final List<ComponentBuilder> builders = new ArrayList<ComponentBuilder>();
 	
@@ -38,7 +38,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * Creates an empty builder
 	 * 
 	 */
-	public MessageJsonBuilder() {
+	public JsonMessageBuilder() {
 		
 	}
 	
@@ -47,19 +47,19 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * 
 	 * @param components the components
 	 */
-	public MessageJsonBuilder(List<Component> components) {
+	public JsonMessageBuilder(List<Component> components) {
 		super(components);
 	}
 	
 	@Override
-	public MessageJsonBuilder append(Component component) {
+	public JsonMessageBuilder append(Component component) {
 		reset();
 		components.add(component);
 		return this;
 	}
 	
 	@Override
-	public MessageJsonBuilder append(Component...components) {
+	public JsonMessageBuilder append(Component...components) {
 		reset();
 		for (Component component : components) {
 			this.components.add(component);
@@ -84,20 +84,20 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @return the builder
 	 */
 	@Override
-	public MessageJsonBuilder reset() {
+	public JsonMessageBuilder reset() {
 		builders.forEach((builder) -> components.add(builder.build()));
 		builders.clear();
 		return this;
 	}
 	
 	@Override
-	public MessageJsonBuilder add(String text) {
+	public JsonMessageBuilder add(String text) {
 		freshenBuilder().text(text);
 		return this;
 	}
 	
 	@Override
-	public MessageJsonBuilder colour(Colour colour) {
+	public JsonMessageBuilder colour(Colour colour) {
 		if (builders.isEmpty() || !currentBuilder().getColour().equals(colour)) {
 			freshenBuilder().colour(colour);
 		}
@@ -105,7 +105,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	}
 	
 	@Override
-	public MessageJsonBuilder style(Style style) {
+	public JsonMessageBuilder style(Style style) {
 		if (builders.isEmpty() || !CollectionsUtil.checkForAnyMatches(currentBuilder().getStyles(), style::equals)) {
 			freshenBuilder().style(style);
 		}
@@ -113,12 +113,12 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	}
 	
 	@Override
-	public MessageJsonBuilder style(Style style, boolean enable) {
-		return (MessageJsonBuilder) MessageBuilderFramework.super.style(style, enable);
+	public JsonMessageBuilder style(Style style, boolean enable) {
+		return (JsonMessageBuilder) MessageBuilder.super.style(style, enable);
 	}
 	
 	@Override
-	public MessageJsonBuilder unstyle(Style style) {
+	public JsonMessageBuilder unstyle(Style style) {
 		if (builders.isEmpty() || CollectionsUtil.checkForAnyMatches(currentBuilder().getStyles(), style::equals)) {
 			freshenBuilder().unstyle(style);
 		}
@@ -141,7 +141,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param ttp the tooltip
 	 * @return the builder
 	 */
-	public MessageJsonBuilder tooltip(Message ttp) {
+	public JsonMessageBuilder tooltip(Message ttp) {
 		forEachJson((builder) -> builder.tooltip(ttp));
 		return this;
 	}
@@ -152,7 +152,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param ttp the tooltip
 	 * @return the builder
 	 */
-	public MessageJsonBuilder ttp(Message ttp) {
+	public JsonMessageBuilder ttp(Message ttp) {
 		return tooltip(ttp);
 	}
 	
@@ -162,7 +162,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param url the link
 	 * @return the builder
 	 */
-	public MessageJsonBuilder url(String url) {
+	public JsonMessageBuilder url(String url) {
 		forEachJson((builder) -> builder.url(url));
 		return this;
 	}
@@ -173,7 +173,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param url the link
 	 * @return the builder
 	 */
-	public MessageJsonBuilder hyperlink(String url) {
+	public JsonMessageBuilder hyperlink(String url) {
 		return url(url);
 	}
 	
@@ -183,7 +183,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param cmd the command
 	 * @return the builder
 	 */
-	public MessageJsonBuilder command(String cmd) {
+	public JsonMessageBuilder command(String cmd) {
 		forEachJson((builder) -> builder.cmd(cmd));
 		return this;
 	}
@@ -194,7 +194,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param cmd the command
 	 * @return the builder
 	 */
-	public MessageJsonBuilder cmd(String cmd) {
+	public JsonMessageBuilder cmd(String cmd) {
 		return command(cmd);
 	}
 	
@@ -204,7 +204,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param sgt the suggestion
 	 * @return the builder
 	 */
-	public MessageJsonBuilder suggest(String sgt) {
+	public JsonMessageBuilder suggest(String sgt) {
 		forEachJson((builder) -> builder.sgt(sgt));
 		return this;
 	}
@@ -215,7 +215,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param sgt the suggestion
 	 * @return the builder
 	 */
-	public MessageJsonBuilder sgt(String sgt) {
+	public JsonMessageBuilder sgt(String sgt) {
 		return suggest(sgt);
 	}
 	
@@ -225,7 +225,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param ins the insertion
 	 * @return the builder
 	 */
-	public MessageJsonBuilder insertion(String ins) {
+	public JsonMessageBuilder insertion(String ins) {
 		forEachJson((builder) -> builder.ins(ins));
 		return this;
 	}
@@ -236,7 +236,7 @@ public class MessageJsonBuilder extends AbstractMessageBuilder implements Messag
 	 * @param ins the insertion
 	 * @return the builder
 	 */
-	public MessageJsonBuilder ins(String ins) {
+	public JsonMessageBuilder ins(String ins) {
 		return insertion(ins);
 	}
 	

@@ -19,6 +19,7 @@
 package space.arim.api.chat;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 import space.arim.universal.util.collections.ArraysUtil;
@@ -115,22 +116,56 @@ public class Message {
 	}
 	
 	/**
-	 * Identical to {@link MessageBuilder}
+	 * Identical to {@link SimpleMessageBuilder}
 	 * 
 	 * @author A248
 	 *
 	 */
-	public class SimpleBuilder extends MessageBuilder {
+	public class SimpleBuilder extends SimpleMessageBuilder {
+		
+		/**
+		 * Creates an empty builder
+		 * 
+		 */
+		public SimpleBuilder() {
+			
+		}
+		
+		/**
+		 * Creates a builder with the given components
+		 * 
+		 * @param components the components
+		 */
+		public SimpleBuilder(List<Component> components) {
+			super(components);
+		}
 		
 	}
 	
 	/**
-	 * Identical to {@link MessageJsonBuilder}
+	 * Identical to {@link JsonMessageBuilder}
 	 * 
 	 * @author A248
 	 *
 	 */
-	public class JsonBuilder extends MessageJsonBuilder {
+	public class JsonBuilder extends JsonMessageBuilder {
+		
+		/**
+		 * Creates an empty builder
+		 * 
+		 */
+		public JsonBuilder() {
+			
+		}
+		
+		/**
+		 * Creates a builder with the given components
+		 * 
+		 * @param components the components
+		 */
+		public JsonBuilder(List<Component> components) {
+			super(components);
+		}
 		
 	}
 	
