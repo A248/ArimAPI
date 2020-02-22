@@ -56,8 +56,13 @@ public class Style extends Format {
 	 * @return the style, or <code>null</code> if not found
 	 */
 	public static Style fromCode(char code) {
+		Style style = fromCodeDirect(code);
+		return (style != null) ? style : fromCodeDirect(Character.toLowerCase(code));
+	}
+	
+	static Style fromCodeDirect(char code) {
 		for (Style style : values()) {
-			if (style.identifier() == code) {
+			if (code == style.identifier()) {
 				return style;
 			}
 		}

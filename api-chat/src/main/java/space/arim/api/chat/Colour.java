@@ -28,27 +28,39 @@ package space.arim.api.chat;
  */
 public class Colour extends Format {
 
-	public static final Colour BLACK = new Colour('0');
-	public static final Colour DARK_BLUE = new Colour('1');
-	public static final Colour DARK_GREEN = new Colour('2');
-	public static final Colour DARK_AQUA = new Colour('3');
-	public static final Colour DARK_RED = new Colour('4');
-	public static final Colour DARK_PURPLE = new Colour('5');
-	public static final Colour GOLD = new Colour('6');
-	public static final Colour GRAY = new Colour('7');
-	public static final Colour DARK_GRAY = new Colour('8');
-	public static final Colour BLUE = new Colour('9');
-	public static final Colour GREEN = new Colour('a');
-	public static final Colour AQUA = new Colour('b');
-	public static final Colour RED = new Colour('c');
-	public static final Colour LIGHT_PURPLE = new Colour('d');
-	public static final Colour YELLOW = new Colour('e');
-	public static final Colour WHITE = new Colour('f');
+	public static final Colour BLACK = new Colour('0', 0x000000);
+	public static final Colour DARK_BLUE = new Colour('1', 0x0000AA);
+	public static final Colour DARK_GREEN = new Colour('2', 0x00AA00);
+	public static final Colour DARK_AQUA = new Colour('3', 0x00AAAA);
+	public static final Colour DARK_RED = new Colour('4', 0xAA0000);
+	public static final Colour DARK_PURPLE = new Colour('5', 0xAA00AA);
+	public static final Colour GOLD = new Colour('6', 0xFFAA00);
+	public static final Colour GRAY = new Colour('7', 0xAAAAAA);
+	public static final Colour DARK_GRAY = new Colour('8', 0x555555);
+	public static final Colour BLUE = new Colour('9', 0x5555FF);
+	public static final Colour GREEN = new Colour('a', 0x55FF55);
+	public static final Colour AQUA = new Colour('b', 0x55FFFF);
+	public static final Colour RED = new Colour('c', 0xFF5555);
+	public static final Colour LIGHT_PURPLE = new Colour('d', 0xFF55FF);
+	public static final Colour YELLOW = new Colour('e', 0xFFFF55);
+	public static final Colour WHITE = new Colour('f', 0xFFFFFF);
 	
 	private static final Colour[] VALUES = {BLACK, DARK_BLUE, GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE};
 	
-	private Colour(char code) {
+	private final int hex;
+	
+	private Colour(char code, int hex) {
 		super(code, false);
+		this.hex = hex;
+	}
+	
+	/**
+	 * Gets the actual hexadecimal colour value of this Colour.
+	 * 
+	 * @return the hex value
+	 */
+	public int getHex() {
+		return hex;
 	}
 	
 	/**
@@ -67,8 +79,13 @@ public class Colour extends Format {
 	 * @return the colour, or <code>null</code> if not found
 	 */
 	public static Colour fromCode(char code) {
+		Colour colour = fromCodeDirect(code);
+		return (colour != null) ? colour : fromCodeDirect(Character.toLowerCase(code));
+	}
+	
+	static Colour fromCodeDirect(char code) {
 		for (Colour colour : values()) {
-			if (colour.identifier() == code) {
+			if (code == colour.identifier()) {
 				return colour;
 			}
 		}

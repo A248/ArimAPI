@@ -29,11 +29,14 @@ import space.arim.universal.util.collections.ArraysUtil;
 public class Format {
 
 	/**
-	 * The code to reset all formatting. <br>
-	 * In practice, this is not used in ArimAPI's chat objects; however, reset codes are applied when
+	 * The formatting code to reset all further formatting. <br>
+	 * <br>
+	 * <i>In practice</i>, this is not used in ArimAPI's chat objects; rather, reset codes are applied when
 	 * converting to platform specific representations (Bungee and Spigot's BaseComponent, or Sponge's Text). <br>
-	 * <b>As such, one should not rely on the presence of this Format in a Message or Component for detecting a formatting reset. </b>
-	 * 
+	 * Accordingly, methods in {@link MessageUtil} do not translate <code>RESET</code> codes. <br>
+	 * <br>
+	 * <b>As such, programmers should not rely on the presence of this Format in a {@link Message} or {@link Component} for detecting a formatting reset.</b> <br>
+	 * On the contrary, it is assumed there is a formatting reset between each <code>Component</code> within a <code>Message</code>.
 	 */
 	public static final Format RESET = new Format('r', true);
 	
@@ -90,11 +93,16 @@ public class Format {
 	 * @return the format, or <code>null</code> if not found
 	 */
 	public static Format fromCode(char code) {
+		Format format = fromCodeDirect(code);
+		return (format != null) ? format : fromCodeDirect(Character.toLowerCase(code));
+	}
+	
+	private static Format fromCodeDirect(char code) {
 		if (code == RESET.identifier()) {
 			return RESET;
 		}
-		Style style = Style.fromCode(code);
-		return (style != null) ? style : Colour.fromCode(code);
+		Style style = Style.fromCodeDirect(code);
+		return (style != null) ? style : Colour.fromCodeDirect(code);
 	}
 	
 }
