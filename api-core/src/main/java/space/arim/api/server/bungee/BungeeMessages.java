@@ -55,7 +55,7 @@ import space.arim.api.util.LazySingleton;
  * between a {@link Colour} and {@link Style}, both of which are subclasses of {@link Format}. <br>
  * The CCA makes no such distinction; all of its colours and formatting are contained in <code>ChatColor</code>. <br>
  * <br>
- * <i>JSON Messages</i> <br>
+ * <i>Json Messages</i> <br>
  * ArimAPI enables tooltips, urls, commands, suggestions, and insertions. The CCA has equivalent support for each of these.
  * The CCA includes additional <code>HoverEvent.Action</code> options: <code>HoverEvent.Action.SHOW_ACHIEVEMENT</code>, <code>SHOW_ENTITY</code>, and <code>SHOW_ITEM</code>.
  * For hover actions, ArimAPI only supports displaying tooltip messages. The tooltip, of course, may use colours and styles.
@@ -83,7 +83,7 @@ public class BungeeMessages implements MessagesConverter<BaseComponent[]> {
 	
 	/**
 	 * <b>ArimAPI {@literal -}> CCA</b>: Formatting codes <br>
-	 * Converts from ArimAPI's {@link Format} to a <code>ChatColor</code>.
+	 * Converts from a {@link Format} to a <code>ChatColor</code>.
 	 * 
 	 * @param format the source format
 	 * @return the equivalent <code>ChatColor</code>
@@ -94,7 +94,7 @@ public class BungeeMessages implements MessagesConverter<BaseComponent[]> {
 	
 	/**
 	 * <b>CCA {@literal -}> ArimAPI</b>: Formatting codes <br>
-	 * Converts from a <code>ChatColor</code> to ArimAPI's {@link Format}.
+	 * Converts from a <code>ChatColor</code> to a {@link Format}.
 	 * 
 	 * @param format the source format
 	 * @return the equivalent <code>Format</code>
@@ -202,7 +202,7 @@ public class BungeeMessages implements MessagesConverter<BaseComponent[]> {
 	 */
 	@Override
 	public Message convert(BaseComponent[] message) {
-		return new Message(Arrays.stream(message).map(this::convert).toArray(Component[]::new));
+		return (new Message(Arrays.stream(message).map(this::convert).toArray(Component[]::new))).clean();
 	}
 	
 }
