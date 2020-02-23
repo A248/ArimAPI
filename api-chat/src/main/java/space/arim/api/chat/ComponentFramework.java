@@ -54,9 +54,10 @@ public interface ComponentFramework extends Stringable {
 	}
 	
 	/**
-	 * Gets the style
+	 * Gets the styles on the Component. <br>
+	 * The result is a copy; modifying it will not modify the Component's styles.
 	 * 
-	 * @return the style, <code>null</code> indicates not set
+	 * @return the styles, <code>null</code> indicates not set
 	 */
 	Style[] getStyles();
 	
