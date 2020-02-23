@@ -22,8 +22,8 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 import space.arim.universal.registry.Registry;
 import space.arim.universal.registry.RegistryPriority;
+import space.arim.universal.registry.RequireRegistration;
 
-import space.arim.api.annotation.RequireRegistration;
 import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.server.TPSMeter;
 import space.arim.api.server.bungee.BungeeRegistrable;
