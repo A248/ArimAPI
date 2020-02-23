@@ -94,6 +94,32 @@ public class Component implements ComponentFramework {
 	 */
 	public class Builder extends ComponentBuilder {
 		
+		/**
+		 * Creates an empty builder
+		 * 
+		 */
+		public Builder() {
+			
+		}
+		
+		/**
+		 * Creates a builder with the given content
+		 * 
+		 */
+		public Builder(String text) {
+			super(text);
+		}
+		
+		/**
+		 * Creates a builder based on the given Component. <br>
+		 * The source Component's information is copied to the Component.Builder.
+		 * 
+		 * @param component the source component
+		 */
+		public Builder(ComponentFramework component) {
+			super(component);
+		}
+		
 	}
 	
 	@Override

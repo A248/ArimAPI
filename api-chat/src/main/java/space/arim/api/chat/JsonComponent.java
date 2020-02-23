@@ -119,6 +119,42 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 	 */
 	public class Builder extends JsonComponentBuilder {
 		
+		/**
+		 * Creates an empty builder
+		 * 
+		 */
+		public Builder() {
+			
+		}
+		
+		/**
+		 * Creates a builder with the given content
+		 * 
+		 */
+		public Builder(String text) {
+			super(text);
+		}
+		
+		/**
+		 * Creates a builder based on the given JsonComponent. <br>
+		 * The source JsonComponent's information is copied to the JsonComponentBuilder.
+		 * 
+		 * @param component the source component
+		 */
+		public Builder(JsonComponentFramework component) {
+			super(component);
+		}
+		
+		/**
+		 * Creates a builder based on the given Component. <br>
+		 * The source Component's information is copied to the JsonComponentBuilder.
+		 * 
+		 * @param component the source component
+		 */
+		public Builder(ComponentFramework component) {
+			super(component);
+		}
+		
 	}
 	
 	@Override
