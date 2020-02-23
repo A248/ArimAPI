@@ -28,7 +28,7 @@ import space.arim.universal.util.collections.CollectionsUtil;
  * @author A248
  *
  */
-public class SimpleMessageBuilder extends AbstractMessageBuilder implements MessageBuilder {
+public class SimpleMessageBuilder extends AbstractMessageBuilder {
 	
 	private ComponentBuilder builder;
 	
@@ -104,6 +104,11 @@ public class SimpleMessageBuilder extends AbstractMessageBuilder implements Mess
 			freshenBuilder().style(style);
 		}
 		return this;
+	}
+	
+	@Override
+	public SimpleMessageBuilder style(Style style, boolean enable) {
+		return (SimpleMessageBuilder) super.style(style, enable);
 	}
 	
 	@Override

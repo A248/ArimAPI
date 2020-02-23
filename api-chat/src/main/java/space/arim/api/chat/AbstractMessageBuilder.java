@@ -21,7 +21,7 @@ package space.arim.api.chat;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class AbstractMessageBuilder {
+abstract class AbstractMessageBuilder implements MessageBuilder {
 
 	final List<Component> components;
 	

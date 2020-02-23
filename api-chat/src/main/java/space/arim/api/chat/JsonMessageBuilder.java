@@ -30,7 +30,7 @@ import space.arim.universal.util.collections.CollectionsUtil;
  * @author A248
  *
  */
-public class JsonMessageBuilder extends AbstractMessageBuilder implements MessageBuilder {
+public class JsonMessageBuilder extends AbstractMessageBuilder {
 
 	private final List<ComponentBuilder> builders = new ArrayList<ComponentBuilder>();
 	
@@ -114,7 +114,7 @@ public class JsonMessageBuilder extends AbstractMessageBuilder implements Messag
 	
 	@Override
 	public JsonMessageBuilder style(Style style, boolean enable) {
-		return (JsonMessageBuilder) MessageBuilder.super.style(style, enable);
+		return (JsonMessageBuilder) super.style(style, enable);
 	}
 	
 	@Override
