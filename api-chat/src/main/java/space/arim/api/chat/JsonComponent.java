@@ -18,6 +18,8 @@
  */
 package space.arim.api.chat;
 
+import space.arim.universal.util.collections.ArraysUtil;
+
 /**
  * A specific kind of {@link Component} with JSON support. <br>
  * <br>
@@ -87,7 +89,7 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 	 */
 	@Override
 	public JsonComponent stripStyles() {
-		return new JsonComponent(getText(), getColour(), null, getTooltip(), getUrl(), getCommand(), getSuggestion(), getInsertion());
+		return new JsonComponent(getText(), getColour(), new Style[] {}, getTooltip(), getUrl(), getCommand(), getSuggestion(), getInsertion());
 	}
 	
 	/**
@@ -117,6 +119,30 @@ public class JsonComponent extends Component implements JsonComponentFramework {
 	 */
 	public class Builder extends JsonComponentBuilder {
 		
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + text.hashCode();
+		result = prime * result + ((colour == null) ? 0 : colour.hashCode());
+		result = prime * result + ArraysUtil.unorderedHashCode(styles);
+		result = prime * result + ((ttp == null) ? 0 : ttp.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((cmd == null) ? 0 : cmd.hashCode());
+		result = prime * result + ((sgt == null) ? 0 : sgt.hashCode());
+		result = prime * result + ((ins == null) ? 0 : ins.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof JsonComponent) {
+			JsonComponent other = (JsonComponent) object;
+			return text.equals(other.text) && ArraysUtil.unorderedEquals(styles, other.styles) && Colour.ColourCatalog.valueOf(colour) == Colour.ColourCatalog.valueOf(other.colour) && ((ttp == null) ? other.ttp == null : ttp.equals(other.ttp)) && ((url == null) ? other.url == null : url.equals(other.url)) && ((cmd == null) ? other.cmd == null : cmd.equals(other.cmd)) && ((sgt == null) ? other.sgt == null : sgt.equals(other.sgt)) && ((ins == null) ? other.ins == null : ins.equals(other.ins));
+		}
+		return false;
 	}
 	
 	@Override
