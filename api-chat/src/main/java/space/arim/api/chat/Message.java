@@ -21,6 +21,7 @@ package space.arim.api.chat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import space.arim.universal.util.collections.ArraysUtil;
 
@@ -102,7 +103,10 @@ public class Message {
 	 * @return a combined Message
 	 */
 	public Message concat(Component...components) {
-		return new Message(ArraysUtil.combine(Component.class, getComponents(), components));
+		if (components == null || components.length == 0) {
+			return this;
+		}
+		return new Message(Stream.concat(Arrays.stream(getComponents()), Arrays.stream(components)).toArray(Component[]::new));
 	}
 	
 	/**
