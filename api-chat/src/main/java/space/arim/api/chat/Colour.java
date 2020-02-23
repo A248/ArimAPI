@@ -45,8 +45,6 @@ public class Colour extends Format {
 	public static final Colour YELLOW = new Colour('e', 0xFFFF55);
 	public static final Colour WHITE = new Colour('f', 0xFFFFFF);
 	
-	private static final Colour[] VALUES = {BLACK, DARK_BLUE, GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE};
-	
 	private final int hex;
 	
 	private Colour(char code, int hex) {
@@ -64,12 +62,65 @@ public class Colour extends Format {
 	}
 	
 	/**
-	 * Gets all colours.
+	 * Each Colour is contained within this enum for convenience. <br>
+	 * <br>
+	 * Using an enum allows operability inside witch statements and annotation values.
 	 * 
-	 * @return an array of all colours
+	 * @author A248
+	 *
 	 */
-	public static Colour[] values() {
-		return VALUES;
+	public enum ColourCatalog {
+		
+		BLACK(Colour.BLACK),
+		DARK_BLUE(Colour.DARK_BLUE),
+		DARK_GREEN(Colour.DARK_GREEN),
+		DARK_AQUA(Colour.DARK_AQUA),
+		DARK_RED(Colour.DARK_RED),
+		DARK_PURPLE(Colour.DARK_PURPLE),
+		GOLD(Colour.GOLD),
+		GRAY(Colour.GRAY),
+		DARK_GRAY(Colour.DARK_GRAY),
+		BLUE(Colour.BLUE),
+		GREEN(Colour.GREEN),
+		AQUA(Colour.AQUA),
+		RED(Colour.RED),
+		LIGHT_PURPLE(Colour.LIGHT_PURPLE),
+		YELLOW(Colour.YELLOW),
+		WHITE(Colour.WHITE);
+		
+		private final Colour colour;
+		
+		private ColourCatalog(Colour colour) {
+			this.colour = colour;
+		}
+		
+		/**
+		 * Gets the {@link Colour} corresponding to this enum entry.
+		 * 
+		 * @return the colour itself
+		 */
+		public Colour getColourValue() {
+			return colour;
+		}
+		
+		/**
+		 * Gets the enum entry corresponding to a {@link Colour}.
+		 * 
+		 * @param colour the colour itself
+		 * @return the enum entry
+		 */
+		public static ColourCatalog valueOf(Colour colour) {
+			if (colour == null) {
+				return null;
+			}
+			for (ColourCatalog entry : ColourCatalog.values()) {
+				if (entry.getColourValue().equals(colour)) {
+					return entry;
+				}
+			}
+			throw new IllegalStateException("No corresponding enum entry!");
+		}
+		
 	}
 	
 	/**
@@ -84,9 +135,9 @@ public class Colour extends Format {
 	}
 	
 	static Colour fromCodeDirect(char code) {
-		for (Colour colour : values()) {
-			if (code == colour.identifier()) {
-				return colour;
+		for (ColourCatalog colour : ColourCatalog.values()) {
+			if (code == colour.getColourValue().identifier()) {
+				return colour.getColourValue();
 			}
 		}
 		return null;
