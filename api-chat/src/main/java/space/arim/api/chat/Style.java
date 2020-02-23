@@ -34,19 +34,59 @@ public class Style extends Format {
 	public static final Style UNDERLINE = new Style('n');
 	public static final Style ITALIC = new Style('o');
 	
-	private static final Style[] VALUES = new Style[] {MAGIC, BOLD, STRIKETHROUGH, UNDERLINE, ITALIC};
-	
 	private Style(char code) {
 		super(code, true);
 	}
 	
 	/**
-	 * Gets all styles.
+	 * Each Style is contained within this enum for convenience. <br>
+	 * <br>
+	 * Using an enum allows operability inside witch statements and annotation values.
 	 * 
-	 * @return an array of all styles
+	 * @author A248
+	 *
 	 */
-	public static Style[] values() {
-		return VALUES;
+	public enum StyleCatalog {
+		
+		MAGIC(Style.MAGIC),
+		BOLD(Style.BOLD),
+		STRIKETHROUGH(Style.STRIKETHROUGH),
+		UNDERLINE(Style.UNDERLINE),
+		ITALIC(Style.ITALIC);
+		
+		private final Style style;
+		
+		private StyleCatalog(Style style) {
+			this.style = style;
+		}
+		
+		/**
+		 * Gets the {@link Style} corresponding to this enum entry.
+		 * 
+		 * @return the style itself
+		 */
+		public Style getStyleValue() {
+			return style;
+		}
+		
+		/**
+		 * Gets the enum entry corresponding to a {@link Style}.
+		 * 
+		 * @param style the style itself
+		 * @return the enum entry
+		 */
+		public static StyleCatalog valueOf(Style style) {
+			if (style == null) {
+				return null;
+			}
+			for (StyleCatalog entry : StyleCatalog.values()) {
+				if (entry.getStyleValue().equals(style)) {
+					return entry;
+				}
+			}
+			throw new IllegalStateException("No corresponding enum entry!");
+		}
+		
 	}
 	
 	/**
@@ -61,9 +101,9 @@ public class Style extends Format {
 	}
 	
 	static Style fromCodeDirect(char code) {
-		for (Style style : values()) {
-			if (code == style.identifier()) {
-				return style;
+		for (StyleCatalog style : StyleCatalog.values()) {
+			if (code == style.getStyleValue().identifier()) {
+				return style.getStyleValue();
 			}
 		}
 		return null;
