@@ -18,6 +18,8 @@
  */
 package space.arim.api.chat;
 
+import java.util.Objects;
+
 import space.arim.universal.util.collections.ArraysUtil;
 
 /**
@@ -30,7 +32,7 @@ public class ComponentBuilder implements ComponentFramework {
 	
 	private String text = "";
 	private Colour colour;
-	private Style[] styles;
+	private Style[] styles = new Style[] {};
 	
 	/**
 	 * Creates an empty builder
@@ -72,7 +74,7 @@ public class ComponentBuilder implements ComponentFramework {
 	
 	@Override
 	public Style[] getStyles() {
-		return styles;
+		return ArraysUtil.copy(styles);
 	}
 	
 	/**
@@ -104,7 +106,7 @@ public class ComponentBuilder implements ComponentFramework {
 	 * @return the builder
 	 */
 	public ComponentBuilder styles(Style[] styles) {
-		this.styles = styles;
+		this.styles = Objects.requireNonNull(styles, "Styles must not be null!");
 		return this;
 	}
 	
