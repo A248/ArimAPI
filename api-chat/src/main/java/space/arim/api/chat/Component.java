@@ -20,6 +20,10 @@ package space.arim.api.chat;
 
 import java.util.Objects;
 
+import space.arim.universal.util.collections.ArraysUtil;
+
+import space.arim.api.chat.Colour.ColourCatalog;
+
 /**
  * A part of a {@link Message} with a defined {@link Colour} and {@link Style}. <br>
  * <br>
@@ -30,14 +34,14 @@ import java.util.Objects;
  */
 public class Component implements ComponentFramework {
 
-	private final String text;
-	private final Colour colour;
-	private final Style[] styles;
+	final String text;
+	final Colour colour;
+	final Style[] styles;
 	
 	Component(String text, Colour colour, Style[] styles) {
-		this.text = Objects.requireNonNull(text, "Content of a Component must not be null");
+		this.text = Objects.requireNonNull(text, "Content of a Component must not be null!");
 		this.colour = colour;
-		this.styles = styles;
+		this.styles = Objects.requireNonNull(styles, "Styles of a Component must not be null!");
 	}
 	
 	@Override
@@ -52,7 +56,7 @@ public class Component implements ComponentFramework {
 	
 	@Override
 	public Style[] getStyles() {
-		return styles;
+		return ArraysUtil.copy(styles);
 	}
 	
 	/**
@@ -90,6 +94,25 @@ public class Component implements ComponentFramework {
 	 */
 	public class Builder extends ComponentBuilder {
 		
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + text.hashCode();
+		result = prime * result + ((colour == null) ? 0 : colour.hashCode());
+		result = prime * result + ArraysUtil.unorderedHashCode(styles);
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Component) {
+			Component other = (Component) object;
+			return text.equals(other.text) && ArraysUtil.unorderedEquals(styles, other.styles) && ColourCatalog.valueOf(colour) == ColourCatalog.valueOf(other.colour);
+		}
+		return false;
 	}
 	
 	@Override
