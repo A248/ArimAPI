@@ -57,7 +57,17 @@ public class Message {
 	 * @return the array of components
 	 */
 	public Component[] getComponents() {
-		return components;
+		return ArraysUtil.copy(components);
+	}
+	
+	/**
+	 * Removes internal <code>JsonComponent</code>s without any Json features, replacing them with normal <code>Component</code>s. <br>
+	 * Makes no functional changes. See {@link JsonMessageBuilder#cleanBuild()}.
+	 * 
+	 * @return a fresh Message cleaned of unnecessary <code>JsonComponent</code>s
+	 */
+	public Message clean() {
+		return convertEach((component) -> (component instanceof JsonComponent && !((JsonComponent) component).hasAnyJsonFeatures()) ? ((JsonComponent) component).stripJson() : component);
 	}
 	
 	/**
@@ -175,15 +185,12 @@ public class Message {
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(components);
-		return result;
+		return 31 + Arrays.hashCode(components);
 	}
 	
 	@Override
 	public boolean equals(Object object) {
-		return object instanceof Message && Arrays.equals(((Message) object).getComponents(), getComponents());
+		return object instanceof Message && Arrays.equals(((Message) object).components, components);
 	}
 	
 	@Override
