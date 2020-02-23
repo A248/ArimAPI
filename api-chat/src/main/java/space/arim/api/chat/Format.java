@@ -18,8 +18,6 @@
  */
 package space.arim.api.chat;
 
-import space.arim.universal.util.collections.ArraysUtil;
-
 /**
  * Some kind of formatting, whether a {@link Colour} or {@link Style}
  * 
@@ -39,8 +37,6 @@ public class Format {
 	 * On the contrary, it is assumed there is a formatting reset between each <code>Component</code> within a <code>Message</code>.
 	 */
 	public static final Format RESET = new Format('r', true);
-	
-	private static final Format[] values = ArraysUtil.combine(new Format[] {RESET}, Style.values(), Colour.values());
 	
 	private final char identifier;
 	private final boolean style;
@@ -78,12 +74,86 @@ public class Format {
 	}
 	
 	/**
-	 * Gets all formats.
+	 * Each Format is contained within this enum for convenience. <br>
+	 * <br>
+	 * Using an enum allows operability inside witch statements and annotation values.
 	 * 
-	 * @return an array of all formats
+	 * @author A248
+	 *
 	 */
-	public static Format[] values() {
-		return values;
+	public enum FormatCatalog {
+		
+		RESET(Format.RESET),
+		
+		MAGIC(Style.MAGIC),
+		BOLD(Style.BOLD),
+		STRIKETHROUGH(Style.STRIKETHROUGH),
+		UNDERLINE(Style.UNDERLINE),
+		ITALIC(Style.ITALIC),
+		
+		BLACK(Colour.BLACK),
+		DARK_BLUE(Colour.DARK_BLUE),
+		DARK_GREEN(Colour.DARK_GREEN),
+		DARK_AQUA(Colour.DARK_AQUA),
+		DARK_RED(Colour.DARK_RED),
+		DARK_PURPLE(Colour.DARK_PURPLE),
+		GOLD(Colour.GOLD),
+		GRAY(Colour.GRAY),
+		DARK_GRAY(Colour.DARK_GRAY),
+		BLUE(Colour.BLUE),
+		GREEN(Colour.GREEN),
+		AQUA(Colour.AQUA),
+		RED(Colour.RED),
+		LIGHT_PURPLE(Colour.LIGHT_PURPLE),
+		YELLOW(Colour.YELLOW),
+		WHITE(Colour.WHITE);
+		
+		private final Format format;
+		
+		private FormatCatalog(Format format) {
+			this.format = format;
+		}
+		
+		/**
+		 * Gets the {@link Format} corresponding to this enum entry.
+		 * 
+		 * @return the format itself
+		 */
+		public Format getFormatValue() {
+			return format;
+		}
+		
+		/**
+		 * Gets the enum entry corresponding to a {@link Format}.
+		 * 
+		 * @param format the format itself
+		 * @return the enum entry
+		 */
+		public static FormatCatalog valueOf(Format format) {
+			if (format == null) {
+				return null;
+			}
+			for (FormatCatalog entry : FormatCatalog.values()) {
+				if (entry.getFormatValue().equals(format)) {
+					return entry;
+				}
+			}
+			throw new IllegalStateException("No corresponding enum entry!");
+		}
+		
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + identifier;
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		return object instanceof Format && identifier() == ((Format) object).identifier();
 	}
 	
 	/**
