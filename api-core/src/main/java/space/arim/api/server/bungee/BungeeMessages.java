@@ -118,6 +118,9 @@ public class BungeeMessages implements MessagesConverter<BaseComponent[]> {
 	 * @return an equivalent <code>BaseComponent</code>
 	 */
 	public BaseComponent convert(Component component) {
+		if (component == null) {
+			return null;
+		}
 		TextComponent comp = new TextComponent(component.getText());
 		comp.setColor(convert(component.getColour()));
 		comp.setObfuscated(component.hasStyle(Style.MAGIC));
@@ -152,6 +155,9 @@ public class BungeeMessages implements MessagesConverter<BaseComponent[]> {
 	 * @return an equivalent <code>Component</code>
 	 */
 	public Component convert(BaseComponent component) {
+		if (component == null) {
+			return null;
+		}
 		JsonComponentBuilder builder = new JsonComponentBuilder();
 		ClickEvent click = component.getClickEvent();
 		if (click != null) {
@@ -190,7 +196,7 @@ public class BungeeMessages implements MessagesConverter<BaseComponent[]> {
 	 */
 	@Override
 	public BaseComponent[] convert(Message message) {
-		return Arrays.stream(message.getComponents()).map(this::convert).toArray(BaseComponent[]::new);
+		return (message == null) ? null : Arrays.stream(message.getComponents()).map(this::convert).toArray(BaseComponent[]::new);
 	}
 	
 	/**
@@ -202,7 +208,7 @@ public class BungeeMessages implements MessagesConverter<BaseComponent[]> {
 	 */
 	@Override
 	public Message convert(BaseComponent[] message) {
-		return (new Message(Arrays.stream(message).map(this::convert).toArray(Component[]::new))).clean();
+		return (message == null) ? null : (new Message(Arrays.stream(message).map(this::convert).toArray(Component[]::new))).clean();
 	}
 	
 }
