@@ -24,7 +24,7 @@
 		<core.version>0.6.1</core.version>
 		<core.author>A248</core.author>
 		<arimapi.version>0.4.1-SNAPSHOT</arimapi.version>
-		<universal.version>0.6.7-SNAPSHOT</universal.version>
+		<universal.version>0.6.8-SNAPSHOT</universal.version>
 		<hsqldb.version>2.5.0</hsqldb.version>
 		<hikari.version>3.4.1</hikari.version>
 		<slf4j.version>1.7.30</slf4j.version>
