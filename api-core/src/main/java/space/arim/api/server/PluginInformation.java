@@ -30,6 +30,8 @@ import org.spongepowered.api.plugin.PluginContainer;
 
 import net.md_5.bungee.api.plugin.PluginDescription;
 
+import space.arim.universal.util.collections.ArraysUtil;
+
 import space.arim.api.annotation.Platform;
 
 /**
@@ -108,23 +110,48 @@ public final class PluginInformation {
 		return new PluginInformation(spongePlugin.getId(), Objects.requireNonNull(spongePlugin.getVersion().orElse(null), "Version must not be null!"), spongePlugin.getAuthors().toArray(new String[] {}), spongePlugin.getUrl().orElse(null), spongePlugin.getDescription().orElse(null));
 	}
 	
+	/**
+	 * Gets the name of the plugin
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Gets the version of the plugin
+	 * 
+	 * @return the version
+	 */
 	public String getVersion() {
 		return version;
 	}
 	
+	/**
+	 * Gets the authors of the plugin
+	 * 
+	 * @return the authors
+	 */
 	public String[] getAuthors() {
-		return authors;
+		return ArraysUtil.copy(authors);
 	}
 	
+	/**
+	 * Gets a possible url or website for the plugin
+	 * 
+	 * @return a potential url
+	 */
 	@Nullable
 	public String getUrl() {
 		return url;
 	}
 	
+	/**
+	 * Gets a possible description for the plugin
+	 * 
+	 * @return a potential description
+	 */
 	@Nullable
 	public String getDescription() {
 		return description;
