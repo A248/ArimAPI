@@ -72,7 +72,7 @@ public final class StringsUtil {
 				builder.append(separator).append(m);
 			}
 		}
-		return builder.length() == 0 ? "" : builder.toString().substring(1);
+		return builder.length() == 0 ? "" : builder.substring(1);
 	}
 	
 	public static String concat(Collection<String> input, char separator) {
