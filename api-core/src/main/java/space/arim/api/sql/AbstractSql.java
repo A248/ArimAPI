@@ -27,7 +27,7 @@ import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetFactory;
 import javax.sql.rowset.RowSetProvider;
 
-import space.arim.universal.util.erringfunction.ErringLazySingleton;
+import space.arim.universal.util.function.ErringLazySingleton;
 
 public abstract class AbstractSql implements SQLExecution {
 	

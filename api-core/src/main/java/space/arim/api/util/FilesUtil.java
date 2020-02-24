@@ -28,7 +28,7 @@ import java.io.Writer;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
-import space.arim.universal.util.erringfunction.ErringConsumer;
+import space.arim.universal.util.function.ErringConsumer;
 
 /**
  * Files utility.
