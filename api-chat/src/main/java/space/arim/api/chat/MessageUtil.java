@@ -79,6 +79,16 @@ public final class MessageUtil {
 		return CHARACTER_PATTERN_CACHE.computeIfAbsent(colourChar, MessageUtil::compileColourPattern);
 	}
 	
+	/**
+	 * Gets the default regex pattern for matching valid colour codes. <br>
+	 * Uses {@link #DEFAULT_COLOUR_CHAR}
+	 * 
+	 * @return the default regex pattern for colour codes
+	 */
+	public static Pattern getDefaultColourPattern() {
+		return getColourPatternCached(DEFAULT_COLOUR_CHAR);
+	}
+	
 	private static <T extends MessageBuilder> T addColouredContent(String msg, T builder, Matcher colourMatcher) {
 		int previous = 0;
 		while (colourMatcher.find()) {
@@ -131,46 +141,14 @@ public final class MessageUtil {
 		return (new SimpleMessageBuilder()).add(msg).build();
 	}
 	
-	private enum TagType {
-		NONE,
-		TTP,
-		URL,
-		CMD,
-		SGT,
-		INS;
-		
-		static final int TAG_NOTATION_LENGTH = 4;
-		
-	}
-	
-	private static TagType getJsonTag(String node) {
-		if (node.length() <= TagType.TAG_NOTATION_LENGTH) {
-			return TagType.NONE;
-		}
-		switch (node.substring(0, 4).toLowerCase()) {
-		case "ttp:":
-			return TagType.TTP;
-		case "url:":
-			return TagType.URL;
-		case "cmd:":
-			return TagType.CMD;
-		case "sgt:":
-			return TagType.SGT;
-		case "ins:":
-			return TagType.INS;
-		default:
-			return TagType.NONE;
-		}
-	}
-	
 	private static Message parseJson(String msg, BiConsumer<String, ? super MessageBuilder> baseNodeGenerator, Function<String, ? extends Message> tooltipGenerator) {
 		JsonMessageBuilder builder = new JsonMessageBuilder();
 		for (String node : JSON_NODE_PATTERN.split(msg)) {
 			if (node.isEmpty()) {
 				continue;
 			}
-			TagType tag = getJsonTag(node);
-			if (tag.equals(TagType.NONE)) {
+			JsonTag tag = JsonTag.getFor(node);
+			if (tag.equals(JsonTag.NONE)) {
 				baseNodeGenerator.accept(node, builder);
 			} else {
 				String value = node.substring(4);
