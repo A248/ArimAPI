@@ -240,4 +240,14 @@ public final class MessageUtil {
 		return getColourPatternCached(sourceColourChar).matcher(msg).replaceAll(targetColourChar + "$2");
 	}
 	
+	/**
+	 * Changes valid colour codes using the given source char to equivalent codes using '&' as the target char.
+	 * 
+	 * @param sourceColourChar the source colour char code
+	 * @return the input string with valid colour codes converted
+	 */
+	public static String transformColourCodes(String msg, char sourceColourChar) {
+		return transformColourCodes(msg, sourceColourChar, DEFAULT_COLOUR_CHAR);
+	}
+	
 }
