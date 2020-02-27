@@ -75,7 +75,7 @@ public final class MessageUtil {
 	 * @param colourChar the colour code character, like '&'
 	 * @return a regex pattern for colour codes
 	 */
-	private static Pattern getColourPatternCached(char colourChar) {
+	public static Pattern getColourPatternCached(char colourChar) {
 		return CHARACTER_PATTERN_CACHE.computeIfAbsent(colourChar, MessageUtil::compileColourPattern);
 	}
 	
