@@ -51,7 +51,7 @@ public final class MessageUtil {
 	private static final Pattern JSON_NODE_PATTERN = Pattern.compile("||", Pattern.LITERAL);
 	
 	private static Pattern compileColourPattern(char colourChar) {
-		return Pattern.compile(colourChar + "[0-9A-Fa-fK-Rk-r]");
+		return Pattern.compile(Pattern.compile(String.valueOf(colourChar), Pattern.LITERAL).pattern() + "[0-9A-Fa-fK-Rk-r]");
 	}
 	
 	/**
@@ -227,6 +227,17 @@ public final class MessageUtil {
 	 */
 	public static Message parseUncolouredJson(String msg) {
 		return parseJson(msg, (node, builder) -> builder.add(node), MessageUtil::parseUncoloured);
+	}
+	
+	/**
+	 * Changes valid colour codes using the given source char to equivalent codes using the target char.
+	 * 
+	 * @param sourceColourChar the source colour char code
+	 * @param targetColourChar the target colour char code
+	 * @return the input string with valid colour codes converted
+	 */
+	public static String transformColourCodes(String msg, char sourceColourChar, char targetColourChar) {
+		return getColourPatternCached(sourceColourChar).matcher(msg).replaceAll(targetColourChar + "$2");
 	}
 	
 }
