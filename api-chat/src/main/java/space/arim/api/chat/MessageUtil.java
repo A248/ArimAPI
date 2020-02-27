@@ -50,8 +50,33 @@ public final class MessageUtil {
 	private static final ConcurrentHashMap<Character, Pattern> CHARACTER_PATTERN_CACHE = new ConcurrentHashMap<Character, Pattern>();
 	private static final Pattern JSON_NODE_PATTERN = Pattern.compile("||", Pattern.LITERAL);
 	
-	private static Pattern getPattern(char colourChar) {
-		return CHARACTER_PATTERN_CACHE.computeIfAbsent(colourChar, (character) -> Pattern.compile(character + "[0-9A-Fa-fK-Rk-r]"));
+	private static Pattern compileColourPattern(char colourChar) {
+		return Pattern.compile(colourChar + "[0-9A-Fa-fK-Rk-r]");
+	}
+	
+	/**
+	 * Gets a regex pattern for an arbitrary colour char, such as '&' or '§'. <br>
+	 * The pattern will match all valid colour codes constructed using the given char.
+	 * 
+	 * @param colourChar the colour code character, like '&'
+	 * @return a regex pattern for colour codes
+	 */
+	public static Pattern getColourPattern(char colourChar) {
+		return (colourChar == '&' || colourChar == '§') ? getColourPatternCached(colourChar) : compileColourPattern(colourChar);
+	}
+	
+	/**
+	 * Gets a regex pattern for an arbitrary colour char, such as '&' or '§'. <br>
+	 * The pattern will match all valid colour codes constructed using the given char. <br>
+	 * <br>
+	 * Unlike {@link #getColourPattern(char)}, this method caches the results in order
+	 * to provide faster resolution for successive calls. The cache is thread safe.
+	 * 
+	 * @param colourChar the colour code character, like '&'
+	 * @return a regex pattern for colour codes
+	 */
+	private static Pattern getColourPatternCached(char colourChar) {
+		return CHARACTER_PATTERN_CACHE.computeIfAbsent(colourChar, MessageUtil::compileColourPattern);
 	}
 	
 	private static <T extends MessageBuilder> T addColouredContent(String msg, T builder, Matcher colourMatcher) {
@@ -83,7 +108,7 @@ public final class MessageUtil {
 	 * @return a formed Message
 	 */
 	public static Message parse(String msg, char colourChar) {
-		return parse(msg, getPattern(colourChar));
+		return parse(msg, getColourPatternCached(colourChar));
 	}
 	
 	/**
@@ -181,7 +206,7 @@ public final class MessageUtil {
 	 * @return a formed Message
 	 */
 	public static Message parseJson(String msg, char colourChar) {
-		return parseJson(msg, getPattern(colourChar));
+		return parseJson(msg, getColourPatternCached(colourChar));
 	}
 	
 	/**
