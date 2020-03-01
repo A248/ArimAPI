@@ -18,7 +18,6 @@
  */
 package space.arim.api.chat;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -30,11 +29,12 @@ import java.util.regex.Pattern;
  * <b>Colour Parsing</b>: <br>
  * * Uses '&' colour codes by default. ({@link #DEFAULT_COLOUR_CHAR}) <br>
  * * Does not add or convert <code>Format.RESET</code> codes, see {@link Format#RESET} for more information. <br>
+ * * To use a colour code char other than the default '&', use {@link FormattingCodePattern}.
  * <br>
- * <b>JSON Parsing</b>: <br>
- * * Parses Minecraft JSON messages, not JSON data objects. <br>
+ * <b>Json Message Parsing</b>: <br>
+ * * Parses Minecraft Json messages, not JSON data objects. <br>
  * * Includes colour parsing by default. <br>
- * * Follows RezzedUp's JSON.sk format.
+ * * Follows RezzedUp's JSON.sk format. <br>
  * 
  * @author A248
  *
@@ -47,47 +47,12 @@ public final class MessageUtil {
 	 */
 	public static final char DEFAULT_COLOUR_CHAR = '&';
 	
-	private static final ConcurrentHashMap<Character, Pattern> CHARACTER_PATTERN_CACHE = new ConcurrentHashMap<Character, Pattern>();
-	private static final Pattern JSON_NODE_PATTERN = Pattern.compile("||", Pattern.LITERAL);
-	
-	private static Pattern compileColourPattern(char colourChar) {
-		return Pattern.compile(Pattern.compile(String.valueOf(colourChar), Pattern.LITERAL).pattern() + "[0-9A-Fa-fK-Rk-r]");
-	}
-	
 	/**
-	 * Gets a regex pattern for an arbitrary colour char, such as '&' or '§'. <br>
-	 * The pattern will match all valid colour codes constructed using the given char.
+	 * A regex pattern matching double pipes, '||'. <br>
+	 * Double pipes are used to signify the start of another json node.
 	 * 
-	 * @param colourChar the colour code character, like '&'
-	 * @return a regex pattern for colour codes
 	 */
-	public static Pattern getColourPattern(char colourChar) {
-		return (colourChar == '&' || colourChar == '§') ? getColourPatternCached(colourChar) : compileColourPattern(colourChar);
-	}
-	
-	/**
-	 * Gets a regex pattern for an arbitrary colour char, such as '&' or '§'. <br>
-	 * The pattern will match all valid colour codes constructed using the given char. <br>
-	 * <br>
-	 * Unlike {@link #getColourPattern(char)}, this method caches the results in order
-	 * to provide faster resolution for successive calls. The cache is thread safe.
-	 * 
-	 * @param colourChar the colour code character, like '&'
-	 * @return a regex pattern for colour codes
-	 */
-	public static Pattern getColourPatternCached(char colourChar) {
-		return CHARACTER_PATTERN_CACHE.computeIfAbsent(colourChar, MessageUtil::compileColourPattern);
-	}
-	
-	/**
-	 * Gets the default regex pattern for matching valid colour codes. <br>
-	 * Uses {@link #DEFAULT_COLOUR_CHAR}
-	 * 
-	 * @return the default regex pattern for colour codes
-	 */
-	public static Pattern getDefaultColourPattern() {
-		return getColourPatternCached(DEFAULT_COLOUR_CHAR);
-	}
+	public static final Pattern DOUBLE_PIPE_PATTERN = Pattern.compile("||", Pattern.LITERAL);
 	
 	private static <T extends MessageBuilder> T addColouredContent(String msg, T builder, Matcher colourMatcher) {
 		int previous = 0;
@@ -114,21 +79,22 @@ public final class MessageUtil {
 	 * <i>Invalid colour codes are simply ignored</i>.
 	 * 
 	 * @param msg the source message
-	 * @param colourChar the character signifying the start of a colour code
+	 * @param colourPattern the pattern corresponding to the colour code char
 	 * @return a formed Message
 	 */
-	public static Message parse(String msg, char colourChar) {
-		return parse(msg, getColourPatternCached(colourChar));
+	public static Message parse(String msg, FormattingCodePattern colourPattern) {
+		return parse(msg, colourPattern.getValue());
 	}
 	
 	/**
-	 * Parses a <code>Message</code> from text using '&' colour code formatting.
+	 * Parses a <code>Message</code> from text using '&' colour code formatting. <br>
+	 * <i>Invalid colour codes are simply ignored</i>.
 	 * 
 	 * @param msg the source message
 	 * @return a formed Message
 	 */
 	public static Message parse(String msg) {
-		return parse(msg, DEFAULT_COLOUR_CHAR);
+		return parse(msg, FormattingCodePattern.get());
 	}
 	
 	/**
@@ -143,7 +109,7 @@ public final class MessageUtil {
 	
 	private static Message parseJson(String msg, BiConsumer<String, ? super MessageBuilder> baseNodeGenerator, Function<String, ? extends Message> tooltipGenerator) {
 		JsonMessageBuilder builder = new JsonMessageBuilder();
-		for (String node : JSON_NODE_PATTERN.split(msg)) {
+		for (String node : DOUBLE_PIPE_PATTERN.split(msg)) {
 			if (node.isEmpty()) {
 				continue;
 			}
@@ -177,14 +143,16 @@ public final class MessageUtil {
 	
 	/**
 	 * Parses a <code>Message</code>, including JSON features, from text using colour code formatting, e.g. '&a' or '§6'. <br>
-	 * <i>Invalid colour codes are simply ignored</i>.
+	 * <i>Invalid colour codes are simply ignored</i>. <br>
+	 * <br>
+	 * The colour pattern to use <b>MUST</b> be fetched as specified  in the main documentation ({@link MessageUtil}).
 	 * 
 	 * @param msg the source message
-	 * @param colourChar the character signifying the start of a colour code
+	 * @param colourPattern the pattern corresponding to the colour code char
 	 * @return a formed Message
 	 */
-	public static Message parseJson(String msg, char colourChar) {
-		return parseJson(msg, getColourPatternCached(colourChar));
+	public static Message parseJson(String msg, FormattingCodePattern colourPattern) {
+		return parseJson(msg, colourPattern.getValue());
 	}
 	
 	/**
@@ -194,7 +162,7 @@ public final class MessageUtil {
 	 * @return a formed Message
 	 */
 	public static Message parseJson(String msg) {
-		return parseJson(msg, DEFAULT_COLOUR_CHAR);
+		return parseJson(msg, FormattingCodePattern.get());
 	}
 	
 	/**
@@ -205,27 +173,6 @@ public final class MessageUtil {
 	 */
 	public static Message parseUncolouredJson(String msg) {
 		return parseJson(msg, (node, builder) -> builder.add(node), MessageUtil::parseUncoloured);
-	}
-	
-	/**
-	 * Changes valid colour codes using the given source char to equivalent codes using the target char.
-	 * 
-	 * @param sourceColourChar the source colour char code
-	 * @param targetColourChar the target colour char code
-	 * @return the input string with valid colour codes converted
-	 */
-	public static String transformColourCodes(String msg, char sourceColourChar, char targetColourChar) {
-		return getColourPatternCached(sourceColourChar).matcher(msg).replaceAll(targetColourChar + "$2");
-	}
-	
-	/**
-	 * Changes valid colour codes using the given source char to equivalent codes using '&' as the target char.
-	 * 
-	 * @param sourceColourChar the source colour char code
-	 * @return the input string with valid colour codes converted
-	 */
-	public static String transformColourCodes(String msg, char sourceColourChar) {
-		return transformColourCodes(msg, sourceColourChar, DEFAULT_COLOUR_CHAR);
 	}
 	
 }

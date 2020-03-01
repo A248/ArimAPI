@@ -9,7 +9,7 @@
 		1. Update property core.version
 		2. Update versions in all child modules
 	-->
-	<version>0.6.1-SNAPSHOT</version>
+	<version>0.7.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>ArimAPI</name>
@@ -21,9 +21,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
-		<core.version>0.6.1</core.version>
+		<core.version>0.7.0</core.version>
 		<core.author>A248</core.author>
-		<arimapi.version>0.4.1-SNAPSHOT</arimapi.version>
 		<universal.version>0.6.8-SNAPSHOT</universal.version>
 		<hsqldb.version>2.5.0</hsqldb.version>
 		<hikari.version>3.4.1</hikari.version>
@@ -63,6 +62,19 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.1.1</version>
+					<executions>
+						<execution>
+							<id>generate-javadocs</id>
+							<goals>
+								<goal>aggregate</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.0</version>
 					<configuration>
@@ -93,6 +105,9 @@
 	</build>
 	
 	<modules>
+		<module>api-chat</module>
+		<module>api-util</module>
+		<module>api-platform</module>
 		<module>api-core</module>
 		<module>api-plugin</module>
 	</modules>
@@ -100,11 +115,11 @@
 	<distributionManagement>
 		<repository>
 			<id>arim-repo</id>
-			<url>https://www.arim.space/repo/repository/maven-releases/</url>
+			<url>https://maven.cloudsmith.io/anand-beh/arim-repo/</url>
 		</repository>
 		<snapshotRepository>
 			<id>arim-repo</id>
-			<url>https://www.arim.space/repo/repository/maven-snapshots/</url>
+			<url>https://maven.cloudsmith.io/anand-beh/arim-repo/</url>
 		</snapshotRepository>
 	</distributionManagement>
 	
@@ -113,6 +128,16 @@
 			<dependency>
 				<groupId>space.arim</groupId>
 				<artifactId>arimapi-chat</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim</groupId>
+				<artifactId>arimapi-util</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim</groupId>
+				<artifactId>arimapi-platform</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -197,7 +222,7 @@
 	<repositories>
 		<repository>
 			<id>arim-repo</id>
-			<url>https://www.arim.space/repo/repository/maven-snapshots/</url>
+			<url>https://dl.cloudsmith.io/public/anand-beh/arim-repo/maven/</url>
 		</repository>
 		<repository>
 			<id>spigot-repo</id>

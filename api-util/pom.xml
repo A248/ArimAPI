@@ -9,9 +9,9 @@
 		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>arimapi-core</artifactId>
-	<name>ArimAPI-Core</name>
-	<description>The main component of ArimAPI.</description>
+	<artifactId>arimapi-util</artifactId>
+	<name>ArimAPI-Util</name>
+	<description>The framework and utilities component of ArimAPI.</description>
 	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -24,16 +24,28 @@
 			<artifactId>universal-registry</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>space.arim</groupId>
-			<artifactId>arimapi-chat</artifactId>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>space.arim</groupId>
-			<artifactId>arimapi-util</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>space.arim</groupId>
-			<artifactId>arimapi-platform</artifactId>
-		</dependency>		
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>org.eclipse.jdt.annotation</artifactId>
+		</dependency>
 	</dependencies>
 </project>

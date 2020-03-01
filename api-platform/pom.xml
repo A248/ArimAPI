@@ -9,9 +9,9 @@
 		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>arimapi-core</artifactId>
-	<name>ArimAPI-Core</name>
-	<description>The main component of ArimAPI.</description>
+	<artifactId>arimapi-platform</artifactId>
+	<name>ArimAPI-Platform</name>
+	<description>The platform-specific components of ArimAPI.</description>
 	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -21,10 +21,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>space.arim</groupId>
-			<artifactId>universal-registry</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim</groupId>
 			<artifactId>arimapi-chat</artifactId>
 		</dependency>
 		<dependency>
@@ -32,8 +28,19 @@
 			<artifactId>arimapi-util</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>space.arim</groupId>
-			<artifactId>arimapi-platform</artifactId>
-		</dependency>		
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
