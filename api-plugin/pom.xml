@@ -91,7 +91,8 @@
 							<artifactSet>
 								<includes>
 									<include>space.arim:arimapi-chat</include>
-									<include>space.arim:arimapi-core</include>
+									<include>space.arim:arimapi-util</include>
+									<include>space.arim:arimapi-platform</include>
 									<include>org.hsqldb:hsqldb</include>
 									<include>com.zaxxer:HikariCP</include>
 									<include>org.slf4j:slf4j-api</include>
