@@ -153,6 +153,11 @@ public class Format {
 		return object instanceof Format && identifier() == ((Format) object).identifier();
 	}
 	
+	@Override
+	public String toString() {
+		return String.valueOf(new char[] {'&', identifier});
+	}
+	
 	/**
 	 * Gets a Format from a specific identifier.
 	 * 
