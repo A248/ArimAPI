@@ -361,8 +361,8 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	@Override
-	public Text colour(String msg, FormattingCodePattern colourPattern) {
-		return colourProcessor(msg, colourPattern.getValue()).build();
+	public Text colour(String msg, FormattingCodePattern formattingPattern) {
+		return colourProcessor(msg, formattingPattern.getValue()).build();
 	}
 	
 	@Override
@@ -371,8 +371,8 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	@Override
-	public Text parseJson(String msg, FormattingCodePattern colourPattern) {
-		return parseJsonProcessor(msg, colourPattern.getValue());
+	public Text parseJson(String msg, FormattingCodePattern formattingPattern) {
+		return parseJsonProcessor(msg, formattingPattern.getValue());
 	}
 	
 	@Override
@@ -380,20 +380,20 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 		return parseJsonProcessor(msg, Text::builder);
 	}
 	
-	private static Text parseJsonProcessor(String jsonable, Pattern processor) {
-		return parseJsonProcessor(jsonable, (node) -> colourProcessor(node, processor));
+	private static Text parseJsonProcessor(String msg, Pattern processor) {
+		return parseJsonProcessor(msg, (node) -> colourProcessor(node, processor));
 	}
 	
-	private static Text parseJsonProcessor(String jsonable, Function<String, ? extends Text.Builder> generator) {
+	private static Text parseJsonProcessor(String msg, Function<String, ? extends Text.Builder> generator) {
 		Text.Builder current = null;
 		Text.Builder parent = Text.builder();
-		for (String node : jsonable.split("||")) {
+		for (String node : msg.split("||")) {
 			JsonTag tag = JsonTag.getFor(node);
 			if (tag.equals(JsonTag.NONE)) {
 				if (current != null) {
 					parent.append(current.build());
 				}
-				current = generator.apply(jsonable);
+				current = generator.apply(msg);
 			} else if (current != null) {
 				String value = node.substring(4);
 				if (tag.equals(JsonTag.TTP)) {
@@ -417,7 +417,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 		return parent.build();
 	}
 	
-	private static Text.Builder colourProcessor(String colourable, Pattern processor) {
+	private static Text.Builder colourProcessor(String msg, Pattern processor) {
 		Text.Builder builder = Text.builder();
 		
 		/*
@@ -427,7 +427,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 		 * Add the current segment to the builder using the current colour and styles.
 		 * Then, update the current colour and styles according to the match.
 		 */
-		Matcher matcher = processor.matcher(colourable);
+		Matcher matcher = processor.matcher(msg);
 		int beginIndex = 0; // the starting index of the current segment
 		
 		// start without any formatting
@@ -437,7 +437,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 		
 		while (matcher.find()) {
 			// get the current segment and add it to the builder
-			String segment = colourable.substring(beginIndex, matcher.start());
+			String segment = msg.substring(beginIndex, matcher.start());
 			builder.append(Text.builder(segment).color(currentColour).style(currentStyles.toArray(new TextStyle[] {})).build());
 			
 			// prepare for the next segment by updating the starting index

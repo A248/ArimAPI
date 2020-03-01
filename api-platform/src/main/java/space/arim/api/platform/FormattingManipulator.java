@@ -32,33 +32,33 @@ public interface FormattingManipulator {
 	/**
 	 * Changes valid colour codes using the given source char to equivalent codes using the target char.
 	 * 
-	 * @param sourceColourPattern the pattern corresponding to the source colour code char
+	 * @param sourceFormattingPattern the pattern corresponding to the source colour code char
 	 * @param targetColourChar the target colour code char
 	 * @return the input string with valid colour codes converted
 	 */
-	default String transformColourCodes(String msg, FormattingCodePattern sourceColourPattern, char targetColourChar) {
-		return PlatformSpecificDefaultImplementations.transformColourCodes(msg, sourceColourPattern, targetColourChar);
+	default String transformColourCodes(String msg, FormattingCodePattern sourceFormattingPattern, char targetColourChar) {
+		return PlatformSpecificDefaultImplementations.transformColourCodes(msg, sourceFormattingPattern, targetColourChar);
 	}
 	
 	/**
 	 * Changes valid colour codes using the given source char to equivalent codes using '&' as the target char.
 	 * 
-	 * @param sourceColourPattern the pattern corresponding to the source colour code char
+	 * @param sourceFormattingPattern the pattern corresponding to the source colour code char
 	 * @return the input string with valid colour codes converted
 	 */
-	default String transformColourCodes(String msg, FormattingCodePattern sourceColourPattern) {
-		return transformColourCodes(msg, sourceColourPattern, MessageUtil.DEFAULT_COLOUR_CHAR);
+	default String transformColourCodes(String msg, FormattingCodePattern sourceFormattingPattern) {
+		return transformColourCodes(msg, sourceFormattingPattern, MessageUtil.DEFAULT_COLOUR_CHAR);
 	}
 	
 	/**
 	 * Removes valid colour codes from a message using the given colour code char.
 	 * 
 	 * @param msg the source message
-	 * @param colourPattern the pattern corresponding to the colour code char
+	 * @param formattingPattern the pattern corresponding to the colour code char
 	 * @return the same message with valid colours removed
 	 */
-	default String stripColour(String msg, FormattingCodePattern colourPattern) {
-		return PlatformSpecificDefaultImplementations.stripColour(msg, colourPattern);
+	default String stripColour(String msg, FormattingCodePattern formattingPattern) {
+		return PlatformSpecificDefaultImplementations.stripColour(msg, formattingPattern);
 	}
 	
 	/**
@@ -88,11 +88,11 @@ public interface FormattingManipulator {
 	 * Messages with line breaks (<code>'\n'</code>) are treated properly; each individual line is centered.
 	 * 
 	 * @param msg the message to center
-	 * @param colourPattern the pattern corresponding to the colour code char
+	 * @param formattingPattern the pattern corresponding to the colour code char
 	 * @return a centered message
 	 */
-	default String center(String msg, FormattingCodePattern colourPattern) {
-		return PlatformSpecificDefaultImplementations.center(msg, colourPattern);
+	default String center(String msg, FormattingCodePattern formattingPattern) {
+		return PlatformSpecificDefaultImplementations.center(msg, formattingPattern);
 	}
 	
 	/**

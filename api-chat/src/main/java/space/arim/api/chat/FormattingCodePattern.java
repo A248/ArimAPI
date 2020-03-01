@@ -44,7 +44,7 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	}
 	
 	/**
-	 * Gets the regex pattern used to match valid colour codes
+	 * Gets the regex pattern used to match valid formatting codes
 	 * 
 	 * @return the pattern
 	 */
@@ -54,9 +54,9 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	}
 	
 	/**
-	 * Gets the colour code char this pattern corresponds to.
+	 * Gets the formatting code char this pattern corresponds to.
 	 * 
-	 * @return the colour code char
+	 * @return the formatting code char
 	 */
 	public char getChar() {
 		return codeChar;
@@ -67,7 +67,7 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	}
 	
 	/**
-	 * Gets the default colour code pattern.
+	 * Gets the default formatting code pattern.
 	 * 
 	 * @return the pattern used for {@link MessageUtil#DEFAULT_COLOUR_CHAR}
 	 */
@@ -76,28 +76,28 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	}
 	
 	/**
-	 * Gets a colour code pattern for an arbitrary colour char, such as '§'. <br>
-	 * The pattern will match all valid colour codes in a message using the given char. <br>
+	 * Gets a formatting code pattern for an arbitrary colour char, such as '§'. <br>
+	 * The pattern will match all valid formatting codes in a message using the given char. <br>
 	 * <br>
 	 * Results are cached in order to provide faster resolution for successive calls. The cache is thread safe.
 	 * 
-	 * @param codeChar the colour code character, like '§'
-	 * @return a colour code pattern for colour codes
+	 * @param codeChar the formatting code character, like '§'
+	 * @return a formatting code pattern for formatting codes
 	 */
 	public static FormattingCodePattern get(char code) {
 		return CACHE.computeIfAbsent(code, FormattingCodePattern::compile);
 	}
 	
 	/**
-	 * Gets a colour code pattern for an arbitrary colour char, such as '&' or '§'. <br>
-	 * The pattern will match all valid colour codes in a message using the given char. <br>
+	 * Gets a formatting code pattern for an arbitrary colour char, such as '&' or '§'. <br>
+	 * The pattern will match all valid formatting codes in a message using the given char. <br>
 	 * <br>
 	 * As the method name suggests, unlike {@link #get()}, results are not cached.
 	 * This method is provided in rare cases where caching is not desirable,
 	 * such as a user input or a one time conversion of an older data format.
 	 * 
-	 * @param codeChar the colour code character, like '&'
-	 * @return a colour code pattern for colour codes
+	 * @param codeChar the formatting code character, like '&'
+	 * @return a formatting code pattern for formatting codes
 	 */
 	public static FormattingCodePattern getUncached(char code) {
 		return (code == MessageUtil.DEFAULT_COLOUR_CHAR) ? get(code) : compile(code);
