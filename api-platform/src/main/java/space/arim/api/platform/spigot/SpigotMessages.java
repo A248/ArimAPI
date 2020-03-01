@@ -18,6 +18,7 @@
  */
 package space.arim.api.platform.spigot;
 
+import space.arim.api.chat.FormattingCodePattern;
 import space.arim.api.platform.bungee.BungeeMessages;
 import space.arim.api.util.LazySingleton;
 
@@ -42,6 +43,17 @@ public class SpigotMessages extends BungeeMessages {
 	 */
 	public static SpigotMessages get() {
 		return INST.get();
+	}
+	
+	/**
+	 * Shortcut to convert '&' formatting codes to '§' codes. <br>
+	 * Equivalent to <code>SpigotMessages.get().transformFormattingCodes(msg, FormattingCodePattern.get(), '§');</code>
+	 * 
+	 * @param msg the source message
+	 * @return the same message with '&' codes translated
+	 */
+	public String transformFormattingCodes(String msg) {
+		return transformFormattingCodes(msg, FormattingCodePattern.get(), '§');
 	}
 	
 }
