@@ -41,7 +41,7 @@ public class Style extends Format {
 	/**
 	 * Each Style is contained within this enum for convenience. <br>
 	 * <br>
-	 * Using an enum allows operability inside witch statements and annotation values.
+	 * Using an enum allows operability inside switch statements and annotation values.
 	 * 
 	 * @author A248
 	 *

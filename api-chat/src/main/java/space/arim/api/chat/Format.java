@@ -76,7 +76,7 @@ public class Format {
 	/**
 	 * Each Format is contained within this enum for convenience. <br>
 	 * <br>
-	 * Using an enum allows operability inside witch statements and annotation values.
+	 * Using an enum allows operability inside switch statements and annotation values.
 	 * 
 	 * @author A248
 	 *
@@ -150,7 +150,7 @@ public class Format {
 	
 	@Override
 	public boolean equals(Object object) {
-		return object instanceof Format && identifier() == ((Format) object).identifier();
+		return object instanceof Format && identifier == ((Format) object).identifier;
 	}
 	
 	@Override
