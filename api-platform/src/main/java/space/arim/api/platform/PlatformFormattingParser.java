@@ -31,15 +31,15 @@ import space.arim.api.chat.FormattingCodePattern;
 public interface PlatformFormattingParser<T> {
 	
 	/**
-	 * Adds colour to a message according to the specified colour code char.
+	 * Adds colour to a message according to the specified formatting code char.
 	 * 
-	 * @param colourPattern the pattern corresponding to the colour code char
+	 * @param formattingPattern the pattern corresponding to the formatting code char
 	 * @return a coloured Text object
 	 */
-	T colour(String msg, FormattingCodePattern colourPattern);
+	T colour(String msg, FormattingCodePattern formattingPattern);
 	
 	/**
-	 * Adds colour to a message according to '{@literal &}' colour codes.
+	 * Adds colour to a message according to '{@literal &}' formatting codes.
 	 * 
 	 * @param msg the source message
 	 * @return a coloured result
@@ -49,11 +49,11 @@ public interface PlatformFormattingParser<T> {
 	}
 	
 	/**
-	 * Forms a message directly, without explicitly parsing colour codes. <br>
+	 * Forms a message directly, without explicitly parsing formatting codes. <br>
 	 * Note that, if colour remains in the input string, clients may still see colours. <br>
 	 * <br>
 	 * <b>This method does not remove colour from a message</b>!
-	 * Use {@link AbstractPlatformMessages#stripColour(String)} or {@link AbstractPlatformMessages#stripColour(String, FormattingCodePattern)} instead.
+	 * Use {@link AbstractPlatformMessages#stripFormatting(String)} or {@link AbstractPlatformMessages#stripFormatting(String, FormattingCodePattern)} instead.
 	 * 
 	 * @param msg the source message
 	 * @return a direct result
@@ -64,19 +64,19 @@ public interface PlatformFormattingParser<T> {
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
 	 * <br>
 	 * The following json tags are parsed: <code>ttp</code>, <code>url</code>, <code>cmd</code>, <code>sgt</code>, and <code>ins</code>. <br>
-	 * <b>Colours are parsed according to the specified colour code char.
+	 * <b>Colours are parsed according to the specified formatting code char.
 	 * 
 	 * @param msg the source message
-	 * @param colourPattern the pattern corresponding to the colour code char
+	 * @param formattingPattern the pattern corresponding to the formatting code char
 	 * @return a json formatted result
 	 */
-	T parseJson(String msg, FormattingCodePattern colourPattern);
+	T parseJson(String msg, FormattingCodePattern formattingPattern);
 	
 	/**
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
 	 * <br>
 	 * The following json tags are parsed: <code>ttp</code>, <code>url</code>, <code>cmd</code>, <code>sgt</code>, and <code>ins</code>. <br>
-	 * <b>Colours are parsed according to '{@literal &}' colour codes.
+	 * <b>Colours are parsed according to '{@literal &}' formatting codes.
 	 * 
 	 * @param msg the source message
 	 * @return a json formatted result
@@ -86,7 +86,7 @@ public interface PlatformFormattingParser<T> {
 	}
 	
 	/**
-	 * Parses Json messages without explicitly parsing colour codes. <br>
+	 * Parses Json messages without explicitly parsing formatting codes. <br>
 	 * Note that, if colour remains in the input string, clients may still see colours.
 	 * 
 	 * @param msg the source message

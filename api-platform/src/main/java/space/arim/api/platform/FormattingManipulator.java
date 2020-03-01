@@ -30,45 +30,45 @@ import space.arim.api.chat.MessageUtil;
 public interface FormattingManipulator {
 	
 	/**
-	 * Changes valid colour codes using the given source char to equivalent codes using the target char.
+	 * Changes valid formatting codes using the given source char to equivalent codes using the target char.
 	 * 
-	 * @param sourceFormattingPattern the pattern corresponding to the source colour code char
-	 * @param targetColourChar the target colour code char
-	 * @return the input string with valid colour codes converted
+	 * @param sourceFormattingPattern the pattern corresponding to the source formatting code char
+	 * @param targetFormattingChar the target formatting code char
+	 * @return the input string with valid formatting codes converted
 	 */
-	default String transformColourCodes(String msg, FormattingCodePattern sourceFormattingPattern, char targetColourChar) {
-		return PlatformSpecificDefaultImplementations.transformColourCodes(msg, sourceFormattingPattern, targetColourChar);
+	default String transformFormattingCodes(String msg, FormattingCodePattern sourceFormattingPattern, char targetFormattingChar) {
+		return PlatformSpecificDefaultImplementations.transformColourCodes(msg, sourceFormattingPattern, targetFormattingChar);
 	}
 	
 	/**
-	 * Changes valid colour codes using the given source char to equivalent codes using '&' as the target char.
+	 * Changes valid formatting codes using the given source char to equivalent codes using '&' as the target char.
 	 * 
-	 * @param sourceFormattingPattern the pattern corresponding to the source colour code char
-	 * @return the input string with valid colour codes converted
+	 * @param sourceFormattingPattern the pattern corresponding to the source formatting code char
+	 * @return the input string with valid formatting codes converted
 	 */
-	default String transformColourCodes(String msg, FormattingCodePattern sourceFormattingPattern) {
-		return transformColourCodes(msg, sourceFormattingPattern, MessageUtil.DEFAULT_COLOUR_CHAR);
+	default String transformFormattingCodes(String msg, FormattingCodePattern sourceFormattingPattern) {
+		return transformFormattingCodes(msg, sourceFormattingPattern, MessageUtil.DEFAULT_COLOUR_CHAR);
 	}
 	
 	/**
-	 * Removes valid colour codes from a message using the given colour code char.
+	 * Removes valid formatting codes from a message using the given formatting code char.
 	 * 
 	 * @param msg the source message
-	 * @param formattingPattern the pattern corresponding to the colour code char
+	 * @param formattingPattern the pattern corresponding to the formatting code char
 	 * @return the same message with valid colours removed
 	 */
-	default String stripColour(String msg, FormattingCodePattern formattingPattern) {
+	default String stripFormatting(String msg, FormattingCodePattern formattingPattern) {
 		return PlatformSpecificDefaultImplementations.stripColour(msg, formattingPattern);
 	}
 	
 	/**
-	 * Removes valid colour codes from a message.
+	 * Removes valid formatting codes from a message.
 	 * 
 	 * @param msg the source message
 	 * @return the same message with valid colours removed
 	 */
-	default String stripColour(String msg) {
-		return stripColour(msg, FormattingCodePattern.get());
+	default String stripFormatting(String msg) {
+		return stripFormatting(msg, FormattingCodePattern.get());
 	}
 	
 	/**
@@ -82,13 +82,13 @@ public interface FormattingManipulator {
 	}
 	
 	/**
-	 * Centers a message using the specified colour code char to detect colours and styles. <br>
+	 * Centers a message using the specified formatting code char to detect colours and styles. <br>
 	 * <br>
-	 * The centering is precise, taking into account individual character lengths and applied colour codes. <br>
+	 * The centering is precise, taking into account individual character lengths and applied formatting codes. <br>
 	 * Messages with line breaks (<code>'\n'</code>) are treated properly; each individual line is centered.
 	 * 
 	 * @param msg the message to center
-	 * @param formattingPattern the pattern corresponding to the colour code char
+	 * @param formattingPattern the pattern corresponding to the formatting code char
 	 * @return a centered message
 	 */
 	default String center(String msg, FormattingCodePattern formattingPattern) {
@@ -96,9 +96,9 @@ public interface FormattingManipulator {
 	}
 	
 	/**
-	 * Centers a message using the '&' colour codes to detect colours and styles. <br>
+	 * Centers a message using the '&' formatting codes to detect colours and styles. <br>
 	 * <br>
-	 * The centering is precise, taking into account individual character lengths and applied colour codes. <br>
+	 * The centering is precise, taking into account individual character lengths and applied formatting codes. <br>
 	 * Messages with line breaks (<code>'\n'</code>) are treated properly; each individual line is centered.
 	 * 
 	 * @param msg the message to center
