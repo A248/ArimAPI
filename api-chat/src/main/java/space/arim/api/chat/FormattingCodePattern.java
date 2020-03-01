@@ -18,6 +18,7 @@
  */
 package space.arim.api.chat;
 
+import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -34,7 +35,7 @@ import space.arim.universal.util.proxy.CaptiveReference;
  */
 public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	
-	private static final ConcurrentHashMap<Character, FormattingCodePattern> CACHE = new ConcurrentHashMap<Character, FormattingCodePattern>();
+	private static final ConcurrentHashMap<Character, SoftReference<FormattingCodePattern>> CACHE = new ConcurrentHashMap<Character, SoftReference<FormattingCodePattern>>();
 	
 	private final char codeChar;
 	
@@ -62,8 +63,8 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 		return codeChar;
 	}
 	
-	private static FormattingCodePattern compile(char code) {
-		return new FormattingCodePattern(code, Pattern.compile(Pattern.compile(String.valueOf(code), Pattern.LITERAL).pattern() + "[0-9A-Fa-fK-Rk-r]"));
+	private static FormattingCodePattern compile(char codeChar) {
+		return new FormattingCodePattern(codeChar, Pattern.compile(Pattern.quote(String.valueOf(codeChar)) + "[0-9A-Fa-fK-Rk-r]"));
 	}
 	
 	/**
@@ -84,8 +85,8 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	 * @param codeChar the formatting code character, like '§'
 	 * @return a formatting code pattern for formatting codes
 	 */
-	public static FormattingCodePattern get(char code) {
-		return CACHE.computeIfAbsent(code, FormattingCodePattern::compile);
+	public static FormattingCodePattern get(char codeChar) {
+		return CACHE.compute(codeChar, (code, pattern) -> (pattern == null || pattern.get() == null) ? new SoftReference<FormattingCodePattern>(FormattingCodePattern.compile(code)) : pattern).get();
 	}
 	
 	/**
@@ -99,8 +100,8 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	 * @param codeChar the formatting code character, like '&'
 	 * @return a formatting code pattern for formatting codes
 	 */
-	public static FormattingCodePattern getUncached(char code) {
-		return (code == MessageUtil.DEFAULT_COLOUR_CHAR) ? get(code) : compile(code);
+	public static FormattingCodePattern getUncached(char codeChar) {
+		return (codeChar == MessageUtil.DEFAULT_COLOUR_CHAR) ? get(codeChar) : compile(codeChar);
 	}
 	
 }
