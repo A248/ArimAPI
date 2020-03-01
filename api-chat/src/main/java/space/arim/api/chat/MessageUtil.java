@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * Accepts formatted strings and converts them to a {@link Message}. <br>
  * <br>
  * <b>Colour Parsing</b>: <br>
- * * Uses '&' colour codes by default. ({@link #DEFAULT_COLOUR_CHAR}) <br>
+ * * Uses '&' colour codes by default. ({@link #DEFAULT_FORMATTING_CHAR}) <br>
  * * Does not add or convert <code>Format.RESET</code> codes, see {@link Format#RESET} for more information. <br>
  * * To use a colour code char other than the default '&', use {@link FormattingCodePattern}.
  * <br>
@@ -42,10 +42,10 @@ import java.util.regex.Pattern;
 public final class MessageUtil {
 	
 	/**
-	 * The default colour code symbol, '&'.
+	 * The default formatting code symbol, '&'.
 	 * 
 	 */
-	public static final char DEFAULT_COLOUR_CHAR = '&';
+	public static final char DEFAULT_FORMATTING_CHAR = '&';
 	
 	/**
 	 * A regex pattern matching double pipes, '||'. <br>

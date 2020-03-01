@@ -47,7 +47,7 @@ public interface FormattingManipulator {
 	 * @return the input string with valid formatting codes converted
 	 */
 	default String transformFormattingCodes(String msg, FormattingCodePattern sourceFormattingPattern) {
-		return transformFormattingCodes(msg, sourceFormattingPattern, MessageUtil.DEFAULT_COLOUR_CHAR);
+		return transformFormattingCodes(msg, sourceFormattingPattern, MessageUtil.DEFAULT_FORMATTING_CHAR);
 	}
 	
 	/**

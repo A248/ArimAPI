@@ -18,7 +18,6 @@
  */
 package space.arim.api.chat;
 
-import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -35,7 +34,7 @@ import space.arim.universal.util.proxy.CaptiveReference;
  */
 public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	
-	private static final ConcurrentHashMap<Character, SoftReference<FormattingCodePattern>> CACHE = new ConcurrentHashMap<Character, SoftReference<FormattingCodePattern>>();
+	private static final ConcurrentHashMap<Character, FormattingCodePattern> CACHE = new ConcurrentHashMap<Character, FormattingCodePattern>();
 	
 	private final char codeChar;
 	
@@ -70,10 +69,10 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	/**
 	 * Gets the default formatting code pattern.
 	 * 
-	 * @return the pattern used for {@link MessageUtil#DEFAULT_COLOUR_CHAR}
+	 * @return the pattern used for {@link MessageUtil#DEFAULT_FORMATTING_CHAR}
 	 */
 	public static FormattingCodePattern get() {
-		return get(MessageUtil.DEFAULT_COLOUR_CHAR);
+		return get(MessageUtil.DEFAULT_FORMATTING_CHAR);
 	}
 	
 	/**
@@ -86,7 +85,7 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	 * @return a formatting code pattern for formatting codes
 	 */
 	public static FormattingCodePattern get(char codeChar) {
-		return CACHE.compute(codeChar, (code, pattern) -> (pattern == null || pattern.get() == null) ? new SoftReference<FormattingCodePattern>(FormattingCodePattern.compile(code)) : pattern).get();
+		return CACHE.computeIfAbsent(codeChar, FormattingCodePattern::compile);
 	}
 	
 	/**
@@ -101,7 +100,7 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	 * @return a formatting code pattern for formatting codes
 	 */
 	public static FormattingCodePattern getUncached(char codeChar) {
-		return (codeChar == MessageUtil.DEFAULT_COLOUR_CHAR) ? get(codeChar) : compile(codeChar);
+		return (codeChar == MessageUtil.DEFAULT_FORMATTING_CHAR) ? get(codeChar) : compile(codeChar);
 	}
 	
 }
