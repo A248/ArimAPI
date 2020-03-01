@@ -49,7 +49,7 @@ public class BungeeCommands extends AbstractPlatformCommands<CommandSender, Prox
 	}
 	
 	@Override
-	public List<String> getPlayerNamesTabComplete(Stream<ProxiedPlayer> players, String[] args) {
+	public List<String> getPlayerNamesTabComplete(Stream<? extends ProxiedPlayer> players, String[] args) {
 		return getMatchingTabComplete(players.map((player) -> player.getName()), args);
 	}
 	

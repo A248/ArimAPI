@@ -49,7 +49,7 @@ public class SpigotCommands extends AbstractPlatformCommands<CommandSender, Play
 	}
 	
 	@Override
-	public List<String> getPlayerNamesTabComplete(Stream<Player> players, String[] args) {
+	public List<String> getPlayerNamesTabComplete(Stream<? extends Player> players, String[] args) {
 		return getMatchingTabComplete(players.map((player) -> player.getName()), args);
 	}
 	

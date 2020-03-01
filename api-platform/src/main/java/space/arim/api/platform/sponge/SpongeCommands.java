@@ -18,6 +18,13 @@
  */
 package space.arim.api.platform.sponge;
 
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
+
+import space.arim.api.platform.AbstractPlatformCommands;
 import space.arim.api.util.LazySingleton;
 
 /**
@@ -26,7 +33,7 @@ import space.arim.api.util.LazySingleton;
  * @author A248
  *
  */
-public class SpongeCommands {
+public class SpongeCommands extends AbstractPlatformCommands<CommandSource, Player> {
 
 	private static final LazySingleton<SpongeCommands> INST = new LazySingleton<SpongeCommands>(SpongeCommands::new);
 	
@@ -40,6 +47,15 @@ public class SpongeCommands {
 	public static SpongeCommands get() {
 		return INST.get();
 	}
+
+	@Override
+	public List<String> getPlayerNamesTabComplete(Stream<? extends Player> players, String[] args) {
+		return getMatchingTabComplete(players.map((player) -> player.getName()), args);
+	}
 	
+	@Override
+	public List<String> getCommandSendersTabComplete(Stream<CommandSource> senders, String consoleRepresentation, String[] args) {
+		return getMatchingTabComplete(senders.map((sender) -> (sender instanceof Player) ? ((Player) sender).getName() : consoleRepresentation), args);
+	}
 	
 }

@@ -51,7 +51,7 @@ public interface PlatformTabCompletion<T, R> {
 	 * @param args the command arguments
 	 * @return an unsorted list of matching names
 	 */
-	List<String> getPlayerNamesTabComplete(Stream<R> players, String[] args);
+	List<String> getPlayerNamesTabComplete(Stream<? extends R> players, String[] args);
 	
 	/**
 	 * Sorted variant of {@link #getPlayerNamesTabComplete(Stream, String[])}
@@ -61,7 +61,7 @@ public interface PlatformTabCompletion<T, R> {
 	 * @param comparator the comparator used for sorting
 	 * @return a sorted list of matching names
 	 */
-	default List<String> getPlayerNamesTabCompleteSorted(Stream<R> players, String[] args, Comparator<String> comparator) {
+	default List<String> getPlayerNamesTabCompleteSorted(Stream<? extends R> players, String[] args, Comparator<String> comparator) {
 		List<String> sorted = getPlayerNamesTabComplete(players, args);
 		sorted.sort(comparator);
 		return sorted;
@@ -74,7 +74,7 @@ public interface PlatformTabCompletion<T, R> {
 	 * @param args the command arguments
 	 * @return a sorted list of matching names
 	 */
-	default List<String> getPlayerNamesTabCompleteSorted(Stream<R> players, String[] args) {
+	default List<String> getPlayerNamesTabCompleteSorted(Stream<? extends R> players, String[] args) {
 		return getPlayerNamesTabCompleteSorted(players, args, Comparator.naturalOrder());
 	}
 	
