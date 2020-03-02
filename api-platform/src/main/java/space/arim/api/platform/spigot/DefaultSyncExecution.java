@@ -34,7 +34,7 @@ import space.arim.api.concurrent.SyncExecution;
 public class DefaultSyncExecution extends SpigotRegistrable implements SyncExecution {
 	
 	/**
-	 * Creates the instance. See {@link BukkitRegistrable#BukkitRegistrable(Plugin)} for more information.
+	 * Creates the instance. See {@link SpigotRegistrable#SpigotRegistrable(Plugin)} for more information.
 	 * 
 	 * @param plugin the plugin to use for Registrable information
 	 */

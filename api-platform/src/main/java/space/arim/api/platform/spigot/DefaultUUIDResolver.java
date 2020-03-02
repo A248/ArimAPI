@@ -42,7 +42,7 @@ import space.arim.api.uuid.UUIDResolver;
 public class DefaultUUIDResolver extends SpigotRegistrable implements UUIDResolver {
 
 	/**
-	 * Creates the instance. See {@link BukkitRegistrable#BukkitRegistrable(Plugin)} for more information.
+	 * Creates the instance. See {@link SpigotRegistrable#SpigotRegistrable(Plugin)} for more information.
 	 * 
 	 * @param plugin the plugin to use for Registrable information
 	 */

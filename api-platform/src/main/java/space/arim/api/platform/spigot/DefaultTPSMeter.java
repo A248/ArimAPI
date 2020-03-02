@@ -40,7 +40,7 @@ public class DefaultTPSMeter extends SpigotRegistrable implements TPSMeter {
 	private double tps = 20D;
 	
 	/**
-	 * Creates the instance. See {@link BukkitRegistrable#BukkitRegistrable(Plugin)} for more information.
+	 * Creates the instance. See {@link SpigotRegistrable#SpigotRegistrable(Plugin)} for more information.
 	 * 
 	 * @param plugin the plugin to use for Registrable information
 	 * @param registry the {@link Registry} to use. It must have a registration for {@link SyncExecution} as specified by the annotation.

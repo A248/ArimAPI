@@ -32,6 +32,7 @@ public interface FormattingManipulator {
 	/**
 	 * Changes valid formatting codes using the given source char to equivalent codes using the target char.
 	 * 
+	 * @msg the source message
 	 * @param sourceFormattingPattern the pattern corresponding to the source formatting code char
 	 * @param targetFormattingChar the target formatting code char
 	 * @return the input string with valid formatting codes converted
@@ -41,8 +42,9 @@ public interface FormattingManipulator {
 	}
 	
 	/**
-	 * Changes valid formatting codes using the given source char to equivalent codes using '&' as the target char.
+	 * Changes valid formatting codes using the given source char to equivalent codes using '{@literal &}' as the target char.
 	 * 
+	 * @msg the source message
 	 * @param sourceFormattingPattern the pattern corresponding to the source formatting code char
 	 * @return the input string with valid formatting codes converted
 	 */
@@ -96,7 +98,7 @@ public interface FormattingManipulator {
 	}
 	
 	/**
-	 * Centers a message using the '&' formatting codes to detect colours and styles. <br>
+	 * Centers a message using the '{@literal &}' formatting codes to detect colours and styles. <br>
 	 * <br>
 	 * The centering is precise, taking into account individual character lengths and applied formatting codes. <br>
 	 * Messages with line breaks (<code>'\n'</code>) are treated properly; each individual line is centered.

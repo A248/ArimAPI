@@ -33,6 +33,7 @@ public interface PlatformFormattingParser<T> {
 	/**
 	 * Adds colour to a message according to the specified formatting code char.
 	 * 
+	 * @msg the source message
 	 * @param formattingPattern the pattern corresponding to the formatting code char
 	 * @return a coloured Text object
 	 */
@@ -64,7 +65,7 @@ public interface PlatformFormattingParser<T> {
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
 	 * <br>
 	 * The following json tags are parsed: <code>ttp</code>, <code>url</code>, <code>cmd</code>, <code>sgt</code>, and <code>ins</code>. <br>
-	 * <b>Colours are parsed according to the specified formatting code char.
+	 * <b>Colours are parsed according to the specified formatting code char.</b>
 	 * 
 	 * @param msg the source message
 	 * @param formattingPattern the pattern corresponding to the formatting code char
@@ -76,7 +77,7 @@ public interface PlatformFormattingParser<T> {
 	 * Parses Json messages based on RezzedUp's json.sk format. <br>
 	 * <br>
 	 * The following json tags are parsed: <code>ttp</code>, <code>url</code>, <code>cmd</code>, <code>sgt</code>, and <code>ins</code>. <br>
-	 * <b>Colours are parsed according to '{@literal &}' formatting codes.
+	 * <b>Colours are parsed according to '{@literal &}' formatting codes.</b>
 	 * 
 	 * @param msg the source message
 	 * @return a json formatted result

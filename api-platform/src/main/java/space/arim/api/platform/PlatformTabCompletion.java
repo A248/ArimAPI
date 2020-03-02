@@ -151,7 +151,6 @@ public interface PlatformTabCompletion<T, R> {
 	 * 
 	 * @param matching a stream of strings to match against
 	 * @param args the command arguments
-	 * @param comparator the comparator used for sorting
 	 * @return a sorted list of matching names
 	 */
 	default List<String> getMatchingTabCompleteSorted(Stream<String> matching, String[] args) {

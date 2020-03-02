@@ -89,7 +89,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	}
 	
 	/**
-	 * <b>ArimAPI {@literal -}> CCA</b>: Formatting codes <br>
+	 * <b>ArimAPI {@literal -}{@literal >} CCA</b>: Formatting codes <br>
 	 * Converts from a {@link Format} to a <code>ChatColor</code>.
 	 * 
 	 * @param format the source format
@@ -100,10 +100,10 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	}
 	
 	/**
-	 * <b>CCA {@literal -}> ArimAPI</b>: Formatting codes <br>
+	 * <b>CCA {@literal -}{@literal >} ArimAPI</b>: Formatting codes <br>
 	 * Converts from a <code>ChatColor</code> to a {@link Format}.
 	 * 
-	 * @param format the source format
+	 * @param colour the source format
 	 * @return the equivalent <code>Format</code>
 	 */
 	public Format convert(ChatColor colour) {
@@ -118,7 +118,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	}
 	
 	/**
-	 * <b>ArimAPI {@literal -}> CCA</b>: Message components <br>
+	 * <b>ArimAPI {@literal -}{@literal >} CCA</b>: Message components <br>
 	 * Converts from a {@link Component} to a <code>BaseComponent</code>
 	 * 
 	 * @param component the source component
@@ -155,7 +155,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	}
 	
 	/**
-	 * <b>CCA {@literal -}> ArimAPI</b>: Message components <br>
+	 * <b>CCA {@literal -}{@literal >} ArimAPI</b>: Message components <br>
 	 * Converts from a <code>BaseComponent</code> to a {@link Component}
 	 * 
 	 * @param component the source component
@@ -195,7 +195,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	}
 	
 	/**
-	 * <b>ArimAPI {@literal -}> CCA</b>: Messages <br>
+	 * <b>ArimAPI {@literal -}{@literal >} CCA</b>: Messages <br>
 	 * Converts from a {@link Message} to a <code>BaseComponent</code> array
 	 * 
 	 * @param message the source message
@@ -207,7 +207,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	}
 	
 	/**
-	 * <b>CCA {@literal -}> ArimAPI</b>: Messages <br>
+	 * <b>CCA {@literal -}{@literal >} ArimAPI</b>: Messages <br>
 	 * Converts from a <code>BaseComponent</code> array to a {@link Message}
 	 * 
 	 * @param message the source message

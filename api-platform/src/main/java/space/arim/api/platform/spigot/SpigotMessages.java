@@ -46,11 +46,11 @@ public class SpigotMessages extends BungeeMessages {
 	}
 	
 	/**
-	 * Shortcut to convert '&' formatting codes to '§' codes. <br>
+	 * Shortcut to convert '{@literal &}' formatting codes to '§' codes. <br>
 	 * Equivalent to <code>SpigotMessages.get().transformFormattingCodes(msg, FormattingCodePattern.get(), '§');</code>
 	 * 
 	 * @param msg the source message
-	 * @return the same message with '&' codes translated
+	 * @return the same message with '{@literal &}' codes translated
 	 */
 	public String transformFormattingCodes(String msg) {
 		return transformFormattingCodes(msg, FormattingCodePattern.get(), '§');

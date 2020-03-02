@@ -91,10 +91,10 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>ArimAPI {@literal -}> Sponge API</b>: Formatting codes <br>
+	 * <b>ArimAPI {@literal -}{@literal >} Sponge API</b>: Formatting codes <br>
 	 * Converts from a {@link Colour} to a <code>TextColor</code>.
 	 * 
-	 * @param format the source format
+	 * @param colour the source colour
 	 * @return the equivalent <code>TextColor</code>
 	 */
 	public TextColor convert(Colour colour) {
@@ -140,7 +140,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>Sponge API {@literal -}> ArimAPI</b>: Formatting codes <br>
+	 * <b>Sponge API {@literal -}{@literal >} ArimAPI</b>: Formatting codes <br>
 	 * Converts from a <code>TextColor</code> to a {@link Colour}. <br>
 	 * <br>
 	 * Note that there is no equivalent in ArimAPI for <code>TextColors.NONE</code> and <code>TextColors.REST</code>,
@@ -165,7 +165,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>ArimAPI {@literal -}> Sponge API</b>: Formatting codes <br>
+	 * <b>ArimAPI {@literal -}{@literal >} Sponge API</b>: Formatting codes <br>
 	 * Converts from a {@link Style} to a <code>TextStyle</code>.
 	 * 
 	 * @param styles the source style set
@@ -176,7 +176,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>ArimAPI {@literal -}> Sponge API</b>: Formatting codes <br>
+	 * <b>ArimAPI {@literal -}{@literal >} Sponge API</b>: Formatting codes <br>
 	 * Converts from a {@link Style} to a <code>TextStyle</code>.
 	 * 
 	 * @param styles the source style array
@@ -187,7 +187,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>Sponge API {@literal -}> ArimAPI</b>: Formatting codes <br>
+	 * <b>Sponge API {@literal -}{@literal >} ArimAPI</b>: Formatting codes <br>
 	 * Converts from a <code>TextStyle</code> to a {@link Style}.
 	 * 
 	 * @param styling the source <code>TextStyle</code>
@@ -217,10 +217,10 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>ArimAPI {@literal -}> Sponge API</b>: Formatting codes <br>
+	 * <b>ArimAPI {@literal -}{@literal >} Sponge API</b>: Formatting codes <br>
 	 * Converts from a {@link Format} to a <code>TextFormat</code>.
 	 * 
-	 * @param format the source format array
+	 * @param formats the source format array
 	 * @return an equivalent <code>TextFormat</code>
 	 */
 	public TextFormat convert(Format...formats) {
@@ -243,7 +243,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>Sponge API {@literal -}> ArimAPI</b>: Formatting codes <br>
+	 * <b>Sponge API {@literal -}{@literal >} ArimAPI</b>: Formatting codes <br>
 	 * Converts from a <code>TextFormat</code> to a {@link Format}.
 	 * 
 	 * @param format the source <code>TextFormat</code>
@@ -263,7 +263,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>ArimAPI {@literal -}> Sponge API</b>: Messages <br>
+	 * <b>ArimAPI {@literal -}{@literal >} Sponge API</b>: Messages <br>
 	 * Converts from a {@link Component} to a <code>Text</code>.
 	 * 
 	 * @param component the source component
@@ -296,7 +296,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>ArimAPI {@literal -}> Sponge API</b>: Messages <br>
+	 * <b>ArimAPI {@literal -}{@literal >} Sponge API</b>: Messages <br>
 	 * Converts from a {@link Message} to a <code>Text</code>.
 	 * 
 	 * @param message the source message
@@ -344,7 +344,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
-	 * <b>Sponge API {@literal -}> ArimAPI</b>: Messages <br>
+	 * <b>Sponge API {@literal -}{@literal >} ArimAPI</b>: Messages <br>
 	 * Converts from a <code>Text</code> to a {@link Message}.
 	 * 
 	 * @param message the source message

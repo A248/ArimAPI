@@ -27,19 +27,19 @@ import space.arim.api.platform.PlatformRegistrable;
 
 /**
  * A helper class for resources registered on Bukkit. <br>
- * Subclassing BukkitRegistrable provides useful default implementations of {@link Registrable#getName()}, {@link Registrable#getAuthor()}, and {@link Registrable#getVersion()}
+ * Subclassing SpigotRegistrable provides useful default implementations of {@link Registrable#getName()}, {@link Registrable#getAuthor()}, and {@link Registrable#getVersion()}
  * based on the corresponding {@link Plugin}. See {@link #getName()}, {@link #getAuthor()}, and {@link #getVersion()} for details. <br>
  * <br>
  * <b>Usage:</b> <br>
- * 1. The service type must be an interface to use BukkitRegistrable. <br>
- * 2. Let your registered implementation <code>extend</code> BukkitRegistrable. <br>
- * 4. Provide super constructor {@link #BukkitRegistrable(Plugin)} with your plugin main. <br>
+ * 1. The service type must be an interface to use SpigotRegistrable. <br>
+ * 2. Let your registered implementation <code>extend</code> SpigotRegistrable. <br>
+ * 4. Provide super constructor {@link #SpigotRegistrable(Plugin)} with your plugin main. <br>
  * <br>
  * <b>Example:</b> <br>
  * You want your resource called 'SuperChat' to be registered as a ChatProvider (Note that ChatProvider must be an interface which extends Registrable). <br>
  * Your SuperChat class should look this:
  * <pre><code>
- * public class SuperChat extends BukkitRegistrable implements ChatProvider {
+ * public class SuperChat extends SpigotRegistrable implements ChatProvider {
  *   public SuperChat(JavaPlugin plugin) {
  *     super(plugin);
  *   }
@@ -61,7 +61,7 @@ import space.arim.api.platform.PlatformRegistrable;
  * }
  * </code></pre>
  * Good, now you don't have to worry about overriding #getName, #getAuthor, and #getVersion in your SuperChat resource.
- * BukkitRegistrable automatically takes care of all of that.
+ * SpigotRegistrable automatically takes care of all of that.
  */
 @Platform(Platform.Type.SPIGOT)
 public abstract class SpigotRegistrable extends PlatformRegistrable {
@@ -82,7 +82,7 @@ public abstract class SpigotRegistrable extends PlatformRegistrable {
 	}
 	
 	/**
-	 * Gets the plugin main used to construct this BukkitRegistrable for convenient use.
+	 * Gets the plugin main used to construct this SpigotRegistrable for convenient use.
 	 * 
 	 * @return the plugin
 	 */
