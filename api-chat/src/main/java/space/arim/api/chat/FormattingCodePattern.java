@@ -96,7 +96,7 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	 * This method is provided in rare cases where caching is not desirable,
 	 * such as a user input or a one time conversion of an older data format.
 	 * 
-	 * @param codeChar the formatting code character, like '&'
+	 * @param codeChar the formatting code character, like '{@literal &}'
 	 * @return a formatting code pattern for formatting codes
 	 */
 	public static FormattingCodePattern getUncached(char codeChar) {

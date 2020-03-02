@@ -33,7 +33,7 @@ public interface PlatformFormattingParser<T> {
 	/**
 	 * Adds colour to a message according to the specified formatting code char.
 	 * 
-	 * @msg the source message
+	 * @param msg the source message
 	 * @param formattingPattern the pattern corresponding to the formatting code char
 	 * @return a coloured Text object
 	 */

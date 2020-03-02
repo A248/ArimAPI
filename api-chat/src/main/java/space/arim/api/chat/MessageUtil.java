@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 public final class MessageUtil {
 	
 	/**
-	 * The default formatting code symbol, '&'.
+	 * The default formatting code symbol, '{@literal &}'.
 	 * 
 	 */
 	public static final char DEFAULT_FORMATTING_CHAR = '&';

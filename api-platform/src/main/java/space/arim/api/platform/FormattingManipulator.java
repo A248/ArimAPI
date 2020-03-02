@@ -32,7 +32,7 @@ public interface FormattingManipulator {
 	/**
 	 * Changes valid formatting codes using the given source char to equivalent codes using the target char.
 	 * 
-	 * @msg the source message
+	 * @param msg the source message
 	 * @param sourceFormattingPattern the pattern corresponding to the source formatting code char
 	 * @param targetFormattingChar the target formatting code char
 	 * @return the input string with valid formatting codes converted
@@ -44,7 +44,7 @@ public interface FormattingManipulator {
 	/**
 	 * Changes valid formatting codes using the given source char to equivalent codes using '{@literal &}' as the target char.
 	 * 
-	 * @msg the source message
+	 * @param msg the source message
 	 * @param sourceFormattingPattern the pattern corresponding to the source formatting code char
 	 * @return the input string with valid formatting codes converted
 	 */
