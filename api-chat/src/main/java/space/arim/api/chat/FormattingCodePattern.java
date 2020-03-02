@@ -89,7 +89,7 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	}
 	
 	/**
-	 * Gets a formatting code pattern for an arbitrary colour char, such as '&' or '§'. <br>
+	 * Gets a formatting code pattern for an arbitrary colour char, such as '{@literal &}' or '§'. <br>
 	 * The pattern will match all valid formatting codes in a message using the given char. <br>
 	 * <br>
 	 * As the method name suggests, unlike {@link #get()}, results are not cached.

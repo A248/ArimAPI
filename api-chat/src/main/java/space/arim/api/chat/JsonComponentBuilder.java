@@ -43,6 +43,7 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 	/**
 	 * Creates a builder with the given content
 	 * 
+	 * @param text the content
 	 */
 	public JsonComponentBuilder(String text) {
 		super(text);

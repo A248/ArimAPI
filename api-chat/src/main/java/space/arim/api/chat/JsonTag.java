@@ -45,11 +45,11 @@ public enum JsonTag {
 	 * Parses the tag type of a valid json node. <br>
 	 * <br>
 	 * If the input starts with the signifying json tag, ignoring case, the resulting mapping is returned, according to: <br>
-	 * <i>ttp:</i> {@literal -}> <code>JsonTag.TTP</code> <br>
-	 * <i>url:</i> {@literal -}> <code>JsonTag.URL</code> <br>
-	 * <i>cmd:</i> {@literal -}> <code>JsonTag.CMD</code> <br>
-	 * <i>sgt:</i> {@literal -}> <code>JsonTag.SGT</code> <br>
-	 * <i>ins:</i> {@literal -}> <code>JsonTag.INS</code> <br>
+	 * <i>ttp:</i> {@literal -}{@literal >} <code>JsonTag.TTP</code> <br>
+	 * <i>url:</i> {@literal -}{@literal >} <code>JsonTag.URL</code> <br>
+	 * <i>cmd:</i> {@literal -}{@literal >} <code>JsonTag.CMD</code> <br>
+	 * <i>sgt:</i> {@literal -}{@literal >} <code>JsonTag.SGT</code> <br>
+	 * <i>ins:</i> {@literal -}{@literal >} <code>JsonTag.INS</code> <br>
 	 * Otherwise, <code>JsonTag.NONE</code>.
 	 * 
 	 * @param node the input string (a json node)

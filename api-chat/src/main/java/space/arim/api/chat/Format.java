@@ -49,7 +49,7 @@ public class Format {
 	/**
 	 * The unique char identifying this Format.
 	 * 
-	 * @return
+	 * @return the char identifier
 	 */
 	public char identifier() {
 		return identifier;

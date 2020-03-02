@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
  * Accepts formatted strings and converts them to a {@link Message}. <br>
  * <br>
  * <b>Colour Parsing</b>: <br>
- * * Uses '&' colour codes by default. ({@link #DEFAULT_FORMATTING_CHAR}) <br>
+ * * Uses '{@literal &}' colour codes by default. ({@link #DEFAULT_FORMATTING_CHAR}) <br>
  * * Does not add or convert <code>Format.RESET</code> codes, see {@link Format#RESET} for more information. <br>
- * * To use a colour code char other than the default '&', use {@link FormattingCodePattern}.
+ * * To use a colour code char other than the default '{@literal &}', use {@link FormattingCodePattern}.
  * <br>
  * <b>Json Message Parsing</b>: <br>
  * * Parses Minecraft Json messages, not JSON data objects. <br>
@@ -75,7 +75,7 @@ public final class MessageUtil {
 	}
 	
 	/**
-	 * Parses a <code>Message</code> from text using colour code formatting, e.g. '&a' or '§6'. <br>
+	 * Parses a <code>Message</code> from text using colour code formatting, e.g. '{@literal &}a' or '§6'. <br>
 	 * <i>Invalid colour codes are simply ignored</i>.
 	 * 
 	 * @param msg the source message
@@ -87,7 +87,7 @@ public final class MessageUtil {
 	}
 	
 	/**
-	 * Parses a <code>Message</code> from text using '&' colour code formatting. <br>
+	 * Parses a <code>Message</code> from text using '{@literal &}' colour code formatting. <br>
 	 * <i>Invalid colour codes are simply ignored</i>.
 	 * 
 	 * @param msg the source message
@@ -142,7 +142,7 @@ public final class MessageUtil {
 	}
 	
 	/**
-	 * Parses a <code>Message</code>, including JSON features, from text using colour code formatting, e.g. '&a' or '§6'. <br>
+	 * Parses a <code>Message</code>, including JSON features, from text using colour code formatting, e.g. '{@literal &}a' or '§6'. <br>
 	 * <i>Invalid colour codes are simply ignored</i>. <br>
 	 * <br>
 	 * The colour pattern to use <b>MUST</b> be fetched as specified  in the main documentation ({@link MessageUtil}).
@@ -156,7 +156,7 @@ public final class MessageUtil {
 	}
 	
 	/**
-	 * Parses a <code>Message</code>, including JSON features, from text and using '&' colour code formatting.
+	 * Parses a <code>Message</code>, including JSON features, from text and using '{@literal &}' colour code formatting.
 	 * 
 	 * @param msg the source message
 	 * @return a formed Message

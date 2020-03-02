@@ -45,6 +45,7 @@ public class ComponentBuilder implements ComponentFramework {
 	/**
 	 * Creates a builder with the given content
 	 * 
+	 * @param text the content
 	 */
 	public ComponentBuilder(String text) {
 		this.text = text;

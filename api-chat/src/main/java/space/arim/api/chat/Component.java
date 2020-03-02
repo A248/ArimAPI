@@ -105,6 +105,7 @@ public class Component implements ComponentFramework {
 		/**
 		 * Creates a builder with the given content
 		 * 
+		 * @param text the content
 		 */
 		public Builder(String text) {
 			super(text);
