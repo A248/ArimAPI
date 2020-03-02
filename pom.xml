@@ -143,7 +143,7 @@
 				<groupId>space.arim</groupId>
 				<artifactId>universal-gpl</artifactId>
 				<version>${universal.version}</version>
-				<classifier>resources</classifier>
+				<!-- <classifier>resources</classifier> -->
 				<type>zip</type>
 				<scope>provided</scope>
 			</dependency>
@@ -212,6 +212,14 @@
 		<repository>
 			<id>arim-repo</id>
 			<url>https://dl.cloudsmith.io/public/anand-beh/arim-repo/maven/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>spigot-repo</id>
