@@ -25,14 +25,6 @@
 		</dependency>
 		<dependency>
 			<groupId>space.arim</groupId>
-			<artifactId>arimapi-chat</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim</groupId>
-			<artifactId>arimapi-util</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim</groupId>
 			<artifactId>arimapi-platform</artifactId>
 		</dependency>		
 	</dependencies>
