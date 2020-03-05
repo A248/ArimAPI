@@ -95,7 +95,7 @@ public abstract class Config implements AutoClosable {
 	
 	boolean initVersionUpdate(File source) {
 		if (source.renameTo(getBackupLocation())) {
-			source = saveIfNotExist();
+			saveIfNotExist();
 			return true;
 		}
 		return false;
