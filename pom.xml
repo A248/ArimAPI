@@ -224,7 +224,7 @@
 	<repositories>
 		<repository>
 			<id>arim-repo</id>
-			<url>https://maven.cloudsmith.io/anand-beh/arim-repo/</url>
+			<url>https://dl.cloudsmith.io/public/anand-beh/arim-repo/maven/</url>
 		</repository>
 		<repository>
 			<id>spigot-repo</id>
