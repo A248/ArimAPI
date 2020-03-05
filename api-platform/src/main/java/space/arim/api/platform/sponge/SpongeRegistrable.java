@@ -22,7 +22,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 
 import space.arim.universal.registry.Registrable;
 
-import space.arim.api.annotation.Platform;
 import space.arim.api.platform.PlatformRegistrable;
 
 /**
@@ -69,7 +68,6 @@ import space.arim.api.platform.PlatformRegistrable;
  * @author A248
  *
  */
-@Platform(Platform.Type.SPONGE)
 public abstract class SpongeRegistrable extends PlatformRegistrable {
 
 	private final PluginContainer plugin;

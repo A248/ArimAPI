@@ -21,8 +21,6 @@ package space.arim.api.platform.spigot;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
-import space.arim.api.annotation.Platform;
-
 /**
  * A simple helper class for cancellable Spigot events. <br>
  * <br>
@@ -32,7 +30,6 @@ import space.arim.api.annotation.Platform;
  * @author A248
  *
  */
-@Platform(Platform.Type.SPIGOT)
 public abstract class CancellableEvent extends Event implements Cancellable {
 	
 	private boolean cancelled = false;

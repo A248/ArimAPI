@@ -21,8 +21,6 @@ package space.arim.api.platform.bungee;
 import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
 
-import space.arim.api.annotation.Platform;
-
 /**
  * A simple helper class for cancellable Bungee events. <br>
  * <br>
@@ -32,7 +30,6 @@ import space.arim.api.annotation.Platform;
  * @author A248
  *
  */
-@Platform(Platform.Type.BUNGEE)
 public class CancellableEvent extends Event implements Cancellable {
 
 	private boolean cancelled = false;

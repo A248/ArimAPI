@@ -22,7 +22,6 @@ import org.bukkit.plugin.Plugin;
 
 import space.arim.universal.registry.Registrable;
 
-import space.arim.api.annotation.Platform;
 import space.arim.api.platform.PlatformRegistrable;
 
 /**
@@ -63,7 +62,6 @@ import space.arim.api.platform.PlatformRegistrable;
  * Good, now you don't have to worry about overriding #getName, #getAuthor, and #getVersion in your SuperChat resource.
  * SpigotRegistrable automatically takes care of all of that.
  */
-@Platform(Platform.Type.SPIGOT)
 public abstract class SpigotRegistrable extends PlatformRegistrable {
 	
 	private final Plugin plugin;
