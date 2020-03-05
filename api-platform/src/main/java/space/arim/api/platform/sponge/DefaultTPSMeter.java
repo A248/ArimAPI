@@ -25,19 +25,16 @@ import space.arim.universal.registry.RegistryPriority;
 import space.arim.universal.registry.RequireRegistration;
 
 import space.arim.api.concurrent.SyncExecution;
+import space.arim.api.platform.AbstractTPSMeter;
 import space.arim.api.util.TPSMeter;
 
 /**
  * A default implementation of {@link TPSMeter} on the Sponge platform.
- * Simply runs a task repeating every tick to calculate TPS manually.
  * 
  * @author A248
  *
  */
-class DefaultTPSMeter extends SpongeRegistrable implements TPSMeter {
-
-	private long last = System.currentTimeMillis();
-	private double tps = 20D;
+public class DefaultTPSMeter extends AbstractTPSMeter {
 	
 	/**
 	 * Creates the instance. See {@link SpongeRegistrable#SpongeRegistrable(PluginContainer)} for more information.
@@ -45,18 +42,8 @@ class DefaultTPSMeter extends SpongeRegistrable implements TPSMeter {
 	 * @param plugin the plugin to use for Registrable information
 	 * @param registry the {@link Registry} to use. It must have a registration for {@link SyncExecution} as specified by the annotation.
 	 */
-	DefaultTPSMeter(PluginContainer plugin, @RequireRegistration(SyncExecution.class) Registry registry) {
-		super(plugin);
-		registry.getRegistration(SyncExecution.class).runTaskTimer(() -> {
-			long current = System.currentTimeMillis();
-			tps = 1000D/(current - last);
-			last = current;
-		}, 50L);
-	}
-	
-	@Override
-	public double getTPS() {
-		return tps;
+	public DefaultTPSMeter(PluginContainer plugin, @RequireRegistration(SyncExecution.class) Registry registry) {
+		super(SpongePlatform.get().convertPluginInfo(plugin), registry.getRegistration(SyncExecution.class));
 	}
 	
 	@Override

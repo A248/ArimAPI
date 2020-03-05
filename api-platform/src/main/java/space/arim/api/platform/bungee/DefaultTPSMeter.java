@@ -25,35 +25,28 @@ import space.arim.universal.registry.RegistryPriority;
 import space.arim.universal.registry.RequireRegistration;
 
 import space.arim.api.concurrent.SyncExecution;
+import space.arim.api.platform.AbstractTPSMeter;
 import space.arim.api.util.TPSMeter;
 
 /**
- * A default implementation of {@link TPSMeter} on the Bukkit platform.
- * Currently, it returns 20 TPS unconditionally, since BungeeCord is multithreaded, so there is no such concept as "Ticks per second". <br>
- * However, this is provided for programs which require a {@link TPSMeter} registration to function properly.
+ * A default implementation of {@link TPSMeter} on the BungeeCord platform. <br>
+ * Although BungeeCord is multithreaded, this is provided for programs which require a {@link TPSMeter} registration.
  * 
  * @author A248
  *
  */
-public class DefaultTPSMeter extends BungeeRegistrable implements TPSMeter {
-
+public class DefaultTPSMeter extends AbstractTPSMeter {
+	
 	/**
-	 * Creates the instance. See {@link BungeeRegistrable#BungeeRegistrable(Plugin)} for more information. <br>
-	 * Since the current implementation simply returns 20 TPS regardless, the second parameter would not normally be required.
-	 * However, it must be supplied should future changes to this implementation may use it to calculate TPS.
+	 * Creates the instance. See {@link BungeeRegistrable#BungeeRegistrable(Plugin)} for more information.
 	 * 
 	 * @param plugin the plugin to use for Registrable information
 	 * @param registry the {@link Registry} to use. It must have a registration for {@link SyncExecution} as specified by the annotation.
 	 */
 	public DefaultTPSMeter(Plugin plugin, @RequireRegistration(SyncExecution.class) Registry registry) {
-		super(plugin);
+		super(BungeePlatform.get().convertPluginInfo(plugin), registry.getRegistration(SyncExecution.class));
 	}
 	
-	@Override
-	public double getTPS() {
-		return 20D; 
-	}
-
 	@Override
 	public byte getPriority() {
 		return RegistryPriority.LOWEST;
