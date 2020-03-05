@@ -20,13 +20,27 @@ package space.arim.api.util.log;
 
 import org.slf4j.Logger;
 
+import space.arim.api.util.LazySingleton;
+
 /**
- * Used for interacting with platforms which utilise different logging frameworks.
+ * Used for interacting with platforms which utilise different logging frameworks. <br>
+ * To get the instance, use {@link #get()}
  * 
  * @author A248
  *
  */
 public class LoggerConverter {
+	
+	private static final LazySingleton<LoggerConverter> INST = new LazySingleton<LoggerConverter>(LoggerConverter::new);
+	
+	/**
+	 * Gets the instance
+	 * 
+	 * @return the instance
+	 */
+	public static LoggerConverter get() {
+		return INST.get();
+	}
 	
 	/**
 	 * Converts a JUL logger to a slf4j Logger. <br>
@@ -44,7 +58,7 @@ public class LoggerConverter {
 	 * @param julLogger the JUL logger
 	 * @return a slf4j Logger
 	 */
-	public static Logger convert(java.util.logging.Logger julLogger) {
+	public Logger convert(java.util.logging.Logger julLogger) {
 		return new JulAsSlf4j(julLogger);
 	}
 	
