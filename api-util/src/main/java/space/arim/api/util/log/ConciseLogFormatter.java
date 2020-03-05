@@ -16,7 +16,7 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util;
+package space.arim.api.util.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -25,7 +25,7 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- * An uncoloured of BungeeCord's ConciseFormatter.
+ * A simple implementation of <code>java.util.logging.Formatter</code> based on BungeeCord's <code>ConciseFormatter</code>.
  * 
  * @author A248
  *
