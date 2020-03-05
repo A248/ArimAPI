@@ -121,14 +121,19 @@ public final class MessageUtil {
 				switch (tag) {
 				case TTP:
 					builder.tooltip(tooltipGenerator.apply(value));
+					break;
 				case URL:
 					builder.url(value);
+					break;
 				case CMD:
 					builder.command(value);
+					break;
 				case SGT:
 					builder.suggest(value);
+					break;
 				case INS:
 					builder.insertion(value);
+					break;
 				default:
 					break;
 				}
