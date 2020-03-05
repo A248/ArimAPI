@@ -29,12 +29,12 @@ import com.google.gson.Gson;
  *
  */
 public final class CommonInstancesUtil {
-
-	private CommonInstancesUtil() {}
 	
 	private static final LazySingleton<Gson> GSON = new LazySingleton<Gson>(Gson::new);
 	
 	private static final ThreadLocal<Yaml> SNAKE_YAML = ThreadLocal.withInitial(Yaml::new);
+	
+	private CommonInstancesUtil() {}
 	
 	/**
 	 * Gets a common, shareable gson value.
