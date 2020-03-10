@@ -22,16 +22,18 @@ import java.util.Map;
 
 /**
  * Used as a helper for creating unmodifiable maps. <br>
- * <b>Do not assume that instances of this interface are themselves immutables! Methods can be overriden!</b> <br>
+ * <b>Do not assume that instances of this interface are themselves immutable! Methods can be overriden!</b> <br>
  * <br>
- * Modification operations are implemented by default:
- * {@link #put(Object, Object)}, {@link #remove(Object)}, {@link #putAll(Map)}, and {@link #clear()} all
- * throw <code>UnsupportedOperationException</code>.
+ * Modification operations throw <code>UnsupportedOperationException</code> by default: <br>
+ * * {@link #put(Object, Object)} <br>
+ * * {@link #remove(Object)} <br>
+ * * {@link #putAll(Map)} <br>
+ * * {@link #clear()}
  * 
  * @author A248
  *
- * @param <K>
- * @param <V>
+ * @param <K> the key type
+ * @param <V> the value type
  */
 public interface UnmodifiableByDefaultMap<K, V> extends Map<K, V> {
 	
