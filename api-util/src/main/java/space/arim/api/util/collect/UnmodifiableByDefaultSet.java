@@ -40,14 +40,10 @@ import java.util.Set;
  *
  * @param <E> the element type
  */
-public interface UnmodifiableByDefaultSet<E> extends Set<E> {
+public interface UnmodifiableByDefaultSet<E> extends Set<E>, UnmodifiableByDefaultCollection<E> {
 	
 	@Override
-	default boolean add(E e) {throw new UnsupportedOperationException();}
-	@Override
 	default boolean remove(Object o) {throw new UnsupportedOperationException();}
-	@Override
-	default boolean addAll(Collection<? extends E> c) {throw new UnsupportedOperationException();}
 	@Override
 	default boolean retainAll(Collection<?> c) {throw new UnsupportedOperationException();}
 	@Override
