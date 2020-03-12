@@ -16,13 +16,12 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.collect;
+package space.arim.api.util.collect.helper;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
- * Used as a helper for creating unmodifiable sets. <br>
+ * Used as a helper for creating unmodifiable collections. <br>
  * <b>Do not assume that instances of this interface are themselves immutable! Methods can be overriden!</b> <br>
  * <br>
  * Modification operations throw <code>UnsupportedOperationException</code> by default: <br>
@@ -40,10 +39,14 @@ import java.util.Set;
  *
  * @param <E> the element type
  */
-public interface UnmodifiableByDefaultSet<E> extends Set<E>, UnmodifiableByDefaultCollection<E> {
+public interface UnmodifiableByDefaultCollection<E> extends Collection<E> {
 	
 	@Override
+	default boolean add(E e) {throw new UnsupportedOperationException();}
+	@Override
 	default boolean remove(Object o) {throw new UnsupportedOperationException();}
+	@Override
+	default boolean addAll(Collection<? extends E> c) {throw new UnsupportedOperationException();}
 	@Override
 	default boolean retainAll(Collection<?> c) {throw new UnsupportedOperationException();}
 	@Override

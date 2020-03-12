@@ -16,28 +16,31 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.collect;
+package space.arim.api.util.collect.helper;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
- * Same as {@link CollectionToArrayHelper}, but for a <code>Set</code>. <br>
+ * Same as {@link CollectionContainsHelper}, but for a <code>Set</code>. <br>
  * Prevents method conflicts.
  * 
  * @author A248
  *
  * @param <E> the element type
  */
-public interface SetToArrayHelper<E> extends CollectionToArrayHelper<E>, Set<E> {
+public interface SetContainsHelper<E> extends CollectionContainsHelper<E>, Set<E> {
 	
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
-	default Object[] toArray() {
-		return CollectionToArrayHelper.super.toArray();
+	default boolean contains(Object o) {
+		return CollectionContainsHelper.super.contains(o);
 	}
 	
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
-	default <T> T[] toArray(T[] a) {
-		return CollectionToArrayHelper.super.toArray(a);
+	default boolean containsAll(Collection<?> c) {
+		return CollectionContainsHelper.super.containsAll(c);
 	}
-
+	
 }

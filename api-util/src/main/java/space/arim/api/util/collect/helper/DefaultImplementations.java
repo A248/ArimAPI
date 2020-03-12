@@ -16,7 +16,7 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.collect;
+package space.arim.api.util.collect.helper;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;

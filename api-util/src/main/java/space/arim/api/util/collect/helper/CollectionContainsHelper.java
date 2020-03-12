@@ -16,31 +16,28 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.collect;
+package space.arim.api.util.collect.helper;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
- * Same as {@link CollectionContainsHelper}, but for a <code>Set</code>. <br>
- * Prevents method conflicts.
+ * Adds default implementations of {@link #contains(Object)} and {@link #containsAll(Collection)},
+ * both of which rely on {@link #iterator()} to transverse the collection and check for matches.
  * 
  * @author A248
  *
  * @param <E> the element type
  */
-public interface SetContainsHelper<E> extends CollectionContainsHelper<E>, Set<E> {
+public interface CollectionContainsHelper<E> extends Collection<E> {
 	
-	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	default boolean contains(Object o) {
-		return CollectionContainsHelper.super.contains(o);
+		return DefaultImplementations.iteratorContains(iterator(), o);
 	}
 	
-	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	default boolean containsAll(Collection<?> c) {
-		return CollectionContainsHelper.super.containsAll(c);
+		return DefaultImplementations.iteratorContainsAll(iterator(), c);
 	}
 	
 }
