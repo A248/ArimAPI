@@ -42,9 +42,7 @@ import java.util.Map.Entry;
  * @param <K> the key type
  * @param <V> the value type
  */
-public class DynamicMapEntrySet<K, V> implements SetContainsHelper<Entry<K, V>>, SetToArrayHelper<Entry<K, V>>, UnmodifiableByDefaultSet<Entry<K, V>> {
-	
-	private final Map<K, V> original;
+public class DynamicMapEntrySet<K, V> extends DynamicMapCollectionHelper<Entry<K, V>, K, V> implements SetContainsHelper<Entry<K, V>>, SetToArrayHelper<Entry<K, V>>, UnmodifiableByDefaultSet<Entry<K, V>> {
 	
 	/**
 	 * Creates an entry set from an original map from which entries are generated. <br>
@@ -53,21 +51,12 @@ public class DynamicMapEntrySet<K, V> implements SetContainsHelper<Entry<K, V>>,
 	 * @param original the original, backing map
 	 */
 	public DynamicMapEntrySet(Map<K, V> original) {
-		this.original = original;
-	}
-	
-	@Override
-	public int size() {
-		return original.size();
-	}
-	
-	@Override
-	public boolean isEmpty() {
-		return original.isEmpty();
+		super(original);
 	}
 	
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
+		Map<K, V> original = getMap();
 		return new ImmutableKeyMappingIterator<K, Entry<K, V>>(original.keySet().iterator(), (key) -> new ImmutableEntry<K, V>(key, original.get(key)));
 	}
 

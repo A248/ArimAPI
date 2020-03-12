@@ -40,26 +40,15 @@ import java.util.Map;
  * @param <K> the key type
  * @param <V> the value type
  */
-public class DynamicMapValues<K, V> implements CollectionContainsHelper<V>, CollectionToArrayHelper<V>, UnmodifiableByDefaultCollection<V> {
-	
-	private final Map<K, V> original;
+public class DynamicMapValues<K, V> extends DynamicMapCollectionHelper<V, K, V> implements CollectionContainsHelper<V>, CollectionToArrayHelper<V>, UnmodifiableByDefaultCollection<V> {
 	
 	public DynamicMapValues(Map<K, V> original) {
-		this.original = original;
-	}
-	
-	@Override
-	public int size() {
-		return original.size();
-	}
-	
-	@Override
-	public boolean isEmpty() {
-		return original.isEmpty();
+		super(original);
 	}
 	
 	@Override
 	public Iterator<V> iterator() {
+		Map<K, V> original = getMap();
 		return new ImmutableKeyMappingIterator<K, V>(original.keySet().iterator(), original::get);
 	}
 
