@@ -60,21 +60,7 @@ public class DynamicMapValues<K, V> implements CollectionContainsHelper<V>, Coll
 	
 	@Override
 	public Iterator<V> iterator() {
-		return new Iterator<V>() {
-			
-			private final Iterator<K> keyIterator = original.keySet().iterator();
-			
-			@Override
-			public boolean hasNext() {
-				return keyIterator.hasNext();
-			}
-			
-			@Override
-			public V next() {
-				return original.get(keyIterator.next());
-			}
-			
-		};
+		return new ImmutableKeyMappingIterator<K, V>(original.keySet().iterator(), original::get);
 	}
 
 }

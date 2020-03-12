@@ -68,22 +68,7 @@ public class DynamicMapEntrySet<K, V> implements SetContainsHelper<Entry<K, V>>,
 	
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
-		return new Iterator<Entry<K, V>>() {
-			
-			private final Iterator<K> keyIterator = original.keySet().iterator();
-			
-			@Override
-			public boolean hasNext() {
-				return keyIterator.hasNext();
-			}
-			
-			@Override
-			public Entry<K, V> next() {
-				K key = keyIterator.next();
-				return new ImmutableEntry<K, V>(key, original.get(key));
-			}
-			
-		};
+		return new ImmutableKeyMappingIterator<K, Entry<K, V>>(original.keySet().iterator(), (key) -> new ImmutableEntry<K, V>(key, original.get(key)));
 	}
 
 }
