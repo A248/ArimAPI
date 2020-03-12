@@ -26,14 +26,14 @@ import java.util.Set;
 /**
  * Represents a set which contains all possible elements. <br>
  * <br>
- * Principles: <br>
+ * <b>Principles</b>: <br>
  * * All elements are contained within infinity. <br>
- * * Because infinity cannot be quantified, attempts to select individual elements will always fail. <br>
- * * Because infinity, when added to, remains infinity, attempts to add elements always indicate an unchanged set. <br>
- * * Infinity cannot be reduced in number or size. Subtraction has no effect. <br>
+ * 1 Because infinity cannot be quantified, attempts to select individual elements will always fail. <br>
+ * 2 Because infinity, when added to, remains infinity, attempts to add elements always indicate an unchanged set. <br>
+ * 3 Infinity cannot be reduced in number or size. Subtraction has no effect. <br>
  * <br>
  * The specifications follow from the principles. <br>
- * Specifications: <br>
+ * <b>Specifications</b>: <br>
  * * {@link #size()} == <code>Integer.MAX_VALUE</code>, {@link #isEmpty()} is always <code>false</code>. (principle 1) <br>
  * * {@link #contains(Object)} and {@link #containsAll(Collection)} always return <code>true</code>. (principle 1) <br>
  * * {@link #iterator()} returns an empty iterator. (principle 2) <br>
