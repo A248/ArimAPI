@@ -21,11 +21,34 @@ package space.arim.api.util.collect;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 class DefaultImplementations {
 	
 	private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+	
+	static boolean equalsWithNullCheck(Object obj1, Object obj2) {
+		return (obj1 == null) ? obj2 == null : obj1.equals(obj2);
+	}
+	
+	static <E> boolean iteratorContains(Iterator<E> it, Object element) {
+		while (it.hasNext()) {
+			if (equalsWithNullCheck(element, it.next())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@SuppressWarnings("unlikely-arg-type")
+	static <E> boolean iteratorContainsAll(Iterator<E> it, Collection<?> elements) {
+		HashSet<?> checkFor = new HashSet<>(elements);
+		while (it.hasNext()) {
+			checkFor.remove(it.next());
+		}
+		return checkFor.isEmpty();
+	}
 	
 	static <E> Object[] toArray(Collection<E> c) {
 		// Estimate size of array; be prepared to see more or fewer elements

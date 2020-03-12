@@ -21,23 +21,23 @@ package space.arim.api.util.collect;
 import java.util.Collection;
 
 /**
- * Adds default implementations of {@link #toArray()} and {@link #toArray(Object[])}. <br>
- * Credits go to {@link AbstractCollection} for the implementations themselves.
+ * Adds default implementations of {@link #contains(Object)} and {@link #containsAll(Collection)},
+ * both of which rely on {@link #iterator()} to transverse the collection and check for matches.
  * 
  * @author A248
  *
  * @param <E> the element type
  */
-public interface ToArrayCollectionHelper<E> extends Collection<E> {
+public interface CollectionContainsHelper<E> extends Collection<E> {
 	
 	@Override
-	default Object[] toArray() {
-        return DefaultImplementations.toArray(this);
-    }
+	default boolean contains(Object o) {
+		return DefaultImplementations.iteratorContains(iterator(), o);
+	}
 	
 	@Override
-	default <T> T[] toArray(T[] a) {
-		return DefaultImplementations.toArray(this, a);
+	default boolean containsAll(Collection<?> c) {
+		return DefaultImplementations.iteratorContainsAll(iterator(), c);
 	}
 	
 }

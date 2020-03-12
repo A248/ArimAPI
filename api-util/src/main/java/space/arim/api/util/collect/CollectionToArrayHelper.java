@@ -18,25 +18,26 @@
  */
 package space.arim.api.util.collect;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
- * Same as {@link ToArrayCollectionHelper}, but for a <code>Set</code>.
+ * Adds default implementations of {@link #toArray()} and {@link #toArray(Object[])}. <br>
+ * Credits go to {@link AbstractCollection} for the implementations themselves.
  * 
  * @author A248
  *
  * @param <E> the element type
  */
-public interface ToArraySetHelper<E> extends ToArrayCollectionHelper<E>, Set<E> {
+public interface CollectionToArrayHelper<E> extends Collection<E> {
 	
 	@Override
 	default Object[] toArray() {
-		return ToArrayCollectionHelper.super.toArray();
-	}
+        return DefaultImplementations.toArray(this);
+    }
 	
 	@Override
 	default <T> T[] toArray(T[] a) {
-		return ToArrayCollectionHelper.super.toArray(a);
+		return DefaultImplementations.toArray(this, a);
 	}
-
+	
 }
