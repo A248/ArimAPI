@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * Same as {@ink CollectionContainsHelper}, but for a <code>Set</code>. <br>
+ * Same as {@link CollectionContainsHelper}, but for a <code>Set</code>. <br>
  * Prevents method conflicts.
  * 
  * @author A248
