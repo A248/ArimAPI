@@ -21,26 +21,38 @@ package space.arim.api.util.collect;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * A value collection based on a backing map. <br>
- * Relies on {@link Map#keySet()}. <br>
+ * A dynamic entry set based on a backing map. <br>
+ * Relies on {@link Map#keySet()} and {@link Map#get(Object)} to dynamically generate the collection. <br>
  * <br>
  * Specifications: <br>
- * * The collection automatically reflects the state of the backing map. Values are fetched on call. <br>
- * * The collection is an unmodifiable view. Writes are not permitted. <br>
- * * The iterator returned by {@link #iterator()} is immutable.
+ * * The set automatically reflects the state of the backing map. Keys are fetched on call. <br>
+ * * The set is an unmodifiable view. Writes are not permitted. <br>
+ * * The iterator returned by {@link #iterator()} is immutable. <br>
+ * * The entries returned by the iterator are immutable. <br>
+ * <br>
+ * Notes: <br>
+ * * {@link #size()} and {@link #isEmpty()} redirect to the backing map. <br>
+ * * {@link #containsAll(Collection)} does not rely on {@link #contains(Object)}. Both rely on {@link #iterator()}. One or the other may be overriden.
  * 
  * @author A248
  *
  * @param <K> the key type
  * @param <V> the value type
  */
-public class ImmutableMapBackedValues<K, V> implements ToArrayCollectionHelper<V>, UnmodifiableByDefaultCollection<V> {
+public class DynamicMapEntrySet<K, V> implements SetContainsHelper<Entry<K, V>>, SetToArrayHelper<Entry<K, V>>, UnmodifiableByDefaultSet<Entry<K, V>> {
 	
 	private final Map<K, V> original;
 	
-	public ImmutableMapBackedValues(Map<K, V> original) {
+	/**
+	 * Creates an entry set from an original map from which entries are generated. <br>
+	 * The entries are generated on transversal. The map's {@link Map#keySet()} is used for iteration. <br>
+	 * 
+	 * @param original the original, backing map
+	 */
+	public DynamicMapEntrySet(Map<K, V> original) {
 		this.original = original;
 	}
 	
@@ -55,18 +67,8 @@ public class ImmutableMapBackedValues<K, V> implements ToArrayCollectionHelper<V
 	}
 	
 	@Override
-	public boolean contains(Object o) {
-		for (Object element : toArray()) {
-			if (o == null && element == null || element != null && o != null && element.equals(o)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	@Override
-	public Iterator<V> iterator() {
-		return new Iterator<V>() {
+	public Iterator<Entry<K, V>> iterator() {
+		return new Iterator<Entry<K, V>>() {
 			
 			private final Iterator<K> keyIterator = original.keySet().iterator();
 			
@@ -76,22 +78,12 @@ public class ImmutableMapBackedValues<K, V> implements ToArrayCollectionHelper<V
 			}
 			
 			@Override
-			public V next() {
-				return original.get(keyIterator.next());
+			public Entry<K, V> next() {
+				K key = keyIterator.next();
+				return new ImmutableEntry<K, V>(key, original.get(key));
 			}
 			
 		};
-	}
-	
-	@SuppressWarnings("unlikely-arg-type")
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		for (Object o : c) {
-			if (!contains(o)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 }
