@@ -21,8 +21,8 @@ package space.arim.api.util.collect;
 import java.util.Map;
 
 /**
- * An implementation of {@link Map.Entry}. <br>
- * Immutable; {@link #setValue(Object)} throws <code>UnsupportedOperationException</code>.
+ * An immutable implementation of {@link Map.Entry}. <br>
+ * {@link #setValue(Object)} throws <code>UnsupportedOperationException</code>.
  * 
  * @author A248
  *
