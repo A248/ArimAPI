@@ -18,13 +18,14 @@
  */
 package space.arim.api.util.collect;
 
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
+
+import space.arim.api.util.collect.helper.SetToEmptyArrayHelper;
 
 /**
  * Represents a set which contains all possible elements. <br>
+ * Use {@link #create()} for instantiation. <br>
  * <br>
  * <b>Principles</b>: <br>
  * * All elements are contained within infinity. <br>
@@ -46,71 +47,70 @@ import java.util.Set;
  *
  * @param <E> the element type
  */
-public class InfinitySet<E> implements Set<E> {
+public interface InfinitySet<E> extends SetToEmptyArrayHelper<E> {
+	
+	/**
+	 * Creates an infinity set
+	 * 
+	 * @param <E> the element type
+	 * @return an infinity set
+	 */
+	static <E> InfinitySet<E> create() {
+		return new InfinitySet<E>() {};
+	}
 	
 	@Override
-	public int size() {
+	default int size() {
 		return Integer.MAX_VALUE;
 	}
 	
 	@Override
-	public boolean isEmpty() {
+	default boolean isEmpty() {
 		return false;
 	}
 	
 	@Override
-	public boolean contains(Object o) {
+	default boolean contains(Object o) {
 		return true;
 	}
 	
 	@Override
-	public Iterator<E> iterator() {
+	default Iterator<E> iterator() {
 		return new EmptyIterator<E>();
 	}
 	
 	@Override
-	public Object[] toArray() {
-		return new Object[] {};
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return (T[]) Array.newInstance(a.getClass().getComponentType(), 0);
-	}
-	
-	@Override
-	public boolean add(E e) {
+	default boolean add(E e) {
 		return false;
 	}
 	
 	@Override
-	public boolean remove(Object o) {
+	default boolean remove(Object o) {
 		return true;
 	}
 	
 	@Override
-	public boolean containsAll(Collection<?> c) {
+	default boolean containsAll(Collection<?> c) {
 		return true;
 	}
 	
 	@Override
-	public boolean addAll(Collection<? extends E> c) {
+	default boolean addAll(Collection<? extends E> c) {
 		return false;
 	}
 	
 	@Override
-	public boolean retainAll(Collection<?> c) {
+	default boolean retainAll(Collection<?> c) {
 		return true;
 	}
 	
 	@Override
-	public boolean removeAll(Collection<?> c) {
+	default boolean removeAll(Collection<?> c) {
 		return true;
 	}
 	
 	@Override
-	public void clear() {
+	default void clear() {
 		
 	}
 
