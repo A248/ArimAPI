@@ -21,11 +21,11 @@ package space.arim.api.util.collect;
 import java.util.Collection;
 import java.util.Map;
 
-abstract class DynamicMapCollectionHelper<E, K, V> implements Collection<E> {
+abstract class MapRelatedCollection<E, K, V> implements Collection<E> {
 	
 	private final Map<K, V> map;
 	
-	DynamicMapCollectionHelper(Map<K, V> map) {
+	MapRelatedCollection(Map<K, V> map) {
 		this.map = map;
 	}
 	

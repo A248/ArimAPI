@@ -18,38 +18,38 @@
  */
 package space.arim.api.util.collect;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import space.arim.api.util.collect.helper.CollectionContainsHelper;
+import space.arim.api.util.collect.helper.CollectionToArrayHelper;
+import space.arim.api.util.collect.helper.UnmodifiableByDefaultCollection;
+
 /**
- * A value collection based on a backing map. <br>
- * Relies on {@link Map#keySet()} and {@link Map#get(Object)} to dynamically generate the collection. <br>
+ * A dynamic value collection based on a backing map. <br>
+ * Relies on {@link Map#keySet()} and {@link Map#get(Object)} to dynamically compute the collection. <br>
  * <br>
  * Specifications: <br>
  * * The collection automatically reflects the state of the backing map. Values are fetched on call. <br>
  * * The collection is an unmodifiable view. Writes are not permitted. <br>
  * * The iterator returned by {@link #iterator()} is immutable. <br>
- * <br>
- * Notes: <br>
- * * {@link #size()} and {@link #isEmpty()} redirect to the backing map. <br>
- * * {@link #containsAll(Collection)} does not rely on {@link #contains(Object)}. Both rely on {@link #iterator()}. One or the other may be overriden.
+ * * {@link #size()} and {@link #isEmpty()} redirect to the backing map.
  * 
  * @author A248
  *
  * @param <K> the key type
  * @param <V> the value type
  */
-public class DynamicMapValues<K, V> extends DynamicMapCollectionHelper<V, K, V> implements CollectionContainsHelper<V>, CollectionToArrayHelper<V>, UnmodifiableByDefaultCollection<V> {
+public class CalculationMapValues<K, V> extends MapRelatedCollection<V, K, V> implements CollectionContainsHelper<V>, CollectionToArrayHelper<V>, UnmodifiableByDefaultCollection<V> {
 	
-	public DynamicMapValues(Map<K, V> original) {
+	public CalculationMapValues(Map<K, V> original) {
 		super(original);
 	}
 	
 	@Override
 	public Iterator<V> iterator() {
 		Map<K, V> original = getMap();
-		return new ImmutableKeyMappingIterator<K, V>(original.keySet().iterator(), original::get);
+		return new ImmutableCalculationIterator<K, V>(original.keySet().iterator(), original::get);
 	}
 
 }

@@ -18,31 +18,32 @@
  */
 package space.arim.api.util.collect;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import space.arim.api.util.collect.helper.SetContainsHelper;
+import space.arim.api.util.collect.helper.SetToArrayHelper;
+import space.arim.api.util.collect.helper.UnmodifiableByDefaultSet;
+
 /**
  * A dynamic entry set based on a backing map. <br>
- * Relies on {@link Map#keySet()} and {@link Map#get(Object)} to dynamically generate the collection. <br>
+ * Relies on {@link Map#keySet()} and {@link Map#get(Object)} to dynamically compute the collection. <br>
  * <br>
  * Specifications: <br>
- * * The set automatically reflects the state of the backing map. Keys are fetched on call. <br>
+ * * The set automatically reflects the state of the backing map.
+ * Keys are fetched on call and mapped to a value to form an entry. <br>
  * * The set is an unmodifiable view. Writes are not permitted. <br>
  * * The iterator returned by {@link #iterator()} is immutable. <br>
  * * The entries returned by the iterator are immutable. <br>
- * <br>
- * Notes: <br>
- * * {@link #size()} and {@link #isEmpty()} redirect to the backing map. <br>
- * * {@link #containsAll(Collection)} does not rely on {@link #contains(Object)}. Both rely on {@link #iterator()}. One or the other may be overriden.
+ * * {@link #size()} and {@link #isEmpty()} redirect to the backing map.
  * 
  * @author A248
  *
  * @param <K> the key type
  * @param <V> the value type
  */
-public class DynamicMapEntrySet<K, V> extends DynamicMapCollectionHelper<Entry<K, V>, K, V> implements SetContainsHelper<Entry<K, V>>, SetToArrayHelper<Entry<K, V>>, UnmodifiableByDefaultSet<Entry<K, V>> {
+public class CalculationMapEntrySet<K, V> extends MapRelatedCollection<Entry<K, V>, K, V> implements SetContainsHelper<Entry<K, V>>, SetToArrayHelper<Entry<K, V>>, UnmodifiableByDefaultSet<Entry<K, V>> {
 	
 	/**
 	 * Creates an entry set from an original map from which entries are generated. <br>
@@ -50,14 +51,14 @@ public class DynamicMapEntrySet<K, V> extends DynamicMapCollectionHelper<Entry<K
 	 * 
 	 * @param original the original, backing map
 	 */
-	public DynamicMapEntrySet(Map<K, V> original) {
+	public CalculationMapEntrySet(Map<K, V> original) {
 		super(original);
 	}
 	
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
 		Map<K, V> original = getMap();
-		return new ImmutableKeyMappingIterator<K, Entry<K, V>>(original.keySet().iterator(), (key) -> new ImmutableEntry<K, V>(key, original.get(key)));
+		return new ImmutableCalculationIterator<K, Entry<K, V>>(original.keySet().iterator(), (key) -> new ImmutableEntry<K, V>(key, original.get(key)));
 	}
 
 }

@@ -21,12 +21,12 @@ package space.arim.api.util.collect;
 import java.util.Iterator;
 import java.util.function.Function;
 
-class ImmutableKeyMappingIterator<K, V> implements Iterator<V> {
+class ImmutableCalculationIterator<K, R> implements Iterator<R> {
 	
 	private final Iterator<K> keyIterator;
-	private final Function<K, V> mapper;
+	private final Function<K, R> mapper;
 	
-	ImmutableKeyMappingIterator(Iterator<K> keyIterator, Function<K, V> mapper) {
+	ImmutableCalculationIterator(Iterator<K> keyIterator, Function<K, R> mapper) {
 		this.keyIterator = keyIterator;
 		this.mapper = mapper;
 	}
@@ -37,7 +37,7 @@ class ImmutableKeyMappingIterator<K, V> implements Iterator<V> {
 	}
 	
 	@Override
-	public V next() {
+	public R next() {
 		return mapper.apply(keyIterator.next());
 	}
 
