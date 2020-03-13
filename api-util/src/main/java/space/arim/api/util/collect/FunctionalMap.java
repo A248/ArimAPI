@@ -33,7 +33,7 @@ import space.arim.api.util.collect.helper.UnmodifiableByDefaultMap;
  * 1 Any object of the correct key type is a valid key. The key set is therefore unbounded. <br>
  * 2 The mapped values cannot be computed in the aggregate because the key set is infinite; the values collection is thus undefined. <br>
  * 3 An entry is contained within the map if the entry key maps to the entry value. <br>
- * * Infinity cannot be reduced in number or size. Subtraction has no effect. <br>
+ * 4 Infinity cannot be reduced in number or size. Subtraction has no effect. <br>
  * <br>
  * The specifications follow from the principles. <br>
  * <b>Specifications</b>: <br>
@@ -46,6 +46,7 @@ import space.arim.api.util.collect.helper.UnmodifiableByDefaultMap;
  * * {@link #containsValue(Object)} always returns <code>false</code>. (principle 2) <br>
  * * {@link #values()} returns an empty immutable collection. (principle 2) <br>
  * * {@link #entrySet()} returns a special set, see {@link FunctionalMapEntrySet} for details. (principle 3) <br>
+ * * The map's modification methods all throw <code>UnsupportedOperationException</code>. (principle 4)
  * 
  * @author A248
  *
@@ -126,10 +127,10 @@ public class FunctionalMap<K, V> implements UnmodifiableByDefaultMap<K, V> {
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unlikely-arg-type" })
 	@Override
 	public V get(Object key) {
-		return instanceCheck(key) ? mappingFunction.apply((K) key) : null;
+		return containsKey(key) ? mappingFunction.apply((K) key) : null;
 	}
 	
 	@Override
