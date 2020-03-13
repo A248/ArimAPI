@@ -19,9 +19,8 @@
 package space.arim.api.util.collect;
 
 import java.util.Collection;
-import java.util.Iterator;
 
-import space.arim.api.util.collect.helper.SetToEmptyArrayHelper;
+import space.arim.api.util.collect.helper.SetEmptyHelper;
 
 /**
  * Represents a set which contains all possible elements. <br>
@@ -47,7 +46,7 @@ import space.arim.api.util.collect.helper.SetToEmptyArrayHelper;
  *
  * @param <E> the element type
  */
-public interface InfinitySet<E> extends SetToEmptyArrayHelper<E> {
+public interface InfinitySet<E> extends SetEmptyHelper<E> {
 	
 	/**
 	 * Creates an infinity set
@@ -72,11 +71,6 @@ public interface InfinitySet<E> extends SetToEmptyArrayHelper<E> {
 	@Override
 	default boolean contains(Object o) {
 		return true;
-	}
-	
-	@Override
-	default Iterator<E> iterator() {
-		return new EmptyIterator<E>();
 	}
 	
 	@Override

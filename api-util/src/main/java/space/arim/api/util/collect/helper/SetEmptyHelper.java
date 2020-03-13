@@ -18,28 +18,32 @@
  */
 package space.arim.api.util.collect.helper;
 
-import java.lang.reflect.Array;
-import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
- * Adds default implementations of {@link #toArray()} and {@link #toArray(Object[])}
- * which simply return blank arrays of the relevant types.
+ * Same as {@link CollectionEmptyHelper}, but for a <code>Set</code>. <br>
+ * Prevents method conflicts.
  * 
  * @author A248
  *
  * @param <E> the element type
  */
-public interface CollectionToEmptyArrayHelper<E> extends Collection<E> {
+public interface SetEmptyHelper<E> extends CollectionEmptyHelper<E>, Set<E> {
 	
 	@Override
 	default Object[] toArray() {
-		return new Object[] {};
+		return CollectionEmptyHelper.super.toArray();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	default <T> T[] toArray(T[] a) {
-		return (T[]) Array.newInstance(a.getClass().getComponentType(), 0);
+		return CollectionEmptyHelper.super.toArray(a);
+	}
+	
+	@Override
+	default Iterator<E> iterator() {
+		return CollectionEmptyHelper.super.iterator();
 	}
 	
 }
