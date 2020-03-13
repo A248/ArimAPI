@@ -22,41 +22,88 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import space.arim.api.util.collect.helper.UnmodifiableByDefaultMap;
 
+/**
+ * Represents a map which takes arbitrary keys and maps them dynamically to a value when {@link #get(Object)} is called. <br>
+ * <br>
+ * <b>Principles</b>: <br>
+ * 1 Any object of the correct key type is a valid key. The key set is therefore unbounded. <br>
+ * 2 The mapped values cannot be computed in the aggregate because the key set is infinite; the values collection is thus undefined. <br>
+ * 3 An entry is contained within the map if the entry key maps to the entry value. <br>
+ * * Infinity cannot be reduced in number or size. Subtraction has no effect. <br>
+ * <br>
+ * The specifications follow from the principles. <br>
+ * <b>Specifications</b>: <br>
+ * * The map is presumed to have an infinite key set. {@link #keySet()} returns an {@link InfinitySet}. (principle 1) <br>
+ * * {@link #size()} returns <code>Integer.MAX_VALUE</code> and {@link #isEmpty()} returns <code>false</code>. (principle 1) <br>
+ * * {@link #instanceCheck(Object)} is used to check the type of key objects, as a workaround
+ * * {@link #containsKey(Object)} returns <code>true</code> if and only if the key object is valid. (principle 1) <br>
+ * * {@link #get(Object)} will return a mapped result, as specified by a mapping function provided at construction, for any valid key. (principle 1) <br>
+ * * {@link #keySet()} returns an {@link InfinitySet}. (principle 1) <br>
+ * * {@link #containsValue(Object)} always returns <code>false</code>. (principle 2) <br>
+ * * {@link #values()} returns an empty immutable collection. (principle 2) <br>
+ * * {@link #entrySet()} returns a special set, see {@link FunctionalMapEntrySet} for details. (principle 3) <br>
+ * 
+ * @author A248
+ *
+ * @param <K> the key type
+ * @param <V> the value type
+ */
 public class FunctionalMap<K, V> implements UnmodifiableByDefaultMap<K, V> {
 	
 	private final Function<K, V> mappingFunction;
+	private final Predicate<Object> keyInstanceCheck;
 	
-	volatile Set<K> keySet;
+	private volatile Set<K> keySet;
 	private volatile Collection<V> values;
 	private volatile Set<Entry<K, V>> entrySet;
 	
+	/**
+	 * Creates a map based on the given mapping function. <br>
+	 * The function used is when {@link #get(Object)} is called. Note that <code>#get()</code> may be called internally.
+	 * 
+	 * @param mappingFunction the mapping function
+	 */
+	@SuppressWarnings("unchecked")
 	public FunctionalMap(Function<K, V> mappingFunction) {
+		this(mappingFunction, FunctionalMap.<K>getGenericKeyType()::isInstance);
+	}
+	
+	/**
+	 * Creates a map based on the given mapping function and instanceof check. <br>
+	 * The function used is when {@link #get(Object)} is called. Note that <code>#get()</code> may be called internally. <br>
+	 * The instance checking predicate should return truthfully, or programmers will endure <code>ClassCastException</code>.
+	 * 
+	 * @param mappingFunction the mapping function
+	 * @param keyInstanceCheck used to evaluate whether a key object is of the correct type
+	 */
+	public FunctionalMap(Function<K, V> mappingFunction, Predicate<Object> keyInstanceCheck) {
 		this.mappingFunction = mappingFunction;
+		this.keyInstanceCheck = keyInstanceCheck;
 	}
 	
-	protected Set<K> instantiateKeySet() {
-		return new InfinitySet<K>();
+	Set<K> instantiateKeySet() {
+		return InfinitySet.create();
 	}
 	
-	protected Collection<V> instantiateValues() {
+	Collection<V> instantiateValues() {
 		return Collections.emptySet();
 	}
 	
-	protected Set<Entry<K, V>> instantiateEntrySet() {
-		return new InfinitySet<Entry<K, V>>();
+	Set<Entry<K, V>> instantiateEntrySet() {
+		return new FunctionalMapEntrySet<K, V>(this);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Class<K> getKeyType(K...ignore) {
+	private static <K> Class<K> getGenericKeyType(K...ignore) {
 		return (Class<K>) ignore.getClass().getComponentType();
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected boolean instanceCheck(Object key) {
-		return getKeyType().isInstance(key);
+		return keyInstanceCheck.test(key);
 	}
 	
 	@Override
