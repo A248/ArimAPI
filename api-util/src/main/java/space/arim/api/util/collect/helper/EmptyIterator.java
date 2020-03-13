@@ -16,30 +16,43 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.collect;
+package space.arim.api.util.collect.helper;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
  * An iterator with no elements. <br>
+ * Use {@link #create()} for instantiation. <br>
  * <br>
- * {@link #hasNext()} always returns <code>false</code>. <br>
- * {@link #next()} throws <code>NoSuchElementException</code> as specified.
+ * <b>Specifications</b>: Same as that of an empty iterator <br>
+ * * {@link #hasNext()} always returns <code>false</code>. <br>
+ * * {@link #next()} throws <code>NoSuchElementException</code> as specified. <br>
+ * * {@link #remove()} is unimplemented, meaning it throws <code>UnsupportedOperationException</code>.
  * 
  * @author A248
  *
  * @param <E> the element type
  */
-public class EmptyIterator<E> implements Iterator<E> {
-
+public interface EmptyIterator<E> extends Iterator<E> {
+	
+	/**
+	 * Creates an empty iterator
+	 * 
+	 * @param <E> the element type
+	 * @return an empty iterator
+	 */
+	static <E> EmptyIterator<E> create() {
+		return new EmptyIterator<E>() {};
+	}
+	
 	@Override
-	public boolean hasNext() {
+	default boolean hasNext() {
 		return false;
 	}
 	
 	@Override
-	public E next() {
+	default E next() {
 		throw new NoSuchElementException();
 	}
 	
