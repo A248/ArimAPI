@@ -43,7 +43,11 @@ import java.util.Set;
 public interface UnmodifiableByDefaultSet<E> extends UnmodifiableByDefaultCollection<E>, Set<E> {
 	
 	@Override
+	default boolean add(E e) {throw new UnsupportedOperationException();}
+	@Override
 	default boolean remove(Object o) {throw new UnsupportedOperationException();}
+	@Override
+	default boolean addAll(Collection<? extends E> c) {throw new UnsupportedOperationException();}
 	@Override
 	default boolean retainAll(Collection<?> c) {throw new UnsupportedOperationException();}
 	@Override
