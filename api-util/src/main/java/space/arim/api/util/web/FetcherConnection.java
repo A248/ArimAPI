@@ -30,7 +30,7 @@ import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.util.CommonInstancesUtil;
 
-public class FetcherConnection extends AbstractConnection {
+class FetcherConnection extends AbstractConnection {
 	
 	FetcherConnection(String url) {
 		super(url);

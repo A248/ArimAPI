@@ -30,7 +30,7 @@ import java.util.Map;
 
 import space.arim.universal.util.AutoClosable;
 
-public abstract class AbstractConnection implements AutoClosable {
+abstract class AbstractConnection implements AutoClosable {
 
 	private final String url;
 	

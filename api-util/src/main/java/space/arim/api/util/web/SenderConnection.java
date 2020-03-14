@@ -33,7 +33,7 @@ import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.util.CommonInstancesUtil;
 
-public class SenderConnection extends AbstractConnection {
+class SenderConnection extends AbstractConnection {
 	
 	private Map<String, Object> response;
 	
