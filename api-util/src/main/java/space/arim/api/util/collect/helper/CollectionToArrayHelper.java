@@ -23,7 +23,7 @@ import java.util.Collection;
 /**
  * Adds default implementations of {@link #toArray()} and {@link #toArray(Object[])}. <br>
  * Relies on {@link #iterator()} and {@link #size()}. <br>
- * Credits go to {@link AbstractCollection} for the implementations themselves
+ * Credits go to {@link java.util.AbstractCollection AbstractCollection} for the implementations themselves
  * 
  * @author A248
  *
