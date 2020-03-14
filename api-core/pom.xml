@@ -21,10 +21,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>space.arim</groupId>
-			<artifactId>universal-registry</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim</groupId>
 			<artifactId>arimapi-platform</artifactId>
 		</dependency>		
 	</dependencies>
