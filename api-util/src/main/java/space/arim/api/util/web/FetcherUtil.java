@@ -20,7 +20,10 @@ package space.arim.api.util.web;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import com.google.gson.JsonIOException;
@@ -59,6 +62,14 @@ public final class FetcherUtil {
 		return getJsonFromUrl(url, Map.class);
 	}
 	
+	private static Map<String, Object> getJsonMapFromAshcon(String player) throws FetcherException, HttpStatusException {
+		return getJsonMapFromUrl(ASHCON_API + Objects.requireNonNull(player, "Name or UUID must not be null!"));
+	}
+	
+	private static Map<String, Object> getJsonMapFromAshcon(UUID player) throws FetcherException, HttpStatusException {
+		return getJsonMapFromAshcon(player.toString());
+	}
+	
 	@Blocking
 	public static UUID mojangApi(final String name) throws FetcherException, HttpStatusException {
 		return UUID.fromString(UUIDUtil.expand(getJsonMapFromUrl(MOJANG_API_FROM_NAME + Objects.requireNonNull(name, "Name must not be null!")).get("id").toString()));
@@ -73,12 +84,41 @@ public final class FetcherUtil {
 	
 	@Blocking
 	public static UUID ashconApi(final String name) throws FetcherException, HttpStatusException {
-		return UUID.fromString(getJsonMapFromUrl(ASHCON_API + Objects.requireNonNull(name, "Name must not be null!")).get("uuid").toString());
+		return UUID.fromString(getJsonMapFromAshcon(name).get("uuid").toString());
 	}
 	
 	@Blocking
 	public static String ashconApi(final UUID playeruuid) throws FetcherException, HttpStatusException {
-		return getJsonMapFromUrl(ASHCON_API + Objects.requireNonNull(playeruuid, "UUID must not be null!")).get("username").toString();
+		return getJsonMapFromAshcon(playeruuid).get("username").toString();
+	}
+	
+	@Blocking
+	public static SortedSet<Entry<String, String>> ashconNameHistory(final UUID playeruuid) throws FetcherException, HttpStatusException {
+		TreeSet<Entry<String, String>> results = new TreeSet<Entry<String, String>>((entry1, entry2) -> {
+			if (entry1.getValue().isEmpty()) {
+				return 1;
+			} else if (entry2.getValue().isEmpty()) {
+				return -1;
+			}
+			String[] time1 = entry1.getValue().split("-");
+			String[] time2 = entry2.getValue().split("-");
+			int year1 = Integer.valueOf(time1[0]);
+			int year2 = Integer.valueOf(time2[0]);
+			if (year1 == year2) {
+				int month1 = Integer.valueOf(time1[1]);
+				int month2 = Integer.valueOf(time2[1]);
+				return (month1 == month2) ? (Integer.valueOf(time1[2]) - Integer.valueOf(time2[2])) : (month1 - month2);
+			}
+			return year1 - year2;
+		});
+		Map<String, Object> map = getJsonMapFromAshcon(playeruuid);
+		@SuppressWarnings("unchecked")
+		Map<String, String>[] history = (Map<String, String>[]) map.get("username_history");
+		for (Map<String, String> entry : history) {
+			String changedAt = entry.get("changed_at");
+			results.add(new DistinctEntry<String, String>(entry.get("username"), (changedAt == null) ? "" : changedAt.substring(0, 10)));
+		}
+		return results;
 	}
 	
 	@Blocking
@@ -137,6 +177,51 @@ public final class FetcherUtil {
 		} catch (NumberFormatException ex) {
 			throw new FetcherException("Could not parse GeoIpInfo from url " + url, ex);
 		}
+	}
+	
+}
+
+class DistinctEntry<K, V> implements Entry<K, V> {
+	
+	private final K key;
+	private final V value;
+	
+	DistinctEntry(K key, V value) {
+		this.key = key;
+		this.value = value;
+	}
+	
+	@Override
+	public K getKey() {
+		return key;
+	}
+	
+	@Override
+	public V getValue() {
+		return value;
+	}
+	
+	@Override
+	public V setValue(V value) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((key == null) ? 0 : key.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Entry<?, ?>) {
+			Entry<?, ?> other = (Entry<?, ?>) object;
+			return getKey().equals(other.getKey()) && getValue().equals(other.getValue());
+		}
+		return false;
 	}
 	
 }
