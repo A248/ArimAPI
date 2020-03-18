@@ -52,7 +52,7 @@ public class LazySingleton<T> implements Supplier<T> {
 	@Override
 	public T get() {
 		if (value == null) {
-			synchronized (value) {
+			synchronized (this) {
 				if (value == null) {
 					value = instantiator.get();
 				}
