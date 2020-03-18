@@ -32,7 +32,7 @@ import space.arim.api.util.StringsUtil;
 public class PlatformSpecificDefaultImplementations {
 	
 	static String transformColourCodes(String msg, FormattingCodePattern sourceColourPattern, char targetColourChar) {
-		return sourceColourPattern.getValue().matcher(msg).replaceAll(targetColourChar + "$2");
+		return sourceColourPattern.getValue().matcher(msg).replaceAll(targetColourChar + "$1");
 	}
 	
 	static String stripColour(String msg, FormattingCodePattern colourPattern) {
