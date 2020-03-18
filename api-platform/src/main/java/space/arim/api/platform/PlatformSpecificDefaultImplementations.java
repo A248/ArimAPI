@@ -31,8 +31,19 @@ import space.arim.api.util.StringsUtil;
  */
 public class PlatformSpecificDefaultImplementations {
 	
+	private static final String codingCharacters = "AaBbCcDdEeFf0123456789KkLlMmNnOoRr";
+	
 	static String transformColourCodes(String msg, FormattingCodePattern sourceColourPattern, char targetColourChar) {
-		return sourceColourPattern.getValue().matcher(msg).replaceAll(targetColourChar + "$1");
+		char colourChar = sourceColourPattern.getChar();
+		char[] source = msg.toCharArray();
+		for (int n = 0; n < source.length; n++) {
+			if (source[n] == colourChar && n + 1 < source.length && codingCharacters.indexOf(source[n + 1]) != -1) {
+				source[n] = targetColourChar;
+			}
+		}
+		return String.valueOf(source);
+		// java.lang.IndexOutOfBoundsException: No group 1
+		// return sourceColourPattern.getValue().matcher(msg).replaceAll(targetColourChar + "$1");
 	}
 	
 	static String stripColour(String msg, FormattingCodePattern colourPattern) {
