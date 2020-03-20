@@ -19,6 +19,7 @@
 package space.arim.api.util.web;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -113,7 +114,7 @@ public final class FetcherUtil {
 		});
 		Map<String, Object> map = getJsonMapFromAshcon(playeruuid);
 		@SuppressWarnings("unchecked")
-		Map<String, String>[] history = (Map<String, String>[]) map.get("username_history");
+		List<Map<String, String>> history = (List<Map<String, String>>) map.get("username_history");
 		for (Map<String, String> entry : history) {
 			String changedAt = entry.get("changed_at");
 			results.add(new DistinctEntry<String, String>(entry.get("username"), (changedAt == null) ? "" : changedAt.substring(0, 10)));
