@@ -60,27 +60,36 @@ public final class StringsUtil {
 		return Arrays.copyOfRange(Objects.requireNonNull(input, "Input array must not be null!"), start, end);
 	}
 	
-	public static String concatRange(Collection<String> input, char separator, int start, int end) {
-		return concatRange(Objects.requireNonNull(input, "Input list must not be null!").toArray(new String[] {}), separator, start, end);
+	/**
+	 * Same as {@link #concat(String[], char)} but for a Collection
+	 * 
+	 * @param input the source to concatenate
+	 * @param separator the char separator
+	 * @return a concatenated result
+	 */
+	public static String concat(Collection<String> input, char separator) {
+		return concat(input.toArray(new String[] {}), separator);
 	}
 	
-	public static String concatRange(String[] input, char separator, int start, int end) {
+	/**
+	 * Joins the elements of the source array with the specified separator. <br>
+	 * Skips null or empty elements entirely, ignoring them as if they didn't exist.
+	 * 
+	 * @param input the source array
+	 * @param separator the char separator
+	 * @return a concatenated result
+	 */
+	public static String concat(String[] input, char separator) {
+		if (input.length == 0) {
+			return "";
+		}
 		StringBuilder builder = new StringBuilder();
-		String[] selected = copyRange(Objects.requireNonNull(input, "Input array must not be null!"), start, end);
-		for (String m : selected) {
+		for (String m : input) {
 			if (m != null && !m.isEmpty()) {
 				builder.append(separator).append(m);
 			}
 		}
-		return builder.length() == 0 ? "" : builder.substring(1);
-	}
-	
-	public static String concat(Collection<String> input, char separator) {
-		return concatRange(input, separator, 0, input.size());
-	}
-	
-	public static String concat(String[] input, char separator) {
-		return concatRange(input, separator, 0, input.length);
+		return builder.substring(1);
 	}
 	
 	/**
