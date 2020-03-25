@@ -104,7 +104,7 @@ public abstract class Config implements AutoClosable {
 	File saveIfNotExist() {
 		File target = new File(folder, filename);
 		if (!target.exists()) {
-			try (InputStream input = Config.class.getResourceAsStream(File.separator + filename)) {
+			try (InputStream input = getClass().getResourceAsStream(File.separator + filename)) {
 				FilesUtil.saveFromStream(target, input);
 			} catch (IOException ignored) {}
 		}
