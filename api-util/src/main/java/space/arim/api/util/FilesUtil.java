@@ -51,7 +51,7 @@ public final class FilesUtil {
 	 * @throws IOException if an IO error occurred
 	 */
 	public static boolean saveFromStream(File target, InputStream input) throws IOException {
-		if (makeDir(target.getParentFile()) && target.createNewFile()) {
+		if (makeDir(target.getParentFile())) {
 			try (FileOutputStream output = new FileOutputStream(target)){
 				com.google.common.io.ByteStreams.copy(input, output);
 				return true;
