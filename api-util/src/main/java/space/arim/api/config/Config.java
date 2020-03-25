@@ -19,9 +19,11 @@
 package space.arim.api.config;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +34,6 @@ import space.arim.universal.util.AutoClosable;
 import space.arim.universal.util.collections.CollectionsUtil;
 
 import space.arim.api.util.CommonInstancesUtil;
-import space.arim.api.util.FilesUtil;
 
 /**
  * A simple helper class for SnakeYAML configurations. <br>
@@ -104,8 +105,12 @@ public abstract class Config implements AutoClosable {
 	File saveIfNotExist() {
 		File target = new File(folder, filename);
 		if (!target.exists()) {
-			try (InputStream input = getClass().getResourceAsStream(File.separator + filename)) {
-				FilesUtil.saveFromStream(target, input);
+			try (InputStream input = getClass().getResourceAsStream(File.separator + filename); OutputStream output = new FileOutputStream(target)) {
+	                byte[] buf = new byte[1024];
+	                int len;
+	                while ((len = input.read(buf)) > 0) {
+	                    output.write(buf, 0, len);
+	                }
 			} catch (IOException ignored) {}
 		}
 		return target;
