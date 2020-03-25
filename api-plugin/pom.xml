@@ -85,6 +85,9 @@
 							<outputFile>target/ArimAPI.jar</outputFile>
 							<artifactSet>
 								<includes>
+									<include>space.arim:universal-util</include>
+									<include>space.arim:universal-events</include>
+									<include>space.arim:universal-registry</include>
 									<include>space.arim:arimapi-chat</include>
 									<include>space.arim:arimapi-util</include>
 									<include>space.arim:arimapi-platform</include>
