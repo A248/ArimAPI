@@ -230,16 +230,13 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	
 	@Override
 	public BaseComponent[] parseJson(String msg, FormattingCodePattern formattingPattern) {
-		return parseJsonProcessor(msg, formattingPattern.getValue());
+		Pattern pattern = formattingPattern.getValue();
+		return parseJsonProcessor(msg, (node) -> new TextComponent(colourProcessor(node, pattern)), (node) -> colourProcessor(node, pattern));
 	}
 	
 	@Override
 	public BaseComponent[] parseUncolouredJson(String msg) {
 		return parseJsonProcessor(msg, TextComponent::new, this::uncoloured);
-	}
-	
-	private static BaseComponent[] parseJsonProcessor(String msg, Pattern processor) {
-		return parseJsonProcessor(msg, (node) -> new TextComponent(colourProcessor(node, processor)), (node) -> colourProcessor(node, processor));
 	}
 	
 	private static BaseComponent[] parseJsonProcessor(String msg, Function<String, TextComponent> nodeGenerator, Function<String, BaseComponent[]> tooltipGenerator) {
@@ -298,7 +295,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 		 * 4 = italic
 		 */
 		boolean[] resetStyles = {false, false, false, false, false};
-		boolean[] styles = resetStyles;
+		boolean[] styles = Arrays.copyOf(resetStyles, resetStyles.length);
 		
 		while (matcher.find()) {
 			// get the current segment and add it to the builder
@@ -317,22 +314,16 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 			
 			// update the running formatting codes we're using
 			String code = matcher.group();
-			if (isStyle(code)) {
-				int styleIndex = getStyle(code);
-				if (styleIndex == 5) {
-					styles = resetStyles;
-				} else {
-					styles[styleIndex] = true;
-				}
+			int styleIndex = getStyle(code);
+			if (styleIndex == 5) {
+				styles = Arrays.copyOf(resetStyles, resetStyles.length);
+			} else if (styleIndex != -1) {
+				styles[styleIndex] = true;
 			} else {
 				currentColor = getColour(code);
 			}
 		}
 		return components.toArray(new BaseComponent[] {});
-	}
-	
-	private static boolean isStyle(String code) {
-		return getStyle(code) != -1;
 	}
 	
 	private static int getStyle(String code) {
@@ -366,12 +357,12 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 		SGT,
 		INS;
 		
-		static final int TAG_LENGTH = 3;
+		static final int TAG_REQUIRED_LENGTH = 4;
 		
 	}
 	
 	private static TagType jsonTag(String node) {
-		if (node.length() < TagType.TAG_LENGTH + 2) {
+		if (node.length() <= TagType.TAG_REQUIRED_LENGTH) {
 			return TagType.NONE;
 		}
 		switch (node.substring(0, 4)) {
