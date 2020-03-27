@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -72,6 +73,18 @@ public abstract class Config implements AutoClosable {
 	
 	protected abstract File getBackupLocation();
 	
+	/**
+	 * Allows programmers to log the precise exception when the config cannot be saved
+	 * to the target file. <br>
+	 * <br>
+	 * The default implementation returns <code>null</code> to indicate no handler.
+	 * 
+	 * @return the exception handler for file save errors
+	 */
+	protected Consumer<IOException> getFileSaveErrorHandler() {
+		return null;
+	}
+	
 	public void reload() {
 		reloadConfig();
 	}
@@ -81,38 +94,39 @@ public abstract class Config implements AutoClosable {
 	}
 	
 	void reloadConfig() {
-		File file = saveIfNotExist();
-		values.putAll(loadFile(file, yaml()));
-		startVersionCheck(file);
-	}
-	
-	File startVersionCheck(File source) {
-		if (!getFromMap(values, versionKey, Object.class).equals(getFromMap(defaults, versionKey, Object.class))) {
-			initVersionUpdate(source);
+		File file = new File(folder, filename);
+		if (!file.exists()) {
+			saveTo(file);
 		}
-		return source;
+		values.putAll(loadFile(file, yaml()));
+		if (!getFromMap(values, versionKey, Object.class).equals(getFromMap(defaults, versionKey, Object.class))) {
+			initVersionUpdate(file);
+		}
 	}
 	
 	boolean initVersionUpdate(File source) {
 		if (source.renameTo(getBackupLocation())) {
-			saveIfNotExist();
+			saveTo(new File(folder, filename));
 			return true;
 		}
 		return false;
 	}
 	
-	File saveIfNotExist() {
-		File target = new File(folder, filename);
-		if (!target.exists()) {
-			try (InputStream input = getClass().getResourceAsStream(File.separator + filename); OutputStream output = new FileOutputStream(target)) {
-	                byte[] buf = new byte[1024];
-	                int len;
-	                while ((len = input.read(buf)) > 0) {
-	                    output.write(buf, 0, len);
-	                }
-			} catch (IOException ignored) {}
+	boolean saveTo(File target) {
+		try (InputStream input = getClass().getResourceAsStream(File.separator + filename); OutputStream output = new FileOutputStream(target)) {
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = input.read(buf)) > 0) {
+                output.write(buf, 0, len);
+            }
+            return true;
+		} catch (IOException ex) {
+			Consumer<IOException> errorHandler = getFileSaveErrorHandler();
+			if (errorHandler != null) {
+				errorHandler.accept(ex);
+			}
 		}
-		return target;
+		return false;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -135,13 +149,9 @@ public abstract class Config implements AutoClosable {
 		return CollectionsUtil.getFromMapRecursive(values, key, type);
 	}
 	
-	<T> T getDefaultObject(String key, Class<T> type) {
-		return getFromMap(defaults, key, type);
-	}
-	
 	public <T> T getObject(String key, Class<T> type) {
 		T obj = getFromMap(values, key, type);
-		return obj != null ? obj : getDefaultObject(key, type);
+		return obj != null ? obj : getFromMap(defaults, key, type);
 	}
 	
 }

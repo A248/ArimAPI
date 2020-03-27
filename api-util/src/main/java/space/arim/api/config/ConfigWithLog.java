@@ -19,13 +19,9 @@
 package space.arim.api.config;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
-
-import space.arim.api.util.FilesUtil;
 
 /**
  * A {@link Config} with logging of certain events enabled. <br>
@@ -50,46 +46,34 @@ public abstract class ConfigWithLog extends Config {
 	}
 	
 	@Override
-	File startVersionCheck(File source) {
+	boolean initVersionUpdate(File source) {
 		logEvent(ConfigEvent.VERSION_UPDATE_START);
-		Integer ver = super.getObject(versionKey, Integer.class);
-		if (ver == null || ver.intValue() != getDefaultObject(versionKey, Integer.class)) {
-			logEvent(super.initVersionUpdate(source) ? ConfigEvent.VERSION_UPDATE_SUCCESS : ConfigEvent.VERSION_UPDATE_FAILED);
-		}
-		return source;
+		boolean success = super.initVersionUpdate(source);
+		logEvent((success) ? ConfigEvent.VERSION_UPDATE_SUCCESS : ConfigEvent.VERSION_UPDATE_FAILED);
+		return success;
 	}
 	
 	@Override
-	File saveIfNotExist() {
+	boolean saveTo(File target) {
 		logEvent(ConfigEvent.FILE_SAVE_START);
-		File target = new File(folder, filename);
-		if (!target.exists()) {
-			try (InputStream input = Config.class.getResourceAsStream(File.separator + filename)) {
-				if (FilesUtil.saveFromStream(target, input)) {
-					logEvent(ConfigEvent.FILE_SAVE_SUCCESS);
-				} else {
-					logEvent(ConfigEvent.FILE_SAVE_FAILED);
-				}
-			} catch (IOException ignored) {
-				logEvent(ConfigEvent.FILE_SAVE_FAILED);
-			}
-		}
-		return target;
+		boolean success = super.saveTo(target);
+		logEvent((success) ? ConfigEvent.FILE_SAVE_SUCCESS : ConfigEvent.FILE_SAVE_FAILED);
+		return success;
 	}
 	
 	@Override
 	Map<String, Object> loadDefaults(Yaml yaml) {
 		logEvent(ConfigEvent.DEFAULTS_LOAD_START);
 		Map<String, Object> defaults = super.loadDefaults(yaml);
-		logEvent(defaults.isEmpty() ? ConfigEvent.DEFAULTS_LOAD_FAILED : ConfigEvent.DEFAULTS_LOAD_START);
+		logEvent(!defaults.isEmpty() ? ConfigEvent.DEFAULTS_LOAD_SUCCESS : ConfigEvent.DEFAULTS_LOAD_FAILED);
 		return defaults;
 	}
 	
 	@Override
 	Map<String, Object> loadFile(File source, Yaml yaml) {
-		logEvent(ConfigEvent.LOAD_FILE_START);
+		logEvent(ConfigEvent.VALUES_LOAD_START);
 		Map<String, Object> values = super.loadFile(source, yaml);
-		logEvent(values.isEmpty() ? ConfigEvent.LOAD_FILE_FAILED : ConfigEvent.LOAD_FILE_SUCCESS);
+		logEvent(!values.isEmpty() ? ConfigEvent.VALUES_LOAD_SUCCESS : ConfigEvent.VALUES_LOAD_FAILED);
 		return values;
 	}
 	
@@ -98,12 +82,12 @@ public abstract class ConfigWithLog extends Config {
 		DEFAULTS_LOAD_START,
 		DEFAULTS_LOAD_SUCCESS,
 		DEFAULTS_LOAD_FAILED,
+		VALUES_LOAD_START,
+		VALUES_LOAD_SUCCESS,
+		VALUES_LOAD_FAILED,
 		FILE_SAVE_START,
 		FILE_SAVE_SUCCESS,
 		FILE_SAVE_FAILED,
-		LOAD_FILE_START,
-		LOAD_FILE_SUCCESS,
-		LOAD_FILE_FAILED,
 		VERSION_UPDATE_START,
 		VERSION_UPDATE_SUCCESS,
 		VERSION_UPDATE_FAILED,

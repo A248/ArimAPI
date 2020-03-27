@@ -19,8 +19,7 @@
 package space.arim.api.config;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import space.arim.api.util.FilesUtil;
 
@@ -49,46 +48,46 @@ public abstract class SimpleConfigWithLog extends ConfigWithLog {
 	protected void logEvent(ConfigEvent evt) {
 		switch (evt) {
 		case DEFAULTS_LOAD_START:
-			logger.log(Level.FINE, "Attempting to load configuration defaults...");
+			logger.debug("Attempting to load configuration defaults...");
 			break;
 		case DEFAULTS_LOAD_SUCCESS:
-			logger.log(Level.INFO, "Success! Loaded configuration defaults.");
+			logger.info("Success! Loaded configuration defaults.");
 			break;
 		case DEFAULTS_LOAD_FAILED:
-			logger.log(Level.WARNING, "Error! Failed to load configuration defaults!");
+			logger.warn("Error! Failed to load configuration defaults!");
 			break;
 		case FILE_SAVE_START:
-			logger.log(Level.FINE, "Attempting to save configuration to file...");
+			logger.debug("Attempting to save configuration to file...");
 			break;
 		case FILE_SAVE_SUCCESS:
-			logger.log(Level.INFO, "Success! Configuration saved to file.");
+			logger.info("Success! Configuration saved to file.");
 			break;
 		case FILE_SAVE_FAILED:
-			logger.log(Level.WARNING, "Error! Failed to save configuration file!");
+			logger.warn("Error! Failed to save configuration file!");
 			break;
-		case LOAD_FILE_START:
-			logger.log(Level.FINE, "Attempting to load configuration from file...");
+		case VALUES_LOAD_START:
+			logger.debug("Attempting to load configuration from file...");
 			break;
-		case LOAD_FILE_SUCCESS:
-			logger.log(Level.INFO, "Success! Configuration loaded from file.");
+		case VALUES_LOAD_SUCCESS:
+			logger.info("Success! Configuration loaded from file.");
 			break;
-		case LOAD_FILE_FAILED:
-			logger.log(Level.WARNING, "Error! Failed to load configuration file!");
+		case VALUES_LOAD_FAILED:
+			logger.warn("Error! Failed to load configuration file!");
 			break;
 		case VERSION_UPDATE_START:
-			logger.log(Level.CONFIG, "Detected outdated configuration version! Updating...");
+			logger.info("Detected outdated configuration version! Updating...");
 			break;
 		case VERSION_UPDATE_SUCCESS:
-			logger.log(Level.INFO, "Success! Your configuration was updated to the latest version. A backup of your old configuration has also been saved.");
+			logger.info("Success! Your configuration was updated to the latest version. A backup of your old configuration has also been saved.");
 			break;
 		case VERSION_UPDATE_FAILED:
-			logger.log(Level.WARNING, "Error! Configuration version update failed!");
+			logger.warn("Error! Configuration version update failed!");
 			break;
 		case CONFIG_RELOAD:
-			logger.log(Level.FINE, "Reloading configuration...");
+			logger.debug("Reloading configuration...");
 			break;
 		default:
-			logger.log(Level.FINE, "Configuring...");
+			logger.debug("Configuring...");
 			break;
 		}
 	}
