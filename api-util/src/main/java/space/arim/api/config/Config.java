@@ -87,7 +87,7 @@ public abstract class Config implements AutoClosable {
 	}
 	
 	File startVersionCheck(File source) {
-		if (getFromMap(values, versionKey, Object.class).equals(getFromMap(defaults, versionKey, Object.class))) {
+		if (!getFromMap(values, versionKey, Object.class).equals(getFromMap(defaults, versionKey, Object.class))) {
 			initVersionUpdate(source);
 		}
 		return source;
