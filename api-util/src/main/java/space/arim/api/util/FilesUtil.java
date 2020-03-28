@@ -65,7 +65,7 @@ public final class FilesUtil {
 	 * 
 	 * @param file the file
 	 * @param processor handle the lines
-	 * @param exceptionHandler handle a possible IOException
+	 * @param exceptionHandler handle a possible IOException, can be <code>null</code>
 	 * @return true if everything went successfully, false otherwise
 	 */
 	public static boolean readLines(File file, Consumer<String> processor, Consumer<IOException> exceptionHandler) {
@@ -76,7 +76,9 @@ public final class FilesUtil {
 				}
 				return true;
 			} catch (IOException ex) {
-				exceptionHandler.accept(ex);
+				if (exceptionHandler != null) {
+					exceptionHandler.accept(ex);
+				}
 				return false;
 			}
 		}
