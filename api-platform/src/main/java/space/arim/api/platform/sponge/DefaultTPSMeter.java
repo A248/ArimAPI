@@ -18,14 +18,11 @@
  */
 package space.arim.api.platform.sponge;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 
-import space.arim.universal.registry.Registry;
 import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.registry.RequireRegistration;
 
-import space.arim.api.concurrent.SyncExecution;
-import space.arim.api.platform.AbstractTPSMeter;
 import space.arim.api.util.TPSMeter;
 
 /**
@@ -34,16 +31,20 @@ import space.arim.api.util.TPSMeter;
  * @author A248
  *
  */
-public class DefaultTPSMeter extends AbstractTPSMeter {
+public class DefaultTPSMeter extends SpongeRegistrable implements TPSMeter {
 	
 	/**
 	 * Creates the instance. See {@link SpongeRegistrable#SpongeRegistrable(PluginContainer)} for more information.
 	 * 
 	 * @param plugin the plugin to use for Registrable information
-	 * @param registry the {@link Registry} to use. It must have a registration for {@link SyncExecution} as specified by the annotation.
 	 */
-	public DefaultTPSMeter(PluginContainer plugin, @RequireRegistration(SyncExecution.class) Registry registry) {
-		super(SpongePlatform.get().convertPluginInfo(plugin), registry.getRegistration(SyncExecution.class));
+	public DefaultTPSMeter(PluginContainer plugin) {
+		super(plugin);
+	}
+	
+	@Override
+	public double getTPS() {
+		return Sponge.getServer().getTicksPerSecond();
 	}
 	
 	@Override

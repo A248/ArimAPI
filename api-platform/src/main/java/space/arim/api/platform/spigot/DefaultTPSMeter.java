@@ -18,14 +18,13 @@
  */
 package space.arim.api.platform.spigot;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.bukkit.plugin.Plugin;
 
-import space.arim.universal.registry.Registry;
 import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.registry.RequireRegistration;
 
-import space.arim.api.concurrent.SyncExecution;
-import space.arim.api.platform.AbstractTPSMeter;
+import space.arim.api.platform.spigot.nms.NMS;
 import space.arim.api.util.TPSMeter;
 
 /**
@@ -34,16 +33,24 @@ import space.arim.api.util.TPSMeter;
  * @author A248
  *
  */
-public class DefaultTPSMeter extends AbstractTPSMeter {
+public class DefaultTPSMeter extends SpigotRegistrable implements TPSMeter {
 	
 	/**
 	 * Creates the instance. See {@link SpigotRegistrable#SpigotRegistrable(Plugin)} for more information.
 	 * 
 	 * @param plugin the plugin to use for Registrable information
-	 * @param registry the {@link Registry} to use. It must have a registration for {@link SyncExecution} as specified by the annotation.
 	 */
-	public DefaultTPSMeter(Plugin plugin, @RequireRegistration(SyncExecution.class) Registry registry) {
-		super(SpigotPlatform.get().convertPluginInfo(plugin), registry.getRegistration(SyncExecution.class));
+	public DefaultTPSMeter(Plugin plugin) {
+		super(plugin);
+	}
+	
+	@Override
+	public double getTPS() {
+		try {
+			return NMS.getTPS()[0];
+		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
+			return 20D;
+		}
 	}
 	
 	@Override

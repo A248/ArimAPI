@@ -20,31 +20,33 @@ package space.arim.api.platform.bungee;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
-import space.arim.universal.registry.Registry;
 import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.registry.RequireRegistration;
 
-import space.arim.api.concurrent.SyncExecution;
-import space.arim.api.platform.AbstractTPSMeter;
 import space.arim.api.util.TPSMeter;
 
 /**
  * A default implementation of {@link TPSMeter} on the BungeeCord platform. <br>
- * Although BungeeCord is multithreaded, this is provided for programs which require a {@link TPSMeter} registration.
+ * <br>
+ * Although BungeeCord is multithreaded, this is provided for programs which require a {@link TPSMeter} registration. <br>
+ * (It simply returns 20 TPS consistently)
  * 
  * @author A248
  *
  */
-public class DefaultTPSMeter extends AbstractTPSMeter {
+public class DefaultTPSMeter extends BungeeRegistrable implements TPSMeter {
 	
 	/**
 	 * Creates the instance. See {@link BungeeRegistrable#BungeeRegistrable(Plugin)} for more information.
 	 * 
 	 * @param plugin the plugin to use for Registrable information
-	 * @param registry the {@link Registry} to use. It must have a registration for {@link SyncExecution} as specified by the annotation.
 	 */
-	public DefaultTPSMeter(Plugin plugin, @RequireRegistration(SyncExecution.class) Registry registry) {
-		super(BungeePlatform.get().convertPluginInfo(plugin), registry.getRegistration(SyncExecution.class));
+	public DefaultTPSMeter(Plugin plugin) {
+		super(plugin);
+	}
+	
+	@Override
+	public double getTPS() {
+		return 20D;
 	}
 	
 	@Override
