@@ -26,7 +26,7 @@ class EntityPlayer_ping_Field {
 	
 	static {
 		try {
-			FIELD = Class.forName("net.minecraft.server." + NMS.VERSION + ".EntityPlayer").getDeclaredField("ping");
+			FIELD = NMS.getNMSClass("EntityPlayer").getDeclaredField("ping");
 		} catch (NoSuchFieldException | SecurityException | ClassNotFoundException ex) {
 			throw new ExceptionInInitializerError(ex);
 		}

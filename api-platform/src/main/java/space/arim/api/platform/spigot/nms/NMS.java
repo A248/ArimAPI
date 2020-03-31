@@ -38,7 +38,7 @@ import org.bukkit.entity.Player;
  */
 public class NMS {
 
-	static final String VERSION;
+	private static final String VERSION;
 	
 	static {
 		String packageName = Bukkit.getServer().getClass().getPackage().getName(); // e.g. "org.bukkit.craftbukkit.v1_8_R3"
@@ -68,6 +68,28 @@ public class NMS {
 	 */
 	public static int getPing(Player player) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		return EntityPlayer_ping_Field.invoke(CraftPlayer_getHandle_Method.invoke(player));
+	}
+	
+	/**
+	 * Gets the recent TPS (ticks per second) of the server. The returned array
+	 * has a length of <code>3</code>, corresponding to the TPS over the past
+	 * 1 minute, 5 minutes, and 15 minutes respectively, using /tps.
+	 * 
+	 * @return the tps array
+	 * @throws IllegalArgumentException reflection exception
+	 * @throws IllegalAccessException reflection exception
+	 * @throws InvocationTargetException reflection exception
+	 */
+	public static double[] getTPS() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		return MinecraftServer_recentTps_Field.invoke(CraftServer_getServer_Method.invoke(Bukkit.getServer()));
+	}
+	
+	static Class<?> getOBCClass(String clazzname) throws ClassNotFoundException {
+		return Class.forName("org.bukkit.craftbukkit." + VERSION + "." + clazzname);
+	}
+	
+	static Class<?> getNMSClass(String clazzname) throws ClassNotFoundException {
+		return Class.forName("net.minecraft.server." + VERSION + "." + clazzname);
 	}
 	
 }

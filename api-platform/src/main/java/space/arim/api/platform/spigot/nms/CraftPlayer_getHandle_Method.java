@@ -29,8 +29,7 @@ class CraftPlayer_getHandle_Method {
 	
 	static {
 		try {
-			String nmsVersion = NMS.VERSION;
-			Class<?> playerClazz = Class.forName("org.bukkit.craftbukkit." + nmsVersion + ".entity.CraftPlayer");
+			Class<?> playerClazz = NMS.getOBCClass("entity.CraftPlayer");
 
 			METHOD = playerClazz.getMethod("getHandle");
 			METHOD.setAccessible(true);
