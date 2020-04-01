@@ -18,6 +18,8 @@
  */
 package space.arim.api.concurrent;
 
+import java.util.concurrent.TimeUnit;
+
 import space.arim.universal.util.concurrent.EnhancedExecutor;
 import space.arim.universal.util.concurrent.Scheduler;
 
@@ -33,16 +35,18 @@ import space.arim.api.annotation.Blocking;
 public interface Shutdownable {
 
 	/**
-	 * Immediately shuts down the executor.
+	 * Shuts down the executor in an orderly fashion.
 	 * 
 	 */
 	void shutdown();
 	
 	/**
-	 * Blocks until execution of all tasks is completed.
+	 * Shuts down the executor in an orderly fashion AND
+	 * blocks until all threads have completed execution.
 	 * 
+	 * @param timeout the timeout for waiting
+	 * @param units the time units of the timeout
 	 */
-	@Blocking
-	void shutdownAndWait();
+	void shutdown(long timeout, TimeUnit units);
 	
 }
