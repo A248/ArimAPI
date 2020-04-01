@@ -23,8 +23,6 @@ import java.util.concurrent.TimeUnit;
 import space.arim.universal.util.concurrent.EnhancedExecutor;
 import space.arim.universal.util.concurrent.Scheduler;
 
-import space.arim.api.annotation.Blocking;
-
 /**
  * An optionally implemented interface for {@link EnhancedExecutor}s and/or {@link Scheduler}s
  * to shutdown any thread pools or resources used in implementations.
