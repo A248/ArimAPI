@@ -18,10 +18,7 @@
  */
 package space.arim.api.platform.spigot;
 
-import org.bukkit.plugin.Plugin;
-
-import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.util.concurrent.Task;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import space.arim.api.concurrent.AsyncExecution;
 
@@ -31,35 +28,22 @@ import space.arim.api.concurrent.AsyncExecution;
  * @author A248
  *
  */
-public class DefaultAsyncExecution extends SpigotRegistrable implements AsyncExecution {
+public class DefaultAsyncExecution implements AsyncExecution {
+	
+	private final JavaPlugin plugin;
 	
 	/**
-	 * Creates the instance. See {@link SpigotRegistrable#SpigotRegistrable(Plugin)} for more information.
+	 * Creates the instance
 	 * 
-	 * @param plugin the plugin to use for Registrable information
+	 * @param plugin the plugin to use
 	 */
-	public DefaultAsyncExecution(Plugin plugin) {
-		super(plugin);
+	public DefaultAsyncExecution(JavaPlugin plugin) {
+		this.plugin = plugin;
 	}
 	
 	@Override
 	public void execute(Runnable command) {
-		getPlugin().getServer().getScheduler().runTaskAsynchronously(getPlugin(), command);
-	}
-	
-	@Override
-	public Task runTaskLater(Runnable command, long delay) {
-		return new TaskWrapper(getPlugin().getServer().getScheduler().runTaskLaterAsynchronously(getPlugin(), command, delay));
-	}
-	
-	@Override
-	public Task runTaskTimerLater(Runnable command, long delay, long period) {
-		return new TaskWrapper(getPlugin().getServer().getScheduler().runTaskTimerAsynchronously(getPlugin(), command, delay, period));
-	}
-	
-	@Override
-	public byte getPriority() {
-		return RegistryPriority.LOWEST;
+		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, command);
 	}
 
 }

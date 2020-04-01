@@ -22,8 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.bukkit.plugin.Plugin;
 
-import space.arim.universal.registry.RegistryPriority;
-
 import space.arim.api.platform.spigot.nms.NMS;
 import space.arim.api.util.TPSMeter;
 
@@ -33,15 +31,15 @@ import space.arim.api.util.TPSMeter;
  * @author A248
  *
  */
-public class DefaultTPSMeter extends SpigotRegistrable implements TPSMeter {
+public class DefaultTPSMeter implements TPSMeter {
 	
 	/**
-	 * Creates the instance. See {@link SpigotRegistrable#SpigotRegistrable(Plugin)} for more information.
+	 * Creates the instance
 	 * 
-	 * @param plugin the plugin to use for Registrable information
+	 * @param plugin the plugin to use
 	 */
 	public DefaultTPSMeter(Plugin plugin) {
-		super(plugin);
+		
 	}
 	
 	@Override
@@ -51,11 +49,6 @@ public class DefaultTPSMeter extends SpigotRegistrable implements TPSMeter {
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
 			return 20D;
 		}
-	}
-	
-	@Override
-	public byte getPriority() {
-		return RegistryPriority.LOWEST;
 	}
 
 }
