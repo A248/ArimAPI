@@ -27,34 +27,30 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.user.UserStorageService;
 
-import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.util.web.HttpStatusException;
-
-import space.arim.api.util.web.FetcherException;
-import space.arim.api.util.web.FetcherUtil;
-import space.arim.api.uuid.PlayerNotFoundException;
-import space.arim.api.uuid.UUIDResolver;
+import space.arim.api.platform.PlatformUUIDResolution;
 
 /**
- * A default implementation of {@link UUIDResolver} on the Sponge platform.
- * Simply checks against existing players for uuid to name or name to uuid lookups.
+ * A default implementation of {@link UUIDResolution} on the Sponge platform. <br>
+ * <br>
+ * Checks against existing players for uuid to name or name to uuid lookups. <br>
+ * Falls back to the Ashcon API, and then to the Mojang API.
  * 
  * @author A248
  *
  */
-public class DefaultUUIDResolver extends SpongeRegistrable implements UUIDResolver {
+public class DefaultUUIDResolution extends PlatformUUIDResolution {
 
 	/**
-	 * Creates the instance. See {@link SpongeRegistrable#SpongeRegistrable(PluginContainer)} for more information.
+	 * Creates the instance
 	 * 
-	 * @param plugin the plugin to use for Registrable information
+	 * @param plugin the plugin to use
 	 */
-	public DefaultUUIDResolver(PluginContainer plugin) {
-		super(plugin);
+	public DefaultUUIDResolution(PluginContainer plugin) {
+		
 	}
 	
 	@Override
-	public UUID resolveName(String name, boolean query) throws PlayerNotFoundException {
+	public UUID resolveFromCache(String name) {
 		Optional<Player> player = Sponge.getServer().getPlayer(name);
 		if (player.isPresent()) {
 			return player.get().getUniqueId();
@@ -66,19 +62,11 @@ public class DefaultUUIDResolver extends SpongeRegistrable implements UUIDResolv
 				return offlinePlayer.get().getUniqueId();
 			}
 		}
-		if (query) {
-			try {
-				return FetcherUtil.ashconApi(name);
-			} catch (FetcherException | HttpStatusException ex) {}
-			try {
-				return FetcherUtil.mojangApi(name);
-			} catch (FetcherException | HttpStatusException ex) {}
-		}
-		throw new PlayerNotFoundException(name);
+		return null;
 	}
 	
 	@Override
-	public String resolveUUID(UUID uuid, boolean query) throws PlayerNotFoundException {
+	public String resolveFromCache(UUID uuid) {
 		Optional<Player> player = Sponge.getServer().getPlayer(uuid);
 		if (player.isPresent()) {
 			return player.get().getName();
@@ -90,20 +78,7 @@ public class DefaultUUIDResolver extends SpongeRegistrable implements UUIDResolv
 				return offlinePlayer.get().getName();
 			}
 		}
-		if (query) {
-			try {
-				return FetcherUtil.ashconApi(uuid);
-			} catch (FetcherException | HttpStatusException ex) {}
-			try {
-				return FetcherUtil.mojangApi(uuid);
-			} catch (FetcherException | HttpStatusException ex) {}
-		}
-		throw new PlayerNotFoundException(uuid);
-	}
-	
-	@Override
-	public byte getPriority() {
-		return RegistryPriority.LOWEST;
+		return null;
 	}
 	
 }
