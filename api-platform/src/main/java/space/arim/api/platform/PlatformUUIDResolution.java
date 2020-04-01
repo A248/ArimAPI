@@ -30,7 +30,8 @@ import space.arim.api.uuid.UUIDResolution;
 /**
  * Eases implementation of {@link UUIDResolution}. <br>
  * <br>
- * First checks the server's online/offline players for UUID/name matches. <br>
+ * First checks the implementing classes {@link #resolveFromCache(String)} and
+ * {@link #resolveFromCache(UUID)}, which should be nonblocking. <br>
  * If that fails, queries the Ashcon API, and then the Mojang API, asynchronously.
  * 
  * @author A248
@@ -48,11 +49,15 @@ public abstract class PlatformUUIDResolution implements UUIDResolution {
 	
 	private UUID resolveFromQuery(String name) {
 		try {
-			return FetcherUtil.ashconApi(name);
+			UUID uuid = FetcherUtil.ashconApi(name);
+			update(uuid, name, true);
+			return uuid;
 		} catch (FetcherException | HttpStatusException ex) {
 		}
 		try {
-			return FetcherUtil.mojangApi(name);
+			UUID uuid = FetcherUtil.mojangApi(name);
+			update(uuid, name, true);
+			return uuid;
 		} catch (FetcherException | HttpStatusException ex) {
 		}
 		return null;
@@ -68,10 +73,14 @@ public abstract class PlatformUUIDResolution implements UUIDResolution {
 	
 	private String resolveFromQuery(UUID uuid) {
 		try {
-			return FetcherUtil.ashconApi(uuid);
+			String name = FetcherUtil.ashconApi(uuid);
+			update(uuid, name, true);
+			return name;
 		} catch (FetcherException | HttpStatusException ignored) {}
 		try {
-			return FetcherUtil.mojangApi(uuid);
+			String name = FetcherUtil.mojangApi(uuid);
+			update(uuid, name, true);
+			return name;
 		} catch (FetcherException | HttpStatusException ignored) {}
 		return null;
 	}
