@@ -21,8 +21,6 @@ package space.arim.api.platform.sponge;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 
-import space.arim.universal.registry.RegistryPriority;
-
 import space.arim.api.util.TPSMeter;
 
 /**
@@ -31,25 +29,20 @@ import space.arim.api.util.TPSMeter;
  * @author A248
  *
  */
-public class DefaultTPSMeter extends SpongeRegistrable implements TPSMeter {
+public class DefaultTPSMeter implements TPSMeter {
 	
 	/**
-	 * Creates the instance. See {@link SpongeRegistrable#SpongeRegistrable(PluginContainer)} for more information.
+	 * Creates the instance
 	 * 
-	 * @param plugin the plugin to use for Registrable information
+	 * @param plugin the plugin to use
 	 */
 	public DefaultTPSMeter(PluginContainer plugin) {
-		super(plugin);
+		
 	}
 	
 	@Override
 	public double getTPS() {
 		return Sponge.getServer().getTicksPerSecond();
-	}
-	
-	@Override
-	public byte getPriority() {
-		return RegistryPriority.LOWEST;
 	}
 
 }

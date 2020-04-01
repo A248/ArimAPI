@@ -18,49 +18,18 @@
  */
 package space.arim.api.platform.sponge;
 
-import java.util.concurrent.TimeUnit;
-
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
 
-import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.util.concurrent.Task;
-
-class DefaultExecution extends SpongeRegistrable {
+class DefaultExecution {
 	
 	private final SpongeExecutorService threadPool;
 	
-	DefaultExecution(PluginContainer plugin, SpongeExecutorService threadPool) {
-		super(plugin);
+	DefaultExecution(SpongeExecutorService threadPool) {
 		this.threadPool = threadPool;
 	}
 	
 	public void execute(Runnable command) {
 		threadPool.execute(command);
-	}
-	
-	public Task runTaskLater(Runnable command, long delay) {
-		return new TaskWrapper(threadPool.schedule(command, delay, TimeUnit.MILLISECONDS));
-	}
-	
-	public Task runTaskTimerLater(Runnable command, long delay, long period) {
-		return new TaskWrapper(threadPool.scheduleAtFixedRate(command, delay, period, TimeUnit.MILLISECONDS));
-	}
-	
-	void shutdown() {
-		threadPool.shutdown();
-	}
-	
-	void shutdownAndWait() {
-		threadPool.shutdown();
-		try {
-			threadPool.awaitTermination(20, TimeUnit.SECONDS);
-		} catch (InterruptedException ignored) {}
-	}
-	
-	@Override
-	public byte getPriority() {
-		return RegistryPriority.LOWEST;
 	}
 	
 }
