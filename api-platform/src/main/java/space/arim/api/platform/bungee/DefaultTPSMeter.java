@@ -33,6 +33,11 @@ import space.arim.api.util.TPSMeter;
  */
 public class DefaultTPSMeter implements TPSMeter {
 	
+	/**
+	 * Create the instance
+	 * 
+	 * @param plugin the plugin to use
+	 */
 	public DefaultTPSMeter(Plugin plugin) {
 		
 	}
