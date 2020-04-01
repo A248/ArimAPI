@@ -18,8 +18,6 @@
  */
 package space.arim.api.util;
 
-import space.arim.universal.registry.Registrable;
-
 /**
  * A simple approach to getting the class which called a particular method. <br>
  * <b>Use {@link CallerFinderProvider} for an implementation.</b>
@@ -27,7 +25,7 @@ import space.arim.universal.registry.Registrable;
  * @author A248
  *
  */
-public interface CallerFinder extends Registrable {
+public interface CallerFinder {
 	
 	/**
 	 * Gets the class calling a method. <br>

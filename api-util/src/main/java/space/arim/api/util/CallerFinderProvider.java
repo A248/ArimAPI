@@ -18,8 +18,6 @@
  */
 package space.arim.api.util;
 
-import space.arim.universal.registry.RegistryPriority;
-
 /**
  * Implementation of {@link CallerFinder}
  * 
@@ -36,20 +34,6 @@ public class CallerFinderProvider extends SecurityManager implements CallerFinde
 	@Override
 	public Class<?> getCallerClass(int level) {
 		return getClassContext()[level];
-	}
-	
-	@Override
-	public byte getPriority() {
-		return priority();
-	}
-	
-	/**
-	 * The priority of this implementation. Static for convenience.
-	 * 
-	 * @return the same priority as {@link #getPriority()}
-	 */
-	public static byte priority() {
-		return RegistryPriority.LOWER;
 	}
 	
 }

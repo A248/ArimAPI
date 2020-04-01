@@ -23,7 +23,7 @@
     	<maven.compiler.target>1.8</maven.compiler.target>
 		<core.version>0.7.2</core.version>
 		<core.author>A248</core.author>
-		<universal.version>0.7.0-SNAPSHOT</universal.version>
+		<universal.version>0.8.0-SNAPSHOT</universal.version>
 		<hsqldb.version>2.5.0</hsqldb.version>
 		<hikari.version>3.4.2</hikari.version>
 		<slf4j.version>1.7.30</slf4j.version>

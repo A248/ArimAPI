@@ -21,8 +21,6 @@ package space.arim.api.uuid;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import space.arim.universal.registry.Registrable;
-
 /**
  * A service which maps names to UUIDs and vice versa. <br>
  * Uses names, not display names. <br>
@@ -52,7 +50,7 @@ import space.arim.universal.registry.Registrable;
  * @author A248
  *
  */
-public interface UUIDResolution extends Registrable {
+public interface UUIDResolution {
 
 	/**
 	 * Resolves a playername to a UUID. <br>

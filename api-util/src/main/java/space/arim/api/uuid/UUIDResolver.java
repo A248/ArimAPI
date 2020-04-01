@@ -20,8 +20,6 @@ package space.arim.api.uuid;
 
 import java.util.UUID;
 
-import space.arim.universal.registry.Registrable;
-
 import space.arim.api.annotation.Blocking;
 
 /**
@@ -30,7 +28,7 @@ import space.arim.api.annotation.Blocking;
  * @author A248
  *
  */
-public interface UUIDResolver extends Registrable {
+public interface UUIDResolver {
 	
 	/**
 	 * Use this to get a UUID from a playername

@@ -18,15 +18,13 @@
  */
 package space.arim.api.util;
 
-import space.arim.universal.registry.Registrable;
-
 /**
  * Measures the exact current TPS.
  * 
  * @author A248
  *
  */
-public interface TPSMeter extends Registrable {
+public interface TPSMeter {
 
 	/**
 	 * Gets the value of the current server TPS. <br>

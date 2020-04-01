@@ -18,34 +18,33 @@
  */
 package space.arim.api.concurrent;
 
-import java.util.concurrent.ExecutorService;
-
-import space.arim.universal.registry.Registrable;
 import space.arim.universal.util.concurrent.EnhancedExecutor;
-import space.arim.universal.util.concurrent.Scheduler;
-import space.arim.universal.util.concurrent.Task;
 
 /**
  * A service designed for multithreading via asynchronous concurrent execution and scheduling. <br>
  * <br>
- * <b>Specifications:</b> <br>
- * * from {@link Registrable}: requires {@link #getPriority()} <br>
- * * from {@link EnhancedExecutor}: requires {@link #execute(Runnable)} <br>
- * * from {@link Scheduler}: requires {@link #runTaskLater(Runnable, long)} and {@link #runTaskTimerLater(Runnable, long, long)} <br>
+ * <b>Contract and specifications:</b> see {@link #execute(Runnable)} <br>
  * <br>
- * <b>Contract:</b> <br>
- * * from Registrable: Implementations should be registered under AsyncExecution. <br>
- * * from Scheduler: {@link Task#cancel()} method implementations should properly cancel further scheduling. Also, time units are in <i>milliseconds</i>.<br>
- * * AsyncExecution: <b>All execution and scheduled tasks MUST NOT run on the main thread</b> if the application has a main thread. <br>
- * <br>
- * AsyncExecution differs from {@link ExecutorService} in a few important ways. First, it is a Registrable.
- * Second, AsyncExecution is not necessarily a thread pool, but simply an executor and scheduler.
+ * AsyncExecution differs from {@link java.util.concurrent.ExecutorService ExecutorService}
+ * in a few important ways.
+ * First, AsyncExecution is not necessarily a thread pool, but simply an executor and scheduler.
  * Thus it does not specify any methods relating to shutting down, awaiting termination, or invoking other callers' submissions.
- * Thirdly, AsyncExecution enables scheduling, which simple thread pools do not.
+ * Second, AsyncExecution enables scheduling, which simple thread pools do not.
+ * Third, AsyncExecution is designed to be implemented registered as a service in a
+ * {@link space.arim.universal.registry.Registry Registry}.
  * 
  * @author A248
  *
  */
-public interface AsyncExecution extends Registrable, EnhancedExecutor, Scheduler {
+public interface AsyncExecution extends EnhancedExecutor {
 
+	/**
+	 * Runs a <code>Runnable</code> command asynchronously. <br>
+	 * <br>
+	 * The command MUST NOT run on the main thread</b> if the application has a main thread.
+	 * 
+	 */
+	@Override
+	void execute(Runnable command);
+	
 }
