@@ -28,6 +28,7 @@ import space.arim.api.annotation.Blocking;
  * @author A248
  *
  */
+@Deprecated
 public interface UUIDResolver {
 	
 	/**
