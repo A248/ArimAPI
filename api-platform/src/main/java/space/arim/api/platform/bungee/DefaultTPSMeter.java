@@ -18,6 +18,8 @@
  */
 package space.arim.api.platform.bungee;
 
+import net.md_5.bungee.api.plugin.Plugin;
+
 import space.arim.api.util.TPSMeter;
 
 /**
@@ -30,6 +32,10 @@ import space.arim.api.util.TPSMeter;
  *
  */
 public class DefaultTPSMeter implements TPSMeter {
+	
+	public DefaultTPSMeter(Plugin plugin) {
+		
+	}
 	
 	@Override
 	public double getTPS() {
