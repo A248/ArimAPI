@@ -18,9 +18,62 @@
  */
 package space.arim.api.plugin;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
+
+import space.arim.universal.registry.Registration;
+import space.arim.universal.registry.Registry;
+import space.arim.universal.registry.RegistryPriority;
+
+import space.arim.api.concurrent.AsyncExecution;
+import space.arim.api.concurrent.SyncExecution;
+import space.arim.api.platform.sponge.DefaultAsyncExecution;
+import space.arim.api.platform.sponge.DefaultSyncExecution;
+import space.arim.api.platform.sponge.DefaultUUIDResolution;
+import space.arim.api.uuid.UUIDResolution;
 
 @Plugin(id = "${plugin.spongeid}", name = "${plugin.name}", version = "${plugin.version}", authors = {"${plugin.author}"}, description = "${plugin.description}", url = "${plugin.url}")
 public class ArimApiPluginSponge {
+	
+	private static ArimApiPluginSponge inst;
+	
+	public ArimApiPluginSponge() {
+		inst = this;
+	}
+	
+	private static PluginContainer getPlugin() {
+		return Sponge.getPluginManager().fromInstance(inst).get();
+	}
+	
+	/**
+	 * Registers {@link DefaultUUIDResolution} if no registration for
+	 * {@link UUIDResolution} exists.
+	 * 
+	 * @param registry the registry to use
+	 */
+	public static void registerDefaultUUIDResolutionIfAbsent(Registry registry) {
+		registry.registerIfAbsent(UUIDResolution.class, () -> new Registration<UUIDResolution>(RegistryPriority.LOWEST, new DefaultUUIDResolution(getPlugin()), "Default UUIDResolution Implementation"));
+	}
+	
+	/**
+	 * Registers {@link DefaultAsyncExecution} if no registration for
+	 * {@link AsyncExecution} exists.
+	 * 
+	 * @param registry the registry to use
+	 */
+	public static void registerDefaultAsyncExecutionIfAbsent(Registry registry) {
+		registry.registerIfAbsent(AsyncExecution.class, () -> new Registration<AsyncExecution>(RegistryPriority.LOWEST, new DefaultAsyncExecution(getPlugin()), "Default AsyncExecution Implementation"));
+	}
+	
+	/**
+	 * Registers {@link DefaultSyncExecution} if no registration for
+	 * {@link SyncExecution} exists.
+	 * 
+	 * @param registry the registry to use
+	 */
+	public static void registerDefaultSyncExecutionIfAbsent(Registry registry) {
+		registry.registerIfAbsent(SyncExecution.class, () -> new Registration<SyncExecution>(RegistryPriority.LOWEST, new DefaultSyncExecution(getPlugin()), "Default SyncExecution Implementation"));
+	}
 	
 }

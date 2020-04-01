@@ -18,7 +18,7 @@
  */
 package space.arim.api.plugin;
 
-import net.md_5.bungee.api.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import space.arim.universal.registry.Registration;
 import space.arim.universal.registry.Registry;
@@ -26,16 +26,16 @@ import space.arim.universal.registry.RegistryPriority;
 
 import space.arim.api.concurrent.AsyncExecution;
 import space.arim.api.concurrent.SyncExecution;
-import space.arim.api.platform.bungee.DefaultAsyncExecution;
-import space.arim.api.platform.bungee.DefaultSyncExecution;
-import space.arim.api.platform.bungee.DefaultUUIDResolution;
+import space.arim.api.platform.spigot.DefaultAsyncExecution;
+import space.arim.api.platform.spigot.DefaultSyncExecution;
+import space.arim.api.platform.spigot.DefaultUUIDResolution;
 import space.arim.api.uuid.UUIDResolution;
 
-public class ArimApiPluginBungee extends Plugin {
+public class ArimApiPluginSpigot extends JavaPlugin {
 	
-	private static Plugin inst;
+	private static JavaPlugin inst;
 	
-	public ArimApiPluginBungee() {
+	public ArimApiPluginSpigot() {
 		inst = this;
 	}
 	
