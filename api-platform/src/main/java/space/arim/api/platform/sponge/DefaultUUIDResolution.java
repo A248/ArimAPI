@@ -40,17 +40,26 @@ import space.arim.api.platform.PlatformUUIDResolution;
  */
 public class DefaultUUIDResolution extends PlatformUUIDResolution {
 
+	private final PluginContainer plugin;
+	
 	/**
 	 * Creates the instance
 	 * 
 	 * @param plugin the plugin to use
 	 */
 	public DefaultUUIDResolution(PluginContainer plugin) {
-		
+		this.plugin = plugin;
 	}
 	
-	@Override
-	public UUID resolveFromCache(String name) {
+	/**
+	 * The static equivalent of this implementation of fast, nonblocking resolution.
+	 * Only checks the server's own knowledge cache. Does nothing else.
+	 * 
+	 * @param plugin the plugin to use
+	 * @param name the player's name
+	 * @return the player's uuid or <code>null</code> if not found
+	 */
+	public static UUID resolveFromCache(PluginContainer plugin, String name) {
 		Optional<Player> player = Sponge.getServer().getPlayer(name);
 		if (player.isPresent()) {
 			return player.get().getUniqueId();
@@ -65,8 +74,15 @@ public class DefaultUUIDResolution extends PlatformUUIDResolution {
 		return null;
 	}
 	
-	@Override
-	public String resolveFromCache(UUID uuid) {
+	/**
+	 * The static equivalent of this implementation of fast, nonblocking resolution.
+	 * Only checks the server's own knowledge cache. Does nothing else.
+	 * 
+	 * @param plugin the plugin to use
+	 * @param uuid the player's uuid
+	 * @return the player's name or <code>null</code> if not found
+	 */
+	public static String resolveFromCache(PluginContainer plugin, UUID uuid) {
 		Optional<Player> player = Sponge.getServer().getPlayer(uuid);
 		if (player.isPresent()) {
 			return player.get().getName();
@@ -79,6 +95,16 @@ public class DefaultUUIDResolution extends PlatformUUIDResolution {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public UUID resolveFromCache(String name) {
+		return resolveFromCache(plugin, name);
+	}
+	
+	@Override
+	public String resolveFromCache(UUID uuid) {
+		return resolveFromCache(plugin, uuid);
 	}
 	
 }

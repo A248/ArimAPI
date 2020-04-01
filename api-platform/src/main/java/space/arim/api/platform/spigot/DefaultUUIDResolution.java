@@ -48,8 +48,15 @@ public class DefaultUUIDResolution extends PlatformUUIDResolution {
 		this.plugin = plugin;
 	}
 	
-	@Override
-	public UUID resolveFromCache(String name) {
+	/**
+	 * The static equivalent of this implementation of fast, nonblocking resolution.
+	 * Only checks the server's own knowledge cache. Does nothing else.
+	 * 
+	 * @param plugin the plugin to use
+	 * @param name the player's name
+	 * @return the player's uuid or <code>null</code> if not found
+	 */
+	public static UUID resolveFromCache(JavaPlugin plugin, String name) {
 		Player player = plugin.getServer().getPlayer(name);
 		if (player != null) {
 			return player.getUniqueId();
@@ -62,8 +69,15 @@ public class DefaultUUIDResolution extends PlatformUUIDResolution {
 		return null;
 	}
 	
-	@Override
-	public String resolveFromCache(UUID uuid) {
+	/**
+	 * The static equivalent of this implementation of fast, nonblocking resolution.
+	 * Only checks the server's own knowledge cache. Does nothing else.
+	 * 
+	 * @param plugin the plugin to use
+	 * @param uuid the player's uuid
+	 * @return the player's name or <code>null</code> if not found
+	 */
+	public static String resolveFromCache(JavaPlugin plugin, UUID uuid) {
 		Player player = plugin.getServer().getPlayer(uuid);
 		if (player != null) {
 			return player.getName();
@@ -74,6 +88,16 @@ public class DefaultUUIDResolution extends PlatformUUIDResolution {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	protected UUID resolveFromCache(String name) {
+		return resolveFromCache(plugin, name);
+	}
+	
+	@Override
+	protected String resolveFromCache(UUID uuid) {
+		return resolveFromCache(plugin, uuid);
 	}
 	
 }
