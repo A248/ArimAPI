@@ -18,10 +18,6 @@
  */
 package space.arim.api.platform.bungee;
 
-import net.md_5.bungee.api.plugin.Plugin;
-
-import space.arim.universal.registry.RegistryPriority;
-
 import space.arim.api.util.TPSMeter;
 
 /**
@@ -33,25 +29,11 @@ import space.arim.api.util.TPSMeter;
  * @author A248
  *
  */
-public class DefaultTPSMeter extends BungeeRegistrable implements TPSMeter {
-	
-	/**
-	 * Creates the instance. See {@link BungeeRegistrable#BungeeRegistrable(Plugin)} for more information.
-	 * 
-	 * @param plugin the plugin to use for Registrable information
-	 */
-	public DefaultTPSMeter(Plugin plugin) {
-		super(plugin);
-	}
+public class DefaultTPSMeter implements TPSMeter {
 	
 	@Override
 	public double getTPS() {
 		return 20D;
-	}
-	
-	@Override
-	public byte getPriority() {
-		return RegistryPriority.LOWEST;
 	}
 
 }

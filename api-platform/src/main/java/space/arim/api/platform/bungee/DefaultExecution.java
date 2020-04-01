@@ -18,34 +18,18 @@
  */
 package space.arim.api.platform.bungee;
 
-import java.util.concurrent.TimeUnit;
-
 import net.md_5.bungee.api.plugin.Plugin;
 
-import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.util.concurrent.Task;
-
-class DefaultExecution extends BungeeRegistrable {
+class DefaultExecution {
+	
+	private final Plugin plugin;
 	
 	DefaultExecution(Plugin plugin) {
-		super(plugin);
+		this.plugin = plugin;
 	}
 	
 	public void execute(Runnable command) {
-		getPlugin().getProxy().getScheduler().runAsync(getPlugin(), command);
-	}
-	
-	public Task runTaskLater(Runnable command, long delay) {
-		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, TimeUnit.MILLISECONDS));
-	}
-	
-	public Task runTaskTimerLater(Runnable command, long delay, long period) {
-		return new TaskWrapper(getPlugin().getProxy().getScheduler().schedule(getPlugin(), command, delay, period, TimeUnit.MILLISECONDS));
-	}
-	
-	@Override
-	public byte getPriority() {
-		return RegistryPriority.LOWEST;
+		plugin.getProxy().getScheduler().runAsync(plugin, command);
 	}
 	
 }

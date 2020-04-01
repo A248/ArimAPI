@@ -31,9 +31,9 @@ import space.arim.api.concurrent.AsyncExecution;
 public class DefaultAsyncExecution extends DefaultExecution implements AsyncExecution {
 
 	/**
-	 * Creates the instance. See {@link BungeeRegistrable#BungeeRegistrable(Plugin)} for more information.
+	 * Creates the instance.
 	 * 
-	 * @param plugin the plugin to use for Registrable information
+	 * @param plugin the plugin to use
 	 */
 	public DefaultAsyncExecution(Plugin plugin) {
 		super(plugin);
