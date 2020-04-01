@@ -33,7 +33,7 @@ public interface SyncExecution extends EnhancedExecutor {
 	/**
 	 * Runs a <code>Runnable</code> command synchronously. <br>
 	 * <br>
-	 * The command MUST run on the main thread</b> if the application has a main thread.
+	 * The command MUST run on the main thread if the application has a main thread.
 	 * 
 	 */
 	@Override

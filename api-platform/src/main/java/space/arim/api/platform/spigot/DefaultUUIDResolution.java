@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import space.arim.api.platform.PlatformUUIDResolution;
+import space.arim.api.uuid.UUIDResolution;
 
 /**
  * A default implementation of {@link UUIDResolution} on the Bukkit platform. <br>

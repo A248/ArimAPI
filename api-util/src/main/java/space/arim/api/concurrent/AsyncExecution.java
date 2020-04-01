@@ -41,7 +41,7 @@ public interface AsyncExecution extends EnhancedExecutor {
 	/**
 	 * Runs a <code>Runnable</code> command asynchronously. <br>
 	 * <br>
-	 * The command MUST NOT run on the main thread</b> if the application has a main thread.
+	 * The command MUST NOT run on the main thread if the application has a main thread.
 	 * 
 	 */
 	@Override

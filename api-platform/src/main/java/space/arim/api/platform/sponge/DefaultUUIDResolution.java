@@ -28,6 +28,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.user.UserStorageService;
 
 import space.arim.api.platform.PlatformUUIDResolution;
+import space.arim.api.uuid.UUIDResolution;
 
 /**
  * A default implementation of {@link UUIDResolution} on the Sponge platform. <br>
