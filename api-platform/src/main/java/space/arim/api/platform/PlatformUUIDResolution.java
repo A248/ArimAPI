@@ -32,7 +32,10 @@ import space.arim.api.uuid.UUIDResolution;
  * <br>
  * First checks the implementing classes {@link #resolveFromCache(String)} and
  * {@link #resolveFromCache(UUID)}, which should be nonblocking. <br>
- * If that fails, queries the Ashcon API, and then the Mojang API, asynchronously.
+ * If that fails, queries the Ashcon API, and then the Mojang API, asynchronously. <br>
+ * <br>
+ * When a network query returns a completed result, the object will suggest
+ * {@link #update(UUID, String, boolean)} to itself with <code>force = true</code>.
  * 
  * @author A248
  *
