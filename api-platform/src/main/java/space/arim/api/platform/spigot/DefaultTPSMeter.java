@@ -20,7 +20,7 @@ package space.arim.api.platform.spigot;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import space.arim.api.platform.spigot.nms.NMS;
 import space.arim.api.util.TPSMeter;
@@ -38,7 +38,7 @@ public class DefaultTPSMeter implements TPSMeter {
 	 * 
 	 * @param plugin the plugin to use
 	 */
-	public DefaultTPSMeter(Plugin plugin) {
+	public DefaultTPSMeter(JavaPlugin plugin) {
 		
 	}
 	
