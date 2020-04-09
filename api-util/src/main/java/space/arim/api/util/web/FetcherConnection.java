@@ -49,7 +49,7 @@ class FetcherConnection extends AbstractConnection {
 	}
 	
 	<T> T getJson(Class<T> type) throws JsonSyntaxException, JsonIOException, IOException {
-		return CommonInstancesUtil.gson().fromJson(new InputStreamReader(inputStream()), type);
+		return CommonInstancesUtil.gson().fromJson(new InputStreamReader(inputStream(), "UTF-8"), type);
 	}
 	
 	String getSimpleRaw() throws IOException {
