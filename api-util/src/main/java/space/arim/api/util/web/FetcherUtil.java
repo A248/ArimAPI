@@ -33,7 +33,6 @@ import com.google.gson.JsonSyntaxException;
 import space.arim.universal.util.web.HttpStatus;
 import space.arim.universal.util.web.HttpStatusException;
 
-import space.arim.api.annotation.Blocking;
 import space.arim.api.uuid.UUIDUtil;
 
 public final class FetcherUtil {
@@ -71,29 +70,24 @@ public final class FetcherUtil {
 		return getJsonMapFromAshcon(player.toString());
 	}
 	
-	@Blocking
 	public static UUID mojangApi(final String name) throws FetcherException, HttpStatusException {
 		return UUID.fromString(UUIDUtil.expand(getJsonMapFromUrl(MOJANG_API_FROM_NAME + Objects.requireNonNull(name, "Name must not be null!")).get("id").toString()));
 	}
 	
-	@Blocking
 	public static String mojangApi(final UUID playeruuid) throws FetcherException, HttpStatusException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object>[] names = getJsonFromUrl(MOJANG_API_FROM_UUID + Objects.requireNonNull(playeruuid, "UUID must not be null!").toString().replace("-", "") + "/names", Map[].class);
 		return names[names.length - 1].get("name").toString();
 	}
 	
-	@Blocking
 	public static UUID ashconApi(final String name) throws FetcherException, HttpStatusException {
 		return UUID.fromString(getJsonMapFromAshcon(name).get("uuid").toString());
 	}
 	
-	@Blocking
 	public static String ashconApi(final UUID playeruuid) throws FetcherException, HttpStatusException {
 		return getJsonMapFromAshcon(playeruuid).get("username").toString();
 	}
 	
-	@Blocking
 	public static SortedSet<Entry<String, String>> ashconNameHistory(final UUID playeruuid) throws FetcherException, HttpStatusException {
 		TreeSet<Entry<String, String>> results = new TreeSet<Entry<String, String>>((entry1, entry2) -> {
 			if (entry1.getValue().isEmpty()) {
@@ -122,7 +116,6 @@ public final class FetcherUtil {
 		return results;
 	}
 	
-	@Blocking
 	public static String getLatestSpigotPluginVersion(final int resourceId) throws FetcherException, HttpStatusException {
 		final String url = SPIGOT_UPDATE_API + resourceId;
 		try (FetcherConnection conn = new FetcherConnection(url)) {
@@ -132,7 +125,6 @@ public final class FetcherUtil {
 		}
 	}
 	
-	@Blocking
 	public static GeoIpInfo ipStack(final String address, final String key) throws FetcherException, RateLimitException, HttpStatusException {
 		final String url = IPSTACK.getUrl(address).replace("$KEY", Objects.requireNonNull(key, "Key must not be null!"));
 		try {
@@ -148,7 +140,6 @@ public final class FetcherUtil {
 		}
 	}
 	
-	@Blocking
 	public static GeoIpInfo freeGeoIp(final String address) throws FetcherException, RateLimitException, HttpStatusException {
 		final String url = FREEGEOIP.getUrl(address);
 		try {
@@ -164,7 +155,6 @@ public final class FetcherUtil {
 		}
 	}
 	
-	@Blocking
 	public static GeoIpInfo ipApi(final String address) throws FetcherException, RateLimitException, HttpStatusException {
 		final String url = IPAPI.getUrl(address);
 		try {
