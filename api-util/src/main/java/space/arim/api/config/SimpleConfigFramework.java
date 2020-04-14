@@ -57,7 +57,7 @@ public interface SimpleConfigFramework extends AutoClosable {
 	/**
 	 * Gets the config objects at the specific key
 	 * if they comprise a list of the type provided,
-	 * else <code>null</coe>
+	 * else <code>null</code>
 	 * 
 	 * @param <T> the type of the objects
 	 * @param key the key
