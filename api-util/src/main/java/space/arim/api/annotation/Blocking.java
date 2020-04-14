@@ -29,10 +29,13 @@ import java.lang.annotation.Target;
  * Used to denote blocking operations which should not be run on the main thread.
  * 
  * @author A248
+ * 
+ * @deprecated use completable futures instead
  *
  */
 @Retention(SOURCE)
 @Target({ METHOD, CONSTRUCTOR })
+@Deprecated
 public @interface Blocking {
 
 }

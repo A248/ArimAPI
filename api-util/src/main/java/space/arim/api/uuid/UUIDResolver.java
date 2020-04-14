@@ -29,6 +29,7 @@ import space.arim.api.annotation.Blocking;
  *
  */
 @Deprecated
+@SuppressWarnings("deprecation")
 public interface UUIDResolver {
 	
 	/**
