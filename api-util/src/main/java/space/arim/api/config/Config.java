@@ -41,10 +41,13 @@ import space.arim.api.util.CommonInstancesUtil;
  * <br>
  * <b>Usage:</b> Extend this class. <br>
  * <br>
- * <b>This class is not thread safe.</b> However, synchronisation will not be practical
- * in most applications, since it is not humanly possible to instruct a plugin
- * to reload its config (e.g., with /plugin reload) fast enough to trigger race conditions. <br>
- * Accordingly, reloading need not be synchronised; nevertheless, it <i><b>is</b></i> recommended to <i>initialise</i> synchronously.
+ * <b>Reading is thread safe and may occur concurrently with reloading.</b>
+ * Reloading is not itself thread safe and should only be performed by 1 thread at a time. <br>
+ * However synchronisation will not be practical in most applications or plugins,
+ * since it is not humanly possible to instruct a plugin to reload its config (e.g., with /plugin reload)
+ * fast enough to trigger race conditions. <br>
+ * <br>
+ * Default values are set on initialisation.
  * 
  * @author A248
  *
@@ -67,7 +70,7 @@ public abstract class Config implements AutoClosable {
 			throw new IllegalStateException("Config folder creation blocked!");
 		}
 		
-		defaults = loadDefaults(yaml());
+		defaults = loadDefaults();
 		values.putAll(defaults);
 	}
 	
@@ -98,7 +101,7 @@ public abstract class Config implements AutoClosable {
 		if (!file.exists()) {
 			saveTo(file);
 		}
-		values.putAll(loadFile(file, yaml()));
+		values.putAll(loadFile(file));
 		if (!getFromMap(values, versionKey, Object.class).equals(getFromMap(defaults, versionKey, Object.class))) {
 			initVersionUpdate(file);
 		}
@@ -129,18 +132,16 @@ public abstract class Config implements AutoClosable {
 		return false;
 	}
 	
-	@SuppressWarnings("unchecked")
-	Map<String, Object> loadDefaults(Yaml yaml) {
+	Map<String, Object> loadDefaults() {
 		try (InputStream stream = getClass().getResourceAsStream(File.separator + filename)) {
-			return (Map<String, Object>) yaml.load(stream);
+			return yaml().load(stream);
 		} catch (IOException ignored) {}
 		return Collections.emptyMap();
 	}
 	
-	@SuppressWarnings("unchecked")
-	Map<String, Object> loadFile(File source, Yaml yaml) {
+	Map<String, Object> loadFile(File source) {
 		try (FileReader reader = new FileReader(source)) {
-			return (Map<String, Object>) yaml.load(reader);
+			return yaml().load(reader);
 		} catch (IOException ex) {}
 		return Collections.emptyMap();
 	}

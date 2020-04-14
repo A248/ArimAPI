@@ -21,8 +21,6 @@ package space.arim.api.config;
 import java.io.File;
 import java.util.Map;
 
-import org.yaml.snakeyaml.Yaml;
-
 /**
  * A {@link Config} with logging of certain events enabled. <br>
  * <br>
@@ -62,17 +60,17 @@ public abstract class ConfigWithLog extends Config {
 	}
 	
 	@Override
-	Map<String, Object> loadDefaults(Yaml yaml) {
+	Map<String, Object> loadDefaults() {
 		logEvent(ConfigEvent.DEFAULTS_LOAD_START);
-		Map<String, Object> defaults = super.loadDefaults(yaml);
+		Map<String, Object> defaults = super.loadDefaults();
 		logEvent(!defaults.isEmpty() ? ConfigEvent.DEFAULTS_LOAD_SUCCESS : ConfigEvent.DEFAULTS_LOAD_FAILED);
 		return defaults;
 	}
 	
 	@Override
-	Map<String, Object> loadFile(File source, Yaml yaml) {
+	Map<String, Object> loadFile(File source) {
 		logEvent(ConfigEvent.VALUES_LOAD_START);
-		Map<String, Object> values = super.loadFile(source, yaml);
+		Map<String, Object> values = super.loadFile(source);
 		logEvent(!values.isEmpty() ? ConfigEvent.VALUES_LOAD_SUCCESS : ConfigEvent.VALUES_LOAD_FAILED);
 		return values;
 	}
