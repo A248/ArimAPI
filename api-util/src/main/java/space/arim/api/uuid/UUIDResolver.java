@@ -27,6 +27,8 @@ import space.arim.api.annotation.Blocking;
  * 
  * @author A248
  *
+ * @deprecated Use {@link UUIDResolution}
+ *
  */
 @Deprecated
 @SuppressWarnings("deprecation")
