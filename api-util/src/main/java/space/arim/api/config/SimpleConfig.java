@@ -19,6 +19,9 @@
 package space.arim.api.config;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+
 import space.arim.api.util.FilesUtil;
 
 /**
@@ -56,6 +59,12 @@ public abstract class SimpleConfig extends Config implements SimpleConfigFramewo
 	@Override
 	protected File getBackupLocation() {
 		return FilesUtil.dateSuffixedFile(folder, filename + "-", "config-backups");
+	}
+	
+	static Set<String> prependFullKeyPath(String key, Set<String> subKeys) {
+		Set<String> result = new HashSet<>();
+		subKeys.forEach((subKey) -> result.add(key + "." + subKey));
+		return result;
 	}
 	
 }
