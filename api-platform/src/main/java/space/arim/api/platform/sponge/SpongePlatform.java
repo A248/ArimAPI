@@ -18,11 +18,6 @@
  */
 package space.arim.api.platform.sponge;
 
-import java.util.Objects;
-
-import org.spongepowered.api.plugin.PluginContainer;
-
-import space.arim.api.platform.PluginInformation;
 import space.arim.api.util.LazySingleton;
 
 /**
@@ -62,16 +57,6 @@ public class SpongePlatform {
 	 */
 	public SpongeCommands commands() {
 		return SpongeCommands.get();
-	}
-	
-	/**
-	 * Gets platform independent plugin information for a plugin
-	 * 
-	 * @param plugin the sponge plugin
-	 * @return plugin information
-	 */
-	public PluginInformation convertPluginInfo(PluginContainer plugin) {
-		return new PluginInformation(plugin.getId(), Objects.requireNonNull(plugin.getVersion().orElse(null), "Version must not be null!"), plugin.getAuthors().toArray(new String[] {}), plugin.getUrl().orElse(null), plugin.getDescription().orElse(null));
 	}
 	
 }

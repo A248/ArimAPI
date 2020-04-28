@@ -18,10 +18,6 @@
  */
 package space.arim.api.platform.spigot;
 
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-
-import space.arim.api.platform.PluginInformation;
 import space.arim.api.util.LazySingleton;
 
 /**
@@ -61,26 +57,6 @@ public class SpigotPlatform {
 	 */
 	public SpigotCommands commands() {
 		return SpigotCommands.get();
-	}
-	
-	/**
-	 * Gets platform independent plugin information for the given <code>PluginDescriptionFile</code>
-	 * 
-	 * @param description the spigot plugin description
-	 * @return plugin information
-	 */
-	public PluginInformation convertPluginInfo(PluginDescriptionFile description) {
-		return new PluginInformation(description.getName(), description.getVersion(), description.getAuthors().toArray(new String[] {}), description.getWebsite(), description.getDescription());
-	}
-	
-	/**
-	 * Gets platform independent plugin information for a plugin
-	 * 
-	 * @param plugin the spigot plugin
-	 * @return plugin information
-	 */
-	public PluginInformation convertPluginInfo(Plugin plugin) {
-		return convertPluginInfo(plugin.getDescription());
 	}
 	
 }

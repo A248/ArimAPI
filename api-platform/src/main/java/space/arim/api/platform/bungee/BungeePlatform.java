@@ -18,10 +18,6 @@
  */
 package space.arim.api.platform.bungee;
 
-import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.api.plugin.PluginDescription;
-
-import space.arim.api.platform.PluginInformation;
 import space.arim.api.util.LazySingleton;
 
 /**
@@ -61,26 +57,6 @@ public class BungeePlatform {
 	 */
 	public BungeeCommands commands() {
 		return BungeeCommands.get();
-	}
-	
-	/**
-	 * Gets platform independent plugin information for the given <code>PluginDescription</code>
-	 * 
-	 * @param description the bungee plugin description
-	 * @return plugin information
-	 */
-	public PluginInformation convertPluginInfo(PluginDescription description) {
-		return new PluginInformation(description.getName(), description.getVersion(), description.getAuthor() == null ? new String[] {} : new String[] {description.getAuthor()}, null, description.getDescription());
-	}
-	
-	/**
-	 * Gets platform independent plugin information for a plugin
-	 * 
-	 * @param plugin the bungee plugin
-	 * @return plugin information
-	 */
-	public PluginInformation convertPluginInfo(Plugin plugin) {
-		return convertPluginInfo(plugin.getDescription());
 	}
 	
 }
