@@ -242,7 +242,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	private static BaseComponent[] parseJsonProcessor(String msg, Function<String, TextComponent> nodeGenerator, Function<String, BaseComponent[]> tooltipGenerator) {
 		BaseComponent current = null;
 		ArrayList<BaseComponent> components = new ArrayList<BaseComponent>();
-		for (String node : msg.split("||")) {
+		for (String node : msg.split("\\|\\|")) {
 			TagType tag = jsonTag(node);
 			if (tag.equals(TagType.NONE)) {
 				if (current != null) {

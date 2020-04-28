@@ -387,7 +387,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	private static Text parseJsonProcessor(String msg, Function<String, ? extends Text.Builder> generator) {
 		Text.Builder current = null;
 		Text.Builder parent = Text.builder();
-		for (String node : msg.split("||")) {
+		for (String node : msg.split("\\|\\|")) {
 			JsonTag tag = JsonTag.getFor(node);
 			if (tag.equals(JsonTag.NONE)) {
 				if (current != null) {
