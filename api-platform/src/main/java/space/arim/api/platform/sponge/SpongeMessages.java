@@ -282,7 +282,10 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 			if (json.hasUrl()) {
 				try {
 					builder.onClick(TextActions.openUrl(new URL(json.getUrl())));
-				} catch (MalformedURLException ignored) {}
+				} catch (MalformedURLException ignored) {
+					// We can't do anything about this
+					// blame Sponge for lack of flexibility
+				}
 			} else if (json.hasCommand()) {
 				builder.onClick(TextActions.runCommand(json.getCommand()));
 			} else if (json.hasSuggestion()) {
@@ -315,7 +318,12 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	private void addAllContent(JsonMessageBuilder builder, Text message) {
-		builder.reset().colour(convert(message.getColor())).style(Style.MAGIC, message.getStyle().isObfuscated().orElse(false)).style(Style.BOLD, message.getStyle().isBold().orElse(false)).style(Style.STRIKETHROUGH, message.getStyle().hasStrikethrough().orElse(false)).style(Style.UNDERLINE, message.getStyle().hasUnderline().orElse(false)).style(Style.ITALIC, message.getStyle().isItalic().orElse(false));
+		builder.reset().colour(convert(message.getColor()))
+				.style(Style.MAGIC, message.getStyle().isObfuscated().orElse(false))
+				.style(Style.BOLD, message.getStyle().isBold().orElse(false))
+				.style(Style.STRIKETHROUGH, message.getStyle().hasStrikethrough().orElse(false))
+				.style(Style.UNDERLINE, message.getStyle().hasUnderline().orElse(false))
+				.style(Style.ITALIC, message.getStyle().isItalic().orElse(false));
 		if (message instanceof LiteralText) {
 			builder.add(((LiteralText) message).getContent());
 		}
@@ -404,7 +412,10 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 					}
 					try {
 						current.onClick(TextActions.openUrl(new URL(value)));
-					} catch (MalformedURLException ex) {}
+					} catch (MalformedURLException ignored) {
+						// We can't do anything about this
+						// blame Sponge for lack of flexibility
+					}
 				} else if (tag.equals(JsonTag.CMD)) {
 					current.onClick(TextActions.runCommand(value));
 				} else if (tag.equals(JsonTag.SGT)) {
