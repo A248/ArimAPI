@@ -9,7 +9,7 @@
 		1. Update property core.version
 		2. Update versions in all child modules
 	-->
-	<version>0.8.1-SNAPSHOT</version>
+	<version>0.9.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>ArimAPI</name>
@@ -118,7 +118,6 @@
 		<module>api-chat</module>
 		<module>api-util</module>
 		<module>api-platform</module>
-		<module>api-core</module>
 		<module>api-plugin</module>
 	</modules>
 	
