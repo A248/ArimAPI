@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>space.arim</groupId>
 		<artifactId>arimapi</artifactId>
-		<version>0.8.1-SNAPSHOT</version>
+		<version>0.9.0-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>arimapi-plugin</artifactId>
@@ -24,7 +24,7 @@
 	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
-		<finalName>${project.name}_v${core.version}_unshaded</finalName>
+		<finalName>${project.name}_v${core.version}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -82,7 +82,6 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<outputFile>target/ArimAPI.jar</outputFile>
 							<artifactSet>
 								<includes>
 									<include>space.arim:universal-util</include>
@@ -91,12 +90,33 @@
 									<include>space.arim:arimapi-chat</include>
 									<include>space.arim:arimapi-util</include>
 									<include>space.arim:arimapi-platform</include>
+									
+									<!-- Runtime dependencies -->
 									<include>org.hsqldb:hsqldb</include>
 									<include>com.zaxxer:HikariCP</include>
 									<include>org.slf4j:slf4j-api</include>
 									<include>org.slf4j:slf4j-jdk14</include>
+									<include>com.github.ben-manes.caffeine:caffeine</include>
 								</includes>
 							</artifactSet>
+							<relocations>
+								<relocation>
+									<pattern>org.hsqldb</pattern>
+									<shadedPattern>space.arim.api.shaded.org.hsqldb</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>com.zaxxer.hikari</pattern>
+									<shadedPattern>space.arim.api.shaded.com.zaxxer.hikari</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.slf4j</pattern>
+									<shadedPattern>space.arim.api.shaded.org.slf4j</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>com.github.benmanes.caffeine</pattern>
+									<shadedPattern>space.arim.api.shaded.com.github.benmanes.caffeine</shadedPattern>
+								</relocation>
+							</relocations>
 						</configuration>
 					</execution>
 				</executions>
@@ -107,11 +127,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>space.arim</groupId>
-			<artifactId>arimapi-chat</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim</groupId>
-			<artifactId>arimapi-core</artifactId>
+			<artifactId>arimapi-platform</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
