@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>space.arim</groupId>
 		<artifactId>arimapi</artifactId>
-		<version>0.9.0-SNAPSHOT</version>
+		<version>0.9.1-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>arimapi-plugin</artifactId>
@@ -15,7 +15,7 @@
 	
 	<properties>
 		<plugin.name>ArimAPI</plugin.name>
-		<plugin.version>${core.version}</plugin.version>
+		<plugin.version>${project.version}</plugin.version>
 		<plugin.author>${core.author}</plugin.author>
 		<plugin.spongeid>arimapiplugin</plugin.spongeid> <!-- Corresponds with the @Plugin annotation -->
 		<plugin.url>${project.parent.url}</plugin.url>
