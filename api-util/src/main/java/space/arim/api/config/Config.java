@@ -31,9 +31,6 @@ import java.util.function.Consumer;
 
 import org.yaml.snakeyaml.Yaml;
 
-import space.arim.universal.util.AutoClosable;
-import space.arim.universal.util.collections.CollectionsUtil;
-
 import space.arim.api.util.CommonInstancesUtil;
 
 /**
@@ -52,7 +49,7 @@ import space.arim.api.util.CommonInstancesUtil;
  * @author A248
  *
  */
-public abstract class Config implements AutoClosable {
+public abstract class Config implements AutoCloseable {
 	
 	protected final File folder;
 	protected final String filename;
@@ -102,7 +99,7 @@ public abstract class Config implements AutoClosable {
 			saveTo(file);
 		}
 		values.putAll(loadFile(file));
-		if (!getFromMap(values, versionKey, Object.class).equals(getFromMap(defaults, versionKey, Object.class))) {
+		if (!getFromMapRecursive(values, versionKey, Object.class).equals(getFromMapRecursive(defaults, versionKey, Object.class))) {
 			initVersionUpdate(file);
 		}
 	}
@@ -146,13 +143,41 @@ public abstract class Config implements AutoClosable {
 		return Collections.emptyMap();
 	}
 	
-	private <T> T getFromMap(Map<String, Object> values, String key, Class<T> type) {
-		return CollectionsUtil.getFromMapRecursive(values, key, type);
+	/**
+	 * Recursively retrieves a specified type of object from a Map of potentially nested maps. <br>
+	 * Periods delineate a nested map.
+	 * <br>
+	 * This method is particularly useful for configuration loaded thorugh SnakeYAML. <br>
+	 * Specifically, if one must retrieve the yaml value key1.subkey.value as an Integer from the map <code>configValues</code>,
+	 * one should call use <code>getFromMapRecursive(configValues, "key1.subkey.value", Integer.class)</code> <br>
+	 * 
+	 * @param <T> the type to retrieve. If the object found is not this type, <code>null</code> is returned
+	 * @param map the map from which to retrieve recursively
+	 * @param key the key string
+	 * @param type the type class
+	 * @return the object if found, null if not
+	 */
+	@SuppressWarnings("unchecked")
+	private static <T> T getFromMapRecursive(Map<String, Object> map, String key, Class<T> type) {
+		if (key == null) {
+			return null;
+		} else if (!key.contains(".")) {
+			Object obj = map.get(key);
+			return type.isInstance(obj) ? (T) obj : null;
+		} else if (key.startsWith(".") || key.endsWith(".")) {
+			throw new IllegalArgumentException("Cannot retrieve value for invalid key " + key);
+		}
+		return getFromMapRecursive((Map<String, Object>) map.get(key.substring(0, key.indexOf("."))), key.substring(key.indexOf(".") + 1), type);
 	}
 	
 	public <T> T getObject(String key, Class<T> type) {
-		T obj = getFromMap(values, key, type);
-		return obj != null ? obj : getFromMap(defaults, key, type);
+		T obj = getFromMapRecursive(values, key, type);
+		return obj != null ? obj : getFromMapRecursive(defaults, key, type);
+	}
+	
+	@Override
+	public void close() {
+		
 	}
 	
 }
