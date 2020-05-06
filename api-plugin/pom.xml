@@ -91,32 +91,10 @@
 									<include>space.arim:arimapi-util</include>
 									<include>space.arim:arimapi-platform</include>
 									
-									<!-- Runtime dependencies -->
-									<include>org.hsqldb:hsqldb</include>
-									<include>com.zaxxer:HikariCP</include>
-									<include>org.slf4j:slf4j-api</include>
-									<include>org.slf4j:slf4j-jdk14</include>
-									<include>com.github.ben-manes.caffeine:caffeine</include>
+									<!-- Includes relocated HSQLDB, HikariCP, slf4j, and Caffeine -->
+									<include>space.arim:shinyclasspath</include>
 								</includes>
 							</artifactSet>
-							<relocations>
-								<relocation>
-									<pattern>org.hsqldb</pattern>
-									<shadedPattern>space.arim.shaded.org.hsqldb</shadedPattern>
-								</relocation>
-								<relocation>
-									<pattern>com.zaxxer.hikari</pattern>
-									<shadedPattern>space.arim.shaded.com.zaxxer.hikari</shadedPattern>
-								</relocation>
-								<relocation>
-									<pattern>org.slf4j</pattern>
-									<shadedPattern>space.arim.shaded.org.slf4j</shadedPattern>
-								</relocation>
-								<relocation>
-									<pattern>com.github.benmanes.caffeine</pattern>
-									<shadedPattern>space.arim.shaded.com.github.benmanes.caffeine</shadedPattern>
-								</relocation>
-							</relocations>
 						</configuration>
 					</execution>
 				</executions>
@@ -128,21 +106,6 @@
 		<dependency>
 			<groupId>space.arim</groupId>
 			<artifactId>arimapi-platform</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.ben-manes.caffeine</groupId>
-			<artifactId>caffeine</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>space.arim</groupId>

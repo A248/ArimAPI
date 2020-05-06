@@ -20,8 +20,8 @@ package space.arim.api.util.log;
 
 import java.util.logging.Level;
 
-import org.slf4j.Logger;
-import org.slf4j.Marker;
+import space.arim.shaded.org.slf4j.Logger;
+import space.arim.shaded.org.slf4j.Marker;
 
 /**
  * Converts a JUL logger to a slf4j Logger. <br>

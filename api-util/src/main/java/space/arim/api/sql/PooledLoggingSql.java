@@ -21,7 +21,7 @@ package space.arim.api.sql;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.zaxxer.hikari.HikariDataSource;
+import space.arim.shaded.com.zaxxer.hikari.HikariDataSource;
 
 public abstract class PooledLoggingSql extends LoggingSql {
 	

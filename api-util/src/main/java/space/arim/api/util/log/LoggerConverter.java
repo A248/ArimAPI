@@ -18,7 +18,10 @@
  */
 package space.arim.api.util.log;
 
-import org.slf4j.Logger;
+import java.lang.reflect.Proxy;
+import java.util.Objects;
+
+import space.arim.shaded.org.slf4j.Logger;
 
 import space.arim.api.util.LazySingleton;
 
@@ -43,8 +46,8 @@ public class LoggerConverter {
 	}
 	
 	/**
-	 * Converts a JUL logger to a slf4j Logger. <br>
-	 * A simple fix for developers who rely on APIs which provide JUL loggers but wish to use slf4j. <br>
+	 * Converts a JUL logger. <br>
+	 * A simple fix for developers who rely on APIs which provide JUL loggers. <br>
 	 * <br>
 	 * Level mappings are identical to those specified by the SLF4JBridgeHandler docs: <br>
 	 * FINEST  = TRACE <br>
@@ -56,10 +59,22 @@ public class LoggerConverter {
 	 * SEVERE  = ERROR
 	 * 
 	 * @param julLogger the JUL logger
-	 * @return a slf4j Logger
+	 * @return a slf4j logger
 	 */
 	public Logger convert(java.util.logging.Logger julLogger) {
-		return new JulAsSlf4j(julLogger);
+		return new JulAsSlf4j(Objects.requireNonNull(julLogger));
+	}
+	
+	/**
+	 * Converts a slf4j logger. <br>
+	 * That this method exists is a disappointment for the Minecraft community.
+	 * 
+	 * @param slf4jLogger the slf4j logger, presumably provided by the Sponge API
+	 * @return a slf4j logger
+	 */
+	public Logger convert(org.slf4j.Logger slf4jLogger) {
+		return (Logger) Proxy.newProxyInstance(getClass().getClassLoader(),
+				new Class<?>[] {Logger.class}, new Slf4jProxyHandler(Objects.requireNonNull(slf4jLogger)));
 	}
 	
 }

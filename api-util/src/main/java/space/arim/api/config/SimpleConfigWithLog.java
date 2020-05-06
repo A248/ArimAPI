@@ -19,7 +19,8 @@
 package space.arim.api.config;
 
 import java.io.File;
-import org.slf4j.Logger;
+
+import space.arim.shaded.org.slf4j.Logger;
 
 import space.arim.api.util.FilesUtil;
 

@@ -23,10 +23,12 @@
 			<groupId>space.arim</groupId>
 			<artifactId>universal-registry</artifactId>
 		</dependency>
+		<!-- Includes relocated HSQLDB, HikariCP, slf4j, and Caffeine -->
 		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
+			<groupId>space.arim</groupId>
+			<artifactId>shinyclasspath</artifactId>
 		</dependency>
+		<!-- Used so that we can convert normal slf4j to our relocated version -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
