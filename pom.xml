@@ -20,6 +20,9 @@
     	<maven.compiler.target>1.11</maven.compiler.target>
 		<core.author>A248</core.author>
 		
+		<!-- Compile only -->
+		<lombok.version>1.18.12</lombok.version>
+		
 		<!-- Shaded dependencies -->
 		<universal.version>0.8.1-SNAPSHOT</universal.version>
 		<shinyclasspath.version>0.1.0-SNAPSHOT</shinyclasspath.version>
@@ -159,6 +162,13 @@
 				<version>${universal.version}</version>
 				<type>zip</type>
 				<scope>provided</scope>
+			</dependency>
+			
+			<!-- Compile only -->
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
 			</dependency>
 			
 			<!-- Includes relocated HSQLDB, HikariCP, slf4j, and Caffeine -->
