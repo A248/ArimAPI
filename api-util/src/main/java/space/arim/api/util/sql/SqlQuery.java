@@ -18,6 +18,8 @@
  */
 package space.arim.api.util.sql;
 
+import java.util.Arrays;
+
 import lombok.Getter;
 
 /**
@@ -75,6 +77,42 @@ public class SqlQuery {
 	 */
 	public static SqlQuery of(String statement) {
 		return new SqlQuery(statement);
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.deepHashCode(args);
+		result = prime * result + ((statement == null) ? 0 : statement.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof SqlQuery)) {
+			return false;
+		}
+		SqlQuery other = (SqlQuery) obj;
+		if (!Arrays.deepEquals(args, other.args)) {
+			return false;
+		}
+		if (statement == null) {
+			if (other.statement != null) {
+				return false;
+			}
+		} else if (!statement.equals(other.statement)) {
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "SqlQuery [statement=" + statement + ", args=" + Arrays.toString(args) + "]";
 	}
 	
 }
