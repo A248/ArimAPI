@@ -37,7 +37,7 @@ public interface MultiResultSet extends AutoCloseable {
 	 * 
 	 * @param index the index
 	 * @return the result set at the index
-	 * @throws ArrayIndexOutOfBoundsException if <code>index < 0 || index >= size()</codE>
+	 * @throws ArrayIndexOutOfBoundsException if <code>index {@literal <} 0 || index {@literal >}= size()</codE>
 	 */
 	ResultSet get(int index);
 	
