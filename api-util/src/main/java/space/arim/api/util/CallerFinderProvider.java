@@ -23,7 +23,10 @@ package space.arim.api.util;
  * 
  * @author A248
  *
+ * @deprecated See {@link CallerFinder} deprecation
  */
+@SuppressWarnings("deprecation")
+@Deprecated
 public class CallerFinderProvider extends SecurityManager implements CallerFinder {
 
 	@Override
