@@ -108,5 +108,10 @@ public class HikariPoolSqlBackend implements SqlBackend {
 	public void close() throws SQLException {
 		dataSource.close();
 	}
+	
+	@Override
+	public String toString() {
+		return "HikariPoolSqlBackend [com.zaxxer.hikari.HikariDataSource=" + dataSource + "]";
+	}
 
 }
