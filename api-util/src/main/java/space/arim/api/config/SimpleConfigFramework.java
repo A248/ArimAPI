@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import space.arim.universal.util.AutoClosable;
-
 /**
  * Simple default implementations of getX(String) methods, such as {@link #getString(String)} and {@link #getInt(String)}. <br>
  * <br>
@@ -34,7 +32,7 @@ import space.arim.universal.util.AutoClosable;
  * @author A248
  *
  */
-public interface SimpleConfigFramework extends AutoClosable {
+public interface SimpleConfigFramework {
 
 	/**
 	 * Reloads the configuration
