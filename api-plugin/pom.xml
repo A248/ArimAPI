@@ -35,8 +35,8 @@
 			</resource>
 		</resources>
 		<plugins>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>templating-maven-plugin</artifactId>
 				<version>1.0.0</version>
 				<executions>
