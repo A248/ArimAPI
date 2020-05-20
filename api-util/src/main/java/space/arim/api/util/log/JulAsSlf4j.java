@@ -20,8 +20,7 @@ package space.arim.api.util.log;
 
 import java.util.logging.Level;
 
-import space.arim.shaded.org.slf4j.Logger;
-import space.arim.shaded.org.slf4j.Marker;
+import org.slf4j.helpers.MarkerIgnoringBase;
 
 /**
  * Converts a JUL logger to a slf4j Logger. <br>
@@ -39,8 +38,12 @@ import space.arim.shaded.org.slf4j.Marker;
  * @author A248
  *
  */
-class JulAsSlf4j implements Logger {
+class JulAsSlf4j extends MarkerIgnoringBase {
 	
+	/**
+	 * Serial version uid
+	 */
+	private static final long serialVersionUID = -5754218818168106988L;
 	private final java.util.logging.Logger julLogger;
 	
 	/**
@@ -89,36 +92,6 @@ class JulAsSlf4j implements Logger {
 	}
 	
 	@Override
-	public boolean isTraceEnabled(Marker marker) {
-		return isTraceEnabled();
-	}
-	
-	@Override
-	public void trace(Marker marker, String msg) {
-		trace(msg);
-	}
-	
-	@Override
-	public void trace(Marker marker, String msg, Object obj) {
-		trace(msg, obj);
-	}
-	
-	@Override
-	public void trace(Marker marker, String msg, Object obj1, Object obj2) {
-		trace(msg, obj1, obj2);
-	}
-	
-	@Override
-	public void trace(Marker marker, String msg, Object...params) {
-		trace(msg, params);
-	}
-	
-	@Override
-	public void trace(Marker marker, String msg, Throwable ex) {
-		trace(msg, ex);
-	}
-	
-	@Override
 	public boolean isDebugEnabled() {
 		return julLogger.isLoggable(Level.FINE);
 	}
@@ -146,36 +119,6 @@ class JulAsSlf4j implements Logger {
 	@Override
 	public void debug(String msg, Throwable ex) {
 		julLogger.log(Level.FINE, msg, ex);
-	}
-
-	@Override
-	public boolean isDebugEnabled(Marker marker) {
-		return isDebugEnabled();
-	}
-
-	@Override
-	public void debug(Marker marker, String msg) {
-		debug(msg);
-	}
-
-	@Override
-	public void debug(Marker marker, String msg, Object obj) {
-		debug(msg, obj);
-	}
-
-	@Override
-	public void debug(Marker marker, String msg, Object obj1, Object obj2) {
-		debug(msg, obj1, obj2);
-	}
-
-	@Override
-	public void debug(Marker marker, String msg, Object...params) {
-		debug(msg, params);
-	}
-
-	@Override
-	public void debug(Marker marker, String msg, Throwable ex) {
-		debug(msg, ex);
 	}
 	
 	@Override
@@ -209,36 +152,6 @@ class JulAsSlf4j implements Logger {
 	}
 
 	@Override
-	public boolean isInfoEnabled(Marker marker) {
-		return isInfoEnabled();
-	}
-
-	@Override
-	public void info(Marker marker, String msg) {
-		info(msg);
-	}
-
-	@Override
-	public void info(Marker marker, String msg, Object obj) {
-		info(msg, obj);
-	}
-
-	@Override
-	public void info(Marker marker, String msg, Object obj1, Object obj2) {
-		info(msg, obj1, obj2);
-	}
-
-	@Override
-	public void info(Marker marker, String msg, Object...params) {
-		info(msg, params);
-	}
-
-	@Override
-	public void info(Marker marker, String msg, Throwable ex) {
-		info(msg, ex);
-	}
-
-	@Override
 	public boolean isWarnEnabled() {
 		return julLogger.isLoggable(Level.WARNING);
 	}
@@ -269,36 +182,6 @@ class JulAsSlf4j implements Logger {
 	}
 	
 	@Override
-	public boolean isWarnEnabled(Marker marker) {
-		return isWarnEnabled();
-	}
-	
-	@Override
-	public void warn(Marker marker, String msg) {
-		warn(msg);
-	}
-	
-	@Override
-	public void warn(Marker marker, String msg, Object obj) {
-		warn(msg, obj);
-	}
-	
-	@Override
-	public void warn(Marker marker, String msg, Object obj1, Object obj2) {
-		warn(msg, obj1, obj2);
-	}
-	
-	@Override
-	public void warn(Marker marker, String msg, Object...params) {
-		warn(msg, params);
-	}
-	
-	@Override
-	public void warn(Marker marker, String msg, Throwable ex) {
-		warn(msg, ex);
-	}
-	
-	@Override
 	public boolean isErrorEnabled() {
 		return julLogger.isLoggable(Level.SEVERE);
 	}
@@ -326,36 +209,6 @@ class JulAsSlf4j implements Logger {
 	@Override
 	public void error(String msg, Throwable ex) {
 		julLogger.log(Level.SEVERE, msg, ex);
-	}
-	
-	@Override
-	public boolean isErrorEnabled(Marker marker) {
-		return isErrorEnabled();
-	}
-	
-	@Override
-	public void error(Marker marker, String msg) {
-		error(msg);
-	}
-	
-	@Override
-	public void error(Marker marker, String msg, Object obj) {
-		error(msg, obj);
-	}
-	
-	@Override
-	public void error(Marker marker, String msg, Object obj1, Object obj2) {
-		error(msg, obj1, obj2);
-	}
-	
-	@Override
-	public void error(Marker marker, String msg, Object...params) {
-		error(msg, params);
-	}
-	
-	@Override
-	public void error(Marker marker, String msg, Throwable ex) {
-		error(msg, ex);
 	}
 	
 }

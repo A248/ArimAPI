@@ -18,10 +18,9 @@
  */
 package space.arim.api.util.log;
 
-import java.lang.reflect.Proxy;
 import java.util.Objects;
 
-import space.arim.shaded.org.slf4j.Logger;
+import org.slf4j.Logger;
 
 import space.arim.api.util.LazySingleton;
 
@@ -63,18 +62,6 @@ public class LoggerConverter {
 	 */
 	public Logger convert(java.util.logging.Logger julLogger) {
 		return new JulAsSlf4j(Objects.requireNonNull(julLogger));
-	}
-	
-	/**
-	 * Converts a slf4j logger. <br>
-	 * That this method exists is a disappointment for the Minecraft community.
-	 * 
-	 * @param slf4jLogger the slf4j logger, presumably provided by the Sponge API
-	 * @return a slf4j logger
-	 */
-	public Logger convert(org.slf4j.Logger slf4jLogger) {
-		return (Logger) Proxy.newProxyInstance(getClass().getClassLoader(),
-				new Class<?>[] {Logger.class}, new Slf4jProxyHandler(Objects.requireNonNull(slf4jLogger)));
 	}
 	
 }
