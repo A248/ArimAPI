@@ -49,7 +49,7 @@ import space.arim.api.util.CommonInstancesUtil;
  * @author A248
  *
  */
-public abstract class Config implements AutoCloseable {
+public abstract class Config {
 	
 	protected final File folder;
 	protected final String filename;
@@ -173,11 +173,6 @@ public abstract class Config implements AutoCloseable {
 	public <T> T getObject(String key, Class<T> type) {
 		T obj = getFromMapRecursive(values, key, type);
 		return obj != null ? obj : getFromMapRecursive(defaults, key, type);
-	}
-	
-	@Override
-	public void close() {
-		
 	}
 	
 }
