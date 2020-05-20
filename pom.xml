@@ -31,7 +31,7 @@
 		
 		<!-- Shaded dependencies -->
 		<universal.version>0.9.1-SNAPSHOT</universal.version>
-		<shinyclasspath.version>0.2.0-SNAPSHOT</shinyclasspath.version><!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
+		<shinyclasspath.version>0.3.2-SNAPSHOT</shinyclasspath.version><!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
 		
 		<!-- Server software -->
 		<spigot.version>1.8.8-R0.1-SNAPSHOT</spigot.version>
