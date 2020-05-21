@@ -41,10 +41,18 @@ public class Message {
 	
 	private Message convertEach(UnaryOperator<Component> converter) {
 		Component[] converted = new Component[components.length - 1];
+		boolean changed = false;
 		for (int n = 0; n < components.length; n++) {
-			converted[n] = converter.apply(components[n]);
+
+			Component existing = components[n];
+			Component result = converter.apply(existing);
+
+			if (!changed && !existing.equals(result)) {
+				changed = true;
+			}
+			converted[n] = result;
 		}
-		if (Arrays.equals(components, converted)) {
+		if (!changed) {
 			return this;
 		}
 		return new Message(converted);
