@@ -120,19 +120,19 @@ public final class MessageUtil {
 				String value = node.substring(4);
 				switch (tag) {
 				case TTP:
-					builder.tooltip(tooltipGenerator.apply(value));
+					builder.showTooltip(tooltipGenerator.apply(value));
 					break;
 				case URL:
-					builder.url(value);
+					builder.openUrl(value);
 					break;
 				case CMD:
-					builder.command(value);
+					builder.runCommand(value);
 					break;
 				case SGT:
-					builder.suggest(value);
+					builder.suggestCommand(value);
 					break;
 				case INS:
-					builder.insertion(value);
+					builder.insertText(value);
 					break;
 				default:
 					break;
