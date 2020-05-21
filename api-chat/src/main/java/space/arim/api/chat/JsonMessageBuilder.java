@@ -234,7 +234,12 @@ public class JsonMessageBuilder extends AbstractMessageBuilder {
 	 */
 	public Message cleanBuild() {
 		reset();
-		return new Message(components.stream().map(this::cleanUnusedJson).toArray(Component[]::new));
+		int size = components.size();
+		Component[] result = new Component[size];
+		for (int n = 0; n < size; n++) {
+			result[n] = cleanUnusedJson(components.get(n));
+		}
+		return new Message(result);
 	}
 	
 	private Component cleanUnusedJson(Component component) {
