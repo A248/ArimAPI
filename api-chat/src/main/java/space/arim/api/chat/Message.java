@@ -44,6 +44,9 @@ public class Message {
 		for (int n = 0; n < components.length; n++) {
 			converted[n] = converter.apply(components[n]);
 		}
+		if (Arrays.equals(components, converted)) {
+			return this;
+		}
 		return new Message(converted);
 	}
 	
