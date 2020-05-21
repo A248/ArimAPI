@@ -48,7 +48,7 @@ public class Component implements ComponentFramework {
 		this.styles = Style.fromSetToArray(styles);
 	}
 	
-	private Component(String text, Colour colour, Style[] styles) {
+	Component(String text, Colour colour, Style[] styles) {
 		this.text = Objects.requireNonNull(text, "Content of a Component must not be null!");
 		this.colour = colour;
 		this.styles = styles;
