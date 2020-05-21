@@ -32,6 +32,12 @@ import java.util.Set;
  */
 public class Component implements ComponentFramework {
 
+	/**
+	 * An empty Component
+	 * 
+	 */
+	public static final Component EMPTY = new Component("", null, (Set<Style>) null);
+	
 	final String text;
 	final Colour colour;
 	final Style[] styles;
@@ -60,7 +66,11 @@ public class Component implements ComponentFramework {
 	
 	@Override
 	public boolean hasStyle(Style style) {
-		
+		for (Style existing : styles) {
+			if (existing != null && existing.equals(style)) {
+				return true;
+			}
+		}
 		return false;
 	}
 	
