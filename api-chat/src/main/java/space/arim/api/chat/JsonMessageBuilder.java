@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import space.arim.universal.util.collections.CollectionsUtil;
-
 /**
  * Helper class for creating Messages using JsonComponent.
  * 
@@ -32,7 +30,7 @@ import space.arim.universal.util.collections.CollectionsUtil;
  */
 public class JsonMessageBuilder extends AbstractMessageBuilder {
 
-	private final List<ComponentBuilder> builders = new ArrayList<ComponentBuilder>();
+	private final List<ComponentBuilder> builders = new ArrayList<>();
 	
 	/**
 	 * Creates an empty builder
@@ -106,7 +104,7 @@ public class JsonMessageBuilder extends AbstractMessageBuilder {
 	
 	@Override
 	public JsonMessageBuilder style(Style style) {
-		if (builders.isEmpty() || !CollectionsUtil.checkForAnyMatches(currentBuilder().getStyles(), style::equals)) {
+		if (builders.isEmpty() || !currentBuilder().hasStyle(style)) {
 			freshenBuilder().style(style);
 		}
 		return this;
@@ -119,125 +117,107 @@ public class JsonMessageBuilder extends AbstractMessageBuilder {
 	
 	@Override
 	public JsonMessageBuilder unstyle(Style style) {
-		if (builders.isEmpty() || CollectionsUtil.checkForAnyMatches(currentBuilder().getStyles(), style::equals)) {
+		if (builders.isEmpty() || currentBuilder().hasStyle(style)) {
 			freshenBuilder().unstyle(style);
 		}
 		return this;
 	}
 	
-	private void forEachJson(Consumer<JsonComponentBuilder> action) {
+	private void forEachAsJson(Consumer<JsonComponentBuilder> action) {
 		for (int n = 0; n < builders.size(); n++) {
 			ComponentBuilder builder = builders.get(n);
-			if (!(builder instanceof JsonComponentBuilder)) {
-				builders.set(n, new JsonComponentBuilder(builder));
+			JsonComponentBuilder jsonBuilder;
+			if (builder instanceof JsonComponentBuilder) {
+				jsonBuilder = (JsonComponentBuilder) builders.get(n);
+			} else {
+				jsonBuilder = new JsonComponentBuilder(builder);
+				builders.set(n, jsonBuilder);
 			}
-			action.accept((JsonComponentBuilder) builders.get(n));
+			action.accept(jsonBuilder);
 		}
 	}
 	
 	/**
-	 * Sets the tooltip of the current JSON block to the specified tooltip.
+	 * Sets the hover action of the current JSON block to the specified action
 	 * 
-	 * @param ttp the tooltip
+	 * @param hoverAction the hover action
 	 * @return the builder
 	 */
-	public JsonMessageBuilder tooltip(Message ttp) {
-		forEachJson((builder) -> builder.tooltip(ttp));
+	public JsonMessageBuilder hoverAction(HoverAction hoverAction) {
+		forEachAsJson((builder) -> builder.hoverAction(hoverAction));
 		return this;
 	}
 	
 	/**
-	 * Equivalent to {@link #tooltip(Message)}
+	 * Sets the click action of the current JSON block to the specified action
 	 * 
-	 * @param ttp the tooltip
+	 * @param clickAction the click action
 	 * @return the builder
 	 */
-	public JsonMessageBuilder ttp(Message ttp) {
-		return tooltip(ttp);
-	}
-	
-	/**
-	 * Sets the link of the current JSON block to the specified link.
-	 * 
-	 * @param url the link
-	 * @return the builder
-	 */
-	public JsonMessageBuilder url(String url) {
-		forEachJson((builder) -> builder.url(url));
+	public JsonMessageBuilder clickAction(ClickAction clickAction) {
+		forEachAsJson((builder) -> builder.clickAction(clickAction));
 		return this;
 	}
 	
 	/**
-	 * Equivalent to {@link #url(String)}
+	 * Sets the shift click action of the current JSON block to the specified action
 	 * 
-	 * @param url the link
+	 * @param shiftClickAction the shift click action
 	 * @return the builder
 	 */
-	public JsonMessageBuilder hyperlink(String url) {
-		return url(url);
-	}
-	
-	/**
-	 * Sets the command of the current JSON block to the specified command.
-	 * 
-	 * @param cmd the command
-	 * @return the builder
-	 */
-	public JsonMessageBuilder command(String cmd) {
-		forEachJson((builder) -> builder.cmd(cmd));
+	public JsonMessageBuilder shiftClickAction(ShiftClickAction shiftClickAction) {
+		forEachAsJson((builder) -> builder.shiftClickAction(shiftClickAction));
 		return this;
 	}
 	
 	/**
-	 * Equivalent to {@link #command(String)}
+	 * Sets the hover action of the current JSON block to display the specified tooltip.
 	 * 
-	 * @param cmd the command
+	 * @param tooltip the tooltip to display
 	 * @return the builder
 	 */
-	public JsonMessageBuilder cmd(String cmd) {
-		return command(cmd);
+	public JsonMessageBuilder showTooltip(Message tooltip) {
+		return hoverAction(HoverAction.showTooltip(tooltip));
 	}
 	
 	/**
-	 * Sets the suggestion of the current JSON block to the specified suggestion.
+	 * Sets the click action of the current JSON block to run the specified command
 	 * 
-	 * @param sgt the suggestion
+	 * @param command the command to run
 	 * @return the builder
 	 */
-	public JsonMessageBuilder suggest(String sgt) {
-		forEachJson((builder) -> builder.sgt(sgt));
-		return this;
+	public JsonMessageBuilder runCommand(String command) {
+		return clickAction(ClickAction.runCommand(command));
 	}
 	
 	/**
-	 * Equivalent to {@link #suggest(String)}
+	 * Sets the click action of the current JSON block to suggest the specified command
 	 * 
-	 * @param sgt the suggestion
+	 * @param command the command to suggest
 	 * @return the builder
 	 */
-	public JsonMessageBuilder sgt(String sgt) {
-		return suggest(sgt);
+	public JsonMessageBuilder suggestCommand(String command) {
+		return clickAction(ClickAction.suggestCommand(command));
 	}
 	
 	/**
-	 * Sets the insertion of this JsonComponentBuilder to the specified insertion.
+	 * Sets the click action of the current JSON block to open the specified url
 	 * 
-	 * @param ins the insertion
+	 * @param url the url to open
 	 * @return the builder
 	 */
-	public JsonMessageBuilder insertion(String ins) {
-		forEachJson((builder) -> builder.ins(ins));
-		return this;
+	public JsonMessageBuilder openUrl(String url) {
+		return clickAction(ClickAction.openUrl(url));
 	}
 	
 	/**
-	 * Equivalent to {@link #insertion(String)}
+	 * Sets the shift click action of the current JSON block to insert the specified text
 	 * 
-	 * @param ins the insertion
+	 * @param text the text to insert
 	 * @return the builder
 	 */
-	public JsonMessageBuilder ins(String ins) {
-		return insertion(ins);
+	public JsonMessageBuilder insertText(String text) {
+		return shiftClickAction(ShiftClickAction.insertText(text));
 	}
 	
 	/**
