@@ -21,10 +21,6 @@ package space.arim.api.sql;
 import java.util.Arrays;
 import java.util.Objects;
 
-import space.arim.universal.util.collections.CollectionsUtil;
-
-import space.arim.api.util.StringsUtil;
-
 /**
  * Immutable, thread-safe representation of an SQL query with unparameterised statement and parameters passed to the constructor <br>
  * <br>
@@ -54,9 +50,9 @@ public class ExecutableQuery {
 	
 	@Override
 	public String toString() {
-		return "{[" + statement + "] with parameters [" + StringsUtil.concat(CollectionsUtil.convertAllToString(parameters), ',') + "]}";
+		return "ExecutableQuery [statement=" + statement + ", parameters=" + Arrays.toString(parameters) + "]";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -20,10 +20,7 @@ package space.arim.api.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import space.arim.universal.util.collections.CollectionsUtil;
-
-import space.arim.api.util.StringsUtil;
+import java.util.Arrays;
 
 public abstract class LoggingSql extends AbstractSql {
 
@@ -31,25 +28,25 @@ public abstract class LoggingSql extends AbstractSql {
 	
 	@Override
 	public void executionQueries(ExecutableQuery...queries) throws SQLException {
-		log("Executing queries [" + StringsUtil.concat(CollectionsUtil.convertAllToString(queries), ',') + "]");
+		log("Executing queries " + Arrays.toString(queries));
 		super.executionQueries(queries);
 	}
 	
 	@Override
 	public void executionQuery(String query, Object...params) throws SQLException {
-		log("Executing query [" + query + "] with parameters [" + StringsUtil.concat(CollectionsUtil.convertAllToString(params), ',') + "]");
+		log("Executing query " + query + " with parameters " + Arrays.toString(params));
 		super.executionQuery(query, params);
 	}
 	
 	@Override
 	public ResultSet[] selectionQueries(ExecutableQuery...queries) throws SQLException {
-		log("Executing selection queries [" + StringsUtil.concat(CollectionsUtil.convertAllToString(queries), ',') + "]");
+		log("Executing selection queries " + Arrays.toString(queries));
 		return super.selectionQueries(queries);
 	}
 	
 	@Override
 	public ResultSet selectionQuery(String query, Object...params) throws SQLException {
-		log("Executing selection query [" + query + "] with parameters [" + StringsUtil.concat(CollectionsUtil.convertAllToString(params), ',') + "]");
+		log("Executing selection query " + query + " with parameters " + Arrays.toString(params));
 		return super.selectionQuery(query, params);
 	}
 	
