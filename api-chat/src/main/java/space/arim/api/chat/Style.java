@@ -135,20 +135,23 @@ public class Style extends Format {
 	}
 	
 	/**
-	 * Returns a boolean array where an element at an index is <code>true</code>
-	 * if the style is set, false, if unset. <br>
+	 * Returns a style array where an element at an index is nonnull
+	 * if the style is set, null if unset. <br>
 	 * <br>
 	 * The indexes correspond to the order of {@link StyleCatalog}. If the set is null or empty,
-	 * all of the booleans are of course <code>false</code>
+	 * all of the array elements are of course null
 	 * 
 	 * @param styles the set of styles to apply
-	 * @return a boolean array where <code>true</code> indicates the style is set
+	 * @return a style array where nullability indicates whether the style is set
 	 */
-	static boolean[] fromSetToBooleanArray(Set<Style> styles) {
-		boolean[] result = new boolean[TOTAL_STYLES];
+	static Style[] fromSetToArray(Set<Style> styles) {
+		Style[] result = new Style[TOTAL_STYLES];
 		if (styles != null) {
 			for (int n = 0; n < StyleCatalog.directAccessArray.length; n++) {
-				result[n] = styles.contains(StyleCatalog.directAccessArray[n]);
+				Style style = StyleCatalog.directAccessArray[n];
+				if (styles.contains(style)) {
+					result[n] = style;
+				}
 			}
 		}
 		return result;

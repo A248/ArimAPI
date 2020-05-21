@@ -18,17 +18,13 @@
  */
 package space.arim.api.chat;
 
-import space.arim.universal.util.Stringable;
-import space.arim.universal.util.collections.ArraysUtil;
-import space.arim.universal.util.collections.CollectionsUtil;
-
 /**
  * Contains common documentation for {@link Component} and {@link ComponentBuilder}
  * 
  * @author A248
  *
  */
-public interface ComponentFramework extends Stringable {
+public interface ComponentFramework {
 
 	/**
 	 * Gets the content of the Component
@@ -54,26 +50,11 @@ public interface ComponentFramework extends Stringable {
 	}
 	
 	/**
-	 * Gets the styles on the Component. <br>
-	 * The result is a copy; modifying it will not modify the Component's styles.
-	 * 
-	 * @return the styles, empty for none set
-	 */
-	Style[] getStyles();
-	
-	/**
 	 * Checks whether the specified style is set
 	 * 
 	 * @param style the style to check for
 	 * @return true if the style is set, false otherwise
 	 */
-	default boolean hasStyle(Style style) {
-		return CollectionsUtil.checkForAnyMatches(getStyles(), style::equals);
-	}
-	
-	@Override
-	default String toStringMe() {
-		return "{text:" + getText() + ",colour:" + getColour() + ",style:" + ArraysUtil.toString(getStyles()) + "}";
-	}
+	boolean hasStyle(Style style);
 	
 }

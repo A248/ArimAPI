@@ -18,11 +18,9 @@
  */
 package space.arim.api.chat;
 
+import java.util.Arrays;
 import java.util.Objects;
-
-import space.arim.universal.util.collections.ArraysUtil;
-
-import space.arim.api.chat.Colour.ColourCatalog;
+import java.util.Set;
 
 /**
  * A part of a {@link Message} with a defined {@link Colour} and {@link Style}. <br>
@@ -38,10 +36,16 @@ public class Component implements ComponentFramework {
 	final Colour colour;
 	final Style[] styles;
 	
-	Component(String text, Colour colour, Style[] styles) {
+	Component(String text, Colour colour, Set<Style> styles) {
 		this.text = Objects.requireNonNull(text, "Content of a Component must not be null!");
 		this.colour = colour;
-		this.styles = Objects.requireNonNull(styles, "Styles of a Component must not be null!");
+		this.styles = Style.fromSetToArray(styles);
+	}
+	
+	private Component(String text, Colour colour, Style[] styles) {
+		this.text = Objects.requireNonNull(text, "Content of a Component must not be null!");
+		this.colour = colour;
+		this.styles = styles;
 	}
 	
 	@Override
@@ -55,8 +59,9 @@ public class Component implements ComponentFramework {
 	}
 	
 	@Override
-	public Style[] getStyles() {
-		return ArraysUtil.copy(styles);
+	public boolean hasStyle(Style style) {
+		
+		return false;
 	}
 	
 	/**
@@ -65,7 +70,7 @@ public class Component implements ComponentFramework {
 	 * @return a fresh Component with colour removed
 	 */
 	public Component stripColour() {
-		return new Component(getText(), null, getStyles());
+		return new Component(text, null, styles);
 	}
 	
 	/**
@@ -74,7 +79,7 @@ public class Component implements ComponentFramework {
 	 * @return a fresh Component with styles removed
 	 */
 	public Component stripStyles() {
-		return new Component(getText(), getColour(), null);
+		return new Component(text, colour, (Set<Style>) null);
 	}
 	
 	/**
@@ -83,7 +88,7 @@ public class Component implements ComponentFramework {
 	 * @return a fresh Component with colour and styles removed
 	 */
 	public Component stripAll() {
-		return new Component(getText(), null, null);
+		return new Component(text, null, (Set<Style>) null);
 	}
 	
 	/**
@@ -123,13 +128,13 @@ public class Component implements ComponentFramework {
 		
 	}
 	
-	@Override
+	/*@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + text.hashCode();
 		result = prime * result + ((colour == null) ? 0 : colour.hashCode());
-		result = prime * result + ArraysUtil.unorderedHashCode(styles);
+		result = prime * result + Arrays.hashCode(styles);
+		result = prime * result + text.hashCode();
 		return result;
 	}
 	
@@ -137,14 +142,49 @@ public class Component implements ComponentFramework {
 	public boolean equals(Object object) {
 		if (object instanceof Component) {
 			Component other = (Component) object;
-			return text.equals(other.text) && ArraysUtil.unorderedEquals(styles, other.styles) && ColourCatalog.valueOf(colour) == ColourCatalog.valueOf(other.colour);
+			return colour.equals(other.colour) && Arrays.equals(styles, other.styles) && text.equals(other.text);
 		}
 		return false;
-	}
+	}*/
 	
 	@Override
 	public String toString() {
-		return toStringMe();
+		return "Component [text=" + text + ", colour=" + colour + ", styles=" + Arrays.toString(styles) + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((colour == null) ? 0 : colour.hashCode());
+		result = prime * result + Arrays.hashCode(styles);
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Component)) {
+			return false;
+		}
+		Component other = (Component) obj;
+		if (colour == null) {
+			if (other.colour != null) {
+				return false;
+			}
+		} else if (!colour.equals(other.colour)) {
+			return false;
+		}
+		if (!Arrays.equals(styles, other.styles)) {
+			return false;
+		}
+		if (!text.equals(other.text)) {
+			return false;
+		}
+		return true;
 	}
 	
 }

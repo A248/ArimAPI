@@ -18,9 +18,10 @@
  */
 package space.arim.api.chat;
 
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
-import space.arim.universal.util.collections.ArraysUtil;
+import space.arim.api.chat.Style.StyleCatalog;
 
 /**
  * Helper class for creating individual components.
@@ -29,10 +30,10 @@ import space.arim.universal.util.collections.ArraysUtil;
  *
  */
 public class ComponentBuilder implements ComponentFramework {
-	
+
 	private String text = "";
 	private Colour colour;
-	private Style[] styles = new Style[] {};
+	private Set<Style> styles;
 	
 	/**
 	 * Creates an empty builder
@@ -60,7 +61,11 @@ public class ComponentBuilder implements ComponentFramework {
 	public ComponentBuilder(ComponentFramework component) {
 		text = component.getText();
 		colour = component.getColour();
-		styles = component.getStyles();
+		for (Style style : StyleCatalog.directAccessArray) {
+			if (component.hasStyle(style)) {
+				style(style);
+			}
+		}
 	}
 	
 	@Override
@@ -74,8 +79,8 @@ public class ComponentBuilder implements ComponentFramework {
 	}
 	
 	@Override
-	public Style[] getStyles() {
-		return ArraysUtil.copy(styles);
+	public boolean hasStyle(Style style) {
+		return styles != null && styles.contains(style);
 	}
 	
 	/**
@@ -85,7 +90,7 @@ public class ComponentBuilder implements ComponentFramework {
 	 * @return the builder
 	 */
 	public ComponentBuilder text(String text) {
-		this.text = text;
+		this.text = (text == null) ? "" : text;
 		return this;
 	}
 	
@@ -106,8 +111,8 @@ public class ComponentBuilder implements ComponentFramework {
 	 * @param styles the styles
 	 * @return the builder
 	 */
-	public ComponentBuilder styles(Style[] styles) {
-		this.styles = Objects.requireNonNull(styles, "Styles must not be null!");
+	public ComponentBuilder styles(Set<Style> styles) {
+		this.styles = (styles == null || styles.isEmpty()) ? null : new HashSet<>(styles);
 		return this;
 	}
 	
@@ -118,7 +123,10 @@ public class ComponentBuilder implements ComponentFramework {
 	 * @return the builder
 	 */
 	public ComponentBuilder style(Style style) {
-		styles = ArraysUtil.addIfNotPresent(styles, style);
+		if (styles == null) {
+			styles = new HashSet<>();
+		}
+		styles.add(style);
 		return this;
 	}
 	
@@ -140,7 +148,9 @@ public class ComponentBuilder implements ComponentFramework {
 	 * @return the builder
 	 */
 	public ComponentBuilder unstyle(Style style) {
-		styles = ArraysUtil.remove(styles, style);
+		if (styles != null && styles.remove(style) && styles.isEmpty()) {
+			styles = null;
+		}
 		return this;
 	}
 	
@@ -152,10 +162,49 @@ public class ComponentBuilder implements ComponentFramework {
 	public Component build() {
 		return new Component(text, colour, styles);
 	}
-	
+
 	@Override
 	public String toString() {
-		return toStringMe();
+		return "ComponentBuilder [text=" + text + ", colour=" + colour + ", styles=" + styles + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((colour == null) ? 0 : colour.hashCode());
+		result = prime * result + ((styles == null) ? 0 : styles.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ComponentBuilder)) {
+			return false;
+		}
+		ComponentBuilder other = (ComponentBuilder) obj;
+		if (colour == null) {
+			if (other.colour != null) {
+				return false;
+			}
+		} else if (!colour.equals(other.colour)) {
+			return false;
+		}
+		if (styles == null) {
+			if (other.styles != null) {
+				return false;
+			}
+		} else if (!styles.equals(other.styles)) {
+			return false;
+		}
+		if (!text.equals(other.text)) {
+			return false;
+		}
+		return true;
 	}
 	
 }
