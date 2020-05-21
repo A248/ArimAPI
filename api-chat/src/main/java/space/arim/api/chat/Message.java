@@ -21,9 +21,6 @@ package space.arim.api.chat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
-
-import space.arim.universal.util.collections.ArraysUtil;
 
 /**
  * A sendable message comprised of an array of {@link Component} or {@link JsonComponent} objects. <br>
@@ -57,7 +54,7 @@ public class Message {
 	 * @return the array of components
 	 */
 	public Component[] getComponents() {
-		return ArraysUtil.copy(components);
+		return Arrays.copyOf(components, components.length);
 	}
 	
 	/**
@@ -109,6 +106,21 @@ public class Message {
 	/**
 	 * Creates a new Message with the specified content appended.
 	 * 
+	 * @param component the component to add
+	 * @return a combined Message
+	 */
+	public Message concat(Component component) {
+		if (component == null || component.isEmpty()) {
+			return this;
+		}
+		Component[] result = Arrays.copyOf(components, components.length + 1);
+		result[components.length] = component;
+		return new Message(result);
+	}
+	
+	/**
+	 * Creates a new Message with the specified content appended.
+	 * 
 	 * @param components the components to add
 	 * @return a combined Message
 	 */
@@ -116,7 +128,11 @@ public class Message {
 		if (components == null || components.length == 0) {
 			return this;
 		}
-		return new Message(Stream.concat(Arrays.stream(getComponents()), Arrays.stream(components)).toArray(Component[]::new));
+		Component[] result = Arrays.copyOf(this.components, this.components.length + components.length);
+		for (int n = this.components.length; n < result.length; n++) {
+			result[n] = components[n];
+		}
+		return new Message(result);
 	}
 	
 	/**
@@ -195,7 +211,7 @@ public class Message {
 	
 	@Override
 	public String toString() {
-		return ArraysUtil.toString(components);
+		return "Message [components=" + Arrays.toString(components) + "]";
 	}
 	
 }
