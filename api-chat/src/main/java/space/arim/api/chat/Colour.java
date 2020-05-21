@@ -49,7 +49,7 @@ public class Colour extends Format {
 	 * The total amount of colours
 	 * 
 	 */
-	public static final int TOTAL_COLOURS = ColourCatalog.values().length;
+	public static final int TOTAL_COLOURS = ColourCatalog.directCatalogAccessArray.length;
 	
 	private final int hex;
 	
@@ -94,7 +94,18 @@ public class Colour extends Format {
 		YELLOW(Colour.YELLOW),
 		WHITE(Colour.WHITE);
 		
-		private final Colour colour;
+		static final ColourCatalog[] directCatalogAccessArray = values();
+		static final Colour[] directAccessArray;
+		
+		final Colour colour;
+		
+		static {
+			Colour[] directAccess = new Colour[directCatalogAccessArray.length];
+			for (int n = 0; n < directCatalogAccessArray.length; n++) {
+				directAccess[n] = directCatalogAccessArray[n].colour;
+			}
+			directAccessArray = directAccess;
+		}
 		
 		private ColourCatalog(Colour colour) {
 			this.colour = colour;
@@ -119,8 +130,8 @@ public class Colour extends Format {
 			if (colour == null) {
 				return null;
 			}
-			for (ColourCatalog entry : ColourCatalog.values()) {
-				if (entry.getColourValue().equals(colour)) {
+			for (ColourCatalog entry : ColourCatalog.directCatalogAccessArray) {
+				if (entry.colour.equals(colour)) {
 					return entry;
 				}
 			}
@@ -140,10 +151,16 @@ public class Colour extends Format {
 		return (colour != null) ? colour : fromCodeDirect(Character.toLowerCase(code));
 	}
 	
-	static Colour fromCodeDirect(char code) {
-		for (ColourCatalog colour : ColourCatalog.values()) {
-			if (code == colour.getColourValue().identifier()) {
-				return colour.getColourValue();
+	/**
+	 * Directly gets a Colour presuming it is already lowercase
+	 * 
+	 * @param code the character code
+	 * @return the colour, or <code>null</code> if not found
+	 */
+	private static Colour fromCodeDirect(char code) {
+		for (Colour colour : ColourCatalog.directAccessArray) {
+			if (code == colour.identifier) {
+				return colour;
 			}
 		}
 		return null;

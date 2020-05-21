@@ -18,6 +18,8 @@
  */
 package space.arim.api.chat;
 
+import java.util.Set;
+
 /**
  * A style is some modification to the figure or shape of the letters following it. <br>
  * <br>
@@ -38,7 +40,7 @@ public class Style extends Format {
 	 * The total amount of styles
 	 * 
 	 */
-	public static final int TOTAL_STYLES = StyleCatalog.values().length;
+	public static final int TOTAL_STYLES = StyleCatalog.directCatalogAccessArray.length;
 	
 	private Style(char code) {
 		super(code, true);
@@ -60,7 +62,18 @@ public class Style extends Format {
 		UNDERLINE(Style.UNDERLINE),
 		ITALIC(Style.ITALIC);
 		
-		private final Style style;
+		static final StyleCatalog[] directCatalogAccessArray = values();
+		static final Style[] directAccessArray;
+		
+		final Style style;
+		
+		static {
+			Style[] directAccess = new Style[directCatalogAccessArray.length];
+			for (int n = 0; n < directCatalogAccessArray.length; n++) {
+				directAccess[n] = directCatalogAccessArray[n].style;
+			}
+			directAccessArray = directAccess;
+		}
 		
 		private StyleCatalog(Style style) {
 			this.style = style;
@@ -85,8 +98,8 @@ public class Style extends Format {
 			if (style == null) {
 				return null;
 			}
-			for (StyleCatalog entry : StyleCatalog.values()) {
-				if (entry.getStyleValue().equals(style)) {
+			for (StyleCatalog entry : directCatalogAccessArray) {
+				if (entry.style.equals(style)) {
 					return entry;
 				}
 			}
@@ -106,13 +119,35 @@ public class Style extends Format {
 		return (style != null) ? style : fromCodeDirect(Character.toLowerCase(code));
 	}
 	
-	static Style fromCodeDirect(char code) {
-		for (StyleCatalog style : StyleCatalog.values()) {
-			if (code == style.getStyleValue().identifier()) {
-				return style.getStyleValue();
+	/**
+	 * Directly gets a Style presuming it is already lowercase
+	 * 
+	 * @param code the character code
+	 * @return the style, or <code>null</code> if not found
+	 */
+	private static Style fromCodeDirect(char code) {
+		for (Style style : StyleCatalog.directAccessArray) {
+			if (code == style.identifier) {
+				return style;
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns a boolean array where an element at an index is <code>true</code>
+	 * if the style is set, false, if unset. <br>
+	 * The indexes correspond to the order of {@link StyleCatalog}.
+	 * 
+	 * @param styles the set of styles to apply
+	 * @return a boolean array where <code>true</code> indicates the style is set
+	 */
+	static boolean[] fromSetToBooleanArray(Set<Style> styles) {
+		boolean[] result = new boolean[TOTAL_STYLES];
+		for (int n = 0; n < StyleCatalog.directAccessArray.length; n++) {
+			result[n] = styles.contains(StyleCatalog.directAccessArray[n]);
+		}
+		return result;
 	}
 	
 }

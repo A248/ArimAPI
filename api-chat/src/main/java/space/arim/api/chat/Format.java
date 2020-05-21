@@ -42,10 +42,10 @@ public class Format {
 	 * The total amount of formats
 	 * 
 	 */
-	public static final int TOTAL_FORMATS = FormatCatalog.values().length;
+	public static final int TOTAL_FORMATS = FormatCatalog.directCatalogAccessArray.length;
 	
-	private final char identifier;
-	private final boolean style;
+	final char identifier;
+	final boolean style;
 	
 	Format(char identifier, boolean style) {
 		this.identifier = identifier;
@@ -67,7 +67,7 @@ public class Format {
 	 * @return true if a colour, false if a style
 	 */
 	public boolean isColour() {
-		return !isStyle();
+		return !style;
 	}
 	
 	/**
@@ -114,7 +114,18 @@ public class Format {
 		YELLOW(Colour.YELLOW),
 		WHITE(Colour.WHITE);
 		
-		private final Format format;
+		static final FormatCatalog[] directCatalogAccessArray = values();
+		static final Format[] directAccessArray;
+		
+		final Format format;
+		
+		static {
+			Format[] directAccess = new Format[directCatalogAccessArray.length];
+			for (int n = 0; n < directCatalogAccessArray.length; n++) {
+				directAccess[n] = directCatalogAccessArray[n].format;
+			}
+			directAccessArray = directAccess;
+		}
 		
 		private FormatCatalog(Format format) {
 			this.format = format;
@@ -139,8 +150,8 @@ public class Format {
 			if (format == null) {
 				return null;
 			}
-			for (FormatCatalog entry : FormatCatalog.values()) {
-				if (entry.getFormatValue().equals(format)) {
+			for (FormatCatalog entry : FormatCatalog.directCatalogAccessArray) {
+				if (entry.format.equals(format)) {
 					return entry;
 				}
 			}
@@ -175,12 +186,19 @@ public class Format {
 		return (format != null) ? format : fromCodeDirect(Character.toLowerCase(code));
 	}
 	
+	/**
+	 * Directly gets a Format presuming it is already lowercase
+	 * 
+	 * @param code the character code
+	 * @return the format, or <code>null</code> if not found
+	 */
 	private static Format fromCodeDirect(char code) {
-		if (code == RESET.identifier()) {
-			return RESET;
+		for (Format format : FormatCatalog.directAccessArray) {
+			if (code == format.identifier) {
+				return format;
+			}
 		}
-		Style style = Style.fromCodeDirect(code);
-		return (style != null) ? style : Colour.fromCodeDirect(code);
+		return null;
 	}
 	
 }
