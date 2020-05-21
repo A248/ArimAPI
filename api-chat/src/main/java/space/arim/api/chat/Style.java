@@ -34,6 +34,12 @@ public class Style extends Format {
 	public static final Style UNDERLINE = new Style('n');
 	public static final Style ITALIC = new Style('o');
 	
+	/**
+	 * The total amount of styles
+	 * 
+	 */
+	public static final int TOTAL_STYLES = StyleCatalog.values().length;
+	
 	private Style(char code) {
 		super(code, true);
 	}

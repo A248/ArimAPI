@@ -38,6 +38,12 @@ public class Format {
 	 */
 	public static final Format RESET = new Format('r', true);
 	
+	/**
+	 * The total amount of formats
+	 * 
+	 */
+	public static final int TOTAL_FORMATS = FormatCatalog.values().length;
+	
 	private final char identifier;
 	private final boolean style;
 	

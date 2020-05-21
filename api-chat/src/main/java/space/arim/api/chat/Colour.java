@@ -45,6 +45,12 @@ public class Colour extends Format {
 	public static final Colour YELLOW = new Colour('e', 0xFFFF55);
 	public static final Colour WHITE = new Colour('f', 0xFFFFFF);
 	
+	/**
+	 * The total amount of colours
+	 * 
+	 */
+	public static final int TOTAL_COLOURS = ColourCatalog.values().length;
+	
 	private final int hex;
 	
 	private Colour(char code, int hex) {
