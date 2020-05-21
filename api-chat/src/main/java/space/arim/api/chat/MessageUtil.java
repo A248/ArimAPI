@@ -47,6 +47,8 @@ public final class MessageUtil {
 	 */
 	public static final char DEFAULT_FORMATTING_CHAR = '&';
 	
+	static final char SECTION_SIGN_FORMATTING_CHAR = '\u00A7';
+	
 	/**
 	 * A regex pattern matching double pipes, '||'. <br>
 	 * Double pipes are used to signify the start of another json node.
