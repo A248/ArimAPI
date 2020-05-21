@@ -31,9 +31,9 @@ import space.arim.api.chat.Style.StyleCatalog;
  */
 public class ComponentBuilder implements ComponentFramework {
 
-	private String text = "";
-	private Colour colour;
-	private Set<Style> styles;
+	String text = "";
+	Colour colour;
+	Set<Style> styles;
 	
 	/**
 	 * Creates an empty builder
