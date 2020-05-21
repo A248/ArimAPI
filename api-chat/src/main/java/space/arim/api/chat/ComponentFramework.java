@@ -34,6 +34,15 @@ public interface ComponentFramework {
 	String getText();
 	
 	/**
+	 * Whether the Component is empty, i.e., containing no characters
+	 * 
+	 * @return true if empty, false otherwise
+	 */
+	default boolean isEmpty() {
+		return getText().isEmpty();
+	}
+	
+	/**
 	 * Gets the colour
 	 * 
 	 * @return the colour, <code>null</code> indicates not set
