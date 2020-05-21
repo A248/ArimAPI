@@ -22,6 +22,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 
+/**
+ * Previously a helper for logging SQL queries
+ * 
+ * @deprecated Relies on a singular {@link #log(String)} method which may unnecessarily
+ * concatenate Strings. Consider wrapping a subclass of {@link AbstractSql}
+ * and logging manually, or switch to the improved SQL framework in {@link space.arim.api.util.sql}
+ */
+@Deprecated
 public abstract class LoggingSql extends AbstractSql {
 
 	protected abstract void log(String message);

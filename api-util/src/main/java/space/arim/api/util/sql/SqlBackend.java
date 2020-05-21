@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * An improved framework for working with SQL databases where each returned object is closable. <br>
+ * A SQL database handler where each returned object is closable. <br>
  * Thus, a single query requires exactly 1 try/catch with resources on the caller's behalf. <br>
  * <br>
  * All methods throw {@link SQLException}. Error handling is also intended to be done on the caller's side. <br>
