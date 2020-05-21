@@ -20,8 +20,6 @@ package space.arim.api.chat;
 
 import java.util.List;
 
-import space.arim.universal.util.collections.CollectionsUtil;
-
 /**
  * Helper class for creating Messages.
  * 
@@ -92,7 +90,7 @@ public class SimpleMessageBuilder extends AbstractMessageBuilder {
 	
 	@Override
 	public SimpleMessageBuilder colour(Colour colour) {
-		if (!builder.getColour().equals(colour)) {
+		if (builder == null || !builder.getColour().equals(colour)) {
 			freshenBuilder().colour(colour);
 		}
 		return this;
@@ -100,7 +98,7 @@ public class SimpleMessageBuilder extends AbstractMessageBuilder {
 	
 	@Override
 	public SimpleMessageBuilder style(Style style) {
-		if (!CollectionsUtil.checkForAnyMatches(builder.getStyles(), style::equals)) {
+		if (builder == null || !builder.hasStyle(style)) {
 			freshenBuilder().style(style);
 		}
 		return this;
@@ -113,7 +111,7 @@ public class SimpleMessageBuilder extends AbstractMessageBuilder {
 	
 	@Override
 	public SimpleMessageBuilder unstyle(Style style) {
-		if (CollectionsUtil.checkForAnyMatches(builder.getStyles(), style::equals)) {
+		if (builder != null && builder.hasStyle(style)) {
 			freshenBuilder().unstyle(style);
 		}
 		return this;
@@ -122,6 +120,41 @@ public class SimpleMessageBuilder extends AbstractMessageBuilder {
 	@Override
 	public Message build() {
 		return new Message(components.toArray(new Component[] {}));
+	}
+
+	@Override
+	public String toString() {
+		return "SimpleMessageBuilder [builder=" + builder + ", components=" + components + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((builder == null) ? 0 : builder.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof SimpleMessageBuilder)) {
+			return false;
+		}
+		SimpleMessageBuilder other = (SimpleMessageBuilder) obj;
+		if (builder == null) {
+			if (other.builder != null) {
+				return false;
+			}
+		} else if (!builder.equals(other.builder)) {
+			return false;
+		}
+		return true;
 	}
 	
 }
