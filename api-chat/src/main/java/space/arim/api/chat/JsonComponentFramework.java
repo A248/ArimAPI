@@ -18,8 +18,6 @@
  */
 package space.arim.api.chat;
 
-import space.arim.universal.util.collections.ArraysUtil;
-
 /**
  * Contains common documentation for {@link JsonComponent} and {@link JsonComponentBuilder}
  * 
@@ -29,97 +27,60 @@ import space.arim.universal.util.collections.ArraysUtil;
 public interface JsonComponentFramework extends ComponentFramework {
 
 	/**
-	 * Gets the tooltip of this JsonComponent
+	 * Gets the hover action of this JsonComponent
 	 * 
-	 * @return the tooltip or <code>null</code> if none is set
+	 * @return the action or <code>null</code> if none is set
 	 */
-	Message getTooltip();
+	HoverAction getHoverAction();
 	
 	/**
-	 * Checks whether a tooltip is set
+	 * Checks whether a hover action is set
 	 * 
-	 * @return true if the JsonComponent has a tooltip, false otherwise
+	 * @return true if the JsonComponent has a hover action, false otherwise
 	 */
-	default boolean hasTooltip() {
-		return getTooltip() != null;
+	default boolean hasHoverAction() {
+		return getHoverAction() != null;
 	}
 	
 	/**
-	 * Gets the link of this JsonComponent
+	 * Gets the click action of this JsonComponent
 	 * 
-	 * @return the link or <code>null</code> if none is set
+	 * @return the action or <code>null</code> if none is set
 	 */
-	String getUrl();
+	ClickAction getClickAction();
 	
 	/**
-	 * Checks whether a url is set
+	 * Checks whether a click action is set
 	 * 
-	 * @return true if the JsonComponent has a url, false otherwise
+	 * @return true if the JsonComponent has a click action, false otherwise
 	 */
-	default boolean hasUrl() {
-		return getUrl() != null;
+	default boolean hasClickAction() {
+		return getClickAction() != null;
 	}
 	
 	/**
-	 * Gets the command of this JsonComponent
+	 * Gets the shift click action of this JsonComponent
 	 * 
-	 * @return the command or <code>null</code> if none is set
+	 * @return the action or <code>null</code> if none is set
 	 */
-	String getCommand();
+	ShiftClickAction getShiftClickAction();
 	
 	/**
-	 * Checks whether a command is set
+	 * Checks whether a shift click action is set
 	 * 
-	 * @return true if the JsonComponent has a command, false otherwise
+	 * @return true if the JsonComponent has a shift click action, false otherwise
 	 */
-	default boolean hasCommand() {
-		return getCommand() != null;
-	}
-	
-	/**
-	 * Gets the suggestion of this JsonComponent
-	 * 
-	 * @return the suggestion or <code>null</code> if none is set
-	 */
-	String getSuggestion();
-	
-	/**
-	 * Checks whether a suggestion is set
-	 * 
-	 * @return true if the JsonComponent has a suggestion, false otherwise
-	 */
-	default boolean hasSuggestion() {
-		return getSuggestion() != null;
-	}
-	
-	/**
-	 * Gets the insertion of this JsonComponent
-	 * 
-	 * @return the insertion or <code>null</code> if none is set
-	 */
-	String getInsertion();
-	
-	/**
-	 * Checks whether an insertion is set
-	 * 
-	 * @return true if the JsonComponent has an insertion, false otherwise
-	 */
-	default boolean hasInsertion() {
-		return getInsertion() != null;
+	default boolean hasShiftClickAction() {
+		return getShiftClickAction() != null;
 	}
 	
 	/**
 	 * Checks whether any JSON features are set. <br>
 	 * 
-	 * @return true if a tooltip, url, command, suggestion, or insertion is set, false otherwise
+	 * @return true if any action is set, false otherwise
 	 */
 	default boolean hasAnyJsonFeatures() {
-		return hasTooltip() || hasUrl() || hasCommand() || hasSuggestion() || hasInsertion();
-	}
-	
-	@Override
-	default String toStringMe() {
-		return "{text:" + getText() + ",colour:" + getColour() + ",style:" + ArraysUtil.toString(getStyles()) + ",ttp:" + getTooltip() + ",url:" + getUrl() + ",cmd:" + getCommand() + ",sgt:" + getSuggestion() + ",ins:" + getInsertion() + "}";
+		return hasHoverAction() || hasClickAction() || hasShiftClickAction();
 	}
 	
 }

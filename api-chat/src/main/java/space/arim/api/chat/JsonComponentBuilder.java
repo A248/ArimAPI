@@ -26,11 +26,9 @@ package space.arim.api.chat;
  */
 public class JsonComponentBuilder extends ComponentBuilder implements JsonComponentFramework {
 	
-	private Message ttp;
-	private String url;
-	private String cmd;
-	private String sgt;
-	private String ins;
+	private HoverAction hoverAction;
+	private ClickAction clickAction;
+	private ShiftClickAction shiftClickAction;
 	
 	/**
 	 * Creates an empty builder
@@ -73,37 +71,25 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 		}
 	}
 	
-	private void copyJsonAttributes(JsonComponentFramework component) {
-		ttp = component.getTooltip();
-		url = component.getUrl();
-		cmd = component.getCommand();
-		sgt = component.getSuggestion();
-		ins = component.getInsertion();
+	@Override
+	public HoverAction getHoverAction() {
+		return hoverAction;
 	}
 	
 	@Override
-	public Message getTooltip() {
-		return ttp;
+	public ClickAction getClickAction() {
+		return clickAction;
 	}
-
+	
 	@Override
-	public String getUrl() {
-		return url;
+	public ShiftClickAction getShiftClickAction() {
+		return shiftClickAction;
 	}
-
-	@Override
-	public String getCommand() {
-		return cmd;
-	}
-
-	@Override
-	public String getSuggestion() {
-		return sgt;
-	}
-
-	@Override
-	public String getInsertion() {
-		return ins;
+	
+	private void copyJsonAttributes(JsonComponentFramework component) {
+		hoverAction = component.getHoverAction();
+		clickAction = component.getClickAction();
+		shiftClickAction = component.getShiftClickAction();
 	}
 	
 	@Override
@@ -114,11 +100,6 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 	@Override
 	public JsonComponentBuilder colour(Colour colour) {
 		return (JsonComponentBuilder) super.colour(colour);
-	}
-	
-	@Override
-	public JsonComponentBuilder styles(Style[] styles) {
-		return (JsonComponentBuilder) super.styles(styles);
 	}
 	
 	@Override
@@ -137,108 +118,86 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 	}
 	
 	/**
-	 * Sets the tooltip of this JsonComponentBuilder to the specified tooltip.
+	 * Sets the hover action of this JsonComponentBuilder to the specified action
 	 * 
-	 * @param ttp the tooltip
+	 * @param hoverAction the hover action
 	 * @return the builder
 	 */
-	public JsonComponentBuilder tooltip(Message ttp) {
-		this.ttp = ttp.stripJson();
+	public JsonComponentBuilder hoverAction(HoverAction hoverAction) {
+		this.hoverAction = hoverAction;
 		return this;
 	}
 	
 	/**
-	 * Equivalent to {@link #tooltip(Message)}
+	 * Sets the click action of this JsonComponentBuilder to the specified action
 	 * 
-	 * @param ttp the tooltip
+	 * @param clickAction the click action
 	 * @return the builder
 	 */
-	public JsonComponentBuilder ttp(Message ttp) {
-		return tooltip(ttp);
-	}
-	
-	/**
-	 * Sets the link of this JsonComponentBuilder to the specified link.
-	 * 
-	 * @param url the link
-	 * @return the builder
-	 */
-	public JsonComponentBuilder url(String url) {
-		this.url = (url.startsWith("https://") || url.startsWith("http://")) ? url : "http://" + url;
+	public JsonComponentBuilder clickAction(ClickAction clickAction) {
+		this.clickAction = clickAction;
 		return this;
 	}
 	
 	/**
-	 * Equivalent to {@link #url(String)}
+	 * Sets the shift click action of this JsonComponentBuilder to the specified action
 	 * 
-	 * @param url the link
+	 * @param shiftClickAction the shift click action
 	 * @return the builder
 	 */
-	public JsonComponentBuilder hyperlink(String url) {
-		return url(url);
-	}
-	
-	/**
-	 * Sets the command of this JsonComponentBuilder to the specified command.
-	 * 
-	 * @param cmd the command
-	 * @return the builder
-	 */
-	public JsonComponentBuilder command(String cmd) {
-		this.cmd = cmd;
+	public JsonComponentBuilder shiftClickAction(ShiftClickAction shiftClickAction) {
+		this.shiftClickAction = shiftClickAction;
 		return this;
 	}
 	
 	/**
-	 * Equivalent to {@link #command(String)}
+	 * Sets the hover action of this JsonComponentBuilder to display the specified tooltip.
 	 * 
-	 * @param cmd the command
+	 * @param tooltip the tooltip to display
 	 * @return the builder
 	 */
-	public JsonComponentBuilder cmd(String cmd) {
-		return command(cmd);
+	public JsonComponentBuilder showTooltip(Message tooltip) {
+		return hoverAction(HoverAction.showTooltip(tooltip));
 	}
 	
 	/**
-	 * Sets the suggestion of this JsonComponentBuilder to the specified suggestion.
+	 * Sets the click action of this JsonComponentBuilder to run the specified command
 	 * 
-	 * @param sgt the suggestion
+	 * @param command the command to run
 	 * @return the builder
 	 */
-	public JsonComponentBuilder suggest(String sgt) {
-		this.sgt = sgt;
-		return this;
+	public JsonComponentBuilder runCommand(String command) {
+		return clickAction(ClickAction.runCommand(command));
 	}
 	
 	/**
-	 * Equivalent to {@link #suggest(String)}
+	 * Sets the click action of this JsonComponentBuilder to suggest the specified command
 	 * 
-	 * @param sgt the suggestion
+	 * @param command the command to suggest
 	 * @return the builder
 	 */
-	public JsonComponentBuilder sgt(String sgt) {
-		return suggest(sgt);
+	public JsonComponentBuilder suggestCommand(String command) {
+		return clickAction(ClickAction.suggestCommand(command));
 	}
 	
 	/**
-	 * Sets the insertion of this JsonComponentBuilder to the specified insertion.
+	 * Sets the click action of this JsonComponentBuilder to open the specified url
 	 * 
-	 * @param ins the insertion
+	 * @param url the url to open
 	 * @return the builder
 	 */
-	public JsonComponentBuilder insert(String ins) {
-		this.ins = ins;
-		return this;
+	public JsonComponentBuilder openUrl(String url) {
+		return clickAction(ClickAction.openUrl(url));
 	}
 	
 	/**
-	 * Equivalent to {@link #insert(String)}
+	 * Sets the shift click action of this JsonComponentBuilder to insert the specified text
 	 * 
-	 * @param ins the insertion
+	 * @param text the text to insert
 	 * @return the builder
 	 */
-	public JsonComponentBuilder ins(String ins) {
-		return insert(ins);
+	public JsonComponentBuilder insertText(String text) {
+		return shiftClickAction(ShiftClickAction.insertText(text));
 	}
 	
 	/**
@@ -248,12 +207,60 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 	 */
 	@Override
 	public JsonComponent build() {
-		return new JsonComponent(getText(), getColour(), getStyles(), ttp, url, cmd, sgt, ins);
+		return new JsonComponent(text, colour, styles, hoverAction, clickAction, shiftClickAction);
 	}
-	
+
 	@Override
 	public String toString() {
-		return toStringMe();
+		return "JsonComponentBuilder [hoverAction=" + hoverAction + ", clickAction=" + clickAction
+				+ ", shiftClickAction=" + shiftClickAction + ", text=" + text + ", colour=" + colour + ", styles="
+				+ styles + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((clickAction == null) ? 0 : clickAction.hashCode());
+		result = prime * result + ((hoverAction == null) ? 0 : hoverAction.hashCode());
+		result = prime * result + ((shiftClickAction == null) ? 0 : shiftClickAction.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof JsonComponentBuilder)) {
+			return false;
+		}
+		JsonComponentBuilder other = (JsonComponentBuilder) obj;
+		if (clickAction == null) {
+			if (other.clickAction != null) {
+				return false;
+			}
+		} else if (!clickAction.equals(other.clickAction)) {
+			return false;
+		}
+		if (hoverAction == null) {
+			if (other.hoverAction != null) {
+				return false;
+			}
+		} else if (!hoverAction.equals(other.hoverAction)) {
+			return false;
+		}
+		if (shiftClickAction == null) {
+			if (other.shiftClickAction != null) {
+				return false;
+			}
+		} else if (!shiftClickAction.equals(other.shiftClickAction)) {
+			return false;
+		}
+		return true;
 	}
 	
 }
