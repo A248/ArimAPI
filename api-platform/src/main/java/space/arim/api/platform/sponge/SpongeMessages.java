@@ -20,7 +20,6 @@ package space.arim.api.platform.sponge;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -30,9 +29,6 @@ import java.util.regex.Pattern;
 
 import org.spongepowered.api.text.LiteralText;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.ClickAction;
-import org.spongepowered.api.text.action.HoverAction;
-import org.spongepowered.api.text.action.ShiftClickAction;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
@@ -40,19 +36,22 @@ import org.spongepowered.api.text.format.TextFormat;
 import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 
-import space.arim.universal.util.collections.ArraysUtil;
-
+import space.arim.api.chat.ClickAction;
 import space.arim.api.chat.Colour;
 import space.arim.api.chat.Colour.ColourCatalog;
 import space.arim.api.platform.AbstractPlatformMessages;
 import space.arim.api.chat.FormattingCodePattern;
+import space.arim.api.chat.HoverAction;
 import space.arim.api.chat.Component;
 import space.arim.api.chat.Format;
 import space.arim.api.chat.JsonComponent;
 import space.arim.api.chat.JsonMessageBuilder;
 import space.arim.api.chat.JsonTag;
 import space.arim.api.chat.Message;
+import space.arim.api.chat.MessageUtil;
+import space.arim.api.chat.ShiftClickAction;
 import space.arim.api.chat.Style;
+import space.arim.api.chat.Style.StyleCatalog;
 import space.arim.api.util.LazySingleton;
 
 /**
@@ -77,7 +76,7 @@ import space.arim.api.util.LazySingleton;
  */
 public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	
-	private static final LazySingleton<SpongeMessages> INST = new LazySingleton<SpongeMessages>(() -> new SpongeMessages());
+	private static final LazySingleton<SpongeMessages> INST = new LazySingleton<>(SpongeMessages::new);
 	
 	protected SpongeMessages() {}
 	
@@ -183,7 +182,9 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	 * @return an equivalent <code>TextStyle</code>
 	 */
 	public TextStyle convert(Style...styles) {
-		return convertStyles(styles, ArraysUtil::contains);
+		return convertStyles(styles, (styleArray, style) -> {
+			return false;
+		});
 	}
 	
 	/**
@@ -263,6 +264,57 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	}
 	
 	/**
+	 * <b>ArimAPI {@literal -}{@literal >} Sponge API</b>: Click Actions <br>
+	 * Converts from a {@link ClickAction} to a <code>ClickAction</code>
+	 * 
+	 * @param clickAction the click action
+	 * @return an equivalent <code>ClickEvent</code>, null if the input is null or not supported
+	 */
+	// Private because we do not officially support conversion of individual actions
+	private org.spongepowered.api.text.action.ClickAction<?> convert(ClickAction clickAction) {
+		if (clickAction == null) {
+			return null;
+		}
+		ClickAction.Type clickActionType = clickAction.getType();
+		switch (clickActionType) {
+		case RUN_COMMAND:
+			return TextActions.runCommand(clickAction.getValue());
+		case SUGGEST_COMMAND:
+			return TextActions.suggestCommand(clickAction.getValue());
+		case OPEN_URL:
+			try {
+				return TextActions.openUrl(new URL(clickAction.getValue()));
+			} catch (MalformedURLException ex) {
+				// We can't do anything about this
+				// blame Sponge for lack of flexibility
+				return null;
+			}
+		default:
+			throw new IllegalStateException("Not implemented for " + clickActionType);
+		}
+	}
+	
+	/**
+	 * <b>Sponge API {@literal -}{@literal >} ArimAPI</b>: Click Actions <br>
+	 * Converts from a <code>ClickAction</code> to a {@link ClickAction}
+	 * 
+	 * @param clickAction the click action
+	 * @return an equivalent {@link ClickAction}, null if the input is null or not supported
+	 */
+	// Private because we do not officially support conversion of individual actions
+	private ClickAction convert(org.spongepowered.api.text.action.ClickAction<?> clickAction) {
+		if (clickAction instanceof org.spongepowered.api.text.action.ClickAction.RunCommand) {
+			return ClickAction.runCommand((String) clickAction.getResult());
+		} else if (clickAction instanceof org.spongepowered.api.text.action.ClickAction.SuggestCommand) {
+			return ClickAction.suggestCommand((String) clickAction.getResult());
+		} else if (clickAction instanceof org.spongepowered.api.text.action.ClickAction.OpenUrl) {
+			return ClickAction.openUrl(((URL) clickAction.getResult()).toString());
+		}
+		// There's nothing we can do about this; it isn't available in our API
+		return null;
+	}
+	
+	/**
 	 * <b>ArimAPI {@literal -}{@literal >} Sponge API</b>: Messages <br>
 	 * Converts from a {@link Component} to a <code>Text</code>.
 	 * 
@@ -273,26 +325,25 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 		if (component == null) {
 			return null;
 		}
-		Text.Builder builder = Text.builder(component.getText()).color(convert(component.getColour())).style(convert(component.getStyles()));
+		Text.Builder builder = Text.builder(component.getText()).color(convert(component.getColour()));
+		Set<TextStyle> styles = new HashSet<>();
+		for (StyleCatalog styleCatalog : StyleCatalog.values()) {
+			Style style = styleCatalog.getStyleValue();
+			if (component.hasStyle(style)) {
+				styles.add(convert(style));
+			}
+		}
+		builder.style(styles.toArray(new TextStyle[] {}));
 		if (component instanceof JsonComponent) {
 			JsonComponent json = (JsonComponent) component;
-			if (json.hasTooltip()) {
-				builder.onHover(TextActions.showText(convert(json.getTooltip())));
+			HoverAction hoverAction = json.getHoverAction();
+			if (hoverAction != null) {
+				builder.onHover(TextActions.showText(convert(hoverAction.getMessage())));
 			}
-			if (json.hasUrl()) {
-				try {
-					builder.onClick(TextActions.openUrl(new URL(json.getUrl())));
-				} catch (MalformedURLException ignored) {
-					// We can't do anything about this
-					// blame Sponge for lack of flexibility
-				}
-			} else if (json.hasCommand()) {
-				builder.onClick(TextActions.runCommand(json.getCommand()));
-			} else if (json.hasSuggestion()) {
-				builder.onClick(TextActions.suggestCommand(json.getSuggestion()));
-			}
-			if (json.hasInsertion()) {
-				builder.onShiftClick(TextActions.insertText(json.getInsertion()));
+			builder.onClick(convert(json.getClickAction()));
+			ShiftClickAction shiftClickAction = json.getShiftClickAction();
+			if (shiftClickAction != null) {
+				builder.onShiftClick(TextActions.insertText(shiftClickAction.getInsertion()));
 			}
 		}
 		return builder.build();
@@ -328,22 +379,16 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 			builder.add(((LiteralText) message).getContent());
 		}
 		message.getHoverAction().ifPresent((hover) -> {
-			if (hover instanceof HoverAction.ShowText) {
-				builder.tooltip(convert((Text) hover.getResult()));
+			if (hover instanceof org.spongepowered.api.text.action.HoverAction.ShowText) {
+				builder.hoverAction(HoverAction.showTooltip(convert((Text) hover.getResult())));
 			}
 		});
 		message.getClickAction().ifPresent((click) -> {
-			if (click instanceof ClickAction.OpenUrl) {
-				builder.url(((URL) click.getResult()).toString());
-			} else if (click instanceof ClickAction.RunCommand) {
-				builder.command((String) click.getResult());
-			} else if (click instanceof ClickAction.SuggestCommand) {
-				builder.suggest((String) click.getResult());
-			}
+			builder.clickAction(convert(click));
 		});
 		message.getShiftClickAction().ifPresent((shiftclick) -> {
-			if (shiftclick instanceof ShiftClickAction.InsertText) {
-				builder.insertion((String) shiftclick.getResult());
+			if (shiftclick instanceof org.spongepowered.api.text.action.ShiftClickAction.InsertText) {
+				builder.insertText((String) shiftclick.getResult());
 			}
 		});
 		for (Text child : message.getChildren()) {
@@ -395,7 +440,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 	private static Text parseJsonProcessor(String msg, Function<String, ? extends Text.Builder> generator) {
 		Text.Builder current = null;
 		Text.Builder parent = Text.builder();
-		for (String node : msg.split("\\|\\|")) {
+		for (String node : MessageUtil.DOUBLE_PIPE_PATTERN.split(msg)) {
 			JsonTag tag = JsonTag.getFor(node);
 			if (tag.equals(JsonTag.NONE)) {
 				if (current != null) {
@@ -407,9 +452,6 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 				if (tag.equals(JsonTag.TTP)) {
 					current.onHover(TextActions.showText(generator.apply(value).build()));
 				} else if (tag.equals(JsonTag.URL)) {
-					if (!value.startsWith("https://") && !value.startsWith("http://")) {
-						value = "http://" + value;
-					}
 					try {
 						current.onClick(TextActions.openUrl(new URL(value)));
 					} catch (MalformedURLException ignored) {
@@ -442,7 +484,7 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 		int beginIndex = 0; // the starting index of the current segment
 		
 		// start without any formatting
-		ArrayList<TextStyle> currentStyles = new ArrayList<TextStyle>();
+		Set<TextStyle> currentStyles = new HashSet<TextStyle>();
 		currentStyles.add(TextStyles.NONE);
 		TextColor currentColour = TextColors.NONE;
 		
@@ -456,25 +498,22 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 			
 			// update the running formatting codes we're using
 			String code = matcher.group();
-			if (isSpongeStyle(code)) {
-				TextStyle style = getSpongeStyle(code);
+			char codeChar = code.toLowerCase().charAt(1);
+			TextStyle style = getSpongeStyle(codeChar);
+			if (style != TextStyles.NONE) {
 				if (style == TextStyles.RESET) { // if the style is reset, it removes all previous styles
 					currentStyles.clear();
 				}
 				currentStyles.add(style); // add the current style to the list of running styles
 			} else {
-				currentColour = getSpongeColour(code); // just replace the old colour with the new running colour
+				currentColour = getSpongeColour(codeChar); // just replace the old colour with the new running colour
 			}
 		}
 		return builder;
 	}
 	
-	private static boolean isSpongeStyle(String code) {
-		return getSpongeStyle(code) != TextStyles.NONE;
-	}
-	
-	private static TextStyle getSpongeStyle(String code) {
-		switch (code.toLowerCase().charAt(1)) {
+	private static TextStyle getSpongeStyle(char codeChar) {
+		switch (codeChar) {
 		case 'k':
 			return TextStyles.OBFUSCATED;
 		case 'l':
@@ -492,8 +531,8 @@ public class SpongeMessages extends AbstractPlatformMessages<Text> {
 		}
 	}
 	
-	private static TextColor getSpongeColour(String code) {
-		switch (code.toLowerCase().charAt(1)) {
+	private static TextColor getSpongeColour(char codeChar) {
+		switch (codeChar) {
 		case '0':
 			return TextColors.BLACK;
 		case '1':

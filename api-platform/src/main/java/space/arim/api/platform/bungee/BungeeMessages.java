@@ -30,15 +30,20 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import space.arim.api.chat.ClickAction;
 import space.arim.api.chat.Colour;
 import space.arim.api.chat.Component;
+import space.arim.api.chat.ComponentBuilder;
 import space.arim.api.chat.Format;
 import space.arim.api.chat.Format.FormatCatalog;
 import space.arim.api.chat.FormattingCodePattern;
+import space.arim.api.chat.HoverAction;
 import space.arim.api.platform.AbstractPlatformMessages;
 import space.arim.api.chat.JsonComponent;
 import space.arim.api.chat.JsonComponentBuilder;
 import space.arim.api.chat.Message;
+import space.arim.api.chat.MessageUtil;
+import space.arim.api.chat.ShiftClickAction;
 import space.arim.api.chat.Style;
 import space.arim.api.util.LazySingleton;
 
@@ -75,7 +80,7 @@ import space.arim.api.util.LazySingleton;
  */
 public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	
-	private static final LazySingleton<BungeeMessages> INST = new LazySingleton<BungeeMessages>(BungeeMessages::new);
+	private static final LazySingleton<BungeeMessages> INST = new LazySingleton<>(BungeeMessages::new);
 	
 	protected BungeeMessages() {}
 	
@@ -93,7 +98,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	 * Converts from a {@link Format} to a <code>ChatColor</code>.
 	 * 
 	 * @param format the source format
-	 * @return the equivalent <code>ChatColor</code>
+	 * @return the equivalent <code>ChatColor</code>, null if not found or the input is null
 	 */
 	public ChatColor convert(Format format) {
 		return (format != null) ? ChatColor.getByChar(format.identifier()) : null;
@@ -104,7 +109,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	 * Converts from a <code>ChatColor</code> to a {@link Format}.
 	 * 
 	 * @param colour the source format
-	 * @return the equivalent <code>Format</code>
+	 * @return the equivalent <code>Format</code>, null if not found or the input is null
 	 */
 	public Format convert(ChatColor colour) {
 		if (colour != null) {
@@ -118,11 +123,60 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	}
 	
 	/**
+	 * <b>ArimAPI {@literal -}{@literal >} CCA</b>: Click Action types <br>
+	 * Converts from a {@link ClickAction.Type} to a <code>ClickEvent.Action</code>
+	 * 
+	 * @param clickActionType the click action type
+	 * @return an equivalent <code>ClickEvent.Action</code>, never null unless the input is null
+	 */
+	// Private because we do not officially support conversion of individual actions
+	private ClickEvent.Action convert(ClickAction.Type clickActionType) {
+		if (clickActionType == null) {
+			return null;
+		}
+		switch (clickActionType) {
+		case RUN_COMMAND:
+			return ClickEvent.Action.RUN_COMMAND;
+		case SUGGEST_COMMAND:
+			return ClickEvent.Action.SUGGEST_COMMAND;
+		case OPEN_URL:
+			return ClickEvent.Action.OPEN_URL;
+		default:
+			throw new IllegalStateException("Not implemented for " + clickActionType);
+		}
+	}
+	
+	/**
+	 * <b>CCA {@literal -}{@literal >} ArimAPI</b>: Click Action types <br>
+	 * Converts from a <code>ClickEvent.Action</code> to a {@link ClickAction.Type}
+	 * 
+	 * @param clickActionType the click event action
+	 * @return an equivalent {@link ClickAction.Type}, null if the input is null or not supported
+	 */
+	// Private because we do not officially support conversion of individual actions
+	private ClickAction.Type convert(ClickEvent.Action clickEventAction) {
+		if (clickEventAction == null) {
+			return null;
+		}
+		switch (clickEventAction) {
+		case RUN_COMMAND:
+			return ClickAction.Type.RUN_COMMAND;
+		case SUGGEST_COMMAND:
+			return ClickAction.Type.SUGGEST_COMMAND;
+		case OPEN_URL:
+			return ClickAction.Type.OPEN_URL;
+		default:
+			// There's nothing we can do about this; it isn't available in our API
+			return null;
+		}
+	}
+	
+	/**
 	 * <b>ArimAPI {@literal -}{@literal >} CCA</b>: Message components <br>
 	 * Converts from a {@link Component} to a <code>BaseComponent</code>
 	 * 
 	 * @param component the source component
-	 * @return an equivalent <code>BaseComponent</code>
+	 * @return an equivalent <code>BaseComponent</code>, never null unless the input is null
 	 */
 	public BaseComponent convert(Component component) {
 		if (component == null) {
@@ -137,18 +191,17 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 		comp.setItalic(component.hasStyle(Style.ITALIC));
 		if (component instanceof JsonComponent) {
 			JsonComponent json = (JsonComponent) component;
-			if (json.hasTooltip()) {
-				comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, convert(json.getTooltip())));
+			HoverAction hoverAction = json.getHoverAction();
+			if (hoverAction != null) {
+				comp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, convert(hoverAction.getMessage())));
 			}
-			if (json.hasUrl()) {
-				comp.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, json.getUrl()));
-			} else if (json.hasCommand()) {
-				comp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, json.getCommand()));
-			} else if (json.hasSuggestion()) {
-				comp.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, json.getSuggestion()));
+			ClickAction clickAction = json.getClickAction();
+			if (clickAction != null) {
+				comp.setClickEvent(new ClickEvent(convert(clickAction.getType()), clickAction.getValue()));
 			}
-			if (json.hasSuggestion()) {
-				comp.setInsertion(json.getInsertion());
+			ShiftClickAction shiftClickAction = json.getShiftClickAction();
+			if (shiftClickAction != null) {
+				comp.setInsertion(shiftClickAction.getInsertion());
 			}
 		}
 		return comp;
@@ -159,39 +212,43 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	 * Converts from a <code>BaseComponent</code> to a {@link Component}
 	 * 
 	 * @param component the source component
-	 * @return an equivalent <code>Component</code>
+	 * @return an equivalent <code>Component</code>, never null unless the input is null
 	 */
 	public Component convert(BaseComponent component) {
 		if (component == null) {
 			return null;
 		}
-		JsonComponentBuilder builder = new JsonComponentBuilder();
+		ComponentBuilder builder;
+		HoverEvent hover = component.getHoverEvent();
+		if (hover != null) {
+			builder = new JsonComponentBuilder();
+			((JsonComponentBuilder) builder).hoverAction(HoverAction.showTooltip(convert(hover.getValue())));
+		} else {
+			builder = new ComponentBuilder();
+		}
 		ClickEvent click = component.getClickEvent();
 		if (click != null) {
-			switch (click.getAction()) {
-			case OPEN_URL:
-				builder.url(click.getValue());
-				break;
-			case RUN_COMMAND:
-				builder.command(click.getValue());
-				break;
-			case SUGGEST_COMMAND:
-				builder.suggest(click.getValue());
-				break;
-			default:
-				break;
+			ClickAction.Type clickActionType = convert(click.getAction());
+			if (clickActionType != null) {
+				if (!(builder instanceof JsonComponentBuilder)) {
+					builder = new JsonComponentBuilder(builder);
+				}
+				((JsonComponentBuilder) builder).clickAction(new ClickAction(clickActionType, click.getValue()));
 			}
 		}
+		String insertion = component.getInsertion();
+		if (insertion != null) {
+			if (!(builder instanceof JsonComponentBuilder)) {
+				builder = new JsonComponentBuilder(builder);
+			}
+			((JsonComponentBuilder) builder).shiftClickAction(ShiftClickAction.insertText(insertion));
+		}
 		Format format = convert(component.getColor());
-		HoverEvent hover = component.getHoverEvent();
 		return builder.colour((format instanceof Colour) ? (Colour) format : null)
 				.style(Style.MAGIC, component.isObfuscated()).style(Style.BOLD, component.isBold())
 				.style(Style.STRIKETHROUGH, component.isStrikethrough())
 				.style(Style.UNDERLINE, component.isObfuscated()).style(Style.ITALIC, component.isObfuscated())
-				.tooltip((hover != null && hover.getAction().equals(HoverEvent.Action.SHOW_TEXT))
-						? convert(hover.getValue())
-						: null)
-				.insert(component.getInsertion()).build();
+				.build();
 	}
 	
 	/**
@@ -199,11 +256,19 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	 * Converts from a {@link Message} to a <code>BaseComponent</code> array
 	 * 
 	 * @param message the source message
-	 * @return an equivalent <code>BaseComponent</code> array
+	 * @return an equivalent <code>BaseComponent</code> array, never null unless the input is null
 	 */
 	@Override
 	public BaseComponent[] convert(Message message) {
-		return (message == null) ? null : Arrays.stream(message.getComponents()).map(this::convert).toArray(BaseComponent[]::new);
+		if (message == null) {
+			return null;
+		}
+		Component[] source = message.getComponents();
+		BaseComponent[] result = new BaseComponent[source.length];
+		for (int n = 0; n < source.length; n++) {
+			result[n] = convert(source[n]);
+		}
+		return result;
 	}
 	
 	/**
@@ -211,11 +276,18 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	 * Converts from a <code>BaseComponent</code> array to a {@link Message}
 	 * 
 	 * @param message the source message
-	 * @return an equivalent <code>Message</code>
+	 * @return an equivalent <code>Message</code>, never null unless the input is null
 	 */
 	@Override
 	public Message convert(BaseComponent[] message) {
-		return (message == null) ? null : (new Message(Arrays.stream(message).map(this::convert).toArray(Component[]::new))).clean();
+		if (message == null) {
+			return null;
+		}
+		Component[] result = new Component[message.length];
+		for (int n = 0; n < message.length; n++) {
+			result[n] = convert(message[n]);
+		}
+		return new Message(result).clean();
 	}
 	
 	@Override
@@ -242,7 +314,7 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 	private static BaseComponent[] parseJsonProcessor(String msg, Function<String, TextComponent> nodeGenerator, Function<String, BaseComponent[]> tooltipGenerator) {
 		BaseComponent current = null;
 		ArrayList<BaseComponent> components = new ArrayList<BaseComponent>();
-		for (String node : msg.split("\\|\\|")) {
+		for (String node : MessageUtil.DOUBLE_PIPE_PATTERN.split(msg)) {
 			TagType tag = jsonTag(node);
 			if (tag.equals(TagType.NONE)) {
 				if (current != null) {
@@ -255,9 +327,6 @@ public class BungeeMessages extends AbstractPlatformMessages<BaseComponent[]> {
 					
 					current.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltipGenerator.apply(value)));
 				} else if (tag.equals(TagType.URL)) {
-					if (!value.startsWith("https://") && !value.startsWith("http://")) {
-						value = "http://" + value;
-					}
 					current.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, value));
 				} else if (tag.equals(TagType.CMD)) {
 					current.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, value));
