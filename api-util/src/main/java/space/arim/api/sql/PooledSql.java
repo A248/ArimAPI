@@ -25,7 +25,7 @@ import space.arim.shaded.com.zaxxer.hikari.HikariDataSource;
 
 /**
  * A temporary replacement for {@link PooledLoggingSql}. <b>Consider switching to the improved SQL
- * framework in {@link space.arim.api.util.sql}
+ * framework in {@link space.arim.api.util.sql}</b>
  * 
  * @author A248
  *
