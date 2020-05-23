@@ -91,7 +91,7 @@
 									<include>space.arim:arimapi-util</include>
 									<include>space.arim:arimapi-platform</include>
 									
-									<!-- Includes relocated HSQLDB, HikariCP, slf4j, and Caffeine -->
+									<!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
 									<include>space.arim:shinyclasspath</include>
 								</includes>
 							</artifactSet>
