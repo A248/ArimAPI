@@ -105,6 +105,52 @@ public class HikariPoolSqlBackend implements SqlBackend {
 	}
 
 	@Override
+	public QueryResult query(String statement, Object... args) throws SQLException {
+		Connection connection = dataSource.getConnection();
+
+		PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		SqlBackendImplUtils.applyArguments(preparedStatement, args);
+		preparedStatement.execute();
+
+		int updateCount = preparedStatement.getUpdateCount();
+		if (updateCount != -1) { // -1 means not an update count
+			return new QueryResultAsUpdateCountWithPreparedStatementAndConnection(updateCount, preparedStatement, connection);
+		}
+		ResultSet resultSet = preparedStatement.getResultSet();
+		if (resultSet != null) {
+			return new QueryResultAsResultSetWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
+		}
+		return new QueryResultAsNeitherWithPreparedStatementAndConnection(preparedStatement, connection);
+	}
+
+	@Override
+	public MultiQueryResult query(SqlQuery... queries) throws SQLException {
+		SqlBackendImplUtils.validatePositiveLength(queries);
+		Connection connection = dataSource.getConnection();
+
+		QueryResult[] queryResultArray = new QueryResult[queries.length];
+		for (int n = 0; n < queries.length; n++) {
+			SqlQuery query = queries[n];
+			PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
+			SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
+			preparedStatement.execute();
+			
+			int updateCount = preparedStatement.getUpdateCount();
+			if (updateCount != -1) {
+				queryResultArray[n] = new QueryResultAsUpdateCountWithPreparedStatement(updateCount, preparedStatement);
+				continue;
+			}
+			ResultSet resultSet = preparedStatement.getResultSet();
+			if (resultSet != null) {
+				queryResultArray[n] = new QueryResultAsResultSetWithPreparedStatement(resultSet, preparedStatement);
+				continue;
+			}
+			queryResultArray[n] = new QueryResultAsNeitherWithPreparedStatement(preparedStatement);
+		}
+		return new MultiQueryResultWithPooledConnection(queryResultArray, connection);
+	}
+	
+	@Override
 	public void close() throws SQLException {
 		dataSource.close();
 	}
