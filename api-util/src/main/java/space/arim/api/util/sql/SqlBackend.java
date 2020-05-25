@@ -34,7 +34,7 @@ import java.sql.SQLException;
 public interface SqlBackend extends AutoCloseable {
 	
 	/**
-	 * Executes a simple statement without returning any results
+	 * Executes a simple statement without returning any information as to the result of the query.
 	 *  
 	 * @param statement the statement string, using question marks where parameters are to be inserted
 	 * @param args the arguments to the prepared statement, may be null or empty
@@ -44,7 +44,8 @@ public interface SqlBackend extends AutoCloseable {
 	CloseMe execute(String statement, Object...args) throws SQLException;
 	
 	/**
-	 * Using a single connection, executes multiple statements wrapped in {@link SqlQuery}s
+	 * Using a single connection, executes multiple statements wrapped in {@link SqlQuery}s.
+	 * Returns no information as to the result of the query.
 	 * 
 	 * @param queries the queries to execute
 	 * @return  an object which must be closed by the caller
@@ -53,7 +54,7 @@ public interface SqlBackend extends AutoCloseable {
 	CloseMe execute(SqlQuery...queries) throws SQLException;
 	
 	/**
-	 * Executes a select statement and returns a ResultSet.
+	 * Executes a statement, assuming it to be one which produces a ResultSet, and returns the ResultSet.
 	 * 
 	 * @param statement the statement string, using question marks where parameters are to be inserted
 	 * @param args the arguments to the prepared statement, may be null or empty
@@ -64,12 +65,13 @@ public interface SqlBackend extends AutoCloseable {
 	
 	/**
 	 * Using a single connection, executes multiple statements wrapped in {@link SqlQuery}s and returns results. <br>
-	 * Some of the statements presumably produce result sets otherwise {@link #execute(SqlQuery...)} may be used. <br>
 	 * <br>
 	 * The index of each query relates to a corresponding index in the returned {@link MultiResultSet};
 	 * thus, {@link MultiResultSet#length()} will equal to the length of the input array. <br>
+	 * <br>
 	 * If a query does not produce a result set (for example, an <code>INSERT</code> statement),
-	 * the corresponding <code>ResultSet</code> will be <code>null</code>
+	 * the corresponding <code>ResultSet</code> will be <code>null</code>. Therefore, some of the statements
+	 * presumably produce result sets otherwise other methods may be used. <br>
 	 * 
 	 * @param queries the queries to execute
 	 * @return an array of result sets enclosed in a single closable package
