@@ -16,26 +16,23 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class QueryResultAsUpdateCountWithPreparedStatementAndConnection extends QueryResultAsUpdateCountWithPreparedStatement {
+public class QueryResultAsNeitherWithPreparedStatement extends QueryResultAsNeither {
 
-	private final Connection connection;
+	private final PreparedStatement preparedStatement;
 	
-	public QueryResultAsUpdateCountWithPreparedStatementAndConnection(int updateCount,
-			PreparedStatement preparedStatement, Connection connection) {
-		super(updateCount, preparedStatement);
-		this.connection = connection;
+	public QueryResultAsNeitherWithPreparedStatement(PreparedStatement preparedStatement) {
+		this.preparedStatement = preparedStatement;
 	}
 	
 	@Override
 	public void close() throws SQLException {
 		super.close();
-		connection.close();
+		preparedStatement.close();
 	}
-
+	
 }

@@ -16,25 +16,52 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class QueryResultAsNeitherWithPreparedStatementAndConnection extends QueryResultAsNeitherWithPreparedStatement {
+import space.arim.api.util.sql.MultiResultSet;
 
+/**
+ * An implementation of MultiResultSet which closes a connection when it is closed.
+ * 
+ * @author A248
+ *
+ */
+public class MultiResultSetWithPooledConnection implements MultiResultSet {
+
+	private final ResultSet[] resultSetArray;
 	private final Connection connection;
 	
-	public QueryResultAsNeitherWithPreparedStatementAndConnection(PreparedStatement preparedStatement, Connection connection) {
-		super(preparedStatement);
+	/**
+	 * Creates from a backing array and a connection
+	 * 
+	 * @param resultSetArray the result set array
+	 * @param connection the connection to close when this is closed
+	 */
+	public MultiResultSetWithPooledConnection(ResultSet[] resultSetArray, Connection connection) {
+		this.resultSetArray = resultSetArray;
 		this.connection = connection;
 	}
-	
+
+	@Override
+	public ResultSet get(int index) {
+		return resultSetArray[index];
+	}
+
+	@Override
+	public int length() {
+		return resultSetArray.length;
+	}
+
 	@Override
 	public void close() throws SQLException {
-		super.close();
+		for (int n = resultSetArray.length - 1; n >= 0; n--) {
+			resultSetArray[n].close();
+		}
 		connection.close();
 	}
-	
+
 }

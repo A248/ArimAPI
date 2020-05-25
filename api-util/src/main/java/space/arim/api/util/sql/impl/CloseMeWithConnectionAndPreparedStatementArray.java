@@ -16,24 +16,36 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class QueryResultAsUpdateCountWithPreparedStatement extends QueryResultAsUpdateCount {
+import space.arim.api.util.sql.SqlBackend;
 
-	private final PreparedStatement preparedStatement;
+/**
+ * A closable which will release a connection and prepared statement array wrapped with it. <br>
+ * Used to help implement {@link SqlBackend}.
+ * 
+ * @author A248
+ *
+ */
+public class CloseMeWithConnectionAndPreparedStatementArray extends CloseMeWithConnection {
+
+	private final PreparedStatement[] preparedStatementArray;
 	
-	public QueryResultAsUpdateCountWithPreparedStatement(int updateCount, PreparedStatement preparedStatement) {
-		super(updateCount);
-		this.preparedStatement = preparedStatement;
+	public CloseMeWithConnectionAndPreparedStatementArray(Connection connection, PreparedStatement[] preparedStatementArray) {
+		super(connection);
+		this.preparedStatementArray = preparedStatementArray;
 	}
 	
 	@Override
 	public void close() throws SQLException {
+		for (int n = preparedStatementArray.length - 1; n >= 0; n--) {
+			preparedStatementArray[n].close();
+		}
 		super.close();
-		preparedStatement.close();
 	}
 
 }

@@ -16,11 +16,13 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import space.arim.api.util.sql.SqlBackend;
 
 /**
  * A closable which will release a connection and prepared statement wrapped with it. <br>

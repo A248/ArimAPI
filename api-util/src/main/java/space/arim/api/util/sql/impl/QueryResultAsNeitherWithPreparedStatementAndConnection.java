@@ -16,48 +16,24 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-/**
- * An implementation of MultiQueryResult which closes a connection when it is closed.
- * 
- * @author A248
- *
- */
-public class MultiQueryResultWithPooledConnection implements MultiQueryResult {
+public class QueryResultAsNeitherWithPreparedStatementAndConnection extends QueryResultAsNeitherWithPreparedStatement {
 
-	private final QueryResult[] queryResultArray;
 	private final Connection connection;
 	
-	/**
-	 * Creates from a backing array and a connection
-	 * 
-	 * @param queryResultArray the query result array
-	 * @param connection the connection to close when this is closed
-	 */
-	public MultiQueryResultWithPooledConnection(QueryResult[] queryResultArray, Connection connection) {
-		this.queryResultArray = queryResultArray;
+	public QueryResultAsNeitherWithPreparedStatementAndConnection(PreparedStatement preparedStatement, Connection connection) {
+		super(preparedStatement);
 		this.connection = connection;
 	}
-
-	@Override
-	public QueryResult get(int index) {
-		return queryResultArray[index];
-	}
-
-	@Override
-	public int length() {
-		return queryResultArray.length;
-	}
-
+	
 	@Override
 	public void close() throws SQLException {
-		for (int n = queryResultArray.length - 1; n >= 0; n--) {
-			queryResultArray[n].close();
-		}
+		super.close();
 		connection.close();
 	}
 	

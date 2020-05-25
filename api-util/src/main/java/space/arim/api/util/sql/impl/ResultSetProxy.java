@@ -16,7 +16,7 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -40,6 +40,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
+
+import space.arim.api.util.sql.SqlBackend;
 
 /**
  * A wrapped ResultSet. This is mainly intended to be used for the {@link #close()} method,

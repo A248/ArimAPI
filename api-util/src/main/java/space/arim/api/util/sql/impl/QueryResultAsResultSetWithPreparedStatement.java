@@ -16,29 +16,25 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
-import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * A closable which will release a connection wrapped with it. <br>
- * Used to help implement {@link SqlBackend}.
- * 
- * @author A248
- *
- */
-public class CloseMeWithConnection implements CloseMe {
+public class QueryResultAsResultSetWithPreparedStatement extends QueryResultAsResultSet {
 
-	private final Connection connection;
+	private final PreparedStatement preparedStatement;
 	
-	public CloseMeWithConnection(Connection connection) {
-		this.connection = connection;
+	public QueryResultAsResultSetWithPreparedStatement(ResultSet resultSet, PreparedStatement preparedStatement) {
+		super(resultSet);
+		this.preparedStatement = preparedStatement;
 	}
 	
 	@Override
 	public void close() throws SQLException {
-		connection.close();
+		super.close();
+		preparedStatement.close();
 	}
-	
+
 }

@@ -16,34 +16,26 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
-import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public class QueryResultAsResultSet extends ResultSetProxy implements QueryResult {
+public class QueryResultAsUpdateCountWithPreparedStatementAndConnection extends QueryResultAsUpdateCountWithPreparedStatement {
 
-	public QueryResultAsResultSet(ResultSet resultSet) {
-		super(resultSet);
+	private final Connection connection;
+	
+	public QueryResultAsUpdateCountWithPreparedStatementAndConnection(int updateCount,
+			PreparedStatement preparedStatement, Connection connection) {
+		super(updateCount, preparedStatement);
+		this.connection = connection;
 	}
-
+	
 	@Override
-	public boolean isResultSet() {
-		return true;
-	}
-
-	@Override
-	public ResultSet toResultSet() {
-		return this;
-	}
-
-	@Override
-	public boolean isUpdateCount() {
-		return false;
-	}
-
-	@Override
-	public int toUpdateCount() {
-		throw new RuntimeException("QueryResult is not an update count");
+	public void close() throws SQLException {
+		super.close();
+		connection.close();
 	}
 
 }

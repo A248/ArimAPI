@@ -16,27 +16,34 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class QueryResultAsResultSetWithPreparedStatementAndConnection extends QueryResultAsResultSetWithPreparedStatement {
+import space.arim.api.util.sql.SqlBackend;
 
-	private final Connection connection;
+/**
+ * A ResultSet linked to a PreparedStatement; closing the ResultSet closes the PreparedStatement. <br>
+ * Used to help implement {@link SqlBackend}.
+ * 
+ * @author A248
+ *
+ */
+public class ResultSetProxyWithPreparedStatement extends ResultSetProxy {
+
+	private final PreparedStatement preparedStatement;
 	
-	public QueryResultAsResultSetWithPreparedStatementAndConnection(ResultSet resultSet,
-			PreparedStatement preparedStatement, Connection connection) {
-		super(resultSet, preparedStatement);
-		this.connection = connection;
+	public ResultSetProxyWithPreparedStatement(ResultSet resultSet, PreparedStatement preparedStatement) {
+		super(resultSet);
+		this.preparedStatement = preparedStatement;
 	}
 	
 	@Override
 	public void close() throws SQLException {
 		super.close();
-		connection.close();
+		preparedStatement.close();
 	}
-
+	
 }

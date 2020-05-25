@@ -16,32 +16,38 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * A ResultSet linked to a PreparedStatement; closing the ResultSet closes the PreparedStatement. <br>
- * Used to help implement {@link SqlBackend}.
- * 
- * @author A248
- *
- */
-public class ResultSetProxyWithPreparedStatement extends ResultSetProxy {
+import space.arim.api.util.sql.QueryResult;
 
-	private final PreparedStatement preparedStatement;
-	
-	public ResultSetProxyWithPreparedStatement(ResultSet resultSet, PreparedStatement preparedStatement) {
-		super(resultSet);
-		this.preparedStatement = preparedStatement;
+public class QueryResultAsNeither implements QueryResult {
+
+	@Override
+	public boolean isResultSet() {
+		return false;
 	}
-	
+
+	@Override
+	public ResultSet toResultSet() {
+		throw new RuntimeException("QueryResult is neither a ResultSet nor update count");
+	}
+
+	@Override
+	public boolean isUpdateCount() {
+		return false;
+	}
+
+	@Override
+	public int toUpdateCount() {
+		throw new RuntimeException("QueryResult is neither a ResultSet nor update count");
+	}
+
 	@Override
 	public void close() throws SQLException {
-		super.close();
-		preparedStatement.close();
+		
 	}
-	
+
 }

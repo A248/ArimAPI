@@ -16,10 +16,13 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import space.arim.api.util.sql.SqlBackend;
+import space.arim.api.util.sql.SqlQuery;
 
 /**
  * A utility class used to help implement {@link SqlBackend}

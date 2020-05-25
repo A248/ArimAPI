@@ -16,50 +16,52 @@
  * along with ArimAPI-util. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.util.sql;
+package space.arim.api.util.sql.impl;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import space.arim.api.util.sql.MultiQueryResult;
+import space.arim.api.util.sql.QueryResult;
+
 /**
- * An implementation of MultiResultSet which closes a connection when it is closed.
+ * An implementation of MultiQueryResult which closes a connection when it is closed.
  * 
  * @author A248
  *
  */
-public class MultiResultSetWithPooledConnection implements MultiResultSet {
+public class MultiQueryResultWithPooledConnection implements MultiQueryResult {
 
-	private final ResultSet[] resultSetArray;
+	private final QueryResult[] queryResultArray;
 	private final Connection connection;
 	
 	/**
 	 * Creates from a backing array and a connection
 	 * 
-	 * @param resultSetArray the result set array
+	 * @param queryResultArray the query result array
 	 * @param connection the connection to close when this is closed
 	 */
-	public MultiResultSetWithPooledConnection(ResultSet[] resultSetArray, Connection connection) {
-		this.resultSetArray = resultSetArray;
+	public MultiQueryResultWithPooledConnection(QueryResult[] queryResultArray, Connection connection) {
+		this.queryResultArray = queryResultArray;
 		this.connection = connection;
 	}
 
 	@Override
-	public ResultSet get(int index) {
-		return resultSetArray[index];
+	public QueryResult get(int index) {
+		return queryResultArray[index];
 	}
 
 	@Override
 	public int length() {
-		return resultSetArray.length;
+		return queryResultArray.length;
 	}
 
 	@Override
 	public void close() throws SQLException {
-		for (int n = resultSetArray.length - 1; n >= 0; n--) {
-			resultSetArray[n].close();
+		for (int n = queryResultArray.length - 1; n >= 0; n--) {
+			queryResultArray[n].close();
 		}
 		connection.close();
 	}
-
+	
 }
