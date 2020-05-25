@@ -41,12 +41,11 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-import space.arim.api.util.sql.SqlBackend;
-
 /**
- * A wrapped ResultSet. This is mainly intended to be used for the {@link #close()} method,
- * so that subclasses can release multiple resources with a single call.  <br>
- * Used to help implement {@link SqlBackend}.
+ * A wrapped ResultSet which implements the interface and delegates ResultSet methods
+ * to a backing ResultSet object. <br>
+ * This is mainly intended to be used with {@link #close()} methods,
+ * so that a ResultSet may be passed which, when closed, releases multiple other resources with a single call.
  * 
  * @author A248
  *
@@ -56,6 +55,11 @@ public class ResultSetProxy implements ResultSet {
 
 	private final ResultSet resultSet;
 	
+	/**
+	 * Creates from a backing ResultSet
+	 * 
+	 * @param resultSet the backing result set
+	 */
 	public ResultSetProxy(ResultSet resultSet) {
 		this.resultSet = resultSet;
 	}
