@@ -62,6 +62,7 @@ public interface QueryResult extends AutoCloseable {
 	/**
 	 * Closes and releases all resources, including any result sets and update counts represented
 	 * 
+	 * @throws SQLException if something went wrong SQL wise
 	 */
 	@Override
 	void close() throws SQLException;
