@@ -104,7 +104,7 @@ public class HikariPoolSqlBackend implements SqlBackend {
 
 			resultSetArray[n] = new ResultSetProxyWithPreparedStatement(preparedStatement.getResultSet(), preparedStatement);
 		}
-		return new MultiResultSetWithPooledConnection(resultSetArray, connection);
+		return new MultiResultSetWithConnection(resultSetArray, connection);
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class HikariPoolSqlBackend implements SqlBackend {
 			}
 			queryResultArray[n] = new QueryResultAsNeitherWithPreparedStatement(preparedStatement);
 		}
-		return new MultiQueryResultWithPooledConnection(queryResultArray, connection);
+		return new MultiQueryResultWithConnection(queryResultArray, connection);
 	}
 	
 	@Override

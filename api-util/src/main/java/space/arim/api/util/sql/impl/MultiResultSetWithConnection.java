@@ -30,7 +30,7 @@ import space.arim.api.util.sql.MultiResultSet;
  * @author A248
  *
  */
-public class MultiResultSetWithPooledConnection implements MultiResultSet {
+public class MultiResultSetWithConnection implements MultiResultSet {
 
 	private final ResultSet[] resultSetArray;
 	private final Connection connection;
@@ -41,7 +41,7 @@ public class MultiResultSetWithPooledConnection implements MultiResultSet {
 	 * @param resultSetArray the result set array
 	 * @param connection the connection to close when this is closed
 	 */
-	public MultiResultSetWithPooledConnection(ResultSet[] resultSetArray, Connection connection) {
+	public MultiResultSetWithConnection(ResultSet[] resultSetArray, Connection connection) {
 		this.resultSetArray = resultSetArray;
 		this.connection = connection;
 	}

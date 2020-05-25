@@ -30,7 +30,7 @@ import space.arim.api.util.sql.QueryResult;
  * @author A248
  *
  */
-public class MultiQueryResultWithPooledConnection implements MultiQueryResult {
+public class MultiQueryResultWithConnection implements MultiQueryResult {
 
 	private final QueryResult[] queryResultArray;
 	private final Connection connection;
@@ -41,7 +41,7 @@ public class MultiQueryResultWithPooledConnection implements MultiQueryResult {
 	 * @param queryResultArray the query result array
 	 * @param connection the connection to close when this is closed
 	 */
-	public MultiQueryResultWithPooledConnection(QueryResult[] queryResultArray, Connection connection) {
+	public MultiQueryResultWithConnection(QueryResult[] queryResultArray, Connection connection) {
 		this.queryResultArray = queryResultArray;
 		this.connection = connection;
 	}
