@@ -40,7 +40,8 @@ public class HikariPoolSqlBackend implements SqlBackend {
 	private final HikariDataSource dataSource;
 	
 	/**
-	 * Creates from a hikari configuration
+	 * Creates from a hikari configuration. A backing data source
+	 * is immediately created and the pool is started from the config.
 	 * 
 	 * @param hikariConfig the hikari config
 	 */
@@ -62,8 +63,8 @@ public class HikariPoolSqlBackend implements SqlBackend {
 	@Override
 	public CloseMe execute(SqlQuery... queries) throws SQLException {
 		SqlBackendImplUtils.validatePositiveLength(queries);
-
 		Connection connection = dataSource.getConnection();
+
 		PreparedStatement[] preparedStatementArray = new PreparedStatement[queries.length];
 		for (int n = 0; n < queries.length; n++) {
 			SqlQuery query = queries[n];
@@ -90,8 +91,8 @@ public class HikariPoolSqlBackend implements SqlBackend {
 	@Override
 	public MultiResultSet select(SqlQuery... queries) throws SQLException {
 		SqlBackendImplUtils.validatePositiveLength(queries);
-
 		Connection connection = dataSource.getConnection();
+
 		ResultSet[] resultSetArray = new ResultSet[queries.length];
 		for (int n = 0; n < queries.length; n++) {
 			SqlQuery query = queries[n];
@@ -157,7 +158,7 @@ public class HikariPoolSqlBackend implements SqlBackend {
 	
 	@Override
 	public String toString() {
-		return "HikariPoolSqlBackend [com.zaxxer.hikari.HikariDataSource=" + dataSource + "]";
+		return "HikariPoolSqlBackend [dataSource=" + dataSource + "]";
 	}
 
 }
