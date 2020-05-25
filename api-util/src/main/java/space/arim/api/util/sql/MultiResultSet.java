@@ -32,12 +32,12 @@ public interface MultiResultSet extends AutoCloseable {
 
 	/**
 	 * Gets one of the result sets in the array. <br>
-	 * If the statement from which the result set in question did not have a ResultSet,
+	 * If the statement from which the result set in question did not produce a ResultSet,
 	 * this will return <code>null</code>
 	 * 
 	 * @param index the index
 	 * @return the result set at the index
-	 * @throws ArrayIndexOutOfBoundsException if <code>index {@literal <} 0 || index {@literal >}= size()</codE>
+	 * @throws ArrayIndexOutOfBoundsException if <code>index {@literal <} 0 || index {@literal >}= length()</codE>
 	 */
 	ResultSet get(int index);
 	
@@ -49,7 +49,7 @@ public interface MultiResultSet extends AutoCloseable {
 	int length();
 	
 	/**
-	 * Closes the MultiResultSet and all of its resources, including but not limited each ResultSet in the underlying array
+	 * Closes and releases all resources, including but not limited to each ResultSet in the underlying array
 	 * 
 	 */
 	@Override
