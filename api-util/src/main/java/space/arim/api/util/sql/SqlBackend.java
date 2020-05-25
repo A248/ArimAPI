@@ -80,6 +80,29 @@ public interface SqlBackend extends AutoCloseable {
 	MultiResultSet select(SqlQuery...queries) throws SQLException;
 	
 	/**
+	 * Executes a statement, returning the result of the query as a {@link QueryResult}
+	 * 
+	 * @param statement the statement string, using question marks where parameters are to be inserted
+	 * @param args the arguments to the prepared statement, may be null or empty
+	 * @return the query result which must be closed by the caller
+	 * @throws SQLException if something went wrong SQL wise
+	 */
+	QueryResult query(String statement, Object...args) throws SQLException;
+	
+	/**
+	 * Using a single connection, executes multiple statements wrapped in {@link SqlQuery}s and returns results
+	 * for each query, combined as a {@link MultiQueryResult}. <br>
+	 * <br>
+	 * The index of each query relates to a corresponding index in the returned {@link MultiResultSet};
+	 * thus, {@link MultiResultSet#length()} will equal to the length of the input array.
+	 * 
+	 * @param queries the queries to execute
+	 * @return an array of query results enclosed in a single closable package
+	 * @throws SQLException if something went wrong SQL wise
+	 */
+	MultiQueryResult query(SqlQuery...queries) throws SQLException; 
+	
+	/**
 	 * Closes the backend, releasing any accompanying resources
 	 * 
 	 */
