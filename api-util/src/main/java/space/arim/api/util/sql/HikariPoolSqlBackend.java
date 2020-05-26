@@ -104,7 +104,13 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 			SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
 			preparedStatement.execute();
 
-			resultSetArray[n] = new ResultSetProxyWithPreparedStatement(preparedStatement.getResultSet(), preparedStatement);
+			ResultSet resultSet = preparedStatement.getResultSet();
+			if (resultSet == null) {
+				preparedStatement.close();
+				resultSetArray[n] = null;
+				continue;
+			}
+			resultSetArray[n] = new ResultSetProxyWithPreparedStatement(resultSet, preparedStatement);
 		}
 		return new MultiResultSetWithConnection(resultSetArray, connection);
 	}
@@ -122,7 +128,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 			return new QueryResultAsUpdateCountWithPreparedStatementAndConnection(updateCount, preparedStatement, connection);
 		}
 		ResultSet resultSet = preparedStatement.getResultSet();
-		if (resultSet != null) {
+		if (resultSet != null) { // null means there is no result set
 			return new QueryResultAsResultSetWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
 		}
 		return new QueryResultAsNeitherWithPreparedStatementAndConnection(preparedStatement, connection);
@@ -147,7 +153,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 				continue;
 			}
 			ResultSet resultSet = preparedStatement.getResultSet();
-			if (resultSet != null) {
+			if (resultSet != null) { // null means there is no result set
 				queryResultArray[n] = new QueryResultAsResultSetWithPreparedStatement(resultSet, preparedStatement);
 				continue;
 			}
