@@ -188,13 +188,7 @@ public class Component implements ComponentFramework {
 		} else if (!colour.equals(other.colour)) {
 			return false;
 		}
-		if (!Arrays.equals(styles, other.styles)) {
-			return false;
-		}
-		if (!text.equals(other.text)) {
-			return false;
-		}
-		return true;
+		return Arrays.equals(styles, other.styles) && text.equals(other.text);
 	}
 	
 }

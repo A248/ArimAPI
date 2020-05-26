@@ -201,10 +201,7 @@ public class ComponentBuilder implements ComponentFramework {
 		} else if (!styles.equals(other.styles)) {
 			return false;
 		}
-		if (!text.equals(other.text)) {
-			return false;
-		}
-		return true;
+		return text.equals(other.text);
 	}
 	
 }

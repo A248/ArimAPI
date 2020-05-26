@@ -232,10 +232,7 @@ public class JsonComponentBuilder extends ComponentBuilder implements JsonCompon
 		if (this == obj) {
 			return true;
 		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (!(obj instanceof JsonComponentBuilder)) {
+		if (!super.equals(obj) || !(obj instanceof JsonComponentBuilder)) {
 			return false;
 		}
 		JsonComponentBuilder other = (JsonComponentBuilder) obj;
