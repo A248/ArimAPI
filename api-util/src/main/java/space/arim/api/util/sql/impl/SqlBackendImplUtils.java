@@ -39,32 +39,34 @@ public class SqlBackendImplUtils {
 	 * If there is a mismatch between the number of parameters and the argument array,
 	 * a {@link SQLException} is naturally thrown. <br>
 	 * <br>
-	 * If the arguments are empty, this is a no{@literal -}op.
+	 * If the arguments are null or empty, this is a no{@literal -}op.
 	 * 
 	 * @param preparedStatement the prepared statement to parameterise
 	 * @param args the argument array, may be null or empty
 	 * @throws SQLException if the parameterisation encountered an error
 	 */
 	public static void applyArguments(PreparedStatement preparedStatement, Object[] args) throws SQLException {
-		if (args != null) {
-			int length = args.length;
-			if (length > 0) {
-				for (int n = 0; n < length; n++) {
-					preparedStatement.setObject(n + 1, args[n]);
-				}
-			}
+		if (args == null) {
+			return;
+		}
+		int length = args.length;
+		if (length == 0) {
+			return;
+		}
+		for (int n = 0; n < length; n++) {
+			preparedStatement.setObject(n + 1, args[n]);
 		}
 	}
 	
 	/**
-	 * Validates that the length of the input array is positive,
+	 * Validates that array is nonnull and its length is positive,
 	 * otherwise throws an <code>IllegalArgumentException</code>
 	 * 
 	 * @param queries the input array whose length to validate
 	 * @throws IllegalArgumentException if the length is zero or the array is null
 	 */
 	public static void validatePositiveLength(SqlQuery[] queries) {
-		if (queries != null && queries.length == 0) {
+		if (queries == null || queries.length == 0) {
 			throw new IllegalArgumentException("Cannot execute zero queries");
 		}
 	}
