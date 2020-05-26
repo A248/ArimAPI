@@ -48,17 +48,8 @@ abstract class AbstractMessageBuilder implements MessageBuilder {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof AbstractMessageBuilder)) {
-			return false;
-		}
-		AbstractMessageBuilder other = (AbstractMessageBuilder) obj;
-		if (!components.equals(other.components)) {
-			return false;
-		}
-		return true;
+		return (this == obj) || (obj instanceof AbstractMessageBuilder)
+				&& (components.equals(((AbstractMessageBuilder) obj).components));
 	}
 	
 }
