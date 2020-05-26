@@ -59,7 +59,7 @@ public class QueryResultAsResultSet extends ResultSetProxy implements QueryResul
 
 	@Override
 	public int toUpdateCount() {
-		throw new RuntimeException("QueryResult is not an update count");
+		throw new IllegalStateException("QueryResult is not an update count");
 	}
 	
 	@Override

@@ -41,7 +41,7 @@ public class QueryResultAsNeither implements QueryResult {
 
 	@Override
 	public ResultSet toResultSet() {
-		throw new RuntimeException("QueryResult is neither a ResultSet nor update count");
+		throw new IllegalStateException("QueryResult is neither a ResultSet nor update count");
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class QueryResultAsNeither implements QueryResult {
 
 	@Override
 	public int toUpdateCount() {
-		throw new RuntimeException("QueryResult is neither a ResultSet nor update count");
+		throw new IllegalStateException("QueryResult is neither a ResultSet nor update count");
 	}
 
 	/**

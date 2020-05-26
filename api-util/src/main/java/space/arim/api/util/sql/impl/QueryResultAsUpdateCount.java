@@ -49,7 +49,7 @@ public class QueryResultAsUpdateCount implements QueryResult {
 
 	@Override
 	public ResultSet toResultSet() {
-		throw new RuntimeException("QueryResult is not a ResultSet");
+		throw new IllegalStateException("QueryResult is not a ResultSet");
 	}
 
 	@Override
