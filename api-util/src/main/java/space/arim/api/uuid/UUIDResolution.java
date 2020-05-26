@@ -49,7 +49,19 @@ import java.util.concurrent.CompletableFuture;
  * 
  * @author A248
  *
+ * @deprecated See the project <a href="https://github.com/A248/UUIDVault">UUIDVault</a> for a complete and improved
+ * API for UUID and name resolution. UUIDVault's UUIDResolver interface should be preferred as a replacement;
+ * also, resolvers should be registered with UUIDVault so that they may be effectively pooled and utilised.
+ * Also, athough this interface is nearly perfect, it has a few flaws,
+ * which are fixed in UUIDVault's specifications.
+ * First, this interface specifies that resolvers may check external web APIs, namely the Mojang API. This is bad practice,
+ * and if many resolvers followed this principle, the server incur rate limiting quickly.
+ * Second, the <i>resolveImmediately</i> methods are inappropriate default, and their default implementations
+ * may unnecessarily consume system resources by using a practice which resolvers should not follow.
+ * Third, the <i>update</i> method is unnecessary, and defeats the purpose of UUID/name resolution,
+ * which is not to store mappings, but to retrieve them.
  */
+@Deprecated
 public interface UUIDResolution {
 
 	/**
