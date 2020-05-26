@@ -22,8 +22,21 @@ import java.sql.ResultSet;
 
 import space.arim.api.util.sql.QueryResult;
 
+/**
+ * A {@link QueryResult} representing a ResultSet. In the case that programmers
+ * call {@link #close()} on {@link #toResultSet()} rather than on this itself,
+ * this class implements ResultSet and delegates instead.
+ * 
+ * @author A248
+ *
+ */
 public class QueryResultAsResultSet extends ResultSetProxy implements QueryResult {
 
+	/**
+	 * Creates from a backing ResultSet
+	 * 
+	 * @param resultSet the result set
+	 */
 	public QueryResultAsResultSet(ResultSet resultSet) {
 		super(resultSet);
 	}

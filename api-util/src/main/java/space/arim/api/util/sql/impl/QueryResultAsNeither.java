@@ -23,6 +23,15 @@ import java.sql.SQLException;
 
 import space.arim.api.util.sql.QueryResult;
 
+/**
+ * A {@link QueryResult} which is neither a ResultSet nor an update count. <br>
+ * <br>
+ * Calling {@link #close()} close on this class alone does nothing. Rather,
+ * it is intended that subclasses override the close method and close any of their attached objects.
+ * 
+ * @author A248
+ *
+ */
 public class QueryResultAsNeither implements QueryResult {
 
 	@Override
@@ -45,6 +54,10 @@ public class QueryResultAsNeither implements QueryResult {
 		throw new RuntimeException("QueryResult is neither a ResultSet nor update count");
 	}
 
+	/**
+	 * Does nothing. See class javadoc
+	 * 
+	 */
 	@Override
 	public void close() throws SQLException {
 		

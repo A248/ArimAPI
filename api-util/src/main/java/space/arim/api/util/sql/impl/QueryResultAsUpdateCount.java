@@ -23,10 +23,21 @@ import java.sql.SQLException;
 
 import space.arim.api.util.sql.QueryResult;
 
+/**
+ * A QueryResult which represents an update count
+ * 
+ * @author A248
+ *
+ */
 public class QueryResultAsUpdateCount implements QueryResult {
 
 	private final int updateCount;
 	
+	/**
+	 * Creates from an update count
+	 * 
+	 * @param updateCount the update count
+	 */
 	public QueryResultAsUpdateCount(int updateCount) {
 		this.updateCount = updateCount;
 	}

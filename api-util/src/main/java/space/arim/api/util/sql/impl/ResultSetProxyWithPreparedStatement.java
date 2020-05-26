@@ -22,11 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import space.arim.api.util.sql.SqlBackend;
-
 /**
- * A ResultSet linked to a PreparedStatement; closing the ResultSet closes the PreparedStatement. <br>
- * Used to help implement {@link SqlBackend}.
+ * A ResultSet linked to a PreparedStatement; closing the ResultSet closes the PreparedStatement.
  * 
  * @author A248
  *
@@ -35,6 +32,12 @@ public class ResultSetProxyWithPreparedStatement extends ResultSetProxy {
 
 	private final PreparedStatement preparedStatement;
 	
+	/**
+	 * Creates from a backing ResultSet and accompanying PreparedStatement
+	 * 
+	 * @param resultSet the backing result set
+	 * @param preparedStatement the prepared statement to close when this object is closed
+	 */
 	public ResultSetProxyWithPreparedStatement(ResultSet resultSet, PreparedStatement preparedStatement) {
 		super(resultSet);
 		this.preparedStatement = preparedStatement;
