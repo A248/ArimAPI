@@ -21,7 +21,8 @@ package space.arim.api.uuid;
 import java.util.UUID;
 
 /**
- * * See {@link #expand(String)} for expanding shortened UUIDs
+ * Utility class for manipulating UUIDs. Allows programmers to shorten and expand
+ * UUIDs from forms with and without dashes.
  * 
  * @author A248
  *
