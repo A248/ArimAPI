@@ -27,7 +27,7 @@ import space.arim.api.annotation.Blocking;
  * 
  * @author A248
  *
- * @deprecated Use {@link UUIDResolution}
+ * @deprecated Use {@link UUIDResolution}, which has more intuitive method names and does not necessitate throwing exceptions
  *
  */
 @Deprecated
