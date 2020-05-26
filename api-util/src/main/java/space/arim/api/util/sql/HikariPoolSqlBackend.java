@@ -70,6 +70,7 @@ public class HikariPoolSqlBackend implements SqlBackend {
 		PreparedStatement[] preparedStatementArray = new PreparedStatement[queries.length];
 		for (int n = 0; n < queries.length; n++) {
 			SqlQuery query = queries[n];
+
 			PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
 			SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
 			preparedStatement.execute();
@@ -98,6 +99,7 @@ public class HikariPoolSqlBackend implements SqlBackend {
 		ResultSet[] resultSetArray = new ResultSet[queries.length];
 		for (int n = 0; n < queries.length; n++) {
 			SqlQuery query = queries[n];
+
 			PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
 			SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
 			preparedStatement.execute();
@@ -116,7 +118,7 @@ public class HikariPoolSqlBackend implements SqlBackend {
 		preparedStatement.execute();
 
 		int updateCount = preparedStatement.getUpdateCount();
-		if (updateCount != -1) { // -1 means not an update count
+		if (updateCount != -1) { // -1 means there is no update count
 			return new QueryResultAsUpdateCountWithPreparedStatementAndConnection(updateCount, preparedStatement, connection);
 		}
 		ResultSet resultSet = preparedStatement.getResultSet();
@@ -134,12 +136,13 @@ public class HikariPoolSqlBackend implements SqlBackend {
 		QueryResult[] queryResultArray = new QueryResult[queries.length];
 		for (int n = 0; n < queries.length; n++) {
 			SqlQuery query = queries[n];
+
 			PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
 			SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
 			preparedStatement.execute();
 			
 			int updateCount = preparedStatement.getUpdateCount();
-			if (updateCount != -1) {
+			if (updateCount != -1) { // -1 means there is no update count
 				queryResultArray[n] = new QueryResultAsUpdateCountWithPreparedStatement(updateCount, preparedStatement);
 				continue;
 			}
