@@ -61,7 +61,7 @@ public class SqlBackendImplUtils {
 	 * otherwise throws an <code>IllegalArgumentException</code>
 	 * 
 	 * @param queries the input array whose length to validate
-	 * @throws IllegalArgumentException if the length is zero
+	 * @throws IllegalArgumentException if the length is zero or the array is null
 	 */
 	public static void validatePositiveLength(SqlQuery[] queries) {
 		if (queries != null && queries.length == 0) {
