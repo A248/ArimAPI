@@ -37,7 +37,7 @@ import space.arim.api.util.sql.impl.*;
  * @author A248
  *
  */
-public class HikariPoolSqlBackend implements SqlBackend {
+public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 
 	private final HikariDataSource dataSource;
 	
