@@ -20,6 +20,15 @@ package space.arim.api.uuid;
 
 import java.util.UUID;
 
+/**
+ * An exception thrown by {@link UUIDResolver} to indicate that no UUID or name was found.
+ * 
+ * @deprecated UUIDResolver is itself deprecated and superseded by {@link UUIDResolution}
+ * 
+ * @author A248
+ *
+ */
+@Deprecated
 public class PlayerNotFoundException extends Exception {
 	
 	private static final long serialVersionUID = 1659138619614361712L;
