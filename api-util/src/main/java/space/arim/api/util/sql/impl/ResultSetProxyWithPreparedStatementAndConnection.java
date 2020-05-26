@@ -50,5 +50,11 @@ public class ResultSetProxyWithPreparedStatementAndConnection extends ResultSetP
 		super.close();
 		connection.close();
 	}
+
+	@Override
+	public String toString() {
+		return "ResultSetProxyWithPreparedStatementAndConnection [connection=" + connection + ", toString()="
+				+ super.toString() + "]";
+	}
 	
 }

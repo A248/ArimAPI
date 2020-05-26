@@ -38,4 +38,10 @@ public class QueryResultAsUpdateCountWithPreparedStatementAndConnection extends 
 		connection.close();
 	}
 
+	@Override
+	public String toString() {
+		return "QueryResultAsUpdateCountWithPreparedStatementAndConnection [connection=" + connection + ", toString()="
+				+ super.toString() + "]";
+	}
+
 }

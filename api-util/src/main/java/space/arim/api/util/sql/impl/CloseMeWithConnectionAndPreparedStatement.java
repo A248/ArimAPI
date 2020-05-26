@@ -46,4 +46,10 @@ public class CloseMeWithConnectionAndPreparedStatement extends CloseMeWithConnec
 		super.close();
 	}
 
+	@Override
+	public String toString() {
+		return "CloseMeWithConnectionAndPreparedStatement [preparedStatement=" + preparedStatement + ", toString()="
+				+ super.toString() + "]";
+	}
+
 }

@@ -43,5 +43,10 @@ public class CloseMeWithConnection implements CloseMe {
 	public void close() throws SQLException {
 		connection.close();
 	}
+
+	@Override
+	public String toString() {
+		return "CloseMeWithConnection [connection=" + connection + "]";
+	}
 	
 }

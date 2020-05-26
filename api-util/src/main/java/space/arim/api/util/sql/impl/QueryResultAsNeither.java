@@ -63,4 +63,9 @@ public class QueryResultAsNeither implements QueryResult {
 		
 	}
 
+	@Override
+	public String toString() {
+		return "QueryResultAsNeither []";
+	}
+
 }

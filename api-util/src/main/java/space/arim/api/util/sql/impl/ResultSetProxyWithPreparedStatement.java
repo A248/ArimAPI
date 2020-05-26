@@ -48,5 +48,11 @@ public class ResultSetProxyWithPreparedStatement extends ResultSetProxy {
 		super.close();
 		preparedStatement.close();
 	}
+
+	@Override
+	public String toString() {
+		return "ResultSetProxyWithPreparedStatement [preparedStatement=" + preparedStatement + ", toString()="
+				+ super.toString() + "]";
+	}
 	
 }

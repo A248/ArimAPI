@@ -21,6 +21,7 @@ package space.arim.api.util.sql.impl;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import space.arim.api.util.sql.MultiResultSet;
 
@@ -63,6 +64,12 @@ public class MultiResultSetWithConnection implements MultiResultSet {
 			resultSetArray[n].close();
 		}
 		connection.close();
+	}
+
+	@Override
+	public String toString() {
+		return "MultiResultSetWithConnection [resultSetArray=" + Arrays.toString(resultSetArray) + ", connection="
+				+ connection + "]";
 	}
 
 }

@@ -39,4 +39,10 @@ public class QueryResultAsResultSetWithPreparedStatementAndConnection extends Qu
 		connection.close();
 	}
 
+	@Override
+	public String toString() {
+		return "QueryResultAsResultSetWithPreparedStatementAndConnection [connection=" + connection + ", toString()="
+				+ super.toString() + "]";
+	}
+
 }

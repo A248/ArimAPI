@@ -37,4 +37,10 @@ public class QueryResultAsResultSetWithPreparedStatement extends QueryResultAsRe
 		preparedStatement.close();
 	}
 
+	@Override
+	public String toString() {
+		return "QueryResultAsResultSetWithPreparedStatement [preparedStatement=" + preparedStatement
+				+ ", toResultSet()=" + toResultSet() + "]";
+	}
+
 }

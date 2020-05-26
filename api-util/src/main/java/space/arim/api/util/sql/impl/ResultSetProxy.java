@@ -65,6 +65,11 @@ public class ResultSetProxy implements ResultSet {
 	}
 	
 	@Override
+	public String toString() {
+		return "ResultSetProxy [resultSet=" + resultSet + "]";
+	}
+
+	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		return resultSet.unwrap(iface);
 	}

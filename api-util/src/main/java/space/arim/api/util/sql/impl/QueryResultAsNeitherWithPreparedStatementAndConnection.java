@@ -36,5 +36,12 @@ public class QueryResultAsNeitherWithPreparedStatementAndConnection extends Quer
 		super.close();
 		connection.close();
 	}
+
+	@Override
+	public String toString() {
+		return "QueryResultAsNeitherWithPreparedStatementAndConnection [connection=" + connection + ", toString()="
+				+ super.toString() + "]";
+	}
+	
 	
 }

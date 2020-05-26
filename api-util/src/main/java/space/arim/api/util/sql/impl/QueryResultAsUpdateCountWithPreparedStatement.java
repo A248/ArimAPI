@@ -36,4 +36,10 @@ public class QueryResultAsUpdateCountWithPreparedStatement extends QueryResultAs
 		preparedStatement.close();
 	}
 
+	@Override
+	public String toString() {
+		return "QueryResultAsUpdateCountWithPreparedStatement [preparedStatement=" + preparedStatement
+				+ ", toUpdateCount()=" + toUpdateCount() + "]";
+	}
+
 }

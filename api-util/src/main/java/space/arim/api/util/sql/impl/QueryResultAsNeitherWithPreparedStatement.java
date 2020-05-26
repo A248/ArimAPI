@@ -34,5 +34,10 @@ public class QueryResultAsNeitherWithPreparedStatement extends QueryResultAsNeit
 		super.close();
 		preparedStatement.close();
 	}
+
+	@Override
+	public String toString() {
+		return "QueryResultAsNeitherWithPreparedStatement [preparedStatement=" + preparedStatement + "]";
+	}
 	
 }

@@ -20,6 +20,7 @@ package space.arim.api.util.sql.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import space.arim.api.util.sql.MultiQueryResult;
 import space.arim.api.util.sql.QueryResult;
@@ -63,6 +64,12 @@ public class MultiQueryResultWithConnection implements MultiQueryResult {
 			queryResultArray[n].close();
 		}
 		connection.close();
+	}
+
+	@Override
+	public String toString() {
+		return "MultiQueryResultWithConnection [queryResultArray=" + Arrays.toString(queryResultArray) + ", connection="
+				+ connection + "]";
 	}
 	
 }

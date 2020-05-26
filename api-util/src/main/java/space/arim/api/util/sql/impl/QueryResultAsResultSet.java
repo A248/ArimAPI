@@ -67,4 +67,9 @@ public class QueryResultAsResultSet extends ResultSetProxy implements QueryResul
 		super.close();
 	}
 
+	@Override
+	public String toString() {
+		return "QueryResultAsResultSet [toResultSet()=" + toResultSet() + "]";
+	}
+
 }

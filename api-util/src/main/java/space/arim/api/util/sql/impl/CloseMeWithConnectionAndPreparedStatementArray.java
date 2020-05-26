@@ -21,6 +21,7 @@ package space.arim.api.util.sql.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import space.arim.api.util.sql.SqlBackend;
 
@@ -47,6 +48,12 @@ public class CloseMeWithConnectionAndPreparedStatementArray extends CloseMeWithC
 			preparedStatementArray[n].close();
 		}
 		super.close();
+	}
+
+	@Override
+	public String toString() {
+		return "CloseMeWithConnectionAndPreparedStatementArray [preparedStatementArray="
+				+ Arrays.toString(preparedStatementArray) + ", toString()=" + super.toString() + "]";
 	}
 
 }

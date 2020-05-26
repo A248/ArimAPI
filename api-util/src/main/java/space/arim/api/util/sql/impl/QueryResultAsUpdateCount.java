@@ -66,5 +66,10 @@ public class QueryResultAsUpdateCount implements QueryResult {
 	public void close() throws SQLException {
 		
 	}
+
+	@Override
+	public String toString() {
+		return "QueryResultAsUpdateCount [updateCount=" + updateCount + "]";
+	}
 	
 }
