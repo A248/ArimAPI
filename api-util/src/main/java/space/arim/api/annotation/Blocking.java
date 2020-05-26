@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  */
 @Retention(SOURCE)
 @Target({ METHOD, CONSTRUCTOR })
-@Deprecated
+@Deprecated(forRemoval = true)
 public @interface Blocking {
 
 }
