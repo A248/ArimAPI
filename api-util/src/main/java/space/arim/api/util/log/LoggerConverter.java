@@ -30,7 +30,9 @@ import space.arim.api.util.LazySingleton;
  * 
  * @author A248
  *
+ * @deprecated This class is obsolete because its sole purpose, {@link #convert(java.util.logging.Logger)}, has been deprecated.
  */
+@Deprecated
 public class LoggerConverter {
 	
 	private static final LazySingleton<LoggerConverter> INST = new LazySingleton<LoggerConverter>(LoggerConverter::new);
@@ -59,7 +61,13 @@ public class LoggerConverter {
 	 * 
 	 * @param julLogger the JUL logger
 	 * @return a slf4j logger
+	 * 
+	 * @deprecated This method encourages an incorrect use of loggers. Instead of having
+	 * a global logger instance for a plugin which must be used at all times, thus necessitating
+	 * a converter logger for different logging APIs which this method provides, programmers
+	 * should simply derive loggers directly from the logging factory from the framework desired.
 	 */
+	@Deprecated
 	public Logger convert(java.util.logging.Logger julLogger) {
 		return new JulAsSlf4j(Objects.requireNonNull(julLogger));
 	}
