@@ -19,6 +19,7 @@
 package space.arim.api.util.sql.impl;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import space.arim.api.util.sql.QueryResult;
 
@@ -59,6 +60,11 @@ public class QueryResultAsResultSet extends ResultSetProxy implements QueryResul
 	@Override
 	public int toUpdateCount() {
 		throw new RuntimeException("QueryResult is not an update count");
+	}
+	
+	@Override
+	public void close() throws SQLException {
+		super.close();
 	}
 
 }

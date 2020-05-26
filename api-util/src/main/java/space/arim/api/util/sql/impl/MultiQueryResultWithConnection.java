@@ -58,6 +58,7 @@ public class MultiQueryResultWithConnection implements MultiQueryResult {
 
 	@Override
 	public void close() throws SQLException {
+		// Close in reverse order
 		for (int n = queryResultArray.length - 1; n >= 0; n--) {
 			queryResultArray[n].close();
 		}

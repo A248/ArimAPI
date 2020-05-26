@@ -42,6 +42,7 @@ public class CloseMeWithConnectionAndPreparedStatementArray extends CloseMeWithC
 	
 	@Override
 	public void close() throws SQLException {
+		// Close in reverse order
 		for (int n = preparedStatementArray.length - 1; n >= 0; n--) {
 			preparedStatementArray[n].close();
 		}
