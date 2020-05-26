@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
  * @author A248
  * 
  * @deprecated Using an annotation is a poor approach to mark a blocking operation.
- * API methods should return {@link CompletableFuture}s instead.
+ * API methods should return {@link java.util.concurrent.CompletableFuture CompletableFuture}s instead.
  *
  */
 @Retention(SOURCE)
