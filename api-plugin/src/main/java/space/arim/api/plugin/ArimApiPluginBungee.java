@@ -31,6 +31,7 @@ import space.arim.api.platform.bungee.DefaultSyncExecution;
 import space.arim.api.platform.bungee.DefaultUUIDResolution;
 import space.arim.api.uuid.UUIDResolution;
 
+@SuppressWarnings("deprecation")
 public class ArimApiPluginBungee extends Plugin {
 	
 	private static Plugin inst;
@@ -44,7 +45,10 @@ public class ArimApiPluginBungee extends Plugin {
 	 * {@link UUIDResolution} exists.
 	 * 
 	 * @param registry the registry to use
+	 * 
+	 * @deprecated The {@link UUIDResolution} interface is itself deprecated
 	 */
+	@Deprecated
 	public static void registerDefaultUUIDResolutionIfAbsent(Registry registry) {
 		registry.registerIfAbsent(UUIDResolution.class, () -> new Registration<UUIDResolution>(RegistryPriority.LOWEST, new DefaultUUIDResolution(inst), "Default UUIDResolution Implementation"));
 	}

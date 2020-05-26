@@ -38,7 +38,10 @@ import space.arim.api.uuid.UUIDResolution;
  * 
  * @author A248
  *
+ * @deprecated The {@link UUIDResolution} interface is itself deprecated
  */
+@SuppressWarnings("deprecation")
+@Deprecated
 public class DefaultUUIDResolution extends PlatformUUIDResolution {
 
 	private final PluginContainer plugin;

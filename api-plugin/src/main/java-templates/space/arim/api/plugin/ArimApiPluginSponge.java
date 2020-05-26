@@ -33,6 +33,7 @@ import space.arim.api.platform.sponge.DefaultSyncExecution;
 import space.arim.api.platform.sponge.DefaultUUIDResolution;
 import space.arim.api.uuid.UUIDResolution;
 
+@SuppressWarnings("deprecation")
 @Plugin(id = "${plugin.spongeid}", name = "${plugin.name}", version = "${plugin.version}", authors = {"${plugin.author}"}, description = "${plugin.description}", url = "${plugin.url}")
 public class ArimApiPluginSponge {
 	
@@ -51,7 +52,10 @@ public class ArimApiPluginSponge {
 	 * {@link UUIDResolution} exists.
 	 * 
 	 * @param registry the registry to use
+	 * 
+	 * @deprecated The {@link UUIDResolution} interface is itself deprecated
 	 */
+	@Deprecated
 	public static void registerDefaultUUIDResolutionIfAbsent(Registry registry) {
 		registry.registerIfAbsent(UUIDResolution.class, () -> new Registration<UUIDResolution>(RegistryPriority.LOWEST, new DefaultUUIDResolution(getPlugin()), "Default UUIDResolution Implementation"));
 	}

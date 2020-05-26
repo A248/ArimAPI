@@ -31,6 +31,7 @@ import space.arim.api.platform.spigot.DefaultSyncExecution;
 import space.arim.api.platform.spigot.DefaultUUIDResolution;
 import space.arim.api.uuid.UUIDResolution;
 
+@SuppressWarnings("deprecation")
 public class ArimApiPluginSpigot extends JavaPlugin {
 	
 	private static JavaPlugin inst;
@@ -44,7 +45,10 @@ public class ArimApiPluginSpigot extends JavaPlugin {
 	 * {@link UUIDResolution} exists.
 	 * 
 	 * @param registry the registry to use
+	 * 
+	 * @deprecated The {@link UUIDResolution} interface is itself deprecated
 	 */
+	@Deprecated
 	public static void registerDefaultUUIDResolutionIfAbsent(Registry registry) {
 		registry.registerIfAbsent(UUIDResolution.class, () -> new Registration<UUIDResolution>(RegistryPriority.LOWEST, new DefaultUUIDResolution(inst), "Default UUIDResolution Implementation"));
 	}

@@ -38,8 +38,11 @@ import space.arim.api.uuid.UUIDResolution;
  * {@link #update(UUID, String, boolean)} to itself with <code>force = true</code>.
  * 
  * @author A248
- *
+ * 
+ * @deprecated The {@link UUIDResolution} interface is itself deprecated
  */
+@SuppressWarnings("deprecation")
+@Deprecated
 public abstract class PlatformUUIDResolution implements UUIDResolution {
 
 	/**
