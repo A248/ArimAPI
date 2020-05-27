@@ -30,7 +30,7 @@ import javax.sql.rowset.RowSetProvider;
 import space.arim.universal.util.function.ErringLazySingleton;
 
 /**
- * A nearly-complete implementation of {@link SQLExexcution} relying on subclasses
+ * A nearly-complete implementation of {@link SQLExecution} relying on subclasses
  * to provide {@link Connection}s which are closed after each query is executed.
  * 
  * @author A248
