@@ -20,8 +20,6 @@ package space.arim.api.util.sql;
 
 import java.util.Arrays;
 
-import lombok.Getter;
-
 /**
  * An executable query wrapping a statement string and arguments to the statement. <br>
  * Immutable and thread safe. <br>
@@ -32,7 +30,6 @@ import lombok.Getter;
  * @author A248
  *
  */
-@Getter
 public class SqlQuery {
 
 	private final String statement;
@@ -77,6 +74,24 @@ public class SqlQuery {
 	 */
 	public static SqlQuery of(String statement) {
 		return new SqlQuery(statement);
+	}
+	
+	/**
+	 * Gets the statement string of this query
+	 * 
+	 * @return the statement string
+	 */
+	public String getStatement() {
+		return statement;
+	}
+	
+	/**
+	 * Gets the arguments of this query
+	 * 
+	 * @return the arguments, may be null or empty
+	 */
+	public Object[] getArgs() {
+		return args;
 	}
 	
 	@Override
