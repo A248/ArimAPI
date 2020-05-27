@@ -22,7 +22,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * The result of a SQL query which is either a ResultSet or an update count.
+ * The result of a SQL query which is either a ResultSet, an update count, or neither. <br>
+ * Which type of result this represents depends on the query which produced this object.
  * 
  * @author A248
  *
