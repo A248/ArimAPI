@@ -26,9 +26,10 @@ import java.util.Arrays;
  * Previously a helper for logging SQL queries
  * 
  * @deprecated Relies on a singular {@link #log(String)} method which may unnecessarily
- * concatenate Strings. Consider wrapping a subclass of {@link AbstractSql}
- * and logging manually, or switch to the improved SQL framework in {@link space.arim.api.util.sql}
+ * concatenate Strings. Use the improved SQL framework in {@link space.arim.api.util.sql}.
+ * Furthermore, {@link AbstractSql} and {@link SQLExecution} have been deprecated for their own reasons.
  */
+@SuppressWarnings("deprecation")
 @Deprecated
 public abstract class LoggingSql extends AbstractSql {
 

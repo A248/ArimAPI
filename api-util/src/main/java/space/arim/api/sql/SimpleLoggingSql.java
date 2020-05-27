@@ -28,13 +28,13 @@ import space.arim.universal.util.proxy.ProxiedConnection;
  * 
  * @author A248
  *
- * @deprecated For multiple reasons. First, see deprecation of {@link LoggingSql}. This class, specifically,
- * presupposes a long{@literal -}running <code>Connection</code> which is reused for SQL queries. Such a practice
- * should not be encouraged, for it leads itself to perpetual timeout issues; using properties such as <i>autoReconnect</i>
- * only complicates matters and causes more issues. Furthermore, concurrent use of this class requires external synchronisation
- * because a <code>Connection</code> is not always safe. On a minor note, this class also creates unnecessary wrapper objects
- * for <code>Connection</code> to avoid closing the long running connection due to the design of {@link space.arim.api.sql}.
- * In the meantime, {@link PooledSql} using a connection pool of only 1 connection may be used as a quick replacement.
+ * @deprecated For multiple reasons. First, see deprecation of {@link SQLExecution}, {@link AbstractSql}, and {@link LoggingSql}.
+ * This class, specifically, presupposes a long{@literal -}running <code>Connection</code> which is reused for SQL queries.
+ * Such a practice should not be encouraged, for it leads itself to perpetual timeout issues; using properties such as
+ * <i>autoReconnect</i> only complicates matters and causes more issues. Furthermore, concurrent use of this class requires
+ * external synchronisation because a <code>Connection</code> is not always safe. On a minor note, this class also creates
+ * unnecessary wrapper objects for <code>Connection</code> to avoid closing the long running connection due to the design
+ * of {@link space.arim.api.sql}.
  */
 @SuppressWarnings("deprecation")
 @Deprecated

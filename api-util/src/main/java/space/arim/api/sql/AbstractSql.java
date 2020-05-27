@@ -29,6 +29,18 @@ import javax.sql.rowset.RowSetProvider;
 
 import space.arim.universal.util.function.ErringLazySingleton;
 
+/**
+ * A nearly-complete implementation of {@link SQLExexcution} relying on subclasses
+ * to provide {@link Connection}s which are closed after each query is executed.
+ * 
+ * @author A248
+ *
+ * @deprecated The interface this class implements is itself deprecated. Furthermore,
+ * this implementation is necessarily inefficient. It constantly creates {@link CachedRowSet}s
+ * for every selection-based query.
+ */
+@SuppressWarnings("deprecation")
+@Deprecated
 public abstract class AbstractSql implements SQLExecution {
 	
 	private final ErringLazySingleton<RowSetFactory, SQLException> factory = new ErringLazySingleton<RowSetFactory, SQLException>(() -> RowSetProvider.newFactory());

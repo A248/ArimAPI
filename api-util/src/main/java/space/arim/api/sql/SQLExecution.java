@@ -29,8 +29,14 @@ import java.util.List;
  * All methods throw {@link SQLException}
  * 
  * @author A248
- *
+ * 
+ * @deprecated For multiple reasons. First, the void return types of {@link #executionQuery(String, Object...)}
+ * and {@link #executionQueries(ExecutableQuery...)} make it unclear whether implementations may execute queries
+ * in a separate thread. Additionally, they do not allow for retrieving update counts. Second, the array-based
+ * return type of {@link #selectionQueries(ExecutableQuery...)} is cumbersome for working with try-with-resources
+ * and requires that each result set be closed. See the package javadoc for an alternative.
  */
+@Deprecated
 public interface SQLExecution {
 	
 	/**

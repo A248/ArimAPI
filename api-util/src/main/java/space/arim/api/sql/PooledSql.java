@@ -24,12 +24,15 @@ import java.sql.SQLException;
 import space.arim.shaded.com.zaxxer.hikari.HikariDataSource;
 
 /**
- * A temporary replacement for {@link PooledLoggingSql}. <b>Consider switching to the improved SQL
- * framework in {@link space.arim.api.util.sql}</b>
+ * Previously a temporary replacement for {@link PooledLoggingSql}. Now, that class
+ * and the interface both these classes implement is deprecated.
  * 
  * @author A248
  *
+ * @deprecated See {@link AbstractSql} and {@link SQLExecution} deprecations.
  */
+@SuppressWarnings("deprecation")
+@Deprecated
 public abstract class PooledSql extends AbstractSql {
 
 	protected abstract HikariDataSource getDataSource();
