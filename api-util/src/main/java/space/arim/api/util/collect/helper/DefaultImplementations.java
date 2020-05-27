@@ -33,9 +33,17 @@ class DefaultImplementations {
 	}
 	
 	static <E> boolean iteratorContains(Iterator<E> it, Object element) {
-		while (it.hasNext()) {
-			if (equalsWithNullCheck(element, it.next())) {
-				return true;
+		if (element == null) {
+			while (it.hasNext()) {
+				if (it.next() == null) {
+					return true;
+				}
+			}
+		} else {
+			while (it.hasNext()) {
+				if (element.equals(it.next())) {
+					return true;
+				}
 			}
 		}
 		return false;
