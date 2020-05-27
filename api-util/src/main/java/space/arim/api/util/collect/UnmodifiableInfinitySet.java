@@ -30,6 +30,16 @@ import java.util.Collection;
  */
 public interface UnmodifiableInfinitySet<E> extends InfinitySet<E> {
 	
+	/**
+	 * Creates an unmodifiable infinity set
+	 * 
+	 * @param <E> the element type
+	 * @return an unmodifiable infinity set
+	 */
+	static <E> UnmodifiableInfinitySet<E> create() {
+		return new UnmodifiableInfinitySet<>() {};
+	}
+	
 	@Override
 	default boolean add(E e) {throw new UnsupportedOperationException();}
 	@Override
