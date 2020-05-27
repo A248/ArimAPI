@@ -67,16 +67,32 @@ public class FunctionalMap<K, V> implements UnmodifiableByDefaultMap<K, V> {
 	 * The function used is when {@link #get(Object)} is called. Note that <code>#get()</code> may be called internally.
 	 * 
 	 * @param mappingFunction the mapping function
+	 * 
+	 * @deprecated Relies on generics manipulation. Possibility of throwing ClassCastException at runtime
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public FunctionalMap(Function<K, V> mappingFunction) {
 		this(mappingFunction, FunctionalMap.<K>getGenericKeyType()::isInstance);
 	}
 	
 	/**
-	 * Creates a map based on the given mapping function and instanceof check. <br>
+	 * Creates a functional map based on the given mapping function and the class of the key type. <br>
+	 * The class is used for instanceof checks.
+	 * 
+	 * @param mappingFunction the mapping function
+	 * @param keyClass the class of the key type
+	 */
+	public FunctionalMap(Function<K, V> mappingFunction, Class<K> keyClass) {
+		this(mappingFunction, keyClass::isInstance);
+	}
+	
+	/**
+	 * Creates a map based on the given mapping function and explicitly specified instanceof check. <br>
 	 * The function used is when {@link #get(Object)} is called. Note that <code>#get()</code> may be called internally. <br>
+	 * <br>
 	 * The instance checking predicate should return truthfully, or programmers will endure <code>ClassCastException</code>.
+	 * It is exposed so that users may further narrow the possibilities of keys.
 	 * 
 	 * @param mappingFunction the mapping function
 	 * @param keyInstanceCheck used to evaluate whether a key object is of the correct type
