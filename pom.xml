@@ -11,7 +11,7 @@
 	
 	<name>ArimAPI</name>
 	<description>An efficient, easy-to-use minecraft plugin library and framework.</description>
-	<url>https://github.com/A248/ArimAPI</url>
+	<url>https://github.com/Arim-Minecraft/ArimAPI</url>
 	<inceptionYear>2019</inceptionYear>
 	
 	<properties>
