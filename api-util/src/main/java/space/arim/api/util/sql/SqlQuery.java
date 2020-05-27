@@ -97,17 +97,8 @@ public class SqlQuery {
 			return false;
 		}
 		SqlQuery other = (SqlQuery) obj;
-		if (!Arrays.deepEquals(args, other.args)) {
-			return false;
-		}
-		if (statement == null) {
-			if (other.statement != null) {
-				return false;
-			}
-		} else if (!statement.equals(other.statement)) {
-			return false;
-		}
-		return true;
+		return Arrays.equals(args, other.args)
+				&& ((statement == null) ? (other.statement == null) : statement.equals(other.statement));
 	}
 	
 	@Override
