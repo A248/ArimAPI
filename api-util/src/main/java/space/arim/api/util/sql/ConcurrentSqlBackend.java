@@ -19,9 +19,8 @@
 package space.arim.api.util.sql;
 
 /**
- * A marker interface for a {@link SqlBackend} supporting
- * fully concurrent queries. <br>
- * For any implementation, the inherited methods from this extended interface must be thread safe.
+ * A marker interface for a {@link SqlBackend} supporting fully concurrent queries. <br>
+ * For any implementation, its methods must be thread safe. This may entail locking if necessary.
  * 
  * @author A248
  *
