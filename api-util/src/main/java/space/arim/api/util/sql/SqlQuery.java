@@ -83,7 +83,7 @@ public class SqlQuery {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.deepHashCode(args);
+		result = prime * result + Arrays.hashCode(args);
 		result = prime * result + ((statement == null) ? 0 : statement.hashCode());
 		return result;
 	}
