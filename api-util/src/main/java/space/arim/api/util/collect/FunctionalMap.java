@@ -68,10 +68,11 @@ public class FunctionalMap<K, V> implements UnmodifiableByDefaultMap<K, V> {
 	 * 
 	 * @param mappingFunction the mapping function
 	 * 
-	 * @deprecated Relies on generics manipulation. Possibility of throwing ClassCastException at runtime
+	 * @deprecated Relies on generics manipulation. Possibility of throwing ClassCastException at runtime.
+	 * Use {@link #FunctionalMap(Function, Class)} and specify the key class explicitly.
 	 */
 	@SuppressWarnings("unchecked")
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public FunctionalMap(Function<K, V> mappingFunction) {
 		this(mappingFunction, FunctionalMap.<K>getGenericKeyType()::isInstance);
 	}

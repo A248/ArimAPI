@@ -53,8 +53,24 @@ public class CalculationMap<K, V> extends FunctionalMap<K, V> {
 	
 	private final Set<K> fixedKeys;
 	
+	/**
+	 * Creates a calculation map from a mapping function and a set of keys
+	 * 
+	 * @param mappingFunction the mapping function
+	 * @param fixedKeys the fixed key set
+	 * 
+	 * @deprecated Relies on generics manipulation. Possibility of throwing ClassCastException at runtime.
+	 * Use {@link #CalculationMap(Function, Class, Set)} and specify the key class explicitly.
+	 */
+	@SuppressWarnings({ "removal" })
+	@Deprecated
 	public CalculationMap(Function<K, V> mappingFunction, Set<K> fixedKeys) {
 		super(mappingFunction);
+		this.fixedKeys = fixedKeys;
+	}
+	
+	public CalculationMap(Function<K, V> mappingFunction, Class<K> keyClass, Set<K> fixedKeys) {
+		super(mappingFunction, keyClass);
 		this.fixedKeys = fixedKeys;
 	}
 	
