@@ -49,7 +49,17 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 	 * @param hikariConfig the hikari config
 	 */
 	public HikariPoolSqlBackend(HikariConfig hikariConfig) {
-		dataSource = new HikariDataSource(hikariConfig);
+		this(new HikariDataSource(hikariConfig));
+	}
+	
+	/**
+	 * Creates from a hikari data source. The data source must be open
+	 * and ready for operation.
+	 * 
+	 * @param dataSource the hikari data source
+	 */
+	public HikariPoolSqlBackend(HikariDataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 	
 	@Override
