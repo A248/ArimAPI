@@ -59,6 +59,9 @@ public class MultiResultSetWithConnection implements MultiResultSet {
 
 	@Override
 	public void close() throws SQLException {
+		if (!connection.getAutoCommit()) {
+			connection.commit();
+		}
 		// Close in reverse order
 		for (int n = resultSetArray.length - 1; n >= 0; n--) {
 			resultSetArray[n].close();

@@ -34,6 +34,9 @@ public class QueryResultAsUpdateCountWithPreparedStatementAndConnection extends 
 	
 	@Override
 	public void close() throws SQLException {
+		if (!connection.getAutoCommit()) {
+			connection.commit();
+		}
 		super.close();
 		connection.close();
 	}

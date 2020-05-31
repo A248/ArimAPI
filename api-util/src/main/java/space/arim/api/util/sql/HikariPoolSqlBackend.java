@@ -60,9 +60,6 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		SqlBackendImplUtils.applyArguments(preparedStatement, args);
 		preparedStatement.execute();
 
-		if (!connection.getAutoCommit()) {
-			connection.commit();
-		}
 		return new CloseMeWithConnectionAndPreparedStatement(connection, preparedStatement);
 	}
 
@@ -81,9 +78,6 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 
 			preparedStatementArray[n] = preparedStatement;
 		}
-		if (!connection.getAutoCommit()) {
-			connection.commit();
-		}
 		return new CloseMeWithConnectionAndPreparedStatementArray(connection, preparedStatementArray);
 	}
 	
@@ -95,9 +89,6 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		SqlBackendImplUtils.applyArguments(preparedStatement, args);
 		ResultSet resultSet = preparedStatement.executeQuery();
 
-		if (!connection.getAutoCommit()) {
-			connection.commit();
-		}
 		return new ResultSetProxyWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
 	}
 
@@ -122,9 +113,6 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 			}
 			resultSetArray[n] = new ResultSetProxyWithPreparedStatement(resultSet, preparedStatement);
 		}
-		if (!connection.getAutoCommit()) {
-			connection.commit();
-		}
 		return new MultiResultSetWithConnection(resultSetArray, connection);
 	}
 
@@ -136,26 +124,15 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		SqlBackendImplUtils.applyArguments(preparedStatement, args);
 		preparedStatement.execute();
 
-		QueryResult queryResult;
-		// Not really a loop
-		for (;;) {
-			int updateCount = preparedStatement.getUpdateCount();
-			if (updateCount != -1) { // -1 means there is no update count
-				queryResult = new QueryResultAsUpdateCountWithPreparedStatementAndConnection(updateCount, preparedStatement, connection);
-				break;
-			}
-			ResultSet resultSet = preparedStatement.getResultSet();
-			if (resultSet != null) { // null means there is no result set
-				queryResult = new QueryResultAsResultSetWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
-				break;
-			}
-			queryResult = new QueryResultAsNeitherWithPreparedStatementAndConnection(preparedStatement, connection);
-			break;
+		int updateCount = preparedStatement.getUpdateCount();
+		if (updateCount != -1) { // -1 means there is no update count
+			return new QueryResultAsUpdateCountWithPreparedStatementAndConnection(updateCount, preparedStatement, connection);
 		}
-		if (!connection.getAutoCommit()) {
-			connection.commit();
+		ResultSet resultSet = preparedStatement.getResultSet();
+		if (resultSet != null) { // null means there is no result set
+			return new QueryResultAsResultSetWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
 		}
-		return queryResult;
+		return new QueryResultAsNeitherWithPreparedStatementAndConnection(preparedStatement, connection);
 	}
 
 	@Override
@@ -182,9 +159,6 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 				continue;
 			}
 			queryResultArray[n] = new QueryResultAsNeitherWithPreparedStatement(preparedStatement);
-		}
-		if (!connection.getAutoCommit()) {
-			connection.commit();
 		}
 		return new MultiQueryResultWithConnection(queryResultArray, connection);
 	}

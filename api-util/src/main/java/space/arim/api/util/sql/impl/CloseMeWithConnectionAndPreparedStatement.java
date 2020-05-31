@@ -42,8 +42,9 @@ public class CloseMeWithConnectionAndPreparedStatement extends CloseMeWithConnec
 	
 	@Override
 	public void close() throws SQLException {
+		super.commitIfNecessary();
 		preparedStatement.close();
-		super.close();
+		super.closeDirectly();
 	}
 
 	@Override

@@ -39,9 +39,20 @@ public class CloseMeWithConnection implements CloseMe {
 		this.connection = connection;
 	}
 	
+	void commitIfNecessary() throws SQLException {
+		if (!connection.getAutoCommit()) {
+			connection.commit();
+		}
+	}
+	
+	void closeDirectly() throws SQLException {
+		connection.close();
+	}
+	
 	@Override
 	public void close() throws SQLException {
-		connection.close();
+		commitIfNecessary();
+		closeDirectly();
 	}
 
 	@Override

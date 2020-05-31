@@ -35,6 +35,9 @@ public class QueryResultAsResultSetWithPreparedStatementAndConnection extends Qu
 	
 	@Override
 	public void close() throws SQLException {
+		if (!connection.getAutoCommit()) {
+			connection.commit();
+		}
 		super.close();
 		connection.close();
 	}

@@ -10,7 +10,9 @@
  * Since it must be guaranteed that the classes in this package close all of their underlying resources, {@link AutoCloseable#close()}
  * is explicitly implemented in each. <br>
  * Furthermore, for additional consistency and clarity, resources are always closed starting with ResultSets, then PreparedStatements,
- * then Connections. Arrays of any type of object are closed in reverse order.
+ * then Connections. Arrays of any type of object are closed in reverse order. <br>
+ * <br>
+ * Also, closing objects bundled with a Connection will first commit the connection if auto-commit is disabled.
  * 
  */
 package space.arim.api.util.sql.impl;
