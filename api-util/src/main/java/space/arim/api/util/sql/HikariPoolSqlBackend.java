@@ -174,6 +174,17 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 	}
 	
 	@Override
+	public CompositeQueryResult composite(String statement, Object... args) throws SQLException {
+		Connection connection = dataSource.getConnection();
+
+		PreparedStatement preparedStatement = connection.prepareStatement(statement);
+		SqlBackendImplUtils.applyArguments(preparedStatement, args);
+		preparedStatement.execute();
+
+		return new CompositeQueryResultUsingPreparedStatementWithConnection(preparedStatement, connection);
+	}
+	
+	@Override
 	public void close() throws SQLException {
 		dataSource.close();
 	}

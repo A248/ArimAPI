@@ -32,7 +32,11 @@ import java.sql.SQLException;
  * <b>Auto-Commit</b> <br>
  * It is recommmended that both modes of auto-commit be supported by implementations – that, if auto-commit is off,
  * implementations commit the connection after all statements have been executed and before the connection is closed.
- * However, this is not a requirement.
+ * However, this is not a requirement. <br>
+ * <br>
+ * <b>Composite Queries</b> <br>
+ * Using {@link #composite(String, Object...)}, it is possible to execute multiple statements using one statement string.
+ * Note that the relevant jdbc url property, <code>allowMultiQueries</code>, must be enabled.
  * 
  * @author A248
  *
@@ -107,6 +111,20 @@ public interface SqlBackend extends AutoCloseable {
 	 * @throws SQLException if something went wrong SQL wise
 	 */
 	MultiQueryResult query(SqlQuery...queries) throws SQLException; 
+	
+	/**
+	 * Executes multiple statements contained within the statement string
+	 * separated by semi{@literal -}colons, returning the result as a {@link CompositeQueryResult}. <br>
+	 * <br>
+	 * Note: This method has no equivalent <code>composite(SqlQuery...)</code> method
+	 * because such a method defeats the purpose of executing a composite statement.
+	 * 
+	 * @param statement the statement string, using question marks where parameters are to be inserted
+	 * @param args the arguments to the prepared statement, may be null or empty
+	 * @return the full, composite results of all statements executed
+	 * @throws SQLException if something went wrong SQL wise
+	 */
+	CompositeQueryResult composite(String statement, Object...args) throws SQLException;
 	
 	/**
 	 * Closes the backend, releasing any accompanying resources
