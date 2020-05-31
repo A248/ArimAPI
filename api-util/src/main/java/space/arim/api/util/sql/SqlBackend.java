@@ -25,8 +25,13 @@ import java.sql.SQLException;
  * A SQL database handler where each returned object is closable. <br>
  * Thus, a single query requires exactly 1 try/catch with resources on the caller's behalf. <br>
  * <br>
+ * <b>Exceptions</b> <br>
  * All methods throw {@link SQLException}. Error handling is also intended to be done on the caller's side. <br>
- * Furthermore, the interface is designed to use PreparedStatement's in the implementation.
+ * Furthermore, the interface is designed to use PreparedStatement's in the implementation. <br>
+ * <br>
+ * <b>Auto-Commit</b> <br>
+ * It is recommmended that both modes of auto-commit be supported by implementations – that, if auto-commit is off,
+ * implementations commit the connection after all statements have been executed. However, this is not a requirement.
  * 
  * @author A248
  *
