@@ -31,8 +31,9 @@ import space.arim.api.util.sql.impl.*;
 /**
  * Concrete implementation of {@link SqlBackend} using, as the name implies,
  * a HikariCP connection pool. <br>
+ * Supports both modes of auto-commit. <br>
  * <br>
- * All methods are thread safe because HikariCP is itself thread safe.
+ * All methods are thread safe because HikariCP is itself thread safe. <br>
  * 
  * @author A248
  *
@@ -59,6 +60,9 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		SqlBackendImplUtils.applyArguments(preparedStatement, args);
 		preparedStatement.execute();
 
+		if (!connection.getAutoCommit()) {
+			connection.commit();
+		}
 		return new CloseMeWithConnectionAndPreparedStatement(connection, preparedStatement);
 	}
 
@@ -77,6 +81,9 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 
 			preparedStatementArray[n] = preparedStatement;
 		}
+		if (!connection.getAutoCommit()) {
+			connection.commit();
+		}
 		return new CloseMeWithConnectionAndPreparedStatementArray(connection, preparedStatementArray);
 	}
 	
@@ -88,6 +95,9 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		SqlBackendImplUtils.applyArguments(preparedStatement, args);
 		ResultSet resultSet = preparedStatement.executeQuery();
 
+		if (!connection.getAutoCommit()) {
+			connection.commit();
+		}
 		return new ResultSetProxyWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
 	}
 
@@ -112,6 +122,9 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 			}
 			resultSetArray[n] = new ResultSetProxyWithPreparedStatement(resultSet, preparedStatement);
 		}
+		if (!connection.getAutoCommit()) {
+			connection.commit();
+		}
 		return new MultiResultSetWithConnection(resultSetArray, connection);
 	}
 
@@ -123,15 +136,26 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		SqlBackendImplUtils.applyArguments(preparedStatement, args);
 		preparedStatement.execute();
 
-		int updateCount = preparedStatement.getUpdateCount();
-		if (updateCount != -1) { // -1 means there is no update count
-			return new QueryResultAsUpdateCountWithPreparedStatementAndConnection(updateCount, preparedStatement, connection);
+		QueryResult queryResult;
+		// Not really a loop
+		for (;;) {
+			int updateCount = preparedStatement.getUpdateCount();
+			if (updateCount != -1) { // -1 means there is no update count
+				queryResult = new QueryResultAsUpdateCountWithPreparedStatementAndConnection(updateCount, preparedStatement, connection);
+				break;
+			}
+			ResultSet resultSet = preparedStatement.getResultSet();
+			if (resultSet != null) { // null means there is no result set
+				queryResult = new QueryResultAsResultSetWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
+				break;
+			}
+			queryResult = new QueryResultAsNeitherWithPreparedStatementAndConnection(preparedStatement, connection);
+			break;
 		}
-		ResultSet resultSet = preparedStatement.getResultSet();
-		if (resultSet != null) { // null means there is no result set
-			return new QueryResultAsResultSetWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
+		if (!connection.getAutoCommit()) {
+			connection.commit();
 		}
-		return new QueryResultAsNeitherWithPreparedStatementAndConnection(preparedStatement, connection);
+		return queryResult;
 	}
 
 	@Override
@@ -158,6 +182,9 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 				continue;
 			}
 			queryResultArray[n] = new QueryResultAsNeitherWithPreparedStatement(preparedStatement);
+		}
+		if (!connection.getAutoCommit()) {
+			connection.commit();
 		}
 		return new MultiQueryResultWithConnection(queryResultArray, connection);
 	}
