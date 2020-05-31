@@ -76,6 +76,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 	@Override
 	public CloseMe execute(SqlQuery... queries) throws SQLException {
 		SqlBackendImplUtils.validatePositiveLength(queries);
+		SqlBackendImplUtils.validateNoneAreNull(queries);
 		Connection connection = dataSource.getConnection();
 
 		PreparedStatement[] preparedStatementArray = new PreparedStatement[queries.length];
@@ -105,6 +106,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 	@Override
 	public MultiResultSet select(SqlQuery... queries) throws SQLException {
 		SqlBackendImplUtils.validatePositiveLength(queries);
+		SqlBackendImplUtils.validateNoneAreNull(queries);
 		Connection connection = dataSource.getConnection();
 
 		ResultSet[] resultSetArray = new ResultSet[queries.length];
@@ -148,6 +150,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 	@Override
 	public MultiQueryResult query(SqlQuery... queries) throws SQLException {
 		SqlBackendImplUtils.validatePositiveLength(queries);
+		SqlBackendImplUtils.validateNoneAreNull(queries);
 		Connection connection = dataSource.getConnection();
 
 		QueryResult[] queryResultArray = new QueryResult[queries.length];

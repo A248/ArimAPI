@@ -20,6 +20,7 @@ package space.arim.api.util.sql.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import space.arim.api.util.sql.SqlBackend;
 import space.arim.api.util.sql.SqlQuery;
@@ -68,6 +69,18 @@ public class SqlBackendImplUtils {
 	public static void validatePositiveLength(SqlQuery[] queries) {
 		if (queries == null || queries.length == 0) {
 			throw new IllegalArgumentException("Cannot execute zero queries");
+		}
+	}
+	
+	/**
+	 * Validates that all of the contents of the array are nonnull.
+	 * 
+	 * @param queries the input array whose contents to validate
+	 * @throws NullPointerException if any query in the array is null
+	 */
+	public static void validateNoneAreNull(SqlQuery[] queries) {
+		for (SqlQuery query : queries) {
+			Objects.requireNonNull(query, "No SqlQuery may be null");
 		}
 	}
 	
