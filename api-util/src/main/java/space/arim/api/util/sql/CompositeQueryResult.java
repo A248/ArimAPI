@@ -30,7 +30,7 @@ public interface CompositeQueryResult extends AutoCloseable {
 
 	/**
 	 * Gets the next QueryResult and moves the cursor forward. Will return
-	 * the first QueryResult if this has never been called before.
+	 * the first QueryResult if this or {@link #skip(int)} has never been called before.
 	 * 
 	 * @return the next query result
 	 * @throws SQLException if something went wrong SQL wise
