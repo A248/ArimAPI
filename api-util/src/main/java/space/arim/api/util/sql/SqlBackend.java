@@ -31,7 +31,8 @@ import java.sql.SQLException;
  * <br>
  * <b>Auto-Commit</b> <br>
  * It is recommmended that both modes of auto-commit be supported by implementations – that, if auto-commit is off,
- * implementations commit the connection after all statements have been executed. However, this is not a requirement.
+ * implementations commit the connection after all statements have been executed and before the connection is closed.
+ * However, this is not a requirement.
  * 
  * @author A248
  *
