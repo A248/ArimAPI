@@ -55,7 +55,7 @@ public class CompositeQueryResultUsingPreparedStatement implements CompositeQuer
 	private QueryResult getInitialQueryResult() throws SQLException {
 		int updateCount = preparedStatement.getUpdateCount();
 		if (updateCount != -1) { // -1 means there is no update count
-			return new QueryResultAsUpdateCount(updateCount);
+			return new QueryResultAsUpdateResultUsingResultSet(updateCount, preparedStatement.getGeneratedKeys());
 		}
 		ResultSet resultSet = preparedStatement.getResultSet();
 		if (resultSet != null) { // null means there is no result set
@@ -75,7 +75,7 @@ public class CompositeQueryResultUsingPreparedStatement implements CompositeQuer
 		}
 		int updateCount = preparedStatement.getUpdateCount();
 		if (updateCount != -1) {
-			return new QueryResultAsUpdateCount(updateCount);
+			return new QueryResultAsUpdateResultUsingResultSet(updateCount, preparedStatement.getGeneratedKeys());
 		}
 		return new QueryResultAsNeither();
 	}

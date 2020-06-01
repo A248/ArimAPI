@@ -22,44 +22,36 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * The result of a SQL query which is either a ResultSet, an update result, or neither. <br>
- * Which type of result this represents depends on the query which produced this object.
+ * A result representing an update count, and possible generated keys. <br>
+ * Counterpart to ResultSet.
  * 
  * @author A248
  *
  */
-public interface QueryResult extends SqlClosable {
+public interface UpdateResult extends AutoCloseable {
 
 	/**
-	 * Whether this constitutes a ResultSet.
+	 * Gets the update count
 	 * 
-	 * @return true if a result set, false otherwise
+	 * @return the update count
 	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
-	boolean isResultSet() throws SQLException;
+	int getUpdateCount() throws SQLException;
 	
 	/**
-	 * Assuming {@link #isResultSet()} is true, gets the ResultSet represented.
+	 * Gets the automatically generated keys, such as any auto increment
+	 * columns in an <code>INSERT</code> statement.
 	 * 
-	 * @return the result set
-	 * @throws RuntimeException or a subclass thereof, if there is no result set
+	 * @return the generated keys
 	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
-	ResultSet toResultSet() throws SQLException;
+	ResultSet getGeneratedKeys() throws SQLException;
 	
 	/**
-	 * Whether this constitutes an update result
+	 * Releases any underlying resources.
 	 * 
-	 * @return true if an update result, false otherwise
 	 */
-	boolean isUpdateResult() throws SQLException;
-	
-	/**
-	 * Assuming {@link #isUpdateResult()} is true, gets the update result represented.
-	 * 
-	 * @return the update result
-	 * @throws RuntimeException or a subclass thereof, if there is no update result
-	 */
-	UpdateResult toUpdateResult() throws SQLException;
+	@Override
+	void close() throws SQLException;
 	
 }

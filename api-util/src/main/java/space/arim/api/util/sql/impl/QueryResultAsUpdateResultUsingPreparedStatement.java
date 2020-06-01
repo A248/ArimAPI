@@ -18,58 +18,27 @@
  */
 package space.arim.api.util.sql.impl;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import space.arim.api.util.sql.QueryResult;
+public class QueryResultAsUpdateResultUsingPreparedStatement extends QueryResultAsUpdateResult {
 
-/**
- * A QueryResult which represents an update count
- * 
- * @author A248
- *
- */
-public class QueryResultAsUpdateCount implements QueryResult {
-
-	private final int updateCount;
+	private final PreparedStatement preparedStatement;
 	
-	/**
-	 * Creates from an update count
-	 * 
-	 * @param updateCount the update count
-	 */
-	public QueryResultAsUpdateCount(int updateCount) {
-		this.updateCount = updateCount;
+	public QueryResultAsUpdateResultUsingPreparedStatement(int updateCount, PreparedStatement preparedStatement) {
+		super(updateCount);
+		this.preparedStatement = preparedStatement;
 	}
 
 	@Override
-	public boolean isResultSet() {
-		return false;
+	public ResultSet getGeneratedKeys() throws SQLException {
+		return preparedStatement.getGeneratedKeys();
 	}
-
-	@Override
-	public ResultSet toResultSet() {
-		throw new IllegalStateException("QueryResult is not a ResultSet");
-	}
-
-	@Override
-	public boolean isUpdateCount() {
-		return true;
-	}
-
-	@Override
-	public int toUpdateCount() {
-		return updateCount;
-	}
-
+	
 	@Override
 	public void close() throws SQLException {
-		
+		preparedStatement.close();
 	}
 
-	@Override
-	public String toString() {
-		return "QueryResultAsUpdateCount [updateCount=" + updateCount + "]";
-	}
-	
 }

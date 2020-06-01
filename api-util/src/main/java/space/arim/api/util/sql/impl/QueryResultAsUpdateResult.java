@@ -24,49 +24,43 @@ import java.sql.SQLException;
 import space.arim.api.util.sql.QueryResult;
 import space.arim.api.util.sql.UpdateResult;
 
-/**
- * A {@link QueryResult} which is neither a ResultSet nor an update count. <br>
- * <br>
- * Calling {@link #close()} close on this class alone does nothing. Rather,
- * it is intended that subclasses override the close method and close any of their attached objects.
- * 
- * @author A248
- *
- */
-public class QueryResultAsNeither implements QueryResult {
+public abstract class QueryResultAsUpdateResult implements QueryResult, UpdateResult {
+
+	private final int updateCount;
+	
+	public QueryResultAsUpdateResult(int updateCount) {
+		this.updateCount = updateCount;
+	}
 
 	@Override
-	public boolean isResultSet() {
+	public int getUpdateCount() throws SQLException {
+		return updateCount;
+	}
+
+	@Override
+	public abstract ResultSet getGeneratedKeys() throws SQLException;
+
+	@Override
+	public boolean isResultSet() throws SQLException {
 		return false;
 	}
 
 	@Override
-	public ResultSet toResultSet() {
-		throw new IllegalStateException("QueryResult is neither a ResultSet nor update count");
+	public ResultSet toResultSet() throws SQLException {
+		throw new IllegalStateException("QueryResult is not a ResultSet");
 	}
 
 	@Override
-	public boolean isUpdateResult() {
-		return false;
+	public boolean isUpdateResult() throws SQLException {
+		return true;
 	}
 
 	@Override
-	public UpdateResult toUpdateResult() {
-		throw new IllegalStateException("QueryResult is neither a ResultSet nor update count");
+	public UpdateResult toUpdateResult() throws SQLException {
+		return this;
 	}
-
-	/**
-	 * Does nothing. See class javadoc
-	 * 
-	 */
+	
 	@Override
-	public void close() throws SQLException {
-		
-	}
-
-	@Override
-	public String toString() {
-		return "QueryResultAsNeither []";
-	}
+	public abstract void close() throws SQLException;
 
 }

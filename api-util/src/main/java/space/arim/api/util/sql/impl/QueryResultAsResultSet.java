@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import space.arim.api.util.sql.QueryResult;
+import space.arim.api.util.sql.UpdateResult;
 
 /**
  * A {@link QueryResult} representing a ResultSet. In the case that programmers
@@ -53,13 +54,13 @@ public class QueryResultAsResultSet extends ResultSetProxy implements QueryResul
 	}
 
 	@Override
-	public boolean isUpdateCount() {
+	public boolean isUpdateResult() {
 		return false;
 	}
 
 	@Override
-	public int toUpdateCount() {
-		throw new IllegalStateException("QueryResult is not an update count");
+	public UpdateResult toUpdateResult() {
+		throw new IllegalStateException("QueryResult is neither a ResultSet nor update count");
 	}
 	
 	@Override

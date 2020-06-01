@@ -18,33 +18,26 @@
  */
 package space.arim.api.util.sql.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class QueryResultAsUpdateCountWithPreparedStatementAndConnection extends QueryResultAsUpdateCountWithPreparedStatement {
+public class QueryResultAsUpdateResultUsingResultSet extends QueryResultAsUpdateResult {
 
-	private final Connection connection;
+	private final ResultSet generatedKeys;
 	
-	public QueryResultAsUpdateCountWithPreparedStatementAndConnection(int updateCount,
-			PreparedStatement preparedStatement, Connection connection) {
-		super(updateCount, preparedStatement);
-		this.connection = connection;
+	public QueryResultAsUpdateResultUsingResultSet(int updateCount, ResultSet generatedKeys) {
+		super(updateCount);
+		this.generatedKeys = generatedKeys;
+	}
+
+	@Override
+	public ResultSet getGeneratedKeys() throws SQLException {
+		return generatedKeys;
 	}
 	
 	@Override
 	public void close() throws SQLException {
-		if (!connection.getAutoCommit()) {
-			connection.commit();
-		}
-		super.close();
-		connection.close();
-	}
-
-	@Override
-	public String toString() {
-		return "QueryResultAsUpdateCountWithPreparedStatementAndConnection [connection=" + connection + ", toString()="
-				+ super.toString() + "]";
+		generatedKeys.close();
 	}
 
 }

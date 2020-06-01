@@ -142,7 +142,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 
 		int updateCount = preparedStatement.getUpdateCount();
 		if (updateCount != -1) { // -1 means there is no update count
-			return new QueryResultAsUpdateCountWithPreparedStatementAndConnection(updateCount, preparedStatement, connection);
+			return new QueryResultAsUpdateResultUsingPreparedStatementWithConnection(updateCount, preparedStatement, connection);
 		}
 		ResultSet resultSet = preparedStatement.getResultSet();
 		if (resultSet != null) { // null means there is no result set
@@ -167,7 +167,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 			
 			int updateCount = preparedStatement.getUpdateCount();
 			if (updateCount != -1) { // -1 means there is no update count
-				queryResultArray[n] = new QueryResultAsUpdateCountWithPreparedStatement(updateCount, preparedStatement);
+				queryResultArray[n] = new QueryResultAsUpdateResultUsingPreparedStatement(updateCount, preparedStatement);
 				continue;
 			}
 			ResultSet resultSet = preparedStatement.getResultSet();
