@@ -34,7 +34,7 @@ public interface QueryResult extends AutoCloseable {
 	 * Whether this constitutes a ResultSet.
 	 * 
 	 * @return true if a result set, false otherwise
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	boolean isResultSet() throws SQLException;
 	
@@ -43,7 +43,7 @@ public interface QueryResult extends AutoCloseable {
 	 * 
 	 * @return the result set
 	 * @throws RuntimeException or a subclass thereof, if there is no result set
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	ResultSet toResultSet() throws SQLException;
 	
@@ -51,7 +51,7 @@ public interface QueryResult extends AutoCloseable {
 	 * Whether this constitutes an update count
 	 * 
 	 * @return true if an update count, false otherwise
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	boolean isUpdateCount() throws SQLException;
 	
@@ -60,14 +60,14 @@ public interface QueryResult extends AutoCloseable {
 	 * 
 	 * @return the update count
 	 * @throws RuntimeException or a subclass thereof, if there is no update count
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	int toUpdateCount() throws SQLException;
 	
 	/**
 	 * Closes and releases all resources, including any result sets and update counts represented
 	 * 
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	@Override
 	void close() throws SQLException;

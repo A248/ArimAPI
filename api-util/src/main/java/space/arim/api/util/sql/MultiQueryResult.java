@@ -35,7 +35,7 @@ public interface MultiQueryResult extends AutoCloseable {
 	 * @param index the index
 	 * @return the query result at the index
 	 * @throws ArrayIndexOutOfBoundsException if <code>index {@literal <} 0 || index {@literal >}= length()</code>
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	QueryResult get(int index) throws SQLException;
 	
@@ -43,14 +43,14 @@ public interface MultiQueryResult extends AutoCloseable {
 	 * The size of the QueryResult array
 	 * 
 	 * @return the size or length of the array
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	int length() throws SQLException;
 	
 	/**
 	 * Closes and releases all resources, including but not limited each QueryResult in the underlying array
 	 * 
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	@Override
 	void close() throws SQLException;

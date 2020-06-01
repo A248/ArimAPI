@@ -31,7 +31,7 @@ public interface CloseMe extends AutoCloseable {
 	/**
 	 * Releases any underlying resources.
 	 * 
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	@Override
 	void close() throws SQLException;

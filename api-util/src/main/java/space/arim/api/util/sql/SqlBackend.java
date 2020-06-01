@@ -51,7 +51,7 @@ public interface SqlBackend extends AutoCloseable {
 	 * @param statement the statement string, using question marks where parameters are to be inserted
 	 * @param args the arguments to the prepared statement, may be null or empty
 	 * @return an object which must be closed by the caller
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	CloseMe execute(String statement, Object...args) throws SQLException;
 	
@@ -61,7 +61,7 @@ public interface SqlBackend extends AutoCloseable {
 	 * 
 	 * @param queries the queries to execute
 	 * @return  an object which must be closed by the caller
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	CloseMe execute(SqlQuery...queries) throws SQLException;
 	
@@ -71,7 +71,7 @@ public interface SqlBackend extends AutoCloseable {
 	 * @param statement the statement string, using question marks where parameters are to be inserted
 	 * @param args the arguments to the prepared statement, may be null or empty
 	 * @return the result set which must be closed by the caller
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	ResultSet select(String statement, Object...args) throws SQLException;
 	
@@ -87,7 +87,7 @@ public interface SqlBackend extends AutoCloseable {
 	 * 
 	 * @param queries the queries to execute
 	 * @return an array of result sets enclosed in a single closable package
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	MultiResultSet select(SqlQuery...queries) throws SQLException;
 	
@@ -97,7 +97,7 @@ public interface SqlBackend extends AutoCloseable {
 	 * @param statement the statement string, using question marks where parameters are to be inserted
 	 * @param args the arguments to the prepared statement, may be null or empty
 	 * @return the query result which must be closed by the caller
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	QueryResult query(String statement, Object...args) throws SQLException;
 	
@@ -110,7 +110,7 @@ public interface SqlBackend extends AutoCloseable {
 	 * 
 	 * @param queries the queries to execute
 	 * @return an array of query results enclosed in a single closable package
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	MultiQueryResult query(SqlQuery...queries) throws SQLException; 
 	
@@ -124,7 +124,7 @@ public interface SqlBackend extends AutoCloseable {
 	 * @param statement the statement string, using question marks where parameters are to be inserted
 	 * @param args the arguments to the prepared statement, may be null or empty
 	 * @return the full, composite results of all statements executed
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	CompositeQueryResult composite(String statement, Object...args) throws SQLException;
 	

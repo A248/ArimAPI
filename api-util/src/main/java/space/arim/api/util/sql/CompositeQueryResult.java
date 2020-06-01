@@ -33,7 +33,7 @@ public interface CompositeQueryResult extends AutoCloseable {
 	 * the first QueryResult if this or {@link #skip(int)} has never been called before.
 	 * 
 	 * @return the next query result
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	QueryResult next() throws SQLException;
 	
@@ -42,14 +42,14 @@ public interface CompositeQueryResult extends AutoCloseable {
 	 * instead of calling {@link #next()} merely to skip unneeded results.
 	 * 
 	 * @param skip the amount of results to skip
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	void skip(int skip) throws SQLException;
 	
 	/**
 	 * Releases any underlying resources.
 	 * 
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	@Override
 	void close() throws SQLException;
