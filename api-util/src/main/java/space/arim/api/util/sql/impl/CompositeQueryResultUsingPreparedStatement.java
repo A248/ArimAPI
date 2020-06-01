@@ -90,7 +90,13 @@ public class CompositeQueryResultUsingPreparedStatement implements CompositeQuer
 	@Override
 	public void skip(int skip) throws SQLException {
 		while (skip > 0) {
-			preparedStatement.getMoreResults();
+			if (startQueryResult != null) {
+				queryResults.add(startQueryResult);
+				startQueryResult = null;
+
+			} else {
+				preparedStatement.getMoreResults();
+			}
 			skip--;
 		}
 	}
