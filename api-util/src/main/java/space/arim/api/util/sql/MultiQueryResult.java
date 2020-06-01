@@ -34,20 +34,23 @@ public interface MultiQueryResult extends AutoCloseable {
 	 * 
 	 * @param index the index
 	 * @return the query result at the index
-	 * @throws ArrayIndexOutOfBoundsException if <code>index {@literal <} 0 || index {@literal >}= length()</codE>
+	 * @throws ArrayIndexOutOfBoundsException if <code>index {@literal <} 0 || index {@literal >}= length()</code>
+	 * @throws SQLException if something went wrong SQL wise
 	 */
-	QueryResult get(int index);
+	QueryResult get(int index) throws SQLException;
 	
 	/**
 	 * The size of the QueryResult array
 	 * 
 	 * @return the size or length of the array
+	 * @throws SQLException if something went wrong SQL wise
 	 */
-	int length();
+	int length() throws SQLException;
 	
 	/**
 	 * Closes and releases all resources, including but not limited each QueryResult in the underlying array
 	 * 
+	 * @throws SQLException if something went wrong SQL wise
 	 */
 	@Override
 	void close() throws SQLException;

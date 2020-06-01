@@ -34,31 +34,35 @@ public interface QueryResult extends AutoCloseable {
 	 * Whether this constitutes a ResultSet.
 	 * 
 	 * @return true if a result set, false otherwise
+	 * @throws SQLException if something went wrong SQL wise
 	 */
-	boolean isResultSet();
+	boolean isResultSet() throws SQLException;
 	
 	/**
 	 * Assuming {@link #isResultSet()} is true, gets the ResultSet represented.
 	 * 
 	 * @return the result set
 	 * @throws RuntimeException or a subclass thereof, if there is no result set
+	 * @throws SQLException if something went wrong SQL wise
 	 */
-	ResultSet toResultSet();
+	ResultSet toResultSet() throws SQLException;
 	
 	/**
 	 * Whether this constitutes an update count
 	 * 
 	 * @return true if an update count, false otherwise
+	 * @throws SQLException if something went wrong SQL wise
 	 */
-	boolean isUpdateCount();
+	boolean isUpdateCount() throws SQLException;
 	
 	/**
 	 * Assuming {@link #isUpdateCount()} is true, gets the update count represented.
 	 * 
 	 * @return the update count
 	 * @throws RuntimeException or a subclass thereof, if there is no update count
+	 * @throws SQLException if something went wrong SQL wise
 	 */
-	int toUpdateCount();
+	int toUpdateCount() throws SQLException;
 	
 	/**
 	 * Closes and releases all resources, including any result sets and update counts represented

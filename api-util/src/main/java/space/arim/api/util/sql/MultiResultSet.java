@@ -37,20 +37,23 @@ public interface MultiResultSet extends AutoCloseable {
 	 * 
 	 * @param index the index
 	 * @return the result set at the index
-	 * @throws ArrayIndexOutOfBoundsException if <code>index {@literal <} 0 || index {@literal >}= length()</codE>
+	 * @throws ArrayIndexOutOfBoundsException if <code>index {@literal <} 0 || index {@literal >}= length()</code>
+	 * @throws SQLException if something went wrong SQL wise
 	 */
-	ResultSet get(int index);
+	ResultSet get(int index) throws SQLException;
 	
 	/**
 	 * The size of the ResultSet array
 	 * 
 	 * @return the size or length of the array
+	 * @throws SQLException if something went wrong SQL wise
 	 */
-	int length();
+	int length() throws SQLException;
 	
 	/**
 	 * Closes and releases all resources, including but not limited to each ResultSet in the underlying array
 	 * 
+	 * @throws SQLException if something went wrong SQL wise
 	 */
 	@Override
 	void close() throws SQLException;
