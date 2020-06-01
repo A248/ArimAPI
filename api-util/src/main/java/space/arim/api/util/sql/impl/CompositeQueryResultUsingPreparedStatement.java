@@ -38,6 +38,7 @@ public class CompositeQueryResultUsingPreparedStatement implements CompositeQuer
 
 	private final PreparedStatement preparedStatement;
 	private QueryResult startQueryResult;
+	// List because we want to close in order
 	private List<QueryResult> queryResults = new ArrayList<>();
 
 	/**
@@ -103,8 +104,8 @@ public class CompositeQueryResultUsingPreparedStatement implements CompositeQuer
 
 	@Override
 	public void close() throws SQLException {
-		for (QueryResult qr : queryResults) {
-			qr.close();
+		for (int n = queryResults.size() - 1; n >= 0; n--) {
+			queryResults.get(n).close();
 		}
 		preparedStatement.close();
 	}
