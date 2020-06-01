@@ -18,22 +18,14 @@
  */
 package space.arim.api.util.sql;
 
-import java.sql.SQLException;
-
 /**
- * Subclass of {@link AutoCloseable} which specifically throws {@link SQLException} in {@link #close()}
+ * A object which merely closes attached resources when it is itself closed.
  * 
  * @author A248
  *
  */
-public interface CloseMe extends AutoCloseable {
+public interface CloseMe extends SqlClosable {
 
-	/**
-	 * Releases any underlying resources.
-	 * 
-	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
-	 */
-	@Override
-	void close() throws SQLException;
+
 
 }

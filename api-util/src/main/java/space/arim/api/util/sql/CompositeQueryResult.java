@@ -26,7 +26,7 @@ import java.sql.SQLException;
  * @author A248
  *
  */
-public interface CompositeQueryResult extends AutoCloseable {
+public interface CompositeQueryResult extends SqlClosable {
 
 	/**
 	 * Gets the next QueryResult and moves the cursor forward. Will return
@@ -45,13 +45,5 @@ public interface CompositeQueryResult extends AutoCloseable {
 	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	void skip(int skip) throws SQLException;
-	
-	/**
-	 * Releases any underlying resources.
-	 * 
-	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
-	 */
-	@Override
-	void close() throws SQLException;
 	
 }

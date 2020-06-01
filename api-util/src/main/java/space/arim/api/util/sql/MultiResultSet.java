@@ -28,7 +28,7 @@ import java.sql.SQLException;
  * @author A248
  *
  */
-public interface MultiResultSet extends AutoCloseable {
+public interface MultiResultSet extends SqlClosable {
 
 	/**
 	 * Gets one of the result sets in the array. <br>
@@ -49,13 +49,5 @@ public interface MultiResultSet extends AutoCloseable {
 	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	int length() throws SQLException;
-	
-	/**
-	 * Closes and releases all resources, including but not limited to each ResultSet in the underlying array
-	 * 
-	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
-	 */
-	@Override
-	void close() throws SQLException;
 
 }

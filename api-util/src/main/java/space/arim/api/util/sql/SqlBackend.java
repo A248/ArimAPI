@@ -43,7 +43,7 @@ import java.sql.SQLException;
  * @author A248
  *
  */
-public interface SqlBackend extends AutoCloseable {
+public interface SqlBackend extends SqlClosable {
 	
 	/**
 	 * Executes a simple statement without returning any information as to the result of the query.
@@ -129,7 +129,7 @@ public interface SqlBackend extends AutoCloseable {
 	CompositeQueryResult composite(String statement, Object...args) throws SQLException;
 	
 	/**
-	 * Closes the backend, releasing any accompanying resources
+	 * Closes the backend, releasing any used resources
 	 * 
 	 */
 	@Override

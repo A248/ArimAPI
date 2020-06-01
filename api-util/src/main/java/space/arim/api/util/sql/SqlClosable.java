@@ -21,30 +21,19 @@ package space.arim.api.util.sql;
 import java.sql.SQLException;
 
 /**
- * A package of a QueryResult array which is auto closable for convenience. <br>
- * Closing will close all of the underlying query results AND reliant connections.
+ * Subclass of {@link AutoCloseable} which specifically throws {@link SQLException} in {@link #close()}
  * 
  * @author A248
  *
  */
-public interface MultiQueryResult extends SqlClosable {
+public interface SqlClosable extends AutoCloseable {
 
 	/**
-	 * Gets one of the query results in the array. Never <code>null</code>
+	 * Releases any underlying resources.
 	 * 
-	 * @param index the index
-	 * @return the query result at the index
-	 * @throws ArrayIndexOutOfBoundsException if <code>index {@literal <} 0 || index {@literal >}= length()</code>
 	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
-	QueryResult get(int index) throws SQLException;
-	
-	/**
-	 * The size of the QueryResult array
-	 * 
-	 * @return the size or length of the array
-	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
-	 */
-	int length() throws SQLException;
+	@Override
+	void close() throws SQLException;
 	
 }

@@ -28,7 +28,7 @@ import java.sql.SQLException;
  * @author A248
  *
  */
-public interface QueryResult extends AutoCloseable {
+public interface QueryResult extends SqlClosable {
 
 	/**
 	 * Whether this constitutes a ResultSet.
@@ -63,13 +63,5 @@ public interface QueryResult extends AutoCloseable {
 	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	int toUpdateCount() throws SQLException;
-	
-	/**
-	 * Closes and releases all resources, including any result sets and update counts represented
-	 * 
-	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
-	 */
-	@Override
-	void close() throws SQLException;
 	
 }
