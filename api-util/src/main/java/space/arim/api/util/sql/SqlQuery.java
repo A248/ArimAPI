@@ -19,13 +19,16 @@
 package space.arim.api.util.sql;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * An executable query wrapping a statement string and arguments to the statement. <br>
  * Immutable and thread safe. <br>
  * <br>
  * Implementations of {@link SqlBackend} will create a PreparedStatement from the statement string,
- * then parameters in the statement will be replaced with the arguments provided.
+ * then parameters in the statement will be replaced with the arguments provided. <br>
+ * <br>
+ * The statement string must be nonnull because it does not make any sense to execute a null query.
  * 
  * @author A248
  *
@@ -42,7 +45,7 @@ public class SqlQuery {
 	 * @param args the arguments to the prepared statement, may be null or empty
 	 */
 	public SqlQuery(String statement, Object...args) {
-		this.statement = statement;
+		this.statement = Objects.requireNonNull(statement, "The statement of a SqlQuery must not be null");
 		this.args = args;
 	}
 	
@@ -99,7 +102,7 @@ public class SqlQuery {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + Arrays.hashCode(args);
-		result = prime * result + ((statement == null) ? 0 : statement.hashCode());
+		result = prime * result + statement.hashCode();
 		return result;
 	}
 
@@ -112,8 +115,7 @@ public class SqlQuery {
 			return false;
 		}
 		SqlQuery other = (SqlQuery) obj;
-		return Arrays.equals(args, other.args)
-				&& ((statement == null) ? (other.statement == null) : statement.equals(other.statement));
+		return Arrays.equals(args, other.args) && statement.equals(other.statement);
 	}
 	
 	@Override

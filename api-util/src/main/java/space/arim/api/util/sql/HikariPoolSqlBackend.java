@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import space.arim.shaded.com.zaxxer.hikari.HikariConfig;
 import space.arim.shaded.com.zaxxer.hikari.HikariDataSource;
@@ -64,6 +65,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 	
 	@Override
 	public CloseMe execute(String statement, Object... args) throws SQLException {
+		Objects.requireNonNull(statement, "The statement to execute must not be null");
 		Connection connection = dataSource.getConnection();
 
 		PreparedStatement preparedStatement = connection.prepareStatement(statement);
@@ -94,6 +96,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 	
 	@Override
 	public ResultSet select(String statement, Object... args) throws SQLException {
+		Objects.requireNonNull(statement, "The statement to execute must not be null");
 		Connection connection = dataSource.getConnection();
 
 		PreparedStatement preparedStatement = connection.prepareStatement(statement);
@@ -130,6 +133,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 
 	@Override
 	public QueryResult query(String statement, Object... args) throws SQLException {
+		Objects.requireNonNull(statement, "The statement to execute must not be null");
 		Connection connection = dataSource.getConnection();
 
 		PreparedStatement preparedStatement = connection.prepareStatement(statement);
@@ -178,6 +182,7 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 	
 	@Override
 	public CompositeQueryResult composite(String statement, Object... args) throws SQLException {
+		Objects.requireNonNull(statement, "The statement to execute must not be null");
 		Connection connection = dataSource.getConnection();
 
 		PreparedStatement preparedStatement = connection.prepareStatement(statement);

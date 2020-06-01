@@ -36,7 +36,9 @@ import java.sql.SQLException;
  * <br>
  * <b>Composite Queries</b> <br>
  * Using {@link #composite(String, Object...)}, it is possible to execute multiple statements using one statement string.
- * Note that the relevant jdbc url property, <code>allowMultiQueries</code>, must be enabled.
+ * Note that the relevant jdbc url property, <code>allowMultiQueries</code>, must be enabled. <br>
+ * <br>
+ * Statement strings must be nonnull because it does not make any sense to execute a null query.
  * 
  * @author A248
  *
