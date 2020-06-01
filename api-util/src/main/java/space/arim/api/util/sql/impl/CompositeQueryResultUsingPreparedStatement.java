@@ -45,7 +45,7 @@ public class CompositeQueryResultUsingPreparedStatement implements CompositeQuer
 	 * derived from the statement.
 	 * 
 	 * @param preparedStatement the prepared statement
-	 * @throws SQLException if something went wrong SQL wise
+	 * @throws SQLException if something went wrong getting the initial query result
 	 */
 	public CompositeQueryResultUsingPreparedStatement(PreparedStatement preparedStatement) throws SQLException {
 		this.preparedStatement = preparedStatement;
