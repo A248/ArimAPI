@@ -25,8 +25,13 @@ import java.util.UUID;
  * UUIDs from forms with and without dashes.
  * 
  * @author A248
- *
+ * 
+ * @deprecated This may cause confusion as it clashes with a similarly named, and similarly functional, utility class
+ * in <a href="https://github.com/A248/UUIDVault">UUIDVault</a>. It is intended UUIDVault be used with ArimAPI,
+ * although there is no required dependency. This class is therefore slated for removal.
+ * 
  */
+@Deprecated(forRemoval = true)
 public final class UUIDUtil {
 
 	private UUIDUtil() {}
