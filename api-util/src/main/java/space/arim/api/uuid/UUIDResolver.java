@@ -30,10 +30,11 @@ import space.arim.api.annotation.Blocking;
  * @deprecated This interface has been long deprecated. {@link UUIDResolution} was its immediate replacement,
  * which has more intuitive method names and does not necessitate throwing exceptions. However, since then,
  * <a href="https://github.com/A248/UUIDVault">UUIDVault</a> has emerged as a complete and improved API
- * for UUID and name resolution. It should be used instead.
+ * for UUID and name resolution. It should be used instead. Also, since this class may clash with the corresponding
+ * interface in UUIDVault, it is deprecated <i>for removal</i>.
  *
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @SuppressWarnings({"deprecation", "removal"})
 public interface UUIDResolver {
 	
