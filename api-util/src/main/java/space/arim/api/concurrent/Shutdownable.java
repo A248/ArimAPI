@@ -21,22 +21,27 @@ package space.arim.api.concurrent;
 import java.util.concurrent.TimeUnit;
 
 import space.arim.universal.util.concurrent.EnhancedExecutor;
-import space.arim.universal.util.concurrent.Scheduler;
 
 /**
- * An optionally implemented interface for {@link EnhancedExecutor}s and/or {@link Scheduler}s
+ * An optionally implemented interface for {@link EnhancedExecutor}s
  * to shutdown any thread pools or resources used in implementations.
  * 
  * @author A248
  *
+ * @deprecated This interface is incomplete. It provides methods for shutting down
+ * but not for checking if shut down, checking for termination, etc. Please use
+ * {@link space.arim.universal.util.concurrent.StoppableService StoppableService} as a comprehensive replacement.
  */
+@Deprecated
 public interface Shutdownable {
 
 	/**
 	 * Shuts down the executor in an orderly fashion.
 	 * 
 	 */
-	void shutdown();
+	default void shutdown() {
+		
+	}
 	
 	/**
 	 * Shuts down the executor in an orderly fashion AND
