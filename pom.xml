@@ -30,7 +30,7 @@
 		<slf4j.version>1.7.25</slf4j.version><!-- Included on Paper 1.12.2+, Waterfall, Sponge, and Velocity -->
 		
 		<!-- Shaded dependencies -->
-		<universal.version>0.9.1-SNAPSHOT</universal.version>
+		<universal.version>0.10.0-SNAPSHOT</universal.version>
 		<shinyclasspath.version>0.3.2-SNAPSHOT</shinyclasspath.version><!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
 		
 		<!-- Server software -->
