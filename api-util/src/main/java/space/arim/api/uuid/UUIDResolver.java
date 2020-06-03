@@ -27,7 +27,10 @@ import space.arim.api.annotation.Blocking;
  * 
  * @author A248
  *
- * @deprecated Use {@link UUIDResolution}, which has more intuitive method names and does not necessitate throwing exceptions
+ * @deprecated This interface has been long deprecated. {@link UUIDResolution} was its immediate replacement,
+ * which has more intuitive method names and does not necessitate throwing exceptions. However, since then,
+ * <a href="https://github.com/A248/UUIDVault">UUIDVault</a> has emerged as a complete and improved API
+ * for UUID and name resolution. It should be used instead.
  *
  */
 @Deprecated
