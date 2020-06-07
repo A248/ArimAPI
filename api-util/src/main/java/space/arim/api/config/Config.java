@@ -99,7 +99,7 @@ public abstract class Config {
 			saveTo(file);
 		}
 		values.putAll(loadFile(file));
-		if (!getFromMapRecursive(values, versionKey, Object.class).equals(getFromMapRecursive(defaults, versionKey, Object.class))) {
+		if (!getFromMapRecursive(defaults, versionKey, Object.class).equals(getFromMapRecursive(values, versionKey, Object.class))) {
 			initVersionUpdate(file);
 		}
 	}
