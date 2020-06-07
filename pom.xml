@@ -181,8 +181,6 @@
 				<groupId>space.arim</groupId>
 				<artifactId>universal-gpl</artifactId>
 				<version>${universal.version}</version>
-				<type>zip</type>
-				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>space.arim</groupId>

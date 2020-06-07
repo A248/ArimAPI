@@ -30,9 +30,6 @@
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
-			<resource>
-				<directory>${project.build.directory}/shared-resources</directory>
-			</resource>
 		</resources>
 		<plugins>
 			<plugin>
@@ -45,30 +42,6 @@
 						<goals>
 							<goal>filter-sources</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<configuration>
-					<outputDirectory>${project.build.directory}/shared-resources</outputDirectory>
-					<excludeTransitive>true</excludeTransitive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>unpack-shared-resources</id>
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<includes>LICENSE.txt</includes>
-							<includeGroupIds>space.arim</includeGroupIds>
-							<includeArtifactIds>universal-gpl</includeArtifactIds>
-							<includeScope>provided</includeScope>
-							<includeTypes>zip</includeTypes>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -94,6 +67,9 @@
 									
 									<!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
 									<include>space.arim:shinyclasspath</include>
+									
+									<!-- Includes GPL License -->
+									<include>space.arim:universal-gpl</include>
 								</includes>
 							</artifactSet>
 						</configuration>
@@ -111,9 +87,7 @@
 		<dependency>
 			<groupId>space.arim</groupId>
 			<artifactId>universal-gpl</artifactId>
-			<type>zip</type>
 			<optional>true</optional>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
