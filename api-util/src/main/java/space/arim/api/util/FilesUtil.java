@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
@@ -41,19 +42,19 @@ public final class FilesUtil {
 	private FilesUtil() {}
 	
 	/**
-	 * Utilises class <code>com.google.common.io.ByteStreams</code> <br>
+	 * Copies the input stream to a file. <br>
 	 * <br>
-	 * <b>If that class is not on the classpath do not call this method!</b>
+	 * <i>Note: Thise method used to require Guava. Not anymore.</i>
 	 * 
-	 * @param target - the file to save to
-	 * @param input - the source from which to save. Use <code>YourClass.class.getResourceAsStream(File.separator + "config.yml")</code>
+	 * @param target the file to save to
+	 * @param input the source from which to save
 	 * @return true if the saving was successful
 	 * @throws IOException if an IO error occurred
 	 */
 	public static boolean saveFromStream(File target, InputStream input) throws IOException {
 		if (makeDir(target.getParentFile())) {
 			try (FileOutputStream output = new FileOutputStream(target)){
-				com.google.common.io.ByteStreams.copy(input, output);
+				input.transferTo(output);
 				return true;
 			}
 		}
@@ -70,7 +71,7 @@ public final class FilesUtil {
 	 */
 	public static boolean readLines(File file, Consumer<String> processor, Consumer<IOException> exceptionHandler) {
 		if (makeDir(file.getParentFile()) && file.exists()) {
-			try (Scanner scanner = new Scanner(file, "UTF-8")) {
+			try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8)) {
 				while (scanner.hasNextLine()) {
 					processor.accept(scanner.nextLine());
 				}
@@ -95,7 +96,7 @@ public final class FilesUtil {
 	 */
 	public static boolean writeTo(File file, ErringConsumer<Writer, IOException> printer, Consumer<IOException> exceptionHandler) {
 		if (file.exists() || generateBlankFile(file)) {
-			try (OutputStream output = new FileOutputStream(file); OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8")) {
+			try (OutputStream output = new FileOutputStream(file); OutputStreamWriter writer = new OutputStreamWriter(output, StandardCharsets.UTF_8)) {
 				printer.accept(writer);
 				return true;
 			} catch (IOException ex) {
