@@ -127,6 +127,18 @@ public final class StringsUtil {
 		return input;
 	}
 	
+	/**
+	 * Expands a 32-length short form of a UUID to its long form. <br>
+	 * Both forms are unique, but some remote APIs (such as the Mojang API) return short forms.
+	 * 
+	 * @param shortUuid the shortened uuid form
+	 * @return the expanded uuid form, which is parsable with {@link java.util.UUID#fromString(String)}
+	 */
+	public static String expandShortenedUUID(String shortUuid) {
+		return shortUuid.substring(0, 8) + "-" + shortUuid.substring(8, 12) + "-" + shortUuid.substring(12, 16)
+		+ "-" + shortUuid.substring(16, 20) + "-" + shortUuid.substring(20, 32);
+	}
+	
 	public static String basicTodaysDate() {
 		return BASIC_DATE_FORMATTER.get().format(new Date());
 	}

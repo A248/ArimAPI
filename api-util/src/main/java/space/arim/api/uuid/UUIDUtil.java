@@ -19,6 +19,7 @@
 package space.arim.api.uuid;
 
 import java.util.UUID;
+import space.arim.api.util.StringsUtil;
 
 /**
  * Utility class for manipulating UUIDs. Allows programmers to shorten and expand
@@ -28,7 +29,8 @@ import java.util.UUID;
  * 
  * @deprecated This may cause confusion as it clashes with a similarly named, and similarly functional, utility class
  * in <a href="https://github.com/A248/UUIDVault">UUIDVault</a>. It is intended UUIDVault be used with ArimAPI,
- * although there is no required dependency. This class is therefore slated for removal.
+ * although there is no required dependency. This class is therefore slated for removal. If programmers still wish
+ * to use {@link #expand(String)} without UUIDVault, they should prefer {@link StringsUtil#expandShortenedUUID(String)}.
  * 
  */
 @Deprecated(forRemoval = true)
