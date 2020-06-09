@@ -33,7 +33,7 @@ import com.google.gson.JsonSyntaxException;
 import space.arim.universal.util.web.HttpStatus;
 import space.arim.universal.util.web.HttpStatusException;
 
-import space.arim.api.uuid.UUIDUtil;
+import space.arim.api.util.StringsUtil;
 
 public final class FetcherUtil {
 	
@@ -71,7 +71,7 @@ public final class FetcherUtil {
 	}
 	
 	public static UUID mojangApi(final String name) throws FetcherException, HttpStatusException {
-		return UUID.fromString(UUIDUtil.expand(getJsonMapFromUrl(MOJANG_API_FROM_NAME + Objects.requireNonNull(name, "Name must not be null!")).get("id").toString()));
+		return UUID.fromString(StringsUtil.expandShortenedUUID(getJsonMapFromUrl(MOJANG_API_FROM_NAME + Objects.requireNonNull(name, "Name must not be null!")).get("id").toString()));
 	}
 	
 	public static String mojangApi(final UUID playeruuid) throws FetcherException, HttpStatusException {
