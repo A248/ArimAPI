@@ -35,7 +35,11 @@ import space.arim.universal.util.concurrent.EnhancedExecutor;
  * 
  * @author A248
  *
+ * @deprecated This interface is obsolete, because an {@link EnhancedExecutor} (which this interface extends) should <i>always</i>
+ * run work asynchronously. Before UniversalUtil 0.10.0, in which breaking changes were made to {@code EnhancedExecutor} and its
+ * specifications, this was not the case.
  */
+@Deprecated
 public interface AsyncExecution extends EnhancedExecutor {
 
 	/**

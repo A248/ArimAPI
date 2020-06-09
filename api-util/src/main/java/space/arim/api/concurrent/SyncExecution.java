@@ -27,7 +27,11 @@ import space.arim.universal.util.concurrent.EnhancedExecutor;
  * 
  * @author A248
  *
+ * @deprecated This interface specifications are contrary to and incompatible with that of {@link EnhancedExecutor},
+ * which this interface extends. Before UniversalUtil 0.10.0, in which breaking changes were made to {@code EnhancedExecutor}
+ * and its specifications, this was not the case.
  */
+@Deprecated(forRemoval = true)
 public interface SyncExecution extends EnhancedExecutor {
 
 	/**
