@@ -73,7 +73,9 @@ public class NMS {
 	/**
 	 * Gets the recent TPS (ticks per second) of the server. The returned array
 	 * has a length of <code>3</code>, corresponding to the TPS over the past
-	 * 1 minute, 5 minutes, and 15 minutes respectively, using /tps.
+	 * 1 minute, 5 minutes, and 15 minutes respectively, using /tps. <br>
+	 * <br>
+	 * <b>Spigot only. Do not use on Paper. The Paper-API has a method to get the TPS.</b>
 	 * 
 	 * @return the tps array
 	 * @throws IllegalArgumentException reflection exception
@@ -85,11 +87,11 @@ public class NMS {
 	}
 	
 	static Class<?> getOBCClass(String clazzname) throws ClassNotFoundException {
-		return Class.forName("org.bukkit.craftbukkit." + VERSION + "." + clazzname);
+		return Class.forName("org.bukkit.craftbukkit." + VERSION + '.' + clazzname);
 	}
 	
 	static Class<?> getNMSClass(String clazzname) throws ClassNotFoundException {
-		return Class.forName("net.minecraft.server." + VERSION + "." + clazzname);
+		return Class.forName("net.minecraft.server." + VERSION + '.' + clazzname);
 	}
 	
 }
