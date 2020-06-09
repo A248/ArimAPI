@@ -20,15 +20,22 @@ package space.arim.api.platform.spigot;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import space.arim.universal.util.concurrent.EnhancedExecutor;
+import space.arim.universal.util.concurrent.impl.SelfSchedulingEnhancedExecutor;
+
 import space.arim.api.concurrent.AsyncExecution;
 
 /**
- * A default implementation of {@link AsyncExecution} on the Bukkit platform. Uses the server's inbuilt scheduling.
+ * A default implementation of {@link AsyncExecution} on the Bukkit platform.
  * 
  * @author A248
  *
+ * @deprecated {@link AsyncExecution} is itself deprecated. Please use {@link EnhancedExecutor}
+ * and {@link DefaultEnhancedExecutor} as corresponding replacements.
  */
-public class DefaultAsyncExecution implements AsyncExecution {
+@SuppressWarnings("deprecation")
+@Deprecated
+public class DefaultAsyncExecution extends SelfSchedulingEnhancedExecutor implements AsyncExecution {
 	
 	private final JavaPlugin plugin;
 	

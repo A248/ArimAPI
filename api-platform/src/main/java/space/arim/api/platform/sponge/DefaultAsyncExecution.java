@@ -20,24 +20,39 @@ package space.arim.api.platform.sponge;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.SpongeExecutorService;
+
+import space.arim.universal.util.concurrent.EnhancedExecutor;
+import space.arim.universal.util.concurrent.impl.SelfSchedulingEnhancedExecutor;
 
 import space.arim.api.concurrent.AsyncExecution;
 
 /**
- * A default implementation of {@link AsyncExecution} on the Sponge platform. Uses the server's inbuilt scheduling.
+ * A default implementation of {@link AsyncExecution} on the Sponge platform.
  * 
  * @author A248
  *
+ * @deprecated {@link AsyncExecution} is itself deprecated. Please use {@link EnhancedExecutor}
+ * and {@link DefaultEnhancedExecutor} as corresponding replacements.
  */
-public class DefaultAsyncExecution extends DefaultExecution implements AsyncExecution {
+@SuppressWarnings("deprecation")
+@Deprecated
+public class DefaultAsyncExecution extends SelfSchedulingEnhancedExecutor implements AsyncExecution {
 
+	private final SpongeExecutorService threadPool;
+	
 	/**
 	 * Creates the instance
 	 * 
 	 * @param plugin the plugin to use
 	 */
 	public DefaultAsyncExecution(PluginContainer plugin) {
-		super(Sponge.getScheduler().createAsyncExecutor(plugin.getInstance().get()));
+		threadPool = Sponge.getScheduler().createAsyncExecutor(plugin.getInstance().get());
+	}
+
+	@Override
+	public void execute(Runnable command) {
+		threadPool.execute(command);
 	}
 	
 }

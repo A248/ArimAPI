@@ -20,23 +20,37 @@ package space.arim.api.platform.bungee;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
+import space.arim.universal.util.concurrent.EnhancedExecutor;
+import space.arim.universal.util.concurrent.impl.SelfSchedulingEnhancedExecutor;
+
 import space.arim.api.concurrent.AsyncExecution;
 
 /**
- * A default implementation of {@link AsyncExecution} on the BungeeCord platform. Uses the server's inbuilt scheduling.
+ * A default implementation of {@link AsyncExecution} on the BungeeCord platform.
  * 
  * @author A248
  *
+ * @deprecated {@link AsyncExecution} is itself deprecated. Please use {@link EnhancedExecutor}
+ * and {@link DefaultEnhancedExecutor} as corresponding replacements.
  */
-public class DefaultAsyncExecution extends DefaultExecution implements AsyncExecution {
+@SuppressWarnings("deprecation")
+@Deprecated
+public class DefaultAsyncExecution extends SelfSchedulingEnhancedExecutor implements AsyncExecution {
 
+	private final Plugin plugin;
+	
 	/**
 	 * Creates the instance.
 	 * 
 	 * @param plugin the plugin to use
 	 */
 	public DefaultAsyncExecution(Plugin plugin) {
-		super(plugin);
+		this.plugin = plugin;
+	}
+	
+	@Override
+	public void execute(Runnable command) {
+		plugin.getProxy().getScheduler().runAsync(plugin, command);
 	}
 
 }
