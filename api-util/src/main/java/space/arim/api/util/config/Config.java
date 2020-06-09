@@ -37,6 +37,8 @@ import java.util.Set;
  * This rule also applies to config keys, e.g. from {@link #getConfiguredKeys()} and {@link #getConfiguredKeys(String)}.
  * 
  * @author A248
+ * 
+ * @see SimpleConfig
  *
  */
 public interface Config {
