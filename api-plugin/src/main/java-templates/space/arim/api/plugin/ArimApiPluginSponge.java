@@ -27,9 +27,7 @@ import space.arim.universal.registry.Registry;
 import space.arim.universal.registry.RegistryPriority;
 
 import space.arim.api.concurrent.AsyncExecution;
-import space.arim.api.concurrent.SyncExecution;
 import space.arim.api.platform.sponge.DefaultAsyncExecution;
-import space.arim.api.platform.sponge.DefaultSyncExecution;
 import space.arim.api.platform.sponge.DefaultUUIDResolution;
 import space.arim.api.uuid.UUIDResolution;
 
@@ -65,19 +63,12 @@ public class ArimApiPluginSponge {
 	 * {@link AsyncExecution} exists.
 	 * 
 	 * @param registry the registry to use
+	 * 
+	 * @deprecated The {@link AsyncExecution} interface is itself deprecated
 	 */
+	@Deprecated
 	public static void registerDefaultAsyncExecutionIfAbsent(Registry registry) {
 		registry.registerIfAbsent(AsyncExecution.class, () -> new Registration<AsyncExecution>(RegistryPriority.LOWEST, new DefaultAsyncExecution(getPlugin()), "Default AsyncExecution Implementation"));
-	}
-	
-	/**
-	 * Registers {@link DefaultSyncExecution} if no registration for
-	 * {@link SyncExecution} exists.
-	 * 
-	 * @param registry the registry to use
-	 */
-	public static void registerDefaultSyncExecutionIfAbsent(Registry registry) {
-		registry.registerIfAbsent(SyncExecution.class, () -> new Registration<SyncExecution>(RegistryPriority.LOWEST, new DefaultSyncExecution(getPlugin()), "Default SyncExecution Implementation"));
 	}
 	
 }
