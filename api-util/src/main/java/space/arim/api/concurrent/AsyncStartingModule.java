@@ -20,10 +20,26 @@ package space.arim.api.concurrent;
 
 import space.arim.universal.util.AutoClosable;
 
+/**
+ * Component of a program which starts up asynchronously.
+ * 
+ * @author A248
+ *
+ * @deprecated This interface encourages a poor approach for asynchronous loading. Use a future instead.
+ */
+@Deprecated
 public interface AsyncStartingModule extends AutoClosable {
 
+	/**
+	 * Initiates loading
+	 * 
+	 */
 	void startLoad();
 	
+	/**
+	 * Finishes loading, possibly by blocking
+	 * 
+	 */
 	void finishLoad();
 	
 }
