@@ -29,19 +29,19 @@ import java.util.Objects;
 public class RemoteApiResult<T> {
 	
 	private final T value;
-	private final ResultType reason;
+	private final ResultType resultType;
 	private final Exception exception;
 	
 	/**
 	 * Creates a result from a value, reason, and exception
 	 * 
 	 * @param value the value, or null for none
-	 * @param reason the reason, must not be null
+	 * @param resultType the reason, must not be null
 	 * @param exception the exception, or null for none
 	 */
-	public RemoteApiResult(T value, ResultType reason, Exception exception) {
+	public RemoteApiResult(T value, ResultType resultType, Exception exception) {
 		this.value = value;
-		this.reason = Objects.requireNonNull(reason, "RemoteApiResult reason must not be null");
+		this.resultType = Objects.requireNonNull(resultType, "RemoteApiResult reason must not be null");
 		this.exception = exception;
 	}
 	
@@ -60,7 +60,7 @@ public class RemoteApiResult<T> {
 	 * @return the reason, never <code>null</code>
 	 */
 	public ResultType getResultType() {
-		return reason;
+		return resultType;
 	}
 	
 	/**
