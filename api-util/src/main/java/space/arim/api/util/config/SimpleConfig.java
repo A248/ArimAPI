@@ -378,45 +378,12 @@ public abstract class SimpleConfig implements Config {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((configFile == null) ? 0 : configFile.hashCode());
-		result = prime * result + ((configValues == null) ? 0 : configValues.hashCode());
-		result = prime * result + ((defaultValues == null) ? 0 : defaultValues.hashCode());
-		return result;
+		return System.identityHashCode(this);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof SimpleConfig)) {
-			return false;
-		}
-		SimpleConfig other = (SimpleConfig) obj;
-		if (configFile == null) {
-			if (other.configFile != null) {
-				return false;
-			}
-		} else if (!configFile.equals(other.configFile)) {
-			return false;
-		}
-		if (configValues == null) {
-			if (other.configValues != null) {
-				return false;
-			}
-		} else if (!configValues.equals(other.configValues)) {
-			return false;
-		}
-		if (defaultValues == null) {
-			if (other.defaultValues != null) {
-				return false;
-			}
-		} else if (!defaultValues.equals(other.defaultValues)) {
-			return false;
-		}
-		return true;
+	public boolean equals(Object object) {
+		return this == object;
 	}
 	
 }
