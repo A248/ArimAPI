@@ -37,6 +37,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.yaml.snakeyaml.Yaml;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * Main implementation of {@link Config} using 2 internal HashMaps, one for config values and one for defaults. <br>
  * <br>
@@ -62,7 +64,8 @@ import org.yaml.snakeyaml.Yaml;
  */
 public abstract class SimpleConfig implements Config {
 
-	private final File configFile;
+	@VisibleForTesting
+	final File configFile;
 	private transient final ReadWriteLock fileLock = new ReentrantReadWriteLock();
 	
 	private final Map<String, Object> defaultValues;
