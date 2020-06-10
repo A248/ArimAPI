@@ -216,7 +216,8 @@ public abstract class SimpleConfig implements Config {
 	 * @return the object if it exists and is of the specified instance, <code>null</code> otherwise
 	 */
 	@SuppressWarnings("unchecked")
-	private static <T> T getFromNestedMap(Map<String, Object> map, String key, Class<T> clazz) {
+	@VisibleForTesting
+	static <T> T getFromNestedMap(Map<String, Object> map, String key, Class<T> clazz) {
 		if (key.indexOf('.') == -1) {
 			Object value = map.get(key);
 			return (clazz.isInstance(value)) ? (T) value : null;
