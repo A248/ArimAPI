@@ -51,6 +51,7 @@ public interface QueryResult extends SqlClosable {
 	 * Whether this constitutes an update result
 	 * 
 	 * @return true if an update result, false otherwise
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	boolean isUpdateResult() throws SQLException;
 	
@@ -59,6 +60,7 @@ public interface QueryResult extends SqlClosable {
 	 * 
 	 * @return the update result
 	 * @throws RuntimeException or a subclass thereof, if there is no update result
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
 	 */
 	UpdateResult toUpdateResult() throws SQLException;
 	

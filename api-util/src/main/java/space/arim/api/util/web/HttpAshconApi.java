@@ -61,8 +61,8 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 	/**
 	 * Creates an instance using a configured http client. <br>
 	 * <br>
-	 * The http client may be used to specify the connection timeout and the {@link Executor}
-	 * used to make completable futures.
+	 * The http client may be used to specify the connection timeout and the
+	 * {@link java.util.concurrent.Executor Executor} used to make completable futures.
 	 * 
 	 * @param client the http client to use
 	 */

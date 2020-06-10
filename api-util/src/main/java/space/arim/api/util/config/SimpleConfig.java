@@ -97,7 +97,7 @@ public abstract class SimpleConfig implements Config {
 	
 	/**
 	 * Creates from a configuration file. <br>
-	 * For example, new Config(new File("/plugins/Plugin/config.yml"))</code>
+	 * For example, <code>new Config(new File("/plugins/Plugin/config.yml"))</code>
 	 * would create a configuration using the file "/plugins/Plugin/config.yml".
 	 * It is assumed that there is a JAR resource called "config.yml". <br>
 	 * <br>

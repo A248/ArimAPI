@@ -69,8 +69,8 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 	/**
 	 * Creates an instance using a configured http client. <br>
 	 * <br>
-	 * The http client may be used to specify the connection timeout and the {@link Executor}
-	 * used to make completable futures. <br>
+	 * The http client may be used to specify the connection timeout and the
+	 * {@link java.util.concurrent.Executor Executor} used to make completable futures. <br>
 	 * The Mojang API does not currently support HTTP/2, so it is recommended to use HTTP/1.1 for now.
 	 * 
 	 * @param client the http client to use
