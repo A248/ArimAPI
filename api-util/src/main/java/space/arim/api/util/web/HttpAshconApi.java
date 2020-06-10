@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
@@ -95,18 +96,36 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 		});
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 */
 	@Override
 	public CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name) {
+		Objects.requireNonNull(name, "Name must not be null");
+
 		return queryAshconApi(name, (result) -> UUID.fromString((String) result.get("uuid")));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 */
 	@Override
 	public CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid) {
+		Objects.requireNonNull(uuid, "UUID must not be null");
+
 		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> (String) result.get("username"));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 */
 	@Override
 	public CompletableFuture<RemoteApiResult<Set<Entry<String, Long>>>> lookupNameHistory(UUID uuid) {
+		Objects.requireNonNull(uuid, "UUID must not be null");
+
 		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();
 			@SuppressWarnings("unchecked")
