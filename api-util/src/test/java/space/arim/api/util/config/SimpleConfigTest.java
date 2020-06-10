@@ -50,18 +50,12 @@ public class SimpleConfigTest {
 	public void testNestedValues() {
 		config.saveDefaultConfig();
 		config.reloadConfig();
+		
 		Map<String, Object> veryNestedMap = Map.of("message-also", "another one", "variable", 5);
 		Map<String, Object> nestedMap = Map.of("firstvalue", true, "more", veryNestedMap);
-		Map<String, Object> bigMap = Map.of("enable", true, "integer-list", List.of(1, 2, 3, 4), "nesting",
-				nestedMap);
-		assertTrue(Map.class.isInstance(config.getObject("nesting.more", Object.class)), "Nested maps should always be maps!");
-
-		assertEquals(true, SimpleConfig.getFromNestedMap(bigMap, "enable", Object.class));
-		assertEquals(true, SimpleConfig.getFromNestedMap(bigMap, "enable", Boolean.class));
-		assertEquals(nestedMap, SimpleConfig.getFromNestedMap(bigMap, "nesting", Object.class));
-		assertEquals(nestedMap, SimpleConfig.getFromNestedMap(bigMap, "nesting", Map.class));
-		assertEquals(veryNestedMap, SimpleConfig.getFromNestedMap(bigMap, "nesting.more", Object.class));
-		assertEquals(veryNestedMap, SimpleConfig.getFromNestedMap(bigMap, "nesting.more", Map.class));
+		assertEquals(true, config.getBoolean("enable"));
+		assertEquals(nestedMap, config.getObject("nesting", Map.class));
+		assertEquals(veryNestedMap, config.getObject("nesting.more", Map.class));
 	}
 	
 	@Test
