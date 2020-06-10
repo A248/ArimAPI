@@ -36,6 +36,12 @@ import space.arim.universal.util.web.HttpStatusException;
 import space.arim.api.util.StringsUtil;
 import space.arim.api.util.collect.ImmutableEntry;
 
+/**
+ * Utility for making web requests to commonly pinged APIs.
+ * 
+ * @author A248
+ *
+ */
 public final class FetcherUtil {
 	
 	private static final String ASHCON_API = "https://api.ashcon.app/mojang/v2/user/";
@@ -71,24 +77,79 @@ public final class FetcherUtil {
 		return getJsonMapFromAshcon(player.toString());
 	}
 	
+	/**
+	 * Looks up a UUID for a name using the Mojang API
+	 * 
+	 * @param name the name
+	 * @return the uuid, never null
+	 * @throws FetcherException if there was an exception parsing the info
+	 * @throws HttpStatusException if the status code was not 200
+	 * 
+	 * @deprecated {@link HttpMojangApi} replaces this method with an object-oriented handler for HTTP requests to the Mojang API
+	 */
+	@Deprecated
 	public static UUID mojangApi(final String name) throws FetcherException, HttpStatusException {
 		return UUID.fromString(StringsUtil.expandShortenedUUID(getJsonMapFromUrl(MOJANG_API_FROM_NAME + Objects.requireNonNull(name, "Name must not be null!")).get("id").toString()));
 	}
 	
+	/**
+	 * Looks up a name for a UUID using the Mojang API
+	 * 
+	 * @param playeruuid the uuid
+	 * @return the name, never null
+	 * @throws FetcherException if there was an exception parsing the info
+	 * @throws HttpStatusException if the status code was not 200
+	 * 
+	 * @deprecated {@link HttpMojangApi} replaces this method with an object-oriented handler for HTTP requests to the Mojang API
+	 */
+	@Deprecated
 	public static String mojangApi(final UUID playeruuid) throws FetcherException, HttpStatusException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object>[] names = getJsonFromUrl(MOJANG_API_FROM_UUID + Objects.requireNonNull(playeruuid, "UUID must not be null!").toString().replace("-", "") + "/names", Map[].class);
 		return names[names.length - 1].get("name").toString();
 	}
 	
+	/**
+	 * Looks up a UUID for a name using the Ashcon API
+	 * 
+	 * @param name the name
+	 * @return the uuid, never null
+	 * @throws FetcherException if there was an exception parsing the info
+	 * @throws HttpStatusException if the status code was not 200
+	 * 
+	 * @deprecated {@link HttpAshconApi} replaces this method with an object-oriented handler for HTTP requests to the Ashcon API
+	 */
+	@Deprecated
 	public static UUID ashconApi(final String name) throws FetcherException, HttpStatusException {
 		return UUID.fromString(getJsonMapFromAshcon(name).get("uuid").toString());
 	}
 	
+	/**
+	 * Looks up a name for a UUID using the Ashcon API
+	 * 
+	 * @param playeruuid the uuid
+	 * @return the name, never null
+	 * @throws FetcherException if there was an exception parsing the info
+	 * @throws HttpStatusException if the status code was not 200
+	 * 
+	 * @deprecated {@link HttpAshconApi} replaces this method with an object-oriented handler for HTTP requests to the Ashcon API
+	 */
+	@Deprecated
 	public static String ashconApi(final UUID playeruuid) throws FetcherException, HttpStatusException {
 		return getJsonMapFromAshcon(playeruuid).get("username").toString();
 	}
 	
+	/**
+	 * Looks up name history for a UUID
+	 * 
+	 * @param playeruuid the uuid
+	 * @return the name history
+	 * @throws FetcherException if there was an exception parsing the info
+	 * @throws HttpStatusException if the status code was not 200
+	 * 
+	 * @deprecated {@link HttpAshconApi} replaces this method with an object-oriented handler for HTTP requests to the Ashcon API
+	 */
+	@Deprecated
 	public static SortedSet<Entry<String, String>> ashconNameHistory(final UUID playeruuid) throws FetcherException, HttpStatusException {
 		TreeSet<Entry<String, String>> results = new TreeSet<Entry<String, String>>((entry1, entry2) -> {
 			if (entry1.getValue().isEmpty()) {
