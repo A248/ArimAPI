@@ -1,0 +1,6 @@
+enable: true
+nesting:
+  more:
+    message-also: 'another one'
+    variable: 'should not be a string'
+config-version: 3

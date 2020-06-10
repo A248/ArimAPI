@@ -1,0 +1,13 @@
+enable: true
+integer-list:
+  - 1
+  - 2
+  - 3
+  - 4
+nesting:
+  firstvalue: true
+  more:
+    message-also: 'another one'
+    variable: 5
+message: 'Hi'
+config-version: 1
