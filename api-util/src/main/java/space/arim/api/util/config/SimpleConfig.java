@@ -38,8 +38,6 @@ import java.util.regex.Pattern;
 
 import org.yaml.snakeyaml.Yaml;
 
-import com.google.common.annotations.VisibleForTesting;
-
 /**
  * Main implementation of {@link Config} using 2 internal HashMaps, one for config values and one for defaults. <br>
  * <br>
@@ -67,8 +65,7 @@ public abstract class SimpleConfig implements Config {
 
 	private static final Pattern NODE_SEPARATOR_PATTERN = Pattern.compile(".", Pattern.LITERAL);
 	
-	@VisibleForTesting
-	final File configFile;
+	private final File configFile;
 	private transient final ReadWriteLock fileLock = new ReentrantReadWriteLock();
 	
 	private final Map<String, Object> defaultValues;
@@ -219,8 +216,7 @@ public abstract class SimpleConfig implements Config {
 	 * @return the object if it exists and is of the specified instance, <code>null</code> otherwise
 	 */
 	@SuppressWarnings("unchecked")
-	@VisibleForTesting
-	static <T> T getFromNestedMap(Map<String, Object> map, String key, Class<T> clazz) {
+	private static <T> T getFromNestedMap(Map<String, Object> map, String key, Class<T> clazz) {
 		if (key.indexOf('.') == -1) {
 			Object value = map.get(key);
 			return (clazz.isInstance(value)) ? (T) value : null;
