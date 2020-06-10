@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -62,7 +63,7 @@ import org.yaml.snakeyaml.Yaml;
 public abstract class SimpleConfig implements Config {
 
 	private final File configFile;
-	private final ReadWriteLock fileLock = new ReentrantReadWriteLock();
+	private transient final ReadWriteLock fileLock = new ReentrantReadWriteLock();
 	
 	private final Map<String, Object> defaultValues;
 	private volatile Map<String, Object> configValues;
@@ -105,7 +106,7 @@ public abstract class SimpleConfig implements Config {
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
 	public SimpleConfig(File configFile) {
-		this.configFile = configFile;
+		this.configFile = Objects.requireNonNull(configFile, "configFile must not be null");
 		defaultValues = new HashMap<>(loadDefaults());
 	}
 	
@@ -119,7 +120,7 @@ public abstract class SimpleConfig implements Config {
 	 * @param configPath the configuration file
 	 */
 	public SimpleConfig(Path configPath) {
-		this(configPath.toFile());
+		this(Objects.requireNonNull(configPath, "configPath must not be null").toFile());
 	}
 	
 	/*
@@ -367,6 +368,55 @@ public abstract class SimpleConfig implements Config {
 			throw new ConfigDefaultValueNotSetException("No default subkeys found for " + key);
 		}
 		return subMap.keySet();
+	}
+
+	@Override
+	public String toString() {
+		return "SimpleConfig [configFile=" + configFile + ", defaultValues=" + defaultValues + ", configValues="
+				+ configValues + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((configFile == null) ? 0 : configFile.hashCode());
+		result = prime * result + ((configValues == null) ? 0 : configValues.hashCode());
+		result = prime * result + ((defaultValues == null) ? 0 : defaultValues.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof SimpleConfig)) {
+			return false;
+		}
+		SimpleConfig other = (SimpleConfig) obj;
+		if (configFile == null) {
+			if (other.configFile != null) {
+				return false;
+			}
+		} else if (!configFile.equals(other.configFile)) {
+			return false;
+		}
+		if (configValues == null) {
+			if (other.configValues != null) {
+				return false;
+			}
+		} else if (!configValues.equals(other.configValues)) {
+			return false;
+		}
+		if (defaultValues == null) {
+			if (other.defaultValues != null) {
+				return false;
+			}
+		} else if (!defaultValues.equals(other.defaultValues)) {
+			return false;
+		}
+		return true;
 	}
 	
 }
