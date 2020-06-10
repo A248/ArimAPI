@@ -25,6 +25,9 @@
 		<lombok.version>1.18.12</lombok.version>
 		<eclipseNullAnalysis.version>2.2.400</eclipseNullAnalysis.version>
 		
+		<!-- Testing dependencies -->
+		<junit.version>5.6.2</junit.version>
+		
 		<!-- Required dependencies -->
 		<!-- Must be included on the classpath without relocation -->
 		<slf4j.version>1.7.25</slf4j.version><!-- Included on Paper 1.12.2+, Waterfall, Sponge, and Velocity -->
@@ -111,6 +114,22 @@
 					<artifactId>maven-shade-plugin</artifactId>
 					<version>3.2.3</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M4</version>
+					<configuration>
+						<trimStackTrace>false</trimStackTrace>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.junit.jupiter</groupId>
+							<artifactId>junit-jupiter-engine</artifactId>
+							<version>${junit.version}</version>
+							<scope>runtime</scope>
+						</dependency>
+					</dependencies>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -167,6 +186,14 @@
 				<groupId>org.eclipse.jdt</groupId>
 				<artifactId>org.eclipse.jdt.annotation</artifactId>
 				<version>${eclipseNullAnalysis.version}</version>
+			</dependency>
+			
+			<!-- Testing Dependencies -->
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-api</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
 			</dependency>
 			
 			<!-- Required dependencies -->
