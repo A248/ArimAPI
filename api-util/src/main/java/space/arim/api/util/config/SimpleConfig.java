@@ -363,7 +363,7 @@ public abstract class SimpleConfig implements Config {
 	@Override
 	public Set<String> getDefaultKeys(String key) {
 		@SuppressWarnings("unchecked")
-		Map<String, Object> subMap = getFromNestedMap(configValues, key, Map.class);
+		Map<String, Object> subMap = getFromNestedMap(defaultValues, key, Map.class);
 		if (subMap == null) {
 			throw new ConfigDefaultValueNotSetException("No default subkeys found for " + key);
 		}
