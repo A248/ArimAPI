@@ -19,7 +19,6 @@
 package space.arim.api.plugin;
 
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
 import space.arim.universal.registry.Registration;
@@ -31,18 +30,21 @@ import space.arim.api.platform.sponge.DefaultAsyncExecution;
 import space.arim.api.platform.sponge.DefaultUUIDResolution;
 import space.arim.api.uuid.UUIDResolution;
 
+/**
+ * Previous main plugin class on Sponge. <br>
+ * This class contains some static platform-specific methods, which are deprecated for their own reasons.
+ * 
+ * @author A248
+ *
+ * @deprecated Depending on ArimAPI-plugin directly (this artifact) is deprecated. All API and utilities
+ * are found in the other module artifacts.
+ */
 @SuppressWarnings("deprecation")
-@Plugin(id = "${plugin.spongeid}", name = "${plugin.name}", version = "${plugin.version}", authors = {"${plugin.author}"}, description = "${plugin.description}", url = "${plugin.url}")
+@Deprecated
 public class ArimApiPluginSponge {
 	
-	private static ArimApiPluginSponge inst;
-	
-	public ArimApiPluginSponge() {
-		inst = this;
-	}
-	
 	private static PluginContainer getPlugin() {
-		return Sponge.getPluginManager().fromInstance(inst).get();
+		return Sponge.getPluginManager().getPlugin("arimapiplugin").get();
 	}
 	
 	/**

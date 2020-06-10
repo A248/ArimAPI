@@ -18,6 +18,7 @@
  */
 package space.arim.api.plugin;
 
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import space.arim.universal.registry.Registration;
@@ -29,13 +30,21 @@ import space.arim.api.platform.bungee.DefaultAsyncExecution;
 import space.arim.api.platform.bungee.DefaultUUIDResolution;
 import space.arim.api.uuid.UUIDResolution;
 
+/**
+ * Previous main plugin class on Bungee. <br>
+ * This class contains some static platform-specific methods, which are deprecated for their own reasons.
+ * 
+ * @author A248
+ *
+ * @deprecated Depending on ArimAPI-plugin directly (this artifact) is deprecated. All API and utilities
+ * are found in the other module artifacts.
+ */
 @SuppressWarnings("deprecation")
-public class ArimApiPluginBungee extends Plugin {
+@Deprecated
+public class ArimApiPluginBungee {
 	
-	private static Plugin inst;
-	
-	public ArimApiPluginBungee() {
-		inst = this;
+	private static Plugin getPlugin() {
+		return ProxyServer.getInstance().getPluginManager().getPlugin("ArimAPI");
 	}
 	
 	/**
@@ -48,7 +57,7 @@ public class ArimApiPluginBungee extends Plugin {
 	 */
 	@Deprecated
 	public static void registerDefaultUUIDResolutionIfAbsent(Registry registry) {
-		registry.registerIfAbsent(UUIDResolution.class, () -> new Registration<UUIDResolution>(RegistryPriority.LOWEST, new DefaultUUIDResolution(inst), "Default UUIDResolution Implementation"));
+		registry.registerIfAbsent(UUIDResolution.class, () -> new Registration<UUIDResolution>(RegistryPriority.LOWEST, new DefaultUUIDResolution(getPlugin()), "Default UUIDResolution Implementation"));
 	}
 	
 	/**
@@ -61,7 +70,7 @@ public class ArimApiPluginBungee extends Plugin {
 	 */
 	@Deprecated
 	public static void registerDefaultAsyncExecutionIfAbsent(Registry registry) {
-		registry.registerIfAbsent(AsyncExecution.class, () -> new Registration<AsyncExecution>(RegistryPriority.LOWEST, new DefaultAsyncExecution(inst), "Default AsyncExecution Implementation"));
+		registry.registerIfAbsent(AsyncExecution.class, () -> new Registration<AsyncExecution>(RegistryPriority.LOWEST, new DefaultAsyncExecution(getPlugin()), "Default AsyncExecution Implementation"));
 	}
 	
 }

@@ -1,5 +1,5 @@
 name: ${plugin.name}
-main: space.arim.api.plugin.ArimApiPluginBungee
+main: space.arim.api.plugin.BungeePlugin
 version: ${plugin.version}
 author: ${plugin.author}
 website: ${plugin.url}
