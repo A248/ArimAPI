@@ -34,6 +34,7 @@ import space.arim.universal.util.web.HttpStatus;
 import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.util.StringsUtil;
+import space.arim.api.util.collect.ImmutableEntry;
 
 public final class FetcherUtil {
 	
@@ -111,7 +112,7 @@ public final class FetcherUtil {
 		List<Map<String, String>> history = (List<Map<String, String>>) map.get("username_history");
 		for (Map<String, String> entry : history) {
 			String changedAt = entry.get("changed_at");
-			results.add(new DistinctEntry<String, String>(entry.get("username"), (changedAt == null) ? "" : changedAt.substring(0, 10)));
+			results.add(new ImmutableEntry<String, String>(entry.get("username"), (changedAt == null) ? "" : changedAt.substring(0, 10)));
 		}
 		return results;
 	}
@@ -168,51 +169,6 @@ public final class FetcherUtil {
 		} catch (NumberFormatException ex) {
 			throw new FetcherException("Could not parse GeoIpInfo from url " + url, ex);
 		}
-	}
-	
-}
-
-class DistinctEntry<K, V> implements Entry<K, V> {
-	
-	private final K key;
-	private final V value;
-	
-	DistinctEntry(K key, V value) {
-		this.key = key;
-		this.value = value;
-	}
-	
-	@Override
-	public K getKey() {
-		return key;
-	}
-	
-	@Override
-	public V getValue() {
-		return value;
-	}
-	
-	@Override
-	public V setValue(V value) {
-		throw new UnsupportedOperationException();
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((key == null) ? 0 : key.hashCode());
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
-	}
-	
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof Entry<?, ?>) {
-			Entry<?, ?> other = (Entry<?, ?>) object;
-			return getKey().equals(other.getKey()) && getValue().equals(other.getValue());
-		}
-		return false;
 	}
 	
 }
