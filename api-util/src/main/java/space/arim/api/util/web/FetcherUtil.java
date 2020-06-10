@@ -97,12 +97,12 @@ public final class FetcherUtil {
 			}
 			String[] time1 = entry1.getValue().split("-");
 			String[] time2 = entry2.getValue().split("-");
-			int year1 = Integer.valueOf(time1[0]);
-			int year2 = Integer.valueOf(time2[0]);
+			int year1 = Integer.parseInt(time1[0]);
+			int year2 = Integer.parseInt(time2[0]);
 			if (year1 == year2) {
-				int month1 = Integer.valueOf(time1[1]);
-				int month2 = Integer.valueOf(time2[1]);
-				return (month1 == month2) ? (Integer.valueOf(time1[2]) - Integer.valueOf(time2[2])) : (month1 - month2);
+				int month1 = Integer.parseInt(time1[1]);
+				int month2 = Integer.parseInt(time2[1]);
+				return (month1 == month2) ? (Integer.parseInt(time1[2]) - Integer.parseInt(time2[2])) : (month1 - month2);
 			}
 			return year1 - year2;
 		});
