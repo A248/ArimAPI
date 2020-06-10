@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -64,6 +65,8 @@ import com.google.common.annotations.VisibleForTesting;
  */
 public abstract class SimpleConfig implements Config {
 
+	private static final Pattern NODE_SEPARATOR_PATTERN = Pattern.compile(".", Pattern.LITERAL);
+	
 	@VisibleForTesting
 	final File configFile;
 	private transient final ReadWriteLock fileLock = new ReentrantReadWriteLock();
@@ -222,7 +225,7 @@ public abstract class SimpleConfig implements Config {
 			Object value = map.get(key);
 			return (clazz.isInstance(value)) ? (T) value : null;
 		}
-		String[] keyParts = key.split(".");
+		String[] keyParts = NODE_SEPARATOR_PATTERN.split(key);
 		Map<String, Object> currentMap = map;
 
 		int lastIndex = keyParts.length - 1;
