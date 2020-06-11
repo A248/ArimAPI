@@ -23,7 +23,11 @@ package space.arim.api.util;
  * 
  * @author A248
  *
+ * @deprecated Not all platforms have the concept of a main thread, in which case,
+ * the meaning of "TPS" is ill-defined, and cannot be abstracted into an interface which applies
+ * to more than the specific platforms which measure TPS.
  */
+@Deprecated(forRemoval = true)
 public interface TPSMeter {
 
 	/**

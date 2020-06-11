@@ -30,7 +30,10 @@ import space.arim.api.util.TPSMeter;
  * 
  * @author A248
  *
+ * @deprecated {@link TPSMeter} is itself deprecated; this class is a good example justifying such deprecation.
  */
+@SuppressWarnings("removal")
+@Deprecated(forRemoval = true)
 public class DefaultTPSMeter implements TPSMeter {
 	
 	/**
