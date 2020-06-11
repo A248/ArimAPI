@@ -20,7 +20,7 @@ package space.arim.api.plugin;
 
 import org.spongepowered.api.plugin.Plugin;
 
-@Plugin(id = "${plugin.spongeid}", name = "${plugin.name}", version = "${plugin.version}", authors = {"${plugin.author}"}, description = "${plugin.description}", url = "${plugin.url}")
+@Plugin(id = "${plugin.annotationId}", name = "${plugin.name}", version = "${plugin.version}", authors = {"${plugin.author}"}, description = "${plugin.description}", url = "${plugin.url}")
 public class SpongePlugin {
 
 	// Do nothing
