@@ -70,7 +70,7 @@ public final class CollectionsUtil {
 			}
 			n++;
 		}
-		if (++n != size) {
+		if (n != size) {
 			// we must've encountered concurrent modification, so we'll repeat
 			return random(collection);
 		}
