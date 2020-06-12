@@ -79,6 +79,14 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 		this.client = client;
 	}
 	
+	/**
+	 * Creates an instance using the default http client
+	 * 
+	 */
+	public HttpMojangApi() {
+		this(HttpClient.newHttpClient());
+	}
+	
 	private <T> CompletableFuture<RemoteApiResult<T>> queryMojangApi(String uri,
 			Function<InputStreamReader, T> readerAcceptorFunction) {
 		HttpRequest request = HttpRequest.newBuilder(URI.create(uri)).build();

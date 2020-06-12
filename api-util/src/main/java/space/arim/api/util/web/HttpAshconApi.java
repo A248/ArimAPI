@@ -70,6 +70,14 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 		this.client = client;
 	}
 	
+	/**
+	 * Creates an instance using the default http client
+	 * 
+	 */
+	public HttpAshconApi() {
+		this(HttpClient.newHttpClient());
+	}
+	
 	private <T> CompletableFuture<RemoteApiResult<T>> queryAshconApi(String nameOrUuid,
 			Function<Map<String, Object>, T> mapAcceptorFunction) {
 		HttpRequest request = HttpRequest.newBuilder(URI.create(URL_BASE + nameOrUuid)).build();
