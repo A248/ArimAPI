@@ -31,8 +31,6 @@ import java.util.function.Consumer;
 
 import org.yaml.snakeyaml.Yaml;
 
-import space.arim.api.util.CommonInstancesUtil;
-
 /**
  * A simple helper class for SnakeYAML configurations. <br>
  * <br>
@@ -90,7 +88,7 @@ public abstract class Config {
 	}
 	
 	private Yaml yaml() {
-		return CommonInstancesUtil.snakeYaml();
+		return new Yaml();
 	}
 	
 	void reloadConfig() {

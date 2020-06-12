@@ -49,7 +49,11 @@ public final class CommonInstancesUtil {
 	 * Gets a thread specific <code>Yaml</code> instance, from a thread local supplier for SnakeYAML instances.
 	 * 
 	 * @return a <code>Yaml</code> instance for the current thread
+	 * 
+	 * @deprecated Retaining yaml instances in a thread local is a memory leak. Construction of <code>Yaml</code>
+	 * is not an expensive operation. Usage of this method should simply be replaced by <code>new Yaml()</code>
 	 */
+	@Deprecated
 	public static Yaml snakeYaml() {
 		return SNAKE_YAML.get();
 	}
