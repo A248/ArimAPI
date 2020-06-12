@@ -37,37 +37,44 @@ public final class CollectionsUtil {
 	
 	/**
 	 * Gets a random element from a collection. <br>
-	 * If the input collection is <code>null</code> or empty, <code>null</code> is returned. <br>
+	 * If the input collection is null or empty, <code>null</code> is returned. <br>
 	 * <br>
 	 * This method is thread safe so long as the collection's iterator is thread safe.
 	 * The underlying collection may be concurrently modified without compromising
-	 * the integrity of this method call.
+	 * the integrity of this method call. <br>
+	 * <br>
+	 * Implementation note: This method may be less suitable for collections where {@link Collection#size()}
+	 * is not a constant-time operation.
 	 * 
 	 * @param <T> the type of the collection
 	 * @param collection the collection
-	 * @return a random element from the collection, or <code>null</code> if preconditions are not met
+	 * @return a random element from the collection, or <code>null</code> if the collection is null or empty
 	 */
 	public static <T> T random(Collection<T> collection) {
 		if (collection == null) {
 			return null;
 		}
 		int n = 0;
+		T element = null;
 		int size = collection.size();
 		if (size == 0) {
 			return null;
 		}
-		// alright, the collection is non-empty, get a random index
+		// the collection is non-empty, get a random index
 		int index = ThreadLocalRandom.current().nextInt(size);
 		// scan the collection to find the element at the index
 		for (Iterator<T> it = collection.iterator(); it.hasNext();) {
+			T current = it.next();
 			if (n == index) {
-				return it.next();
+				element = current;
 			}
-			it.next();
 			n++;
 		}
-		// huh, we must've encountered a concurrency problem, so we'll repeat
-		return random(collection);
+		if (++n != size) {
+			// we must've encountered concurrent modification, so we'll repeat
+			return random(collection);
+		}
+		return element;
 	}
 	
 }
