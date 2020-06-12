@@ -48,16 +48,34 @@ public final class StringsUtil {
 		return com.google.common.net.InetAddresses.isInetAddress(address);
 	}
 	
+	/**
+	 * Capitalises the first letter of the input string. <br>
+	 * If the input string is null, null is returned.
+	 * 
+	 * @param input the input string
+	 * @return the same string with the first letter capitalised
+	 */
 	public static String capitaliseProperly(String input) {
 		return (input == null) ? input : (input.length() == 1) ? input.toUpperCase() : Character.toUpperCase(input.charAt(0)) + input.substring(1);
 	}
 	
+	/**
+	 * Removes the first element in an array and returns the updated array
+	 * (the source array is not modified. <br>
+	 * <br>
+	 * Identical to calling <code>Arrays.copyOfRange(input, 1, input.length)</code>,
+	 * or <code>space.arim.universal.util.ArraysUtil.contractAndRemove(input, 0)</code>
+	 * 
+	 * @param <T> the element type of the array
+	 * @param input the input array
+	 * @return the same array with the first element removed
+	 * 
+	 * @deprecated There are too many alternatives to this method with the exact same
+	 * functionality, but more readable method names.
+	 */
+	@Deprecated
 	public static <T> T[] chopOffOne(T[] input) {
-		return copyRange(input, 1, input.length);
-	}
-	
-	private static <T> T[] copyRange(T[] input, int start, int end) {
-		return Arrays.copyOfRange(Objects.requireNonNull(input, "Input array must not be null!"), start, end);
+		return Arrays.copyOfRange(input, 1, input.length);
 	}
 	
 	/**
