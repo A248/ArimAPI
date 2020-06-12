@@ -27,11 +27,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -39,7 +40,6 @@ import java.util.function.Function;
 
 import com.google.gson.Gson;
 
-import space.arim.api.util.collect.ImmutableEntry;
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
 /**
@@ -131,7 +131,7 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> nameInfo = (List<Map<String, Object>>) result.get("username_history");
 			for (Map<String, Object> nameChange : nameInfo) {
-				nameHistory.add(new ImmutableEntry<>((String) nameChange.get("username"),
+				nameHistory.add(new SimpleImmutableEntry<>((String) nameChange.get("username"),
 						isoDateToUnixSeconds((String) nameChange.get("changed_at"))));
 			}
 			return nameHistory;

@@ -19,6 +19,7 @@
 package space.arim.api.util.web;
 
 import java.io.IOException;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,7 +35,6 @@ import space.arim.universal.util.web.HttpStatus;
 import space.arim.universal.util.web.HttpStatusException;
 
 import space.arim.api.util.StringsUtil;
-import space.arim.api.util.collect.ImmutableEntry;
 
 /**
  * Utility for making web requests to commonly pinged APIs.
@@ -173,7 +173,7 @@ public final class FetcherUtil {
 		List<Map<String, String>> history = (List<Map<String, String>>) map.get("username_history");
 		for (Map<String, String> entry : history) {
 			String changedAt = entry.get("changed_at");
-			results.add(new ImmutableEntry<String, String>(entry.get("username"), (changedAt == null) ? "" : changedAt.substring(0, 10)));
+			results.add(new SimpleImmutableEntry<String, String>(entry.get("username"), (changedAt == null) ? "" : changedAt.substring(0, 10)));
 		}
 		return results;
 	}

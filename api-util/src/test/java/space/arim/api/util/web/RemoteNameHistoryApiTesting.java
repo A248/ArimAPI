@@ -18,13 +18,14 @@
  */
 package space.arim.api.util.web;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import space.arim.api.util.collect.ImmutableEntry;
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
 public class RemoteNameHistoryApiTesting {
@@ -33,13 +34,13 @@ public class RemoteNameHistoryApiTesting {
 	
 	static {
 		Set<Entry<String, Long>> expected = new HashSet<>();
-		expected.add(new ImmutableEntry<>("A248_1710", 0L));
-		expected.add(new ImmutableEntry<>("A248", 1427646885L));
-		expected.add(new ImmutableEntry<>("Reqorted", 1460075115L));
-		expected.add(new ImmutableEntry<>("_Aero__", 1462749151L));
-		expected.add(new ImmutableEntry<>("__Aero__", 1468456319L));
-		expected.add(new ImmutableEntry<>("Aerodactyl_", 1498836094L));
-		expected.add(new ImmutableEntry<>("A248", 1574114048L));
+		expected.add(new SimpleImmutableEntry<>("A248_1710", 0L));
+		expected.add(new SimpleImmutableEntry<>("A248", 1427646885L));
+		expected.add(new SimpleImmutableEntry<>("Reqorted", 1460075115L));
+		expected.add(new SimpleImmutableEntry<>("_Aero__", 1462749151L));
+		expected.add(new SimpleImmutableEntry<>("__Aero__", 1468456319L));
+		expected.add(new SimpleImmutableEntry<>("Aerodactyl_", 1498836094L));
+		expected.add(new SimpleImmutableEntry<>("A248", 1574114048L));
 		expectedNameHistory = expected;
 	}
 	

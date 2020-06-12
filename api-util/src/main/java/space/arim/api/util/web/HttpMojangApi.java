@@ -26,6 +26,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -38,7 +39,6 @@ import java.util.function.Function;
 import com.google.gson.Gson;
 
 import space.arim.api.util.StringsUtil;
-import space.arim.api.util.collect.ImmutableEntry;
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
 /**
@@ -147,7 +147,7 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 		return lookupByUUID(uuid, (nameInfo) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();
 			for (Map<String, Object> nameChange : nameInfo) {
-				nameHistory.add(new ImmutableEntry<>((String) nameChange.get("name"),
+				nameHistory.add(new SimpleImmutableEntry<>((String) nameChange.get("name"),
 						((Number) nameChange.getOrDefault("changedToAt", 0L)).longValue() / 1000L));
 			}
 			return nameHistory;
