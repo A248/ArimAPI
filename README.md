@@ -16,7 +16,7 @@ Maven dependency:
 ```xml
 <dependency>
 	<groupId>space.arim</groupId>
-	<artifactId>arimapi-core</artifactId>
+	<artifactId>arimapi-platform</artifactId>
 	<version>{INSERT_LATEST_VERSION}</version>
 </dependency>
 ```
