@@ -30,19 +30,20 @@ import com.google.gson.Gson;
  */
 public final class CommonInstancesUtil {
 	
-	private static final LazySingleton<Gson> GSON = new LazySingleton<Gson>(Gson::new);
+	private static final Gson GSON = new Gson();
 	
 	private static final ThreadLocal<Yaml> SNAKE_YAML = ThreadLocal.withInitial(Yaml::new);
 	
 	private CommonInstancesUtil() {}
 	
 	/**
-	 * Gets a common, shareable gson value.
+	 * Gets a common, shareable gson value. The Gson instance uses the default
+	 * Gson configuration.
 	 * 
-	 * @return a thread safe <code>Gson</code> instance
+	 * @return a thread safe <code>Gson</code> instance using the default settings
 	 */
 	public static Gson gson() {
-		return GSON.get();
+		return GSON;
 	}
 	
 	/**
