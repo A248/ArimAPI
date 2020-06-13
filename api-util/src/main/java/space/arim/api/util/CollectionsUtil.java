@@ -48,7 +48,7 @@ public final class CollectionsUtil {
 	 * the integrity of this method call. <br>
 	 * <br>
 	 * Implementation note: This method may be less suitable for collections where {@link Collection#size()}
-	 * is not a constant-time operation. In such cases, calling <code>collection.toArray() and
+	 * is not a constant-time operation. In such cases, calling <code>collection.toArray()</code> and
 	 * drawing a random element from the resulting array may be more performant.
 	 * 
 	 * @param <T> the type of the collection
@@ -91,7 +91,7 @@ public final class CollectionsUtil {
 	 * the integrity of this method call. <br>
 	 * <br>
 	 * Implementation note: This method may be less suitable for collections where {@link Collection#size()}
-	 * is not a constant-time operation. In such cases, calling <code>collection.toArray() and
+	 * is not a constant-time operation. In such cases, calling <code>collection.toArray()</code> and
 	 * drawing a random element from the resulting array may be more performant.
 	 * 
 	 * @param <T> the type of the collection
