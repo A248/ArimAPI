@@ -18,10 +18,10 @@
  */
 package space.arim.api.util;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -32,7 +32,7 @@ import java.util.Objects;
  */
 public final class StringsUtil {
 	
-	private static final ThreadLocal<SimpleDateFormat> BASIC_DATE_FORMATTER = ThreadLocal.withInitial(() -> new SimpleDateFormat("dd-MM-yyyy"));
+	private static final DateTimeFormatter BASIC_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	
 	private StringsUtil() {}
 	
@@ -157,8 +157,14 @@ public final class StringsUtil {
 		+ "-" + shortUuid.substring(16, 20) + "-" + shortUuid.substring(20, 32);
 	}
 	
+	/**
+	 * Formats the current time according to <code>"dd-MM-yyyy"</code>. <br>
+	 * Implementation note: This method synchronises on an instance of SimpleDateFormat
+	 * 
+	 * @return the formatted current date
+	 */
 	public static String basicTodaysDate() {
-		return BASIC_DATE_FORMATTER.get().format(new Date());
+		return BASIC_DATE_FORMATTER.format(LocalDate.now());
 	}
 	
 }
