@@ -28,9 +28,10 @@ import org.junit.jupiter.api.Test;
 public class CollectionsUtilTest {
 
 	@Test
-	public void testBasicRandomGuarantee() {
+	public void testBasicRandomGuarantees() {
 		List<String> list = Arrays.asList("abcd", "efgh", "mnop", "wxyz");
 		assertTrue(list.contains(CollectionsUtil.random(list)));
+		assertTrue(list.contains(CollectionsUtil.strongRandom(list)));
 	}
 	
 }
