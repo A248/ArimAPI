@@ -92,7 +92,8 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 		HttpRequest request = HttpRequest.newBuilder(URI.create(uri)).build();
 		return client.sendAsync(request, BodyHandlers.ofInputStream()).thenApply((response) -> {
 
-			switch (response.statusCode()) {
+			int responseCode = response.statusCode();
+			switch (responseCode) {
 			case RATE_LIMIT_STATUS_CODE:
 				return new RemoteApiResult<>(null, ResultType.RATE_LIMITED, null);
 			case NOT_FOUND_STATUS_CODE:
@@ -100,7 +101,7 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 			case 200:
 				break;
 			default:
-				return new RemoteApiResult<>(null, ResultType.ERROR, new HttpNon200StatusCodeException());
+				return new RemoteApiResult<>(null, ResultType.ERROR, new HttpNon200StatusCodeException(responseCode));
 			}
 
 			InputStream inputStream = response.body();
