@@ -39,18 +39,23 @@ public final class CollectionsUtil {
 	 * Gets a random element from a collection. <br>
 	 * If the input collection is null or empty, <code>null</code> is returned. <br>
 	 * <br>
+	 * Unlike {@link #random(Collection)}, this method is designed to generate a more uniform
+	 * distribution of results when dealing with heavily contended collections. However,
+	 * it is slightly less performant as a consequence. <br>
+	 * <br>
 	 * This method is thread safe so long as the collection's iterator is thread safe.
 	 * The underlying collection may be concurrently modified without compromising
 	 * the integrity of this method call. <br>
 	 * <br>
 	 * Implementation note: This method may be less suitable for collections where {@link Collection#size()}
-	 * is not a constant-time operation.
+	 * is not a constant-time operation. In such cases, calling <code>collection.toArray() and
+	 * drawing a random element from the resulting array may be more performant.
 	 * 
 	 * @param <T> the type of the collection
 	 * @param collection the collection
 	 * @return a random element from the collection, or <code>null</code> if the collection is null or empty
 	 */
-	public static <T> T random(Collection<T> collection) {
+	public static <T> T strongRandom(Collection<T> collection) {
 		if (collection == null) {
 			return null;
 		}
@@ -71,10 +76,49 @@ public final class CollectionsUtil {
 			n++;
 		}
 		if (n != size) {
-			// we must've encountered concurrent modification, so we'll repeat
-			return random(collection);
+			// must've encountered concurrent modification, so we'll repeat
+			return strongRandom(collection);
 		}
 		return element;
+	}
+	
+	/**
+	 * Gets a random element from a collection. <br>
+	 * If the input collection is null or empty, <code>null</code> is returned. <br>
+	 * <br>
+	 * This method is thread safe so long as the collection's iterator is thread safe.
+	 * The underlying collection may be concurrently modified without compromising
+	 * the integrity of this method call. <br>
+	 * <br>
+	 * Implementation note: This method may be less suitable for collections where {@link Collection#size()}
+	 * is not a constant-time operation. In such cases, calling <code>collection.toArray() and
+	 * drawing a random element from the resulting array may be more performant.
+	 * 
+	 * @param <T> the type of the collection
+	 * @param collection the collection
+	 * @return a random element from the collection, or <code>null</code> if the collection is null or empty
+	 */
+	public static <T> T random(Collection<T> collection) {
+		if (collection == null) {
+			return null;
+		}
+		int n = 0;
+		int size = collection.size();
+		if (size == 0) {
+			return null;
+		}
+		// the collection is non-empty, get a random index
+		int index = ThreadLocalRandom.current().nextInt(size);
+		// scan the collection to find the element at the index
+		for (Iterator<T> it = collection.iterator(); it.hasNext();) {
+			if (n == index) {
+				return it.next();
+			}
+			it.next();
+			n++;
+		}
+		// must've encountered concurrent modification which removed our desired index
+		return random(collection);
 	}
 	
 }
