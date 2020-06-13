@@ -79,33 +79,50 @@ public final class StringsUtil {
 	}
 	
 	/**
-	 * Same as {@link #concat(String[], char)} but for a Collection
+	 * Joins the elements of the source collection with the specified separator. <br>
+	 * Skips null or empty elements entirely, ignoring them as if they didn't exist. <br>
+	 * <br>
+	 * This is equivalent, but not necessary identical in performance, to the call
+	 * <code>concat(input.toArray(new String[] {}), separator)</code>
 	 * 
-	 * @param input the source to concatenate
+	 * @param collection the source collection to concatenate
 	 * @param separator the char separator
 	 * @return a concatenated result
 	 */
-	public static String concat(Collection<String> input, char separator) {
-		return concat(input.toArray(new String[] {}), separator);
+	public static String concat(Collection<String> collection, char separator) {
+		//return concat(collection.toArray(new String[] {}), separator);
+		StringBuilder builder = new StringBuilder();
+		for (String m : collection) {
+			if (m != null && !m.isEmpty()) {
+				builder.append(separator).append(m);
+			}
+		}
+		if (builder.length() == 0) {
+			return "";
+		}
+		return builder.substring(1);
 	}
 	
 	/**
 	 * Joins the elements of the source array with the specified separator. <br>
 	 * Skips null or empty elements entirely, ignoring them as if they didn't exist.
 	 * 
-	 * @param input the source array
+	 * @param array the source array to concatenate
 	 * @param separator the char separator
-	 * @return a concatenated result
+	 * @return a concatenated result, an empty string if the array has length 0
 	 */
-	public static String concat(String[] input, char separator) {
-		if (input.length == 0) {
+	public static String concat(String[] array, char separator) {
+		if (array.length == 0) {
 			return "";
 		}
 		StringBuilder builder = new StringBuilder();
-		for (String m : input) {
+		for (String m : array) {
 			if (m != null && !m.isEmpty()) {
 				builder.append(separator).append(m);
 			}
+		}
+		if (builder.length() == 0) {
+			return "";
 		}
 		return builder.substring(1);
 	}
