@@ -37,6 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
 
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.error.YAMLException;
 
 /**
  * Main implementation of {@link Config} using 2 internal HashMaps, one for config values and one for defaults. <br>
@@ -139,7 +140,7 @@ public abstract class SimpleConfig implements Config {
 	private Map<String, Object> loadDefaults() {
 		try (InputStream stream = getDefaultResourceAsStream(configFile.getName())) {
 			return new Yaml().load(stream);
-		} catch (IOException ex) {
+		} catch (IOException | YAMLException ex) {
 			throw new ConfigLoadDefaultsFromJarException(ex);
 		}
 	}
@@ -192,7 +193,7 @@ public abstract class SimpleConfig implements Config {
 		try (FileReader reader = new FileReader(configFile, StandardCharsets.UTF_8)) {
 			return new Yaml().load(reader);
 
-		} catch (IOException ex) {
+		} catch (IOException | YAMLException ex) {
 			throw new ConfigLoadValuesFromFileException(ex);
 		} finally {
 			readLock.unlock();
