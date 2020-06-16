@@ -34,7 +34,11 @@ import java.util.Set;
  * <b>Thread Safety</b> <br>
  * All methods are thread safe. However, config values and defaults, such as mutable collections, should never be modified.
  * The behaviour of implementations is undefined if values are modified; thread safety may fall to pieces.
- * This rule also applies to config keys, e.g. from {@link #getConfiguredKeys()} and {@link #getConfiguredKeys(String)}.
+ * This rule also applies to config keys, e.g. from {@link #getConfiguredKeys()} and {@link #getConfiguredKeys(String)}. <br>
+ * <br>
+ * <b>Configuration Format</b> <br>
+ * There is no requirement for a specific format. Although YAML is common, this interface may be implemented
+ * to support any variety of configuration format.
  * 
  * @author A248
  * 
