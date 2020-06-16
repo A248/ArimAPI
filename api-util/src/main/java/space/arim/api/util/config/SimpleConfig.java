@@ -19,26 +19,14 @@
 package space.arim.api.util.config;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.StackWalker.StackFrame;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
-
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.error.YAMLException;
 
 /**
  * Simple, yaml-based implementation of {@link Config}. Interally uses 2 HashMaps, for config values and defaults. <br>
@@ -71,15 +59,13 @@ import org.yaml.snakeyaml.error.YAMLException;
  * @author A248
  *
  */
-public class SimpleConfig implements Config {
+public class SimpleConfig extends AbstractYamlConfig {
 
 	private static final Pattern NODE_SEPARATOR_PATTERN = Pattern.compile(".", Pattern.LITERAL);
 	
 	private static final StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
 	private final Class<?> resourceClass;
-	private final File configFile;
-	private transient final ReadWriteLock fileLock = new ReentrantReadWriteLock();
 	
 	private final Map<String, Object> defaultValues;
 	private volatile Map<String, Object> configValues;
@@ -134,14 +120,14 @@ public class SimpleConfig implements Config {
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
 	public SimpleConfig(File configFile) {
-		this.configFile = Objects.requireNonNull(configFile, "configFile must not be null");
+		super(configFile);
 
 		Class<?> runtimeClass = getClass();
 		if (runtimeClass == SimpleConfig.class) {
 
 			// Caller detected, option 2
 			resourceClass = WALKER.walk((stream) -> {
-				StackFrame callerFrame = stream
+				StackWalker.StackFrame callerFrame = stream
 						.dropWhile((frame) -> frame.getClassName().equals(SimpleConfig.class.getName()))
 						.limit(1).findFirst().get();
 				return callerFrame.getDeclaringClass();
@@ -166,7 +152,7 @@ public class SimpleConfig implements Config {
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
 	public SimpleConfig(File configFile, Class<?> resourceClass) {
-		this.configFile = Objects.requireNonNull(configFile, "configFile must not be null");
+		super(configFile);
 		this.resourceClass = resourceClass;
 		// Must be called after class determined
 		defaultValues = new HashMap<>(loadDefaults());
@@ -209,46 +195,9 @@ public class SimpleConfig implements Config {
 	 * 
 	 */
 	
-	private InputStream getDefaultResourceAsStream(String resourceName) {
-		return resourceClass.getResourceAsStream(File.separatorChar + resourceName);
-	}
-	
-	private Map<String, Object> loadDefaults() {
-		try (InputStream stream = getDefaultResourceAsStream(configFile.getName())) {
-			return new Yaml().load(stream);
-
-		} catch (IOException ex) {
-			throw new ConfigReadDefaultsFromJarException(ex);
-		} catch (YAMLException ex) {
-			throw new ConfigParseDefaultsFromJarException(ex);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 */
 	@Override
-	public void saveDefaultConfig() {
-		if (configFile.exists()) {
-			return;
-		}
-		Lock writeLock = fileLock.writeLock();
-		if (!writeLock.tryLock()) {
-			return;
-		}
-		try (InputStream input = getDefaultResourceAsStream(configFile.getName());
-				FileOutputStream output = new FileOutputStream(configFile)) {
-			byte[] buffer = new byte[4096];
-			int read;
-			while ((read = input.read(buffer)) != -1) {
-				output.write(buffer, 0, read);
-			}
-		} catch (IOException ex) {
-			throw new ConfigSaveDefaultsToFileException("Could not save config from JAR to local filesystem", ex);
-		} finally {
-			writeLock.unlock();
-		}
+	InputStream getDefaultResourceAsStream(String resourceName) {
+		return resourceClass.getResourceAsStream(File.separatorChar + resourceName);
 	}
 	
 	/**
@@ -258,28 +207,6 @@ public class SimpleConfig implements Config {
 	@Override
 	public void reloadConfig() {
 		configValues = new HashMap<>(loadFromFile());
-	}
-	
-	private Map<String, Object> loadFromFile() {
-		Lock readLock = fileLock.readLock();
-		readLock.lock();
-
-		if (!configFile.exists()) {
-			readLock.unlock();
-			return Collections.emptyMap();
-		}
-
-		try (FileReader reader = new FileReader(configFile, StandardCharsets.UTF_8)) {
-			return new Yaml().load(reader);
-
-		} catch (IOException ex) {
-			throw new ConfigReadValuesFromFileException(ex);
-		} catch (YAMLException ex) {
-			throw new ConfigParseValuesFromFileException(ex);
-
-		} finally {
-			readLock.unlock();
-		}
 	}
 	
 	/*
@@ -458,8 +385,8 @@ public class SimpleConfig implements Config {
 
 	@Override
 	public String toString() {
-		return "SimpleConfig [configFile=" + configFile + ", defaultValues=" + defaultValues + ", configValues="
-				+ configValues + "]";
+		return "SimpleConfig [resourceClass=" + resourceClass + ", defaultValues=" + defaultValues + ", configValues="
+				+ configValues + ", toString()=" + super.toString() + "]";
 	}
 
 	@Override
