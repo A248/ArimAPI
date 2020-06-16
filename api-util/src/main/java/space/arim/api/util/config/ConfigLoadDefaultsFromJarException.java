@@ -19,7 +19,8 @@
 package space.arim.api.util.config;
 
 /**
- * Thrown when default config values could not be loaded from the application JAR
+ * Thrown when default config values could not be loaded from the application JAR,
+ * which could occur for a number of reasons.
  * 
  * @author A248
  *

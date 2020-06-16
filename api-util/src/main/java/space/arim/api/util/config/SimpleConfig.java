@@ -84,9 +84,9 @@ public abstract class SimpleConfig implements Config {
 	 * would create a configuration using the file "/plugins/Plugin/config.yml".
 	 * It is assumed that there is a JAR resource called "config.yml". <br>
 	 * <br>
-	 * The default values are immediately copied from the JAR resource.
-	 * If such operation fails, a {@link ConfigLoadDefaultsFromJarException}
-	 * is thrown.
+	 * The default values are immediately copied from the JAR resource. If such operation fails,
+	 * a {@link ConfigLoadDefaultsFromJarException} is thrown. This exception will specifically
+	 * be a {@link ConfigParseDefaultsFromJarException} if the default config's syntax is invalid.
 	 * 
 	 * @param folder the folder of the configuration file
 	 * @param filename the filename of the configuration file
@@ -102,9 +102,9 @@ public abstract class SimpleConfig implements Config {
 	 * would create a configuration using the file "/plugins/Plugin/config.yml".
 	 * It is assumed that there is a JAR resource called "config.yml". <br>
 	 * <br>
-	 * The default values are immediately copied from the JAR resource.
-	 * If such operation fails, a {@link ConfigLoadDefaultsFromJarException}
-	 * is thrown.
+	 * The default values are immediately copied from the JAR resource. If such operation fails,
+	 * a {@link ConfigLoadDefaultsFromJarException} is thrown. This exception will specifically
+	 * be a {@link ConfigParseDefaultsFromJarException} if the default config's syntax is invalid.
 	 * 
 	 * @param configFile the configuration file
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
@@ -118,10 +118,16 @@ public abstract class SimpleConfig implements Config {
 	 * Creates from a configuration file. Identical in function to {@link #SimpleConfig(File)}
 	 * except that a {@link Path} may be specified instead of a {@link File}. <br>
 	 * <br>
+	 * The default values are immediately copied from the JAR resource. If such operation fails,
+	 * a {@link ConfigLoadDefaultsFromJarException} is thrown. This exception will specifically
+	 * be a {@link ConfigParseDefaultsFromJarException} if the default config's syntax is invalid. <br>
+	 * <br>
 	 * At the moment, this is equal to the call <code>new SimpleConfig(configPath.toFile())</code>,
-	 * but in the future, the implementation may change internally to use NIO.
+	 * but in the future, the implementation may change internally to use NIO, so callers already
+	 * using {@code Path}s may use this constructor.
 	 * 
 	 * @param configPath the configuration file
+	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
 	public SimpleConfig(Path configPath) {
 		this(Objects.requireNonNull(configPath, "configPath must not be null").toFile());
@@ -140,8 +146,11 @@ public abstract class SimpleConfig implements Config {
 	private Map<String, Object> loadDefaults() {
 		try (InputStream stream = getDefaultResourceAsStream(configFile.getName())) {
 			return new Yaml().load(stream);
-		} catch (IOException | YAMLException ex) {
-			throw new ConfigLoadDefaultsFromJarException(ex);
+
+		} catch (IOException ex) {
+			throw new ConfigReadDefaultsFromJarException(ex);
+		} catch (YAMLException ex) {
+			throw new ConfigParseDefaultsFromJarException(ex);
 		}
 	}
 	
@@ -193,8 +202,11 @@ public abstract class SimpleConfig implements Config {
 		try (FileReader reader = new FileReader(configFile, StandardCharsets.UTF_8)) {
 			return new Yaml().load(reader);
 
-		} catch (IOException | YAMLException ex) {
-			throw new ConfigLoadValuesFromFileException(ex);
+		} catch (IOException ex) {
+			throw new ConfigReadValuesFromFileException(ex);
+		} catch (YAMLException ex) {
+			throw new ConfigParseValuesFromFileException(ex);
+
 		} finally {
 			readLock.unlock();
 		}

@@ -19,25 +19,25 @@
 package space.arim.api.util.config;
 
 /**
- * Thrown when configured values could not be loaded from the filesystem,
- * which could occur for a number of reasons.
+ * Thrown when default config values could not be loaded from the application JAR,
+ * specifically because the file could not be read.
  * 
  * @author A248
  *
  */
-public class ConfigLoadValuesFromFileException extends ConfigException {
+public class ConfigReadDefaultsFromJarException extends ConfigLoadDefaultsFromJarException {
 
 	/**
 	 * Serial version uid
 	 */
-	private static final long serialVersionUID = -5460065868083020649L;
+	private static final long serialVersionUID = 2649185735416085988L;
 
 	/**
 	 * Creates an exception with the given cause
 	 * 
 	 * @param cause the cause
 	 */
-	public ConfigLoadValuesFromFileException(Throwable cause) {
+	public ConfigReadDefaultsFromJarException(Throwable cause) {
 		super(cause);
 	}
 	
@@ -47,7 +47,7 @@ public class ConfigLoadValuesFromFileException extends ConfigException {
 	 * @param message the message
 	 * @param cause the cause
 	 */
-	public ConfigLoadValuesFromFileException(String message, Throwable cause) {
+	public ConfigReadDefaultsFromJarException(String message, Throwable cause) {
 		super(message, cause);
 	}
 	
@@ -56,7 +56,7 @@ public class ConfigLoadValuesFromFileException extends ConfigException {
 	 * 
 	 * @param message the message
 	 */
-	public ConfigLoadValuesFromFileException(String message) {
+	public ConfigReadDefaultsFromJarException(String message) {
 		super(message);
 	}
 	

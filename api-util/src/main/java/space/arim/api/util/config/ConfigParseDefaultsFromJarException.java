@@ -20,24 +20,24 @@ package space.arim.api.util.config;
 
 /**
  * Thrown when configured values could not be loaded from the filesystem,
- * which could occur for a number of reasons.
+ * specifically because the yaml syntax could not be parsed.
  * 
  * @author A248
  *
  */
-public class ConfigLoadValuesFromFileException extends ConfigException {
+public class ConfigParseDefaultsFromJarException extends ConfigLoadDefaultsFromJarException {
 
 	/**
 	 * Serial version uid
 	 */
-	private static final long serialVersionUID = -5460065868083020649L;
+	private static final long serialVersionUID = 6662819446096800558L;
 
 	/**
 	 * Creates an exception with the given cause
 	 * 
 	 * @param cause the cause
 	 */
-	public ConfigLoadValuesFromFileException(Throwable cause) {
+	public ConfigParseDefaultsFromJarException(Throwable cause) {
 		super(cause);
 	}
 	
@@ -47,7 +47,7 @@ public class ConfigLoadValuesFromFileException extends ConfigException {
 	 * @param message the message
 	 * @param cause the cause
 	 */
-	public ConfigLoadValuesFromFileException(String message, Throwable cause) {
+	public ConfigParseDefaultsFromJarException(String message, Throwable cause) {
 		super(message, cause);
 	}
 	
@@ -56,7 +56,7 @@ public class ConfigLoadValuesFromFileException extends ConfigException {
 	 * 
 	 * @param message the message
 	 */
-	public ConfigLoadValuesFromFileException(String message) {
+	public ConfigParseDefaultsFromJarException(String message) {
 		super(message);
 	}
 	

@@ -57,7 +57,11 @@ public interface Config {
 	
 	/**
 	 * Loads or reloads the configuration values from the file. <br>
-	 * Must be called at least once before any config objects are retrieved.
+	 * Must be called at least once before any config objects are retrieved. <br>
+	 * <br>
+	 * If for some reason the config values could not be loaded, {@link ConfigLoadValuesFromFileException} is
+	 * thrown. Implementations are encouraged to throw more specific subclasses where such information is known;
+	 * for example, {@link ConfigParseValuesFromFileException} if malformed config syntax is detected.
 	 * 
 	 * @throws ConfigLoadValuesFromFileException if the config values could not be loaded from the file
 	 */
