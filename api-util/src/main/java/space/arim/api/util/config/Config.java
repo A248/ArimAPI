@@ -53,10 +53,7 @@ public interface Config {
 	
 	/**
 	 * Loads or reloads the configuration values from the file. <br>
-	 * Must be called at least once before any config objects are retrieved. <br>
-	 * <br>
-	 * This method is thread safe; it may be called while other threads are reading configuration values,
-	 * or even while other threads are themselves calling this method.
+	 * Must be called at least once before any config objects are retrieved.
 	 * 
 	 * @throws ConfigLoadValuesFromFileException if the config values could not be loaded from the file
 	 */
