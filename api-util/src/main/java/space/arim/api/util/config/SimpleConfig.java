@@ -40,7 +40,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 
 /**
- * Main implementation of {@link Config} using 2 internal HashMaps, one for config values and one for defaults. <br>
+ * Simple, yaml-based implementation of {@link Config}. Interally uses 2 HashMaps, for config values and defaults. <br>
  * <br>
  * It is intended that programmers place the config resource, call it <code>config.yml</code>,
  * in the JAR file. This JAR resource becomes the source of default values for the program's configuration.
