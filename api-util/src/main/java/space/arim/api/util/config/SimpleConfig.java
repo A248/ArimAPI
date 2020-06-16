@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.StackWalker.StackFrame;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -52,20 +53,31 @@ import org.yaml.snakeyaml.error.YAMLException;
  * <b>Usage</b> <br>
  * Either of the public constructors may be used to specify both the configuration file and the resource
  * name. There is no support for resource names not equal to the filename; that is, {@link File#getName()}
- * is assumed as the resource name. This class is abstract because it internally relies on the runtime subclass
- * to retrieve the JAR resource. <br>
+ * is assumed as the resource name. For example, <code>new SimpleConfig(new File("plugins/Plugin/", "config.yml"))</code>
+ * would create a configuration using the file "/plugins/Plugin/config.yml", with the assumption there is
+ * a JAR resource called "config.yml". <br>
+ * <br>
+ * Internally, {@link Class#getResourceAsStream(String)} is relied upon to retrieve the JAR resource.
+ * Therefore, a {@code Class} must be somehow passed to the constructor. There are 3 ways to do this: <br>
+ * 1. Subclass SimpleConfig. The subclassing will be automatically detected
+ * Example using an anonymous subclass: <code>new SimpleConfig(File) {}</code> <br>
+ * 2. Call the constructor and have the caller class (your class) be detected and used. <br>
+ * 3. Explicitly pass the class object to a constructor which accepts one. <br>
  * <br>
  * <b>Implementation Note</b> <br>
- * The implementation uses <code>null</code> to indicate to itself when a value could not be found. When there
- * are truly null configuration values present, the value will seem as if it was not found.
+ * The implementation uses <code>null</code> to indicate to itself when a value could not be found. When there are
+ * true null configuration values present, behaviour is not well defined. It may seem as if the value was not found.
  * 
  * @author A248
  *
  */
-public abstract class SimpleConfig implements Config {
+public class SimpleConfig implements Config {
 
 	private static final Pattern NODE_SEPARATOR_PATTERN = Pattern.compile(".", Pattern.LITERAL);
 	
+	private static final StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+
+	private final Class<?> resourceClass;
 	private final File configFile;
 	private transient final ReadWriteLock fileLock = new ReentrantReadWriteLock();
 	
@@ -79,10 +91,8 @@ public abstract class SimpleConfig implements Config {
 	 */
 	
 	/**
-	 * Creates from a configuration folder and filename within that folder. <br>
-	 * For example, <code>new Config(new File("plugins/Plugin/"), "config.yml")</code>
-	 * would create a configuration using the file "/plugins/Plugin/config.yml".
-	 * It is assumed that there is a JAR resource called "config.yml". <br>
+	 * Creates from a configuration folder and filename within that folder. The resource class
+	 * is detected. <br>
 	 * <br>
 	 * The default values are immediately copied from the JAR resource. If such operation fails,
 	 * a {@link ConfigLoadDefaultsFromJarException} is thrown. This exception will specifically
@@ -97,10 +107,24 @@ public abstract class SimpleConfig implements Config {
 	}
 	
 	/**
-	 * Creates from a configuration file. <br>
-	 * For example, <code>new Config(new File("/plugins/Plugin/config.yml"))</code>
-	 * would create a configuration using the file "/plugins/Plugin/config.yml".
-	 * It is assumed that there is a JAR resource called "config.yml". <br>
+	 * Creates from a configuration folder and filename within that folder, with the resource
+	 * class explicitly passed. <br>
+	 * <br>
+	 * The default values are immediately copied from the JAR resource. If such operation fails,
+	 * a {@link ConfigLoadDefaultsFromJarException} is thrown. This exception will specifically
+	 * be a {@link ConfigParseDefaultsFromJarException} if the default config's syntax is invalid.
+	 * 
+	 * @param folder the folder of the configuration file
+	 * @param filename the filename of the configuration file
+	 * @param resourceClass the class from which to retrieve the JAR resource
+	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
+	 */
+	public SimpleConfig(File folder, String filename, Class<?> resourceClass) {
+		this(new File(folder, filename), resourceClass);
+	}
+	
+	/**
+	 * Creates from a configuration file. The resource class is detected. <br>
 	 * <br>
 	 * The default values are immediately copied from the JAR resource. If such operation fails,
 	 * a {@link ConfigLoadDefaultsFromJarException} is thrown. This exception will specifically
@@ -111,6 +135,40 @@ public abstract class SimpleConfig implements Config {
 	 */
 	public SimpleConfig(File configFile) {
 		this.configFile = Objects.requireNonNull(configFile, "configFile must not be null");
+
+		Class<?> runtimeClass = getClass();
+		if (runtimeClass == SimpleConfig.class) {
+
+			// Caller detected, option 2
+			resourceClass = WALKER.walk((stream) -> {
+				StackFrame callerFrame = stream
+						.dropWhile((frame) -> frame.getClassName().equals(SimpleConfig.class.getName()))
+						.limit(1).findFirst().get();
+				return callerFrame.getDeclaringClass();
+			});
+		} else {
+			// Subclassed, option 1
+			resourceClass = runtimeClass;
+		}
+		// Must be called after class determined
+		defaultValues = new HashMap<>(loadDefaults());
+	}
+	
+	/**
+	 * Creates from a configuration file, with the resource class explicitly passed. <br>
+	 * <br>
+	 * The default values are immediately copied from the JAR resource. If such operation fails,
+	 * a {@link ConfigLoadDefaultsFromJarException} is thrown. This exception will specifically
+	 * be a {@link ConfigParseDefaultsFromJarException} if the default config's syntax is invalid.
+	 * 
+	 * @param configFile the configuration file
+	 * @param resourceClass the class from which to retrieve the JAR resource
+	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
+	 */
+	public SimpleConfig(File configFile, Class<?> resourceClass) {
+		this.configFile = Objects.requireNonNull(configFile, "configFile must not be null");
+		this.resourceClass = resourceClass;
+		// Must be called after class determined
 		defaultValues = new HashMap<>(loadDefaults());
 	}
 	
@@ -120,17 +178,29 @@ public abstract class SimpleConfig implements Config {
 	 * <br>
 	 * The default values are immediately copied from the JAR resource. If such operation fails,
 	 * a {@link ConfigLoadDefaultsFromJarException} is thrown. This exception will specifically
-	 * be a {@link ConfigParseDefaultsFromJarException} if the default config's syntax is invalid. <br>
-	 * <br>
-	 * At the moment, this is equal to the call <code>new SimpleConfig(configPath.toFile())</code>,
-	 * but in the future, the implementation may change internally to use NIO, so callers already
-	 * using {@code Path}s may use this constructor.
+	 * be a {@link ConfigParseDefaultsFromJarException} if the default config's syntax is invalid.
 	 * 
 	 * @param configPath the configuration file
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
 	public SimpleConfig(Path configPath) {
 		this(Objects.requireNonNull(configPath, "configPath must not be null").toFile());
+	}
+	
+	/**
+	 * Creates from a configuration file. Identical in function to {@link #SimpleConfig(File, Class)}
+	 * except that a {@link Path} may be specified instead of a {@link File}. <br>
+	 * <br>
+	 * The default values are immediately copied from the JAR resource. If such operation fails,
+	 * a {@link ConfigLoadDefaultsFromJarException} is thrown. This exception will specifically
+	 * be a {@link ConfigParseDefaultsFromJarException} if the default config's syntax is invalid.
+	 * 
+	 * @param configPath the configuration file
+	 * @param resourceClass the class from which to retrieve the JAR resource
+	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
+	 */
+	public SimpleConfig(Path configPath, Class<?> resourceClass) {
+		this(Objects.requireNonNull(configPath, "configPath must not be null").toFile(), resourceClass);
 	}
 	
 	/*
@@ -140,7 +210,7 @@ public abstract class SimpleConfig implements Config {
 	 */
 	
 	private InputStream getDefaultResourceAsStream(String resourceName) {
-		return getClass().getResourceAsStream(File.separatorChar + resourceName);
+		return resourceClass.getResourceAsStream(File.separatorChar + resourceName);
 	}
 	
 	private Map<String, Object> loadDefaults() {
