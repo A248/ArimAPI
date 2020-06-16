@@ -22,13 +22,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
+
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
-public class RemoteNameHistoryApiTesting {
+public abstract class RemoteNameHistoryApiTesting extends RemoteNameUUIDApiTesting {
 
 	private static final Set<Entry<String, Long>> expectedNameHistory;
 	
@@ -41,10 +44,16 @@ public class RemoteNameHistoryApiTesting {
 		expected.add(new SimpleImmutableEntry<>("__Aero__", 1468456319L));
 		expected.add(new SimpleImmutableEntry<>("Aerodactyl_", 1498836094L));
 		expected.add(new SimpleImmutableEntry<>("A248", 1574114048L));
-		expectedNameHistory = expected;
+		expectedNameHistory = Collections.unmodifiableSet(expected);
 	}
 	
-	static void testNameHistory(RemoteNameHistoryApi remote) {
+	@Override
+	abstract RemoteNameHistoryApi createInstance();
+	
+	@Test
+	void testNameHistory() {
+		RemoteNameHistoryApi remote = (RemoteNameHistoryApi) super.remote;
+
 		RemoteApiResult<Set<Entry<String, Long>>> knownResult = remote.lookupNameHistory(RemoteNameUUIDApiTesting.KNOWN_UUID).join();
 		assertEquals(ResultType.FOUND, knownResult.getResultType());
 		assertEquals(expectedNameHistory, knownResult.getValue());

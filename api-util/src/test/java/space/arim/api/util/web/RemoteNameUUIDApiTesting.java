@@ -20,11 +20,14 @@ package space.arim.api.util.web;
 
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RemoteNameUUIDApiTesting {
+public abstract class RemoteNameUUIDApiTesting {
 
 	private static final String KNOWN_NAME = "A248";
 	static final UUID KNOWN_UUID = UUID.fromString("ed5f12cd-6007-45d9-a4b9-940524ddaecf");
@@ -32,7 +35,17 @@ public class RemoteNameUUIDApiTesting {
 	private static final String UNKNOWN_NAME = "asygufbhn"; // Who would ever take this name?
 	static final UUID UNKNOWN_UUID = UUID.fromString("c003d6d3-6a0b-4a80-890b-dcedf87799b3");
 	
-	static void testLookupUUID(RemoteNameUUIDApi remote) {
+	RemoteNameUUIDApi remote;
+	
+	@BeforeEach
+	public void setup() {
+		remote = createInstance();
+	}
+	
+	abstract RemoteNameUUIDApi createInstance();
+	
+	@Test
+	void testLookupUUID() {
 		RemoteApiResult<UUID> knownResult = remote.lookupUUID(KNOWN_NAME).join();
 		assertEquals(ResultType.FOUND, knownResult.getResultType());
 		assertEquals(KNOWN_UUID, knownResult.getValue());
@@ -44,7 +57,8 @@ public class RemoteNameUUIDApiTesting {
 		assertNull(unknownResult.getException());
 	}
 	
-	static void testLookupName(RemoteNameUUIDApi remote) {
+	@Test
+	void testLookupName() {
 		RemoteApiResult<String> knownResult = remote.lookupName(KNOWN_UUID).join();
 		assertEquals(ResultType.FOUND, knownResult.getResultType());
 		assertEquals(KNOWN_NAME, knownResult.getValue());

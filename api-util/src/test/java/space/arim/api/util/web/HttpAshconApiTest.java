@@ -18,33 +18,10 @@
  */
 package space.arim.api.util.web;
 
-import java.net.http.HttpClient;
-import java.time.Duration;
+public class HttpAshconApiTest extends RemoteNameHistoryApiTesting {
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-public class HttpAshconApiTest {
-
-	private HttpAshconApi remote;
-	
-	@BeforeEach
-	public void setup() {
-		remote = new HttpAshconApi(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10L)).build());
-	}
-	
-	@Test
-	public void testUUIDLookup() {
-		RemoteNameUUIDApiTesting.testLookupUUID(remote);
-	}
-	
-	@Test
-	public void testNameLookup() {
-		RemoteNameUUIDApiTesting.testLookupName(remote);
-	}
-	
-	@Test
-	public void testNameHistoryLookup() {
-		RemoteNameHistoryApiTesting.testNameHistory(remote);
+	@Override
+	RemoteNameHistoryApi createInstance() {
+		return new HttpAshconApi();
 	}
 }
