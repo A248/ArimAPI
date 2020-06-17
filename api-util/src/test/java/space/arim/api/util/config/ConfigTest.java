@@ -66,16 +66,24 @@ public abstract class ConfigTest {
 		Set<String> subKeys = Set.of("firstvalue", "more");
 		assertEquals(keys, config.getDefaultKeys());
 		assertEquals(subKeys, config.getDefaultKeys("nesting"));
+		try {
+			Set<String> defaultKeys = config.getDefaultKeys("nesting.firstvalue");
+			fail("These default keys should not be possible to get: " + defaultKeys);
+		} catch (ConfigDefaultValueNotSetException expected) {
+
+		}
 		config.saveDefaultConfig();
 		try {
 			Set<String> configuredKeys = config.getConfiguredKeys();
-			fail("Configured keys should not be possible to get: " + configuredKeys);
+			fail("These configured keys should not be possible to get: " + configuredKeys);
 		} catch (IllegalStateException expected) {
 			
 		}
 		config.reloadConfig();
 		assertEquals(keys, config.getConfiguredKeys());
 		assertEquals(subKeys, config.getConfiguredKeys("nesting"));
+		assertNull(config.getConfiguredKeys("nesting.firstvalue"));
+		assertNull(config.getConfiguredKeys("nonexistent-key"));
 	}
 	
 	@Test
