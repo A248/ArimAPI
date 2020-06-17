@@ -25,11 +25,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -42,6 +44,8 @@ import org.yaml.snakeyaml.error.YAMLException;
  */
 abstract class AbstractYamlConfig implements Config {
 
+	static final Pattern NODE_SEPARATOR_PATTERN = Pattern.compile(".", Pattern.LITERAL);
+	
 	private final File configFile;
 	private transient final ReadWriteLock fileLock = new ReentrantReadWriteLock();
 	
@@ -128,6 +132,58 @@ abstract class AbstractYamlConfig implements Config {
 	@Override
 	public String toString() {
 		return "AbstractYamlConfig [configFile=" + configFile + "]";
+	}
+	
+	/*
+	 * 
+	 * Utilities
+	 * 
+	 */
+	
+	/**
+	 * Ensures the keys of a map are entirely strings. If the map is empty,
+	 * or the map's keys are all {@code String}s, it is casted and returned. <br>
+	 * <br>
+	 * Otherwise, behaviour is determined by {@code keyConversionOption}. <br>
+	 * If true, the map's keys will be converted to strings according to {@link Object#toString()}.
+	 * The keys will be inserted into a new map, and the values copied, which will be returned. <br>
+	 * If false, no key conversion is attempted, null is returned.
+	 * 
+	 * @param sourceMap the source map whose keys to check
+	 * @param keyConversion whether to convert keys and make a new map if the keys are not strings
+	 * @return the same map, replacement map, or null depending on what happened
+	 */
+	@SuppressWarnings("unchecked")
+	static Map<String, Object> ensureStringKeys(Map<?, ?> sourceMap, boolean keyConversion) {
+		boolean keysAreStrings = true;
+		// Iteration handles empty maps
+		for (Object key : sourceMap.keySet()) {
+			if (!(key instanceof String)) {
+				keysAreStrings = false;
+				break;
+			}
+		}
+		if (keysAreStrings) {
+			// Casting a map where all the keys are strings is safe
+			return (Map<String, Object>) sourceMap;
+		}
+		if (!keyConversion) {
+			// As requested
+			return null;
+		}
+		// Make a replacement map and copy values
+		Map<String, Object> replacement = new HashMap<>();
+		for (Map.Entry<?, ?> sourceEntry : sourceMap.entrySet()) {
+			replacement.put(sourceEntry.getKey().toString(), sourceEntry.getValue());
+		}
+		return replacement;
+	}
+	
+	static HashMap<String, Object> asHashMap(Map<String, Object> map) {
+		if (map instanceof HashMap<?, ?>) {
+			return (HashMap<String, Object>) map;
+		}
+		return new HashMap<>(map);
 	}
 	
 }
