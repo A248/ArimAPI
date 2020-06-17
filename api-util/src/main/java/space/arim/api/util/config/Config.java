@@ -39,7 +39,12 @@ import java.util.Set;
  * <br>
  * <b>Configuration Format</b> <br>
  * There is no requirement for a specific format. Although YAML is common, this interface may be implemented
- * to support any variety of configuration format.
+ * to support any variety of configuration format. <br>
+ * <br>
+ * <b>Null Values</b> <br>
+ * This interface sometimes uses {@code null} to indicate a configured object of some kind was not found. Consequently,
+ * null values should not be used as meaningful values in configurations. Nulls are treated as if the object did not
+ * exist at all. Using {@code null} to indicate anything else is a mistake not supported by this interface.
  * 
  * @author A248
  * 
