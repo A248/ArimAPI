@@ -191,7 +191,7 @@ public class SimpleConfig extends AbstractYamlConfig {
 	
 	/*
 	 * 
-	 * IO operations
+	 * Loading and reloading
 	 * 
 	 */
 	
@@ -232,12 +232,15 @@ public class SimpleConfig extends AbstractYamlConfig {
 			return (clazz.isInstance(value)) ? (T) value : null;
 		}
 		String[] keyParts = NODE_SEPARATOR_PATTERN.split(key);
-		Map<String, Object> currentMap = map;
+		Map<?, ?> currentMap = map;
+		boolean isMapSafe = true;
 
 		int lastIndex = keyParts.length - 1;
 		for (int n = 0; n < keyParts.length; n++) {
+
 			String subKey = keyParts[n];
-			Object subValue = currentMap.get(subKey);
+			@SuppressWarnings("unlikely-arg-type")
+			Object subValue = (isMapSafe) ? currentMap.get(subKey) : getFromUnsafeMap(currentMap, subKey);
 
 			if (n == lastIndex) {
 				if (clazz.isInstance(subValue)) {
@@ -248,12 +251,22 @@ public class SimpleConfig extends AbstractYamlConfig {
 				if (!(subValue instanceof Map<?, ?>)) {
 					return null;
 				}
-				currentMap = (Map<String, Object>) subValue;
+				currentMap = (Map<?, ?>) subValue;
+				isMapSafe = AbstractYamlConfig.ensureStringKeys(currentMap, false) != null;
 			}
 		}
 		return null;
 	}
 	
+	private static Object getFromUnsafeMap(Map<?, ?> map, String key) {
+		for (Map.Entry<?, ?> entry : map.entrySet()) {
+			if (entry.getKey().toString().equals(key)) {
+				return entry.getValue();
+			}
+		}
+		return null;
+	}
+
 	private void ensureLoaded() {
 		if (configValues == null) {
 			throw new IllegalStateException("Configuration not yet loaded");
