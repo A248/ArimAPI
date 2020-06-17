@@ -167,7 +167,7 @@ public class FlattenedConfig extends AbstractYamlConfig {
 	}
 	
 	/**
-	 * Creates from a configuration file. Identical in function to {@link #SimpleConfig(File)}
+	 * Creates from a configuration file. Identical in function to {@link #FlattenedConfig(File)}
 	 * except that a {@link Path} may be specified instead of a {@link File}. <br>
 	 * <br>
 	 * The default values are immediately copied from the JAR resource. If such operation fails,
@@ -182,7 +182,7 @@ public class FlattenedConfig extends AbstractYamlConfig {
 	}
 	
 	/**
-	 * Creates from a configuration file. Identical in function to {@link #SimpleConfig(File, Class)}
+	 * Creates from a configuration file. Identical in function to {@link #FlattenedConfig(File, Class)}
 	 * except that a {@link Path} may be specified instead of a {@link File}. <br>
 	 * <br>
 	 * The default values are immediately copied from the JAR resource. If such operation fails,
