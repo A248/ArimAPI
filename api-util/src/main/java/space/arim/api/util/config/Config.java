@@ -49,6 +49,7 @@ import java.util.Set;
  * @author A248
  * 
  * @see SimpleConfig
+ * @see FlattenedConfig
  *
  */
 public interface Config {

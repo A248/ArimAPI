@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
@@ -44,6 +45,8 @@ import org.yaml.snakeyaml.error.YAMLException;
  */
 abstract class AbstractYamlConfig implements Config {
 
+	static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+	
 	static final Pattern NODE_SEPARATOR_PATTERN = Pattern.compile(".", Pattern.LITERAL);
 	
 	private final File configFile;
@@ -61,6 +64,12 @@ abstract class AbstractYamlConfig implements Config {
 	AbstractYamlConfig(File configFile) {
 		this.configFile = Objects.requireNonNull(configFile, "configFile must not be null");
 	}
+	
+	/*
+	 * 
+	 * Loading and reloading
+	 * 
+	 */
 	
 	/**
 	 * Gets the default configuration as a JAR resource
@@ -128,10 +137,113 @@ abstract class AbstractYamlConfig implements Config {
 			readLock.unlock();
 		}
 	}
-
+	
+	/*
+	 * 
+	 * Object values and retrieval
+	 * 
+	 */
+	
+	/**
+	 * Ensures the config values have been loaded at least once with
+	 * {@link #reloadConfig()}
+	 * 
+	 */
+	abstract void ensureLoaded();
+	
+	/**
+	 * Gets a configured value directly. Does not check preconditions.
+	 * 
+	 * @param <T> the type to retrieve
+	 * @param key the key
+	 * @param clazz the type class
+	 * @return the configured value or null if not found
+	 */
+	abstract <T> T getConfiguredFromMap(String key, Class<T> clazz);
+	
+	/**
+	 * Gets a default value directly. Does not check preconditions
+	 * 
+	 * @param <T> the type to retrieve
+	 * @param key the key
+	 * @param clazz the type class
+	 * @return the default value or null if not found
+	 */
+	abstract <T> T getDefaultFromMap(String key, Class<T> clazz);
+	
 	@Override
-	public String toString() {
-		return "AbstractYamlConfig [configFile=" + configFile + "]";
+	public <T> T getObject(String key, Class<T> clazz) {
+		ensureLoaded();
+
+		T value = getConfiguredFromMap(key, clazz);
+		if (value != null) {
+			return value;
+		}
+		value = getDefaultFromMap(key, clazz);
+		if (value != null) {
+			return value;
+		}
+		// Nothing found
+		throw new ConfigDefaultValueNotSetException(
+				"Neither config value nor default value defined for " + key + " with type " + clazz);
+	}
+	
+	/**
+	 * Checks the instance of each element in the list. <br>
+	 * For an empty list this will always return {@code true}.
+	 * 
+	 * @param list the list to check
+	 * @param elementClazz the element class used to check instances
+	 * @return true if all the elements are isntances of the specified class, false otherwise.
+	 */
+	private static boolean checkElementTypes(List<?> list, Class<?> elementClazz) {
+		for (Object element : list) {
+			if (!elementClazz.isInstance(element)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <U> List<U> getList(String key, Class<U> elementClazz) {
+		ensureLoaded();
+
+		List<?> configuredList = getConfiguredFromMap(key, List.class);
+		if (configuredList != null && checkElementTypes(configuredList, elementClazz)) {
+			return (List<U>) configuredList;
+		}
+		List<?> defaultList = getDefaultFromMap(key, List.class);
+		if (defaultList != null && checkElementTypes(defaultList, elementClazz)) {
+			return (List<U>) defaultList;
+		}
+		throw new ConfigDefaultValueNotSetException("Neither config value nor default value has list defined for " + key
+				+ " with element type " + elementClazz);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 */
+	@Override
+	public <T> T getConfiguredObject(String key, Class<T> clazz) {
+		ensureLoaded();
+
+		return getConfiguredFromMap(key, clazz);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 */
+	@Override
+	public <T> T getDefaultObject(String key, Class<T> clazz) {
+		T result = getDefaultFromMap(key, clazz);
+		if (result != null) {
+			return result;
+		}
+		throw new ConfigDefaultValueNotSetException("No default value defined for " + key + " with type " + clazz);
 	}
 	
 	/*
@@ -154,7 +266,7 @@ abstract class AbstractYamlConfig implements Config {
 	 * @return the same map, replacement map, or null depending on what happened
 	 */
 	@SuppressWarnings("unchecked")
-	static Map<String, Object> ensureStringKeys(Map<?, ?> sourceMap, boolean keyConversion) {
+	static Map<String, Object> checkKeysAreStrings(Map<?, ?> sourceMap, boolean keyConversion) {
 		boolean keysAreStrings = true;
 		// Iteration handles empty maps
 		for (Object key : sourceMap.keySet()) {
@@ -179,11 +291,15 @@ abstract class AbstractYamlConfig implements Config {
 		return replacement;
 	}
 	
-	static HashMap<String, Object> asHashMap(Map<String, Object> map) {
-		if (map instanceof HashMap<?, ?>) {
-			return (HashMap<String, Object>) map;
-		}
-		return new HashMap<>(map);
+	/*
+	 * 
+	 * Bean properties
+	 * 
+	 */
+	
+	@Override
+	public String toString() {
+		return "AbstractYamlConfig [configFile=" + configFile + "]";
 	}
 	
 }

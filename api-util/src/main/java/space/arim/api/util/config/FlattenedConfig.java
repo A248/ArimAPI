@@ -22,19 +22,33 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- * Simple, yaml-based implementation of {@link Config}. Interally uses 2 HashMaps, for config values and defaults. <br>
+ * Yaml-based implementation of {@link Config} as an alternate to {@link SimpleConfig}. <br>
  * <br>
- * It is intended that programmers place the config resource, call it <code>config.yml</code>,
- * in the JAR file. This JAR resource becomes the source of default values for the program's configuration.
- * A corresponding file, by the same name of the resource, in some configuration directory, will become
- * the source of configured values. If the file does not exist, it will be created, and the JAR resource
- * will be copied exactly to the file, copying not only the default values but also any comments associated
- * with the JAR file. <br>
+ * This implementation functions similarly to {@code SimpleConfig} with regards to how
+ * it loads config values and defaults. The config resource must be placed in the jar file
+ * and have the same name as the file. <br>
+ * <br>
+ * However, it retains loaded values in memory differently.
+ * Instead of maintaining a hierarchal structure of values, composed of maps and submaps, whose nested objects
+ * are retrieved when required, {@code FlattenedConfig} "flattens" all of the maps and submaps into a single map
+ * when the values are loaded. Thus, values are transferred to a single, flat map where keys are separated
+ * by periods ('{@literal .}') in accordance with the yaml convention. <br>
+ * <br>
+ * Such design allows for faster retrieval of objects in heavily nested pathnames (e.g. "basekey.subkey.deeper.deepest")
+ * since only 1 map lookup is required. However, this comes at the expense of increasing load times, since the entire
+ * config map must be loaded and flattened before it can be used. Furthermore, when a key set is requested,
+ * it must be rebuilt from the flattened keys. Moreover, since no map objects are retained, but rather converted
+ * to the single flat map, maps cannot be specifically retrieved from {@code FlattenedConfig} without somehow
+ * rebuilding the maps from the flattened map. <br>
+ * <br>
+ * For this reason, getting {@code Map} objects (or subinterfaces/subclasses thereof) is wholly unsupported.
+ * Attempts to retrieve map objects will throw {@code UnsupportedOperationException}. <br>
  * <br>
  * <b>Usage</b> <br>
  * Either of the public constructors may be used to specify both the configuration file and the resource
@@ -55,8 +69,9 @@ import java.util.Set;
  * 
  * @author A248
  *
+ * @see SimpleConfig
  */
-public class SimpleConfig extends AbstractYamlConfig {
+public class FlattenedConfig extends AbstractYamlConfig {
 
 	private final Class<?> resourceClass;
 	
@@ -81,7 +96,7 @@ public class SimpleConfig extends AbstractYamlConfig {
 	 * @param filename the filename of the configuration file
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
-	public SimpleConfig(File folder, String filename) {
+	public FlattenedConfig(File folder, String filename) {
 		this(new File(folder, filename));
 	}
 	
@@ -98,7 +113,7 @@ public class SimpleConfig extends AbstractYamlConfig {
 	 * @param resourceClass the class from which to retrieve the JAR resource
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
-	public SimpleConfig(File folder, String filename, Class<?> resourceClass) {
+	public FlattenedConfig(File folder, String filename, Class<?> resourceClass) {
 		this(new File(folder, filename), resourceClass);
 	}
 	
@@ -112,16 +127,16 @@ public class SimpleConfig extends AbstractYamlConfig {
 	 * @param configFile the configuration file
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
-	public SimpleConfig(File configFile) {
+	public FlattenedConfig(File configFile) {
 		super(configFile);
 
 		Class<?> runtimeClass = getClass();
-		if (runtimeClass == SimpleConfig.class) {
+		if (runtimeClass == FlattenedConfig.class) {
 
 			// Caller detected, option 2
 			resourceClass = STACK_WALKER.walk((stream) -> {
 				StackWalker.StackFrame callerFrame = stream
-						.dropWhile((frame) -> frame.getClassName().equals(SimpleConfig.class.getName()))
+						.dropWhile((frame) -> frame.getClassName().equals(FlattenedConfig.class.getName()))
 						.limit(1).findFirst().get();
 				return callerFrame.getDeclaringClass();
 			});
@@ -130,7 +145,7 @@ public class SimpleConfig extends AbstractYamlConfig {
 			resourceClass = runtimeClass;
 		}
 		// Must be called after class determined
-		defaultValues = new HashMap<>(loadDefaults());
+		defaultValues = flatten(loadDefaults());
 	}
 	
 	/**
@@ -144,11 +159,11 @@ public class SimpleConfig extends AbstractYamlConfig {
 	 * @param resourceClass the class from which to retrieve the JAR resource
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
-	public SimpleConfig(File configFile, Class<?> resourceClass) {
+	public FlattenedConfig(File configFile, Class<?> resourceClass) {
 		super(configFile);
 		this.resourceClass = resourceClass;
 		// Must be called after class determined
-		defaultValues = new HashMap<>(loadDefaults());
+		defaultValues = flatten(loadDefaults());
 	}
 	
 	/**
@@ -162,7 +177,7 @@ public class SimpleConfig extends AbstractYamlConfig {
 	 * @param configPath the configuration file
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
-	public SimpleConfig(Path configPath) {
+	public FlattenedConfig(Path configPath) {
 		this(Objects.requireNonNull(configPath, "configPath must not be null").toFile());
 	}
 	
@@ -178,10 +193,36 @@ public class SimpleConfig extends AbstractYamlConfig {
 	 * @param resourceClass the class from which to retrieve the JAR resource
 	 * @throws ConfigLoadDefaultsFromJarException if the default values could not be loaded from the jar resource
 	 */
-	public SimpleConfig(Path configPath, Class<?> resourceClass) {
+	public FlattenedConfig(Path configPath, Class<?> resourceClass) {
 		this(Objects.requireNonNull(configPath, "configPath must not be null").toFile(), resourceClass);
 	}
 	
+	/*
+	 * 
+	 * Flattening utilities
+	 * 
+	 */
+	
+	private static Map<String, Object> flatten(Map<String, Object> sourceMap) {
+		Map<String, Object> result = new HashMap<>();
+		fillWithFlattenedValues(result, "", sourceMap);
+		return result;
+	}
+	
+	private static void fillWithFlattenedValues(Map<String, Object> targetMap, String baseKey, Map<String, Object> sourceMap) {
+		for (Map.Entry<String, Object> sourceEntry : sourceMap.entrySet()) {
+
+			Object value = sourceEntry.getValue();
+			if (value instanceof Map<?, ?>) {
+				fillWithFlattenedValues(targetMap, baseKey + sourceEntry.getKey() + '.',
+						checkKeysAreStrings((Map<?, ?>) value, true));
+
+			} else {
+				targetMap.put(baseKey + sourceEntry.getKey(), value);
+			}
+		}
+	}
+
 	/*
 	 * 
 	 * Loading and reloading
@@ -193,13 +234,9 @@ public class SimpleConfig extends AbstractYamlConfig {
 		return resourceClass.getResourceAsStream(File.separatorChar + resourceName);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 */
 	@Override
 	public void reloadConfig() {
-		configValues = new HashMap<>(loadFromFile());
+		configValues = flatten(loadFromFile());
 	}
 	
 	/*
@@ -208,58 +245,21 @@ public class SimpleConfig extends AbstractYamlConfig {
 	 * 
 	 */
 	
-	/**
-	 * Gets a configuration value from a nested map, or null if it does not exist
-	 * or is not of type <code>T</code>.
-	 * 
-	 * @param <T> the type of the object to retrieve
-	 * @param map the map of (nested) keys and values to search
-	 * @param key the key path at which to retrieve the object
-	 * @param clazz the class of the type to retrieve, used internally for instance checks
-	 * @return the object if it exists and is of the specified instance, <code>null</code> otherwise
-	 */
 	@SuppressWarnings("unchecked")
-	private static <T> T getFromNestedMap(Map<String, Object> map, String key, Class<T> clazz) {
-		if (key.indexOf('.') == -1) {
-			Object value = map.get(key);
-			return (clazz.isInstance(value)) ? (T) value : null;
-		}
-		String[] keyParts = NODE_SEPARATOR_PATTERN.split(key);
-		Map<?, ?> currentMap = map;
-		boolean isMapSafe = true;
-
-		int lastIndex = keyParts.length - 1;
-		for (int n = 0; n < keyParts.length; n++) {
-
-			String subKey = keyParts[n];
-			@SuppressWarnings("unlikely-arg-type")
-			Object subValue = (isMapSafe) ? currentMap.get(subKey) : getFromUnsafeMap(currentMap, subKey);
-
-			if (n == lastIndex) {
-				if (clazz.isInstance(subValue)) {
-					return (T) subValue;
-				}
-
-			} else {
-				if (!(subValue instanceof Map<?, ?>)) {
-					return null;
-				}
-				currentMap = (Map<?, ?>) subValue;
-				isMapSafe = checkKeysAreStrings(currentMap, false) != null;
-			}
+	private static <T> T getObjectAs(Map<String, Object> map, String key, Class<T> clazz) {
+		Object value = map.get(key);
+		if (clazz.isInstance(value)) {
+			return (T) value;
 		}
 		return null;
 	}
 	
-	private static Object getFromUnsafeMap(Map<?, ?> map, String key) {
-		for (Map.Entry<?, ?> entry : map.entrySet()) {
-			if (entry.getKey().toString().equals(key)) {
-				return entry.getValue();
-			}
+	private void checkNotMap(Class<?> clazz) {
+		if (Map.class.isAssignableFrom(clazz)) {
+			throw new UnsupportedOperationException("FlattenedConfig should not and cannot be used to retrieve Maps");
 		}
-		return null;
 	}
-
+	
 	@Override
 	void ensureLoaded() {
 		if (configValues == null) {
@@ -269,33 +269,31 @@ public class SimpleConfig extends AbstractYamlConfig {
 	
 	@Override
 	<T> T getConfiguredFromMap(String key, Class<T> clazz) {
-		return getFromNestedMap(configValues, key, clazz);
+		return getObjectAs(configValues, key, clazz);
 	}
 
 	@Override
 	<T> T getDefaultFromMap(String key, Class<T> clazz) {
-		return getFromNestedMap(defaultValues, key, clazz);
+		return getObjectAs(defaultValues, key, clazz);
+	}
+
+	@Override
+	public <T> T getObject(String key, Class<T> clazz) {
+		checkNotMap(clazz);
+		return super.getObject(key, clazz);
+	}
+
+	@Override
+	public <T> T getConfiguredObject(String key, Class<T> clazz) {
+		checkNotMap(clazz);
+		return super.getConfiguredObject(key, clazz);
 	}
 	
-	/*@Override
-	public <T> T getObject(String key, Class<T> clazz) {
-		return super.getObject(key, clazz);
-	}*/
-	
-	/*@Override
-	public <U> List<U> getList(String key, Class<U> elementClazz) {
-		return super.getList(key, elementClazz);
-	}*/
-	
-	/*@Override
-	public <T> T getConfiguredObject(String key, Class<T> clazz) {
-		return super.getConfiguredObject(key, clazz);
-	}*/
-	
-	/*@Override
+	@Override
 	public <T> T getDefaultObject(String key, Class<T> clazz) {
+		checkNotMap(clazz);
 		return super.getDefaultObject(key, clazz);
-	}*/
+	}
 	
 	/*
 	 * 
@@ -307,33 +305,66 @@ public class SimpleConfig extends AbstractYamlConfig {
 	public Set<String> getConfiguredKeys() {
 		ensureLoaded();
 
-		return configValues.keySet();
+		return buildRootKeySet(configValues);
 	}
-	
+
 	@Override
 	public Set<String> getConfiguredKeys(String key) {
 		ensureLoaded();
 
-		@SuppressWarnings("unchecked")
-		Map<String, Object> subMap = getConfiguredFromMap(key, Map.class);
-		return (subMap == null) ? null : subMap.keySet();
-	}
-	
-	@Override
-	public Set<String> getDefaultKeys() {
-		return defaultValues.keySet();
-	}
-	
-	@Override
-	public Set<String> getDefaultKeys(String key) {
-		@SuppressWarnings("unchecked")
-		Map<String, Object> subMap = getDefaultFromMap(key, Map.class);
-		if (subMap == null) {
-			throw new ConfigDefaultValueNotSetException("No default subkeys found for " + key);
-		}
-		return subMap.keySet();
+		return buildKeySet(configValues, key);
 	}
 
+	@Override
+	public Set<String> getDefaultKeys() {
+		return buildRootKeySet(defaultValues);
+	}
+
+	@Override
+	public Set<String> getDefaultKeys(String key) {
+		Set<String> keySet = buildKeySet(defaultValues, key);
+		if (keySet == null) {
+			throw new ConfigDefaultValueNotSetException("No default subkeys found for " + key);
+		}
+		return keySet;
+	}
+	
+	/*
+	 * 
+	 * Key set building
+	 * 
+	 */
+	
+	private static Set<String> buildRootKeySet(Map<String, Object> flatMap) {
+		Set<String> result = new HashSet<>();
+		for (String flatKey : flatMap.keySet()) {
+			String[] keyParts = NODE_SEPARATOR_PATTERN.split(flatKey);
+			result.add(keyParts[0]);
+		}
+		return result;
+	}
+	
+	private static Set<String> buildKeySet(Map<String, Object> flatMap, String baseKey) {
+		Set<String> result = null;
+		int length = baseKey.length();
+
+		for (String flatKey : flatMap.keySet()) {
+			if (flatKey.startsWith(baseKey)) {
+
+				String remainder = flatKey.substring(length);
+				if (!remainder.isEmpty() && remainder.charAt(0) == '.') {
+
+					if (result == null) {
+						result = new HashSet<>();
+					}
+					String[] keyParts = NODE_SEPARATOR_PATTERN.split(remainder);
+					result.add(keyParts[1]);
+				}
+			}
+		}
+		return result;
+	}
+	
 	/*
 	 * 
 	 * Bean properties
@@ -342,10 +373,10 @@ public class SimpleConfig extends AbstractYamlConfig {
 	
 	@Override
 	public String toString() {
-		return "SimpleConfig [resourceClass=" + resourceClass + ", defaultValues=" + defaultValues + ", configValues="
-				+ configValues + ", toString()=" + super.toString() + "]";
+		return "FlattenedConfig [defaultValues=" + defaultValues + ", configValues=" + configValues + ", toString()="
+				+ super.toString() + "]";
 	}
-
+	
 	/*@Override
 	public int hashCode() {
 		return System.identityHashCode(this);
@@ -355,5 +386,5 @@ public class SimpleConfig extends AbstractYamlConfig {
 	public boolean equals(Object object) {
 		return this == object;
 	}*/
-	
+
 }
