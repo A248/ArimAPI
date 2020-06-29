@@ -11,19 +11,15 @@ Download the from SpigotMC.
 
 The javadoc may be found [here](https://git.arim.space/javadoc/ArimAPI).
 
-Maven dependency:
+Dependency and repository:
 
 ```xml
 <dependency>
-	<groupId>space.arim</groupId>
-	<artifactId>arimapi-platform</artifactId>
+	<groupId>space.arim.api</groupId>
+	<artifactId>arimapi-all</artifactId>
 	<version>{INSERT_LATEST_VERSION}</version>
 </dependency>
-```
 
-Maven repository:
-
-``` xml
 <repository>
   <id>arim-repo</id>
   <url>https://www.arim.space/maven/</url>
