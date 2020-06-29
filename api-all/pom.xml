@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>space.arim.api</groupId>
+		<artifactId>arimapi-parent</artifactId>
+		<version>0.13.1-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>arimapi-all</artifactId>
+	<name>ArimAPI-All</name>
+	<description>Shaded combination of ArimAPI components.</description>
+	
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<finalName>${project.name}_v${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<artifactSet>
+								<includes>
+									<include>space.arim.universal:*</include>
+									<include>space.arim.api:*</include>
+									
+									<!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
+									<include>space.arim:shinyclasspath</include>
+									
+									<!-- Includes GPL License -->
+									<include>space.arim:universal-gpl</include>
+								</includes>
+							</artifactSet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+		<dependency>
+			<groupId>space.arim.universal</groupId>
+			<artifactId>universal-gpl</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-chat</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-env-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-spigot-plugin</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-bungee-plugin</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-sponge-plugin</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-velocity-plugin</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>

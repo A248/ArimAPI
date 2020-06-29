@@ -20,32 +20,31 @@ package space.arim.api.chat;
 
 import java.util.regex.Pattern;
 
-import space.arim.universal.util.proxy.CaptiveReference;
-
 /**
  * Represents a regex pattern matching valid formatting codes. <br>
  * A formatting code is <i>valid</i> if the char identifying the colour or style maps to an actual client colour. <br>
  * <br>
- * {@link #getValue()} may be used to get the underyling regex pattern.
+ * {@link #getPattern()} may be used to get the underyling regex pattern.
  * 
  * @author A248
  *
  */
-public final class FormattingCodePattern extends CaptiveReference<Pattern> {
+public final class FormattingCodePattern {
 	
 	/*
 	 * These 2 formatting code patterns are commonly used, so it makes sense to cache their regex Pattern's
 	 * 
 	 */
 	
-	private static final FormattingCodePattern AMPERSAND_PATTERN = compile(MessageUtil.DEFAULT_FORMATTING_CHAR);
-	private static final FormattingCodePattern SECTION_SIGN_PATTERN = compile(MessageUtil.SECTION_SIGN_FORMATTING_CHAR);
+	private static final FormattingCodePattern AMPERSAND_PATTERN = compile(MessageParserUtil.DEFAULT_FORMATTING_CHAR);
+	private static final FormattingCodePattern SECTION_SIGN_PATTERN = compile(MessageParserUtil.SECTION_SIGN_FORMATTING_CHAR);
 	
 	private final char codeChar;
+	private final Pattern pattern;
 	
 	private FormattingCodePattern(char codeChar, Pattern pattern) {
-		super(pattern);
 		this.codeChar = codeChar;
+		this.pattern = pattern;
 	}
 	
 	/**
@@ -53,9 +52,8 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	 * 
 	 * @return the pattern
 	 */
-	@Override
-	public Pattern getValue() {
-		return super.getValue();
+	public Pattern getPattern() {
+		return pattern;
 	}
 	
 	/**
@@ -74,10 +72,10 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	/**
 	 * Gets the default formatting code pattern.
 	 * 
-	 * @return the pattern used for {@link MessageUtil#DEFAULT_FORMATTING_CHAR}
+	 * @return the pattern used for {@link MessageParserUtil#DEFAULT_FORMATTING_CHAR}
 	 */
 	public static FormattingCodePattern get() {
-		return get(MessageUtil.DEFAULT_FORMATTING_CHAR);
+		return get(MessageParserUtil.DEFAULT_FORMATTING_CHAR);
 	}
 	
 	/**
@@ -89,9 +87,9 @@ public final class FormattingCodePattern extends CaptiveReference<Pattern> {
 	 */
 	public static FormattingCodePattern get(char codeChar) {
 		switch (codeChar) {
-		case MessageUtil.DEFAULT_FORMATTING_CHAR:
+		case MessageParserUtil.DEFAULT_FORMATTING_CHAR:
 			return AMPERSAND_PATTERN;
-		case MessageUtil.SECTION_SIGN_FORMATTING_CHAR:
+		case MessageParserUtil.SECTION_SIGN_FORMATTING_CHAR:
 			return SECTION_SIGN_PATTERN;
 		default:
 			return compile(codeChar);

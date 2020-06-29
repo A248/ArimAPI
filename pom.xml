@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>space.arim</groupId>
-	<artifactId>arimapi</artifactId>
+	<groupId>space.arim.api</groupId>
+	<artifactId>arimapi-parent</artifactId>
 	<!-- Remember to update versions in all child modules -->
 	<version>0.13.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -18,7 +18,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>11</maven.compiler.source>
     	<maven.compiler.target>11</maven.compiler.target>
-		<core.author>A248</core.author>
 		
 		<!-- Compile only -->
 		<!-- Only necessary at compile or build time -->
@@ -33,13 +32,8 @@
 		<slf4j.version>1.7.25</slf4j.version><!-- Included on Paper 1.12.2+, Waterfall, Sponge, and Velocity -->
 		
 		<!-- Shaded dependencies -->
-		<universal.version>0.10.2-SNAPSHOT</universal.version>
+		<universal.version>0.12.0-SNAPSHOT</universal.version>
 		<shinyclasspath.version>0.3.2-SNAPSHOT</shinyclasspath.version><!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
-		
-		<!-- Server software -->
-		<spigot.version>1.8.8-R0.1-SNAPSHOT</spigot.version>
-		<bungeecord.version>1.15-SNAPSHOT</bungeecord.version>
-		<sponge.version>7.1.0</sponge.version>
 		
 		<!-- Shaded with server software -->
 		<guava.version>28.2-jre</guava.version>
@@ -137,8 +131,8 @@
 	<modules>
 		<module>api-chat</module>
 		<module>api-util</module>
-		<module>api-platform</module>
-		<module>api-plugin</module>
+		<module>api-env</module>
+		<module>api-all</module>
 	</modules>
 	
 	<distributionManagement>
@@ -156,23 +150,38 @@
 		<dependencies>
 			<!-- Internal dependencies -->
 			<dependency>
-				<groupId>space.arim</groupId>
+				<groupId>space.arim.api</groupId>
 				<artifactId>arimapi-chat</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>space.arim</groupId>
+				<groupId>space.arim.api</groupId>
 				<artifactId>arimapi-util</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>space.arim</groupId>
-				<artifactId>arimapi-platform</artifactId>
+				<groupId>space.arim.api</groupId>
+				<artifactId>arimapi-env-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>space.arim</groupId>
-				<artifactId>arimapi-core</artifactId>
+				<groupId>space.arim.api</groupId>
+				<artifactId>arimapi-spigot-plugin</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim.api</groupId>
+				<artifactId>arimapi-bungee-plugin</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim.api</groupId>
+				<artifactId>arimapi-sponge-plugin</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim.api</groupId>
+				<artifactId>arimapi-velocity-plugin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			
@@ -205,39 +214,24 @@
 			
 			<!-- Shaded dependencies -->
 			<dependency>
-				<groupId>space.arim</groupId>
+				<groupId>space.arim.universal</groupId>
 				<artifactId>universal-gpl</artifactId>
 				<version>${universal.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>space.arim</groupId>
+				<groupId>space.arim.universal</groupId>
 				<artifactId>universal-registry</artifactId>
+				<version>${universal.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim.universal</groupId>
+				<artifactId>universal-util</artifactId>
 				<version>${universal.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>space.arim</groupId>
 				<artifactId>shinyclasspath</artifactId>
 				<version>${shinyclasspath.version}</version>
-			</dependency>
-			
-			<!-- Server software -->
-			<dependency>
-				<groupId>org.spigotmc</groupId>
-				<artifactId>spigot-api</artifactId>
-				<version>${spigot.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>net.md-5</groupId>
-				<artifactId>bungeecord-api</artifactId>
-				<version>${bungeecord.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.spongepowered</groupId>
-				<artifactId>spongeapi</artifactId>
-				<version>${sponge.version}</version>
-				<scope>provided</scope>
 			</dependency>
 			
 			<!-- Shaded with server software -->
@@ -263,18 +257,6 @@
 		<repository>
 			<id>arim-repo</id>
 			<url>https://www.arim.space/maven/</url>
-		</repository>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-		</repository>
-		<repository>
-       		<id>bungeecord-repo</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-   		</repository>
-   		<repository>
-			<id>sponge-repo</id>
-			<url>https://repo.spongepowered.org/maven</url>
 		</repository>
 	</repositories>
 </project>

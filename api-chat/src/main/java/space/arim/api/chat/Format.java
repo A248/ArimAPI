@@ -31,7 +31,7 @@ public class Format {
 	 * <br>
 	 * <i>In practice</i>, this is not used in ArimAPI's chat objects; rather, reset codes are applied when
 	 * converting to platform specific representations (Bungee and Spigot's BaseComponent, or Sponge's Text). <br>
-	 * Accordingly, methods in {@link MessageUtil} do not translate <code>RESET</code> codes. <br>
+	 * Accordingly, methods in {@link MessageParserUtil} do not translate <code>RESET</code> codes. <br>
 	 * <br>
 	 * <b>As such, programmers should not rely on the presence of this Format in a {@link Message} or {@link Component} for detecting a formatting reset.</b> <br>
 	 * On the contrary, it is assumed there is a formatting reset between each <code>Component</code> within a <code>Message</code>.
