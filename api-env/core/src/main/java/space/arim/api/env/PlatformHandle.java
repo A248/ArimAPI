@@ -43,7 +43,7 @@ public interface PlatformHandle {
 	 * 
 	 * @param <T> the service type
 	 * @param service the service class
-	 * @return
+	 * @return the result of {@link Registry#registerIfAbsent(Class, java.util.function.Supplier)}
 	 * @throws IllegalArgumentException if the service is not supported
 	 */
 	<T> T registerDefaultServiceIfAbsent(Class<T> service);
