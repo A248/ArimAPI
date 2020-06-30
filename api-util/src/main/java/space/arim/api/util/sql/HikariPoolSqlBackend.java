@@ -63,6 +63,15 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		this.dataSource = dataSource;
 	}
 	
+	/**
+	 * Gets the hikari data source used by this sql backend
+	 * 
+	 * @return the hikari data source
+	 */
+	public HikariDataSource getDataSource() {
+		return dataSource;
+	}
+	
 	@Override
 	public CloseMe execute(String statement, Object... args) throws SQLException {
 		Objects.requireNonNull(statement, "The statement to execute must not be null");
