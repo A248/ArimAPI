@@ -34,10 +34,8 @@
 									<include>space.arim.api:*</include>
 									
 									<!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
+									<!-- DEPRECATED -->
 									<include>space.arim:shinyclasspath</include>
-									
-									<!-- Includes GPL License -->
-									<include>space.arim:universal-gpl</include>
 								</includes>
 							</artifactSet>
 						</configuration>
@@ -84,6 +82,11 @@
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-velocity-plugin</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<!-- DEPRECATED -->
+		<dependency>
+			<groupId>space.arim</groupId>
+			<artifactId>shinyclasspath</artifactId>
 		</dependency>
 	</dependencies>
 </project>

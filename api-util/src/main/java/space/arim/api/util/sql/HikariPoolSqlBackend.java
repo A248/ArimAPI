@@ -24,8 +24,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 
-import space.arim.shaded.com.zaxxer.hikari.HikariConfig;
-import space.arim.shaded.com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import space.arim.api.util.sql.impl.*;
 

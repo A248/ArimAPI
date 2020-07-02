@@ -21,7 +21,7 @@ package space.arim.api.sql;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import space.arim.shaded.com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * Subclass of {@link LoggingSql} using HikariCP for the implementation.

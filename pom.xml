@@ -31,6 +31,9 @@
 		<!-- Must be included on the classpath without relocation -->
 		<slf4j.version>1.7.25</slf4j.version><!-- Included on Paper 1.12.2+, Waterfall, Sponge, and Velocity -->
 		
+		<!-- Optional dependencies -->
+		<hikari.version>3.4.5</hikari.version>
+		
 		<!-- Shaded dependencies -->
 		<universal.version>0.12.0-SNAPSHOT</universal.version>
 		<shinyclasspath.version>0.3.2-SNAPSHOT</shinyclasspath.version><!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
@@ -205,11 +208,18 @@
 				<scope>test</scope>
 			</dependency>
 			
-			<!-- Required dependencies -->
+			<!-- Optional dependencies -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>com.zaxxer</groupId>
+				<artifactId>HikariCP</artifactId>
+				<version>${hikari.version}</version>
+				<optional>true</optional>
 			</dependency>
 			
 			<!-- Shaded dependencies -->
