@@ -30,8 +30,12 @@ import space.arim.api.util.FilesUtil;
  * <b>Usage:</b> Extend this class.
  * 
  * @author A248
- *
+ * 
+ * @deprecated The config framework represented by {@link Config} is deprecated. See {@link space.arim.api.config}
+ * for more information.
  */
+@SuppressWarnings("deprecation")
+@Deprecated
 public abstract class SimpleConfigWithLog extends ConfigWithLog {
 	
 	private final Logger logger;

@@ -28,7 +28,11 @@ import java.util.Map;
  * 
  * @author A248
  *
+ * @deprecated The config framework represented by {@link Config} is deprecated. See {@link space.arim.api.config}
+ * for more information.
  */
+@SuppressWarnings("deprecation")
+@Deprecated
 public abstract class ConfigWithLog extends Config {
 	
 	protected ConfigWithLog(File folder, String filename, String versionKey) {

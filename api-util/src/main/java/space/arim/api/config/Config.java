@@ -46,7 +46,10 @@ import org.yaml.snakeyaml.Yaml;
  * 
  * @author A248
  *
+ * @deprecated The config framework represented by this base class is deprecated. See {@link space.arim.api.config}
+ * for more information.
  */
+@Deprecated
 public abstract class Config {
 	
 	protected final File folder;

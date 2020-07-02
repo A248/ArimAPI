@@ -31,7 +31,11 @@ import space.arim.api.util.FilesUtil;
  * 
  * @author A248
  *
+ * @deprecated The config framework represented by {@link Config} is deprecated. See {@link space.arim.api.config}
+ * for more information.
  */
+@SuppressWarnings("deprecation")
+@Deprecated
 public abstract class SimpleConfig extends Config implements SimpleConfigFramework {
 	
 	/**

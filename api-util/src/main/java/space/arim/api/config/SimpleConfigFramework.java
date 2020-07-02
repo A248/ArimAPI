@@ -31,7 +31,10 @@ import java.util.Set;
  * 
  * @author A248
  *
+ * @deprecated The config framework represented by {@link Config} is deprecated. See {@link space.arim.api.config}
+ * for more information.
  */
+@Deprecated
 public interface SimpleConfigFramework {
 
 	/**
@@ -131,7 +134,7 @@ public interface SimpleConfigFramework {
 	 * @param key the key
 	 * @return the keys within the config section, or <code>null</code>
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	default Set<String> getKeys(String key) {
 		Map<?, ?> map = getObject(key, Map.class);
 		return (map != null) ? SimpleConfig.prependFullKeyPath(key, ((Map<String, Object>) map).keySet()) : null;
