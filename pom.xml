@@ -35,7 +35,7 @@
 		<hikari.version>3.4.5</hikari.version>
 		
 		<!-- Shaded dependencies -->
-		<universal.version>0.12.0-SNAPSHOT</universal.version>
+		<universal.version>0.13.3-SNAPSHOT</universal.version>
 		<shinyclasspath.version>0.3.2-SNAPSHOT</shinyclasspath.version><!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
 		
 		<!-- Shaded with server software -->
