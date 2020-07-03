@@ -18,23 +18,15 @@
  */
 package space.arim.api.plugin;
 
-import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import space.arim.universal.events.UniversalEvents;
-import space.arim.universal.registry.Registry;
-import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.registry.UniversalRegistry;
-
-import space.arim.api.env.PlatformPluginInfo;
+import space.arim.api.env.initializer.SpigotPlatformInitializer;
 
 public class SpigotPlugin extends JavaPlugin {
 
 	@Override
 	public void onLoad() {
-		Registry registry = new UniversalRegistry(new UniversalEvents());
-		getServer().getServicesManager().register(Registry.class, registry, this, ServicePriority.Lowest);
-		registry.register(PlatformPluginInfo.class, RegistryPriority.LOWEST, new PlatformPluginInfo(this, getServer()), getName());
+		new SpigotPlatformInitializer(this).initRegistry();
 	}
 	
 }

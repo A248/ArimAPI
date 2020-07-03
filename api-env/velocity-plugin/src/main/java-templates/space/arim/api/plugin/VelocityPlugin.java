@@ -24,11 +24,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 
-import space.arim.universal.registry.Registry;
-import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.registry.UniversalRegistry;
-
-import space.arim.api.env.PlatformPluginInfo;
+import space.arim.api.env.initializer.VelocityPlatformInitializer;
 
 @Plugin(id = "${plugin.annotationId}", name = "${plugin.name}", version = "${plugin.version}", authors = {
 		"${plugin.author}" }, url = "${plugin.url}", description = "${plugin.description}")
@@ -43,9 +39,7 @@ public class VelocityPlugin {
 	
 	@Subscribe
 	public void initRegistry(@SuppressWarnings("unused") ProxyInitializeEvent evt) {
-		Registry registry = UniversalRegistry.get();
-		registry.register(PlatformPluginInfo.class, RegistryPriority.LOWEST,
-				new PlatformPluginInfo(server.getPluginManager().fromInstance(this).get(), server), "${plugin.name}");
+		new VelocityPlatformInitializer(server.getPluginManager().fromInstance(this).get(), server).initRegistry();
 	}
 	
 }

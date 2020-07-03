@@ -18,37 +18,20 @@
  */
 package space.arim.api.plugin;
 
-import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
-import com.google.inject.Inject;
-
-import space.arim.universal.events.UniversalEvents;
-import space.arim.universal.registry.Registry;
-import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.registry.UniversalRegistry;
-
-import space.arim.api.env.PlatformPluginInfo;
+import space.arim.api.env.initializer.SpongePlatformInitializer;
 
 @Plugin(id = "${plugin.annotationId}", name = "${plugin.name}", version = "${plugin.version}", authors = {
 		"${plugin.author}" }, description = "${plugin.description}", url = "${plugin.url}")
 public class SpongePlugin {
 	
-	private final Game server;
-	
-	@Inject
-	public SpongePlugin(Game server) {
-		this.server = server;
-	}
-	
 	@Listener
 	public void initRegistry(@SuppressWarnings("unused") GameInitializationEvent evt) {
-		Registry registry = new UniversalRegistry(new UniversalEvents());
-		server.getServiceManager().setProvider(this, Registry.class, registry);
-		registry.register(PlatformPluginInfo.class, RegistryPriority.LOWEST,
-				new PlatformPluginInfo(server.getPluginManager().fromInstance(this).get(), server), "${plugin.name}");
+		new SpongePlatformInitializer(Sponge.getPluginManager().fromInstance(this).get()).initRegistry();
 	}
 	
 }

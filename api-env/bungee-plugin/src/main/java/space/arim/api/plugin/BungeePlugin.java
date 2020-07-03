@@ -20,18 +20,13 @@ package space.arim.api.plugin;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
-import space.arim.universal.registry.Registry;
-import space.arim.universal.registry.RegistryPriority;
-import space.arim.universal.registry.UniversalRegistry;
-
-import space.arim.api.env.PlatformPluginInfo;
+import space.arim.api.env.initializer.BungeePlatformInitializer;
 
 public class BungeePlugin extends Plugin {
 
 	@Override
 	public void onLoad() {
-		Registry registry = UniversalRegistry.get();
-		registry.register(PlatformPluginInfo.class, RegistryPriority.LOWEST, new PlatformPluginInfo(this, getProxy()), getDescription().getName());
+		new BungeePlatformInitializer(this).initRegistry();
 	}
 	
 }
