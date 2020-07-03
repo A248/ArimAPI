@@ -30,8 +30,11 @@
 							<createDependencyReducedPom>false</createDependencyReducedPom>
 							<artifactSet>
 								<includes>
-									<include>space.arim.universal:*</include>
 									<include>space.arim.api:*</include>
+									
+									<!-- Include UniversalRegistry in our shaded jar -->
+									<!-- DEPRECATED -->
+									<include>space.arim.universal:*</include>
 									
 									<!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
 									<!-- DEPRECATED -->
