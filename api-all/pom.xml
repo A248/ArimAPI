@@ -66,25 +66,26 @@
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-env-core</artifactId>
 		</dependency>
+		<!-- Don't depend on these; they're for internal purposes only -->
 		<dependency>
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-spigot-plugin</artifactId>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-bungee-plugin</artifactId>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-sponge-plugin</artifactId>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-velocity-plugin</artifactId>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<!-- DEPRECATED -->
 		<dependency>
