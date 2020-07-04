@@ -23,6 +23,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
@@ -104,12 +106,11 @@ abstract class AbstractYamlConfig implements Config {
 			return;
 		}
 		try (InputStream input = getDefaultResourceAsStream(configFile.getName());
+				ReadableByteChannel readChannel = Channels.newChannel(input);
 				FileOutputStream output = new FileOutputStream(configFile)) {
-			byte[] buffer = new byte[4096];
-			int read;
-			while ((read = input.read(buffer)) != -1) {
-				output.write(buffer, 0, read);
-			}
+
+			output.getChannel().transferFrom(readChannel, 0, Long.MAX_VALUE);
+
 		} catch (IOException ex) {
 			throw new ConfigSaveDefaultsToFileException("Could not save config from JAR to local filesystem", ex);
 		} finally {
