@@ -28,15 +28,11 @@
 		<junit.version>5.6.2</junit.version>
 		
 		<!-- Required dependencies -->
-		<!-- Must be included on the classpath without relocation -->
-		<slf4j.version>1.7.25</slf4j.version><!-- Included on Paper 1.12.2+, Waterfall, Sponge, and Velocity -->
+		<universal.version>0.13.4-SNAPSHOT</universal.version>
 		
 		<!-- Optional dependencies -->
 		<hikari.version>3.4.5</hikari.version>
-		
-		<!-- Shaded dependencies -->
-		<universal.version>0.13.3-SNAPSHOT</universal.version>
-		<shinyclasspath.version>0.3.2-SNAPSHOT</shinyclasspath.version><!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
+		<slf4j.version>1.7.25</slf4j.version><!-- Included on Paper 1.12.2+, Waterfall, Sponge, and Velocity -->
 		
 		<!-- Shaded with server software -->
 		<guava.version>28.2-jre</guava.version>
