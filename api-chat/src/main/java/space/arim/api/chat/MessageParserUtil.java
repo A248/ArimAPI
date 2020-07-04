@@ -182,4 +182,20 @@ public class MessageParserUtil {
 		return parseJson(msg, (node, builder) -> builder.add(node), this::parseUncoloured);
 	}
 	
+	/**
+	 * Removes any json formatting from a raw string
+	 * 
+	 * @param msg the message
+	 * @return the message with json elements removed
+	 */
+	public String removeRawJson(String msg) {
+		StringBuilder result = new StringBuilder();
+		for (String node : DOUBLE_PIPE_PATTERN.split(msg)) {
+			if (JsonTag.getFor(node) == JsonTag.NONE) {
+				result.append(node);
+			}
+		}
+		return result.toString();
+	}
+	
 }
