@@ -31,14 +31,6 @@
 							<artifactSet>
 								<includes>
 									<include>space.arim.api:*</include>
-									
-									<!-- Include UniversalRegistry in our shaded jar -->
-									<!-- DEPRECATED -->
-									<include>space.arim.universal:*</include>
-									
-									<!-- Includes relocated HSQLDB, HikariCP, and Caffeine -->
-									<!-- DEPRECATED -->
-									<include>space.arim:shinyclasspath</include>
 								</includes>
 							</artifactSet>
 						</configuration>
@@ -86,11 +78,6 @@
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-velocity-plugin</artifactId>
 			<optional>true</optional>
-		</dependency>
-		<!-- DEPRECATED -->
-		<dependency>
-			<groupId>space.arim</groupId>
-			<artifactId>shinyclasspath</artifactId>
 		</dependency>
 	</dependencies>
 </project>
