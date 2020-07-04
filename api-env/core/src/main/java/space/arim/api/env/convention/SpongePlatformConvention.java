@@ -16,7 +16,7 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env.initializer;
+package space.arim.api.env.convention;
 
 import org.slf4j.Logger;
 
@@ -33,16 +33,12 @@ import space.arim.api.env.DetectingPlatformHandle;
 import space.arim.api.env.PlatformPluginInfo;
 
 /**
- * Initializer of the {@link Registry} on Sponge servers, using the Sponge ServiceManager. <br>
- * This class is only useful to plugins requiring ArimAPI which manage their dependencies by
- * downloading them at runtime. <br>
- * <br>
- * In practice, this is used by the ArimAPI plugin itself as well as plugins downloading ArimAPI at runtime.
+ * Initialiser of the {@link Registry} on Sponge servers, using the Sponge ServiceManager.
  * 
  * @author A248
  *
  */
-public class SpongePlatformInitializer extends PlatformInitializer {
+public class SpongePlatformConvention extends PlatformConvention {
 
 	private final PluginContainer plugin;
 	private final Logger logger;
@@ -52,22 +48,22 @@ public class SpongePlatformInitializer extends PlatformInitializer {
 	 * 
 	 * @param plugin the plugin to use
 	 */
-	public SpongePlatformInitializer(PluginContainer plugin) {
+	public SpongePlatformConvention(PluginContainer plugin) {
 		this.plugin = plugin;
 		logger = plugin.getLogger();
 	}
 	
 	/**
-	 * Initialises the {@link Registry} using the Sponge ServiceManager if it has not yet been
-	 * initialised. <br>
+	 * Gets the {@link Registry} using the Sponge ServiceManager, initialising it if necessary. <br>
+	 * <br>
 	 * This also adds a registration for {@link PlatformPluginInfo} if not present, which is required by
 	 * {@link DetectingPlatformHandle}
 	 * 
 	 * @return the initialised registry, never {@code null}
 	 */
 	@Override
-	public Registry initRegistry() {
-		return super.initRegistry();
+	public Registry getRegistry() {
+		return super.getRegistry();
 	}
 	
 	@Override
@@ -80,7 +76,7 @@ public class SpongePlatformInitializer extends PlatformInitializer {
 	 * 
 	 */
 	@Override
-	Registry getRegistry() {
+	Registry getRegistry0() {
 		Registry registry;
 		ServiceManager spongeServices = Sponge.getServiceManager();
 		synchronized (spongeServices) {

@@ -16,7 +16,7 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env.initializer;
+package space.arim.api.env.convention;
 
 import space.arim.universal.registry.Registration;
 import space.arim.universal.registry.Registry;
@@ -26,19 +26,20 @@ import space.arim.universal.registry.UniversalRegistry;
 import space.arim.api.env.PlatformPluginInfo;
 
 /**
- * Platform-specific {@link Registry} initializer whose subclasses are intended to be used
- * by either the ArimAPI plugin itself, or plugins depending on ArimAPI which download their
- * dependencies at runtime.
+ * Platform-specific {@link Registry} initialiser designed to harmonise platform-specific conventions,
+ * including where a platform-specific services manager is present. <br>
+ * <br>
+ * Once a {@code Registry} is obtained, users may query for platform-independent services.
  * 
  * @author A248
  *
  */
-public abstract class PlatformInitializer {
+public abstract class PlatformConvention {
 
 	static final byte DEFAULT_PRIORITY = RegistryPriority.LOWEST;
 	
 	/**
-	 * Initialises a {@link Registry} for the platform. <br>
+	 * Gets the {@link Registry} for the platform. <br>
 	 * <br>
 	 * If there is platform-specific services manager, the {@code Registry} will be drawn from that if there is
 	 * a platform-specific registration, or registered with the platform-specific services manager and returned. <br>
@@ -47,13 +48,13 @@ public abstract class PlatformInitializer {
 	 * 
 	 * @return the initialised registry, never {@code null}
 	 */
-	public Registry initRegistry() {
-		Registry registry = getRegistry();
+	public Registry getRegistry() {
+		Registry registry = getRegistry0();
 		registry.registerIfAbsent(PlatformPluginInfo.class, this::getPluginInfo);
 		return registry;
 	}
 	
-	abstract Registry getRegistry();
+	abstract Registry getRegistry0();
 	
 	abstract Registration<PlatformPluginInfo> getPluginInfo();
 	

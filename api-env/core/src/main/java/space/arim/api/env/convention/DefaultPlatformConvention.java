@@ -16,12 +16,12 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env.initializer;
+package space.arim.api.env.convention;
 
 import space.arim.universal.registry.Registry;
 import space.arim.universal.registry.UniversalRegistry;
 
-abstract class DefaultPlatformInitializer extends PlatformInitializer {
+abstract class DefaultPlatformConvention extends PlatformConvention {
 
 	@Override
 	void warn(String message) {
@@ -34,7 +34,7 @@ abstract class DefaultPlatformInitializer extends PlatformInitializer {
 	}
 
 	@Override
-	Registry getRegistry() {
+	Registry getRegistry0() {
 		return UniversalRegistry.get();
 	}
 

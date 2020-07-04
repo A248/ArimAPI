@@ -20,13 +20,13 @@ package space.arim.api.plugin;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import space.arim.api.env.initializer.SpigotPlatformInitializer;
+import space.arim.api.env.convention.SpigotPlatformConvention;
 
 public class SpigotPlugin extends JavaPlugin {
 
 	@Override
 	public void onLoad() {
-		new SpigotPlatformInitializer(this).initRegistry();
+		new SpigotPlatformConvention(this).getRegistry();
 	}
 	
 }

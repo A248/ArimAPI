@@ -20,13 +20,13 @@ package space.arim.api.plugin;
 
 import net.md_5.bungee.api.plugin.Plugin;
 
-import space.arim.api.env.initializer.BungeePlatformInitializer;
+import space.arim.api.env.convention.BungeePlatformConvention;
 
 public class BungeePlugin extends Plugin {
 
 	@Override
 	public void onLoad() {
-		new BungeePlatformInitializer(this).initRegistry();
+		new BungeePlatformConvention(this).getRegistry();
 	}
 	
 }

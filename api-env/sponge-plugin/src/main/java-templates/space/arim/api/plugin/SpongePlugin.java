@@ -23,7 +23,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
-import space.arim.api.env.initializer.SpongePlatformInitializer;
+import space.arim.api.env.convention.SpongePlatformConvention;
 
 @Plugin(id = "${plugin.annotationId}", name = "${plugin.name}", version = "${plugin.version}", authors = {
 		"${plugin.author}" }, description = "${plugin.description}", url = "${plugin.url}")
@@ -31,7 +31,7 @@ public class SpongePlugin {
 	
 	@Listener
 	public void initRegistry(@SuppressWarnings("unused") GameInitializationEvent evt) {
-		new SpongePlatformInitializer(Sponge.getPluginManager().fromInstance(this).get()).initRegistry();
+		new SpongePlatformConvention(Sponge.getPluginManager().fromInstance(this).get()).getRegistry();
 	}
 	
 }

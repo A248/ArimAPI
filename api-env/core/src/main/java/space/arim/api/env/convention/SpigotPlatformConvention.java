@@ -16,7 +16,7 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env.initializer;
+package space.arim.api.env.convention;
 
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
@@ -32,16 +32,12 @@ import space.arim.api.env.PlatformPluginInfo;
 import space.arim.api.env.DetectingPlatformHandle;
 
 /**
- * Initializer of the {@link Registry} on Bukkit servers, using the Bukkit ServicesManager. <br>
- * This class is only useful to plugins requiring ArimAPI which manage their dependencies by
- * downloading them at runtime. <br>
- * <br>
- * In practice, this is used by the ArimAPI plugin itself as well as plugins downloading ArimAPI at runtime.
+ * Initialiser of the {@link Registry} on Bukkit servers, using the Bukkit ServicesManager.
  * 
  * @author A248
  *
  */
-public class SpigotPlatformInitializer extends PlatformInitializer {
+public class SpigotPlatformConvention extends PlatformConvention {
 
 	private final JavaPlugin plugin;
 	
@@ -50,21 +46,21 @@ public class SpigotPlatformInitializer extends PlatformInitializer {
 	 * 
 	 * @param plugin the plugin to use
 	 */
-	public SpigotPlatformInitializer(JavaPlugin plugin) {
+	public SpigotPlatformConvention(JavaPlugin plugin) {
 		this.plugin = plugin;
 	}
 	
 	/**
-	 * Initialises the {@link Registry} using the Bukkit ServicesManager if it has not yet been
-	 * initialised. <br>
+	 * Gets the {@link Registry} using the Bukkit ServicesManager, initialising it if necessary. <br>
+	 * <br>
 	 * This also adds a registration for {@link PlatformPluginInfo} if not present, which is required by
 	 * {@link DetectingPlatformHandle}
 	 * 
 	 * @return the initialised registry, never {@code null}
 	 */
 	@Override
-	public Registry initRegistry() {
-		return super.initRegistry();
+	public Registry getRegistry() {
+		return super.getRegistry();
 	}
 	
 	@Override
@@ -78,7 +74,7 @@ public class SpigotPlatformInitializer extends PlatformInitializer {
 	 * 
 	 */
 	@Override
-	Registry getRegistry() {
+	Registry getRegistry0() {
 		Registry registry;
 		ServicesManager bukkitServices = plugin.getServer().getServicesManager();
 		synchronized (bukkitServices) {

@@ -16,9 +16,11 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env.initializer;
+package space.arim.api.env.convention;
 
-import net.md_5.bungee.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.PluginContainer;
+import com.velocitypowered.api.plugin.PluginDescription;
+import com.velocitypowered.api.proxy.ProxyServer;
 
 import space.arim.universal.registry.Registration;
 import space.arim.universal.registry.Registry;
@@ -28,47 +30,48 @@ import space.arim.api.env.DetectingPlatformHandle;
 import space.arim.api.env.PlatformPluginInfo;
 
 /**
- * Initializer of the {@link Registry} on BungeeCord servers. <br>
- * This class is only useful to plugins requiring ArimAPI which manage their dependencies by
- * downloading them at runtime. <br>
- * <br>
- * In practice, this is used by the ArimAPI plugin itself as well as plugins downloading ArimAPI at runtime.
+ * Initialiser of the {@link Registry} on Velocity servers.
  * 
  * @author A248
  *
  */
-public class BungeePlatformInitializer extends DefaultPlatformInitializer {
+public class VelocityPlatformConvention extends DefaultPlatformConvention {
 
-	private final Plugin plugin;
+	private final PluginContainer plugin;
+	private final ProxyServer server;
 	
 	/**
-	 * Creates from a Plugin to use. The plugin must be enabled
+	 * Creates from a PluginContainer and ProxyServer to use. The plugin's instance must exist
 	 * 
 	 * @param plugin the plugin to use
+	 * @param server the server to use
 	 */
-	public BungeePlatformInitializer(Plugin plugin) {
+	public VelocityPlatformConvention(PluginContainer plugin, ProxyServer server) {
 		this.plugin = plugin;
+		this.server = server;
 	}
 	
 	/**
-	 * Initialises the {@link Registry}. <br>
+	 * Gets the {@link Registry}, initialising it if necessary. <br>
+	 * <br>
 	 * This also adds a registration for {@link PlatformPluginInfo} if not present, which is required by
 	 * {@link DetectingPlatformHandle} <br>
 	 * <br>
-	 * For BungeeCord, this is currently implemented as {@link UniversalRegistry#get()}, however,
-	 * this implementation may change if or once BungeeCord gets a services manager.
+	 * For Velocity, this is currently implemented as {@link UniversalRegistry#get()}, however,
+	 * this implementation may change if or once Velocity gets a services manager.
 	 * 
 	 * @return the initialised registry, never {@code null}
 	 */
 	@Override
-	public Registry initRegistry() {
-		return super.initRegistry();
+	public Registry getRegistry() {
+		return super.getRegistry();
 	}
 	
 	@Override
 	Registration<PlatformPluginInfo> getPluginInfo() {
-		return new Registration<>(DEFAULT_PRIORITY, new PlatformPluginInfo(plugin, plugin.getProxy()),
-				plugin.getDescription().getName());
+		PluginDescription description = plugin.getDescription();
+		return new Registration<>(DEFAULT_PRIORITY, new PlatformPluginInfo(plugin, server),
+				description.getName().orElse(description.getId()));
 	}
-
+	
 }
