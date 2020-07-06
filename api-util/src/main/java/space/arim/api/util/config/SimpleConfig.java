@@ -190,7 +190,7 @@ public class SimpleConfig extends AbstractYamlConfig {
 	
 	@Override
 	InputStream getDefaultResourceAsStream(String resourceName) {
-		return resourceClass.getResourceAsStream(File.separatorChar + resourceName);
+		return resourceClass.getResourceAsStream('/' + resourceName);
 	}
 	
 	/**
