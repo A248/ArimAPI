@@ -37,18 +37,6 @@ public final class StringsUtil {
 	private StringsUtil() {}
 	
 	/**
-	 * Utilises class <code>com.google.common.net.InetAddresses</code> <br>
-	 * <br>
-	 * <b>If that class is not on the classpath do not call this method!</b>
-	 * 
-	 * @param address - the address to validate
-	 * @return true if valid, false otherwise
-	 */
-	public static boolean validAddress(String address) {
-		return com.google.common.net.InetAddresses.isInetAddress(address);
-	}
-	
-	/**
 	 * Capitalises the first letter of the input string. <br>
 	 * If the input string is null, null is returned.
 	 * 
