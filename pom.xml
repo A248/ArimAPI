@@ -19,11 +19,6 @@
 		<maven.compiler.source>11</maven.compiler.source>
     	<maven.compiler.target>11</maven.compiler.target>
 		
-		<!-- Compile only -->
-		<!-- Only necessary at compile or build time -->
-		<lombok.version>1.18.12</lombok.version>
-		<eclipseNullAnalysis.version>2.2.400</eclipseNullAnalysis.version>
-		
 		<!-- Testing dependencies -->
 		<junit.version>5.6.2</junit.version>
 		
@@ -187,18 +182,6 @@
 				<groupId>space.arim.api</groupId>
 				<artifactId>arimapi-velocity-plugin</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-			
-			<!-- Compile only -->
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${lombok.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jdt</groupId>
-				<artifactId>org.eclipse.jdt.annotation</artifactId>
-				<version>${eclipseNullAnalysis.version}</version>
 			</dependency>
 			
 			<!-- Testing Dependencies -->
