@@ -35,17 +35,20 @@
 			<optional>true</optional>
 		</dependency>
 		
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
+		<!--
+		Although every platform has Gson and SnakeYAML, the versions of these libraries vary drastically.
+		Propagating these as transitive dependencies would enforce versioning on consumers. However,
+		they're here because we need to be able to use the most basic, unchanging functions of each library.
+		-->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		
 		<dependency>
