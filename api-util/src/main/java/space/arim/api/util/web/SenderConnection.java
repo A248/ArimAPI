@@ -31,8 +31,6 @@ import com.google.gson.JsonSyntaxException;
 import space.arim.universal.util.web.HttpStatus;
 import space.arim.universal.util.web.HttpStatusException;
 
-import space.arim.api.util.CommonInstancesUtil;
-
 class SenderConnection extends AbstractConnection {
 	
 	private Map<String, Object> response;
@@ -56,7 +54,7 @@ class SenderConnection extends AbstractConnection {
 			throw new HttpStatusException(status);
 		}
 		try (InputStreamReader reader = new InputStreamReader(inputStream(), "UTF-8")) {
-			response = CommonInstancesUtil.gson().fromJson(reader, Map.class);
+			response = DefaultGson.GSON.fromJson(reader, Map.class);
 		} catch (JsonSyntaxException | JsonIOException ex) {
 			throw new SenderException("Could not parse JSON response!", ex);
 		}

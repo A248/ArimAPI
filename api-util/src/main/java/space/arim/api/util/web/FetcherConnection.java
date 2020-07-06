@@ -28,8 +28,6 @@ import com.google.gson.JsonSyntaxException;
 import space.arim.universal.util.web.HttpStatus;
 import space.arim.universal.util.web.HttpStatusException;
 
-import space.arim.api.util.CommonInstancesUtil;
-
 class FetcherConnection extends AbstractConnection {
 	
 	FetcherConnection(String url) {
@@ -49,7 +47,7 @@ class FetcherConnection extends AbstractConnection {
 	}
 	
 	<T> T getJson(Class<T> type) throws JsonSyntaxException, JsonIOException, IOException {
-		return CommonInstancesUtil.gson().fromJson(new InputStreamReader(inputStream(), "UTF-8"), type);
+		return DefaultGson.GSON.fromJson(new InputStreamReader(inputStream(), "UTF-8"), type);
 	}
 	
 	String getSimpleRaw() throws IOException {
