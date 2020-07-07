@@ -31,6 +31,17 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	private final BlockingQueue<Runnable> syncTasks = new LinkedBlockingQueue<>();
 	volatile Thread mainThread;
 	
+	private static final boolean DISABLE_LAZY_EXECUTE;
+	
+	static {
+		boolean disableLazyExec = false;
+		try {
+			disableLazyExec = Boolean.getBoolean("space.arim.api.DeadlockFreeFutureFactory.disableLazyExec");
+		} catch (SecurityException ignored) {}
+
+		DISABLE_LAZY_EXECUTE = disableLazyExec;
+	}
+	
 	DeadlockFreeFutureFactory() {
 		
 	}
@@ -55,12 +66,12 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	
 	@Override
 	public void executeSync(Runnable command) {
-		if (isPrimaryThread()) {
+		if (DISABLE_LAZY_EXECUTE && isPrimaryThread()) {
 			command.run();
-		} else {
-			syncTasks.offer(command);
-			LockSupport.unpark(mainThread);
+			return;
 		}
+		syncTasks.offer(command);
+		LockSupport.unpark(mainThread);
 	}
 	
 	/**
@@ -68,6 +79,8 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	 * 
 	 */
 	void unleashSyncTasks() {
+		assert isPrimaryThread() : mainThread;
+
 		Runnable toRun;
 		while ((toRun = syncTasks.poll()) != null) {
 			toRun.run();
@@ -81,6 +94,8 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	 * @throws TimeoutException if the deadline was hit
 	 */
 	void unleashSyncTasks(long deadline) throws TimeoutException {
+		assert isPrimaryThread() : mainThread;
+
 		Runnable toRun;
 		while ((toRun = syncTasks.poll()) != null) {
 			toRun.run();
