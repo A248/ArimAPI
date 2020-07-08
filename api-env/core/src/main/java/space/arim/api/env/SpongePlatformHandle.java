@@ -31,8 +31,19 @@ import space.arim.universal.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.Message;
 
+/**
+ * Implementation of {@link PlatformHandle} specifically for Sponge servers
+ * 
+ * @author A248
+ *
+ */
 public class SpongePlatformHandle extends AbstractPlatformHandle {
-
+	
+	/**
+	 * Creates from a plugin to use
+	 * 
+	 * @param plugin the plugin
+	 */
 	public SpongePlatformHandle(PluginContainer plugin) {
 		super(PlatformType.SPONGE, Sponge.getServiceManager().provideUnchecked(Registry.class), plugin, Sponge.getGame());
 	}
@@ -41,6 +52,11 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 		super(PlatformType.SPONGE, registry);
 	}
 	
+	/**
+	 * Gets the plugin used
+	 * 
+	 * @return the plugin
+	 */
 	public PluginContainer getPlugin() {
 		return (PluginContainer) pluginInfo.getPlugin();
 	}
