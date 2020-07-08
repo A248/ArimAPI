@@ -83,6 +83,11 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 				return new Registration<T>(DEFAULT_PRIORITY, (T) new SpongeEnhancedExecutor(getPlugin()), "SpongeEnhancedExecutor");
 			};
 		}
+		if (service == PlatformScheduler.class) {
+			return () -> {
+				return new Registration<T>(DEFAULT_PRIORITY, (T) new SpongePlatformScheduler(getPlugin()), "SpongePlatformScheduler");
+			};
+		}
 		return null;
 	}
 	

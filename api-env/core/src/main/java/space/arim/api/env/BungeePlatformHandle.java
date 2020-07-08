@@ -92,6 +92,11 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 				return new Registration<T>(DEFAULT_PRIORITY, (T) new BungeeEnhancedExecutor(getPlugin()), "BungeeEnhancedExecutor");
 			};
 		}
+		if (service == PlatformScheduler.class) {
+			return () -> {
+				return new Registration<T>(DEFAULT_PRIORITY, (T) new BungeePlatformScheduler(getPlugin()), "BungeePlatformScheduler");
+			};
+		}
 		return null;
 	}
 

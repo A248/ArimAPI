@@ -39,7 +39,8 @@ public interface PlatformHandle {
 	 * <br>
 	 * The supported services: <br>
 	 * * {@link FactoryOfTheFuture} <br>
-	 * * {@link EnhancedExecutor}
+	 * * {@link EnhancedExecutor} <br>
+	 * * {@link PlatformScheduler}
 	 * 
 	 * @param <T> the service type
 	 * @param service the service class

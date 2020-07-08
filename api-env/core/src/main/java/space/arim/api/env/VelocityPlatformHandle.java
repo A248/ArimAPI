@@ -95,6 +95,11 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 				return new Registration<T>(DEFAULT_PRIORITY, (T) new VelocityEnhancedExecutor(getPlugin(), getServer()), "VelocityEnhancedExecutor");
 			};
 		}
+		if (service == PlatformScheduler.class) {
+			return () -> {
+				return new Registration<T>(DEFAULT_PRIORITY, (T) new VelocityPlatformScheduler(getPlugin(), getServer()), "VelocityPlatformScheduler");
+			};
+		}
 		return null;
 	}
 	

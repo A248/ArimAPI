@@ -90,6 +90,11 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 				return new Registration<T>(DEFAULT_PRIORITY, (T) new BukkitEnhancedExecutor(getPlugin()), "BukkitEnhancedExecutor");
 			};
 		}
+		if (service == PlatformScheduler.class) {
+			return () -> {
+				return new Registration<T>(DEFAULT_PRIORITY, (T) new BukkitPlatformScheduler(getPlugin()), "BukkitPlatformScheduler");
+			};
+		}
 		return null;
 	}
 
