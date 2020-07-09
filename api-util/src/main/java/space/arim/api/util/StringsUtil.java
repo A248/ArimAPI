@@ -151,8 +151,11 @@ public final class StringsUtil {
 	}
 	
 	/**
-	 * Expands a 32-length short form of a UUID to its long form. <br>
-	 * Both forms are unique, but some remote APIs (such as the Mojang API) return short forms.
+	 * Expands a 32-length short form of a UUID to its long form. Both forms are unique, but some remote
+	 * APIs (such as the Mojang API) return short forms. <br>
+	 * <br>
+	 * <b>Users of the <i>UUIDVault</i> project may use its {@code UUIDUtil} instead, which provides
+	 * a better implementation of this method. </b>
 	 * 
 	 * @param shortUuid the shortened uuid form
 	 * @return the expanded uuid form, which is parsable with {@link java.util.UUID#fromString(String)}
@@ -163,8 +166,7 @@ public final class StringsUtil {
 	}
 	
 	/**
-	 * Formats the current time according to <code>"dd-MM-yyyy"</code>. <br>
-	 * Implementation note: This method synchronises on an instance of SimpleDateFormat
+	 * Formats the current time according to <code>"dd-MM-yyyy"</code>.
 	 * 
 	 * @return the formatted current date
 	 */
