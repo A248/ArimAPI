@@ -39,6 +39,12 @@ public class SqlQuery {
 	private final Object[] args;
 	
 	/**
+	 * An empty array which may be reused as needed
+	 * 
+	 */
+	public static final SqlQuery[] EMPTY_QUERY_ARRAY = new SqlQuery[] {};
+	
+	/**
 	 * Creates from a statement string and arguments to it
 	 * 
 	 * @param statement the statement string, using question marks where parameters are to be inserted
