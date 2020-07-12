@@ -9,9 +9,15 @@ Download the from SpigotMC.
 
 ## For Developers ##
 
-The javadoc may be found [here](https://git.arim.space/javadoc/ArimAPI).
+The main artifact is  `space.arim.api:arimapi-all`.
 
-Dependency and repository:
+The repository URL is `https://www.arim.space/maven/`.
+
+### Maven
+
+With maven, this would be applied as follows.
+
+Dependency:
 
 ```xml
 <dependency>
@@ -19,13 +25,17 @@ Dependency and repository:
 	<artifactId>arimapi-all</artifactId>
 	<version>{INSERT_LATEST_VERSION}</version>
 </dependency>
+```
 
+Repository:
+
+```xml
 <repository>
-  <id>arim-repo</id>
-  <url>https://www.arim.space/maven/</url>
+	<id>arim-repo</id>
+	<url>https://www.arim.space/maven/</url>
 </repository>
 ```
 
-### License ###
+## License
 
 See the file LICENSE.txt for the full GNU General Public License v3. The license applies to this entire repository and is copied into binaries as LICENSE.txt.
