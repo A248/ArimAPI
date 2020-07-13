@@ -27,9 +27,10 @@ import space.arim.api.chat.Style.StyleCatalog;
 import space.arim.api.chat.Colour.ColourCatalog;
 import space.arim.api.chat.Component;
 
-import net.kyori.text.TextComponent;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 /**
  * WIP
@@ -45,37 +46,37 @@ import net.kyori.text.format.TextDecoration;
 		}
 		switch (ColourCatalog.valueOf(colour)) {
 		case BLACK:
-			return TextColor.BLACK;
+			return NamedTextColor.BLACK;
 		case DARK_BLUE:
-			return TextColor.DARK_BLUE;
+			return NamedTextColor.DARK_BLUE;
 		case DARK_GREEN:
-			return TextColor.DARK_GREEN;
+			return NamedTextColor.DARK_GREEN;
 		case DARK_AQUA:
-			return TextColor.DARK_AQUA;
+			return NamedTextColor.DARK_AQUA;
 		case DARK_RED:
-			return TextColor.DARK_RED;
+			return NamedTextColor.DARK_RED;
 		case DARK_PURPLE:
-			return TextColor.DARK_PURPLE;
+			return NamedTextColor.DARK_PURPLE;
 		case GOLD:
-			return TextColor.GOLD;
+			return NamedTextColor.GOLD;
 		case GRAY:
-			return TextColor.GRAY;
+			return NamedTextColor.GRAY;
 		case DARK_GRAY:
-			return TextColor.DARK_GRAY;
+			return NamedTextColor.DARK_GRAY;
 		case BLUE:
-			return TextColor.BLUE;
+			return NamedTextColor.BLUE;
 		case GREEN:
-			return TextColor.GREEN;
+			return NamedTextColor.GREEN;
 		case AQUA:
-			return TextColor.AQUA;
+			return NamedTextColor.AQUA;
 		case RED:
-			return TextColor.RED;
+			return NamedTextColor.RED;
 		case LIGHT_PURPLE:
-			return TextColor.LIGHT_PURPLE;
+			return NamedTextColor.LIGHT_PURPLE;
 		case YELLOW:
-			return TextColor.YELLOW;
+			return NamedTextColor.YELLOW;
 		case WHITE:
-			return TextColor.WHITE;
+			return NamedTextColor.WHITE;
 		default:
 			throw new IllegalStateException("No corresponding TextColor for &" + colour.identifier());
 		}
@@ -113,7 +114,7 @@ import net.kyori.text.format.TextDecoration;
 			if (kyoriColour != null) {
 				currentColour = kyoriColour;
 			}
-			child.color((currentColour == null) ? TextColor.WHITE : currentColour);
+			child.color((currentColour == null) ? NamedTextColor.WHITE : currentColour);
 
 			for (StyleCatalog style : StyleCatalog.values()) {
 				if (component.hasStyle(style.getStyleValue())) {
