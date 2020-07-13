@@ -30,10 +30,10 @@ import java.lang.annotation.Target;
 /**
  * Platform-specific server object. <br>
  * <br>
- * Bukkit: Server (org.bukkit.plugin.java.JavaPlugin) <br>
- * Bungee: ProxyServer (net.md_5.bungee.api.plugin.Plugin) <br>
- * Sponge: Object (<i>not</i> PluginContainer) corresponding to loaded plugin <br>
- * Velocity: Object (<i>not</i> PluginContainer) corresponding to loaded plugin
+ * Bukkit: Server (org.bukkit.Server) <br>
+ * Bungee: ProxyServer (net.md_5.bungee.api.ProxyServer) <br>
+ * Sponge: Game (org.spongepowered.api.Game) <br>
+ * Velocity: ProxyServer (com.velocitypowered.api.proxy.ProxyServer)
  * 
  * 
  * @author A248
