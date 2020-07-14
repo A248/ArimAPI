@@ -18,16 +18,28 @@
  */
 package space.arim.api.chat;
 
-/**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a {@link MessageComponent}.
- * 
- * @author A248
- *
- */
-public class JsonAction {
+import static org.junit.jupiter.api.Assertions.*;
 
-	JsonAction() {
-		// Pseudo-sealed class
+import org.junit.jupiter.api.Test;
+
+import space.arim.api.chat.PredefinedColour;
+
+public class PredefinedHexColourTest {
+
+	@Test
+	public void testNearestFinderIdentity() {
+		for (PredefinedColour entry : PredefinedColour.values()) {
+			assertEquals(entry, PredefinedColour.getNearestTo(entry.getHexColour()));
+		}
+	}
+	
+	@Test
+	public void testByCharIdentity() {
+		for (PredefinedColour entry : PredefinedColour.values()) {
+			char codeChar = entry.getCodeChar();
+			assertEquals(entry, PredefinedColour.getByChar(codeChar));
+			assertEquals(entry, PredefinedColour.getByChar(Character.toUpperCase(codeChar)));
+		}
 	}
 	
 }

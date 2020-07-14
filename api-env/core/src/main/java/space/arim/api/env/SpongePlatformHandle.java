@@ -29,7 +29,8 @@ import space.arim.universal.registry.Registry;
 import space.arim.universal.util.concurrent.EnhancedExecutor;
 import space.arim.universal.util.concurrent.FactoryOfTheFuture;
 
-import space.arim.api.chat.Message;
+import space.arim.api.chat.SendableMessage;
+import space.arim.api.env.chat.SpongeTextConverter;
 
 /**
  * Implementation of {@link PlatformHandle} specifically for Sponge servers
@@ -62,11 +63,11 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	}
 
 	@Override
-	public void sendMessage(Object player, Message message) {
+	public void sendMessage(Object player, SendableMessage message) {
 		sendMessage((Player) player, message);
 	}
 	
-	public void sendMessage(Player player, Message message) {
+	public void sendMessage(Player player, SendableMessage message) {
 		player.sendMessage(new SpongeTextConverter().convertFrom(message));
 	}
 

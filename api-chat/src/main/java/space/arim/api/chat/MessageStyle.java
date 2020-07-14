@@ -19,15 +19,39 @@
 package space.arim.api.chat;
 
 /**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a {@link MessageComponent}.
+ * Definition of specific message styles. To combine styles, simply add them together.
  * 
  * @author A248
  *
  */
-public class JsonAction {
+public final class MessageStyle {
 
-	JsonAction() {
-		// Pseudo-sealed class
-	}
+	/**
+	 * Magic or obfuscated text
+	 * 
+	 */
+	public static final int MAGIC = 0b00001;
+	/**
+	 * Bolded text
+	 * 
+	 */
+	public static final int BOLD = 0b00010;
+	/**
+	 * Strikethrough text
+	 * 
+	 */
+	public static final int STRIKETHROUGH = 0b00100;
+	/**
+	 * Underlined text
+	 * 
+	 */
+	public static final int UNDERLINE = 0b01000;
+	/**
+	 * Italicised text
+	 * 
+	 */
+	public static final int ITALIC = 0b10000;
+	
+	private MessageStyle() {}
 	
 }

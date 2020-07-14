@@ -31,7 +31,8 @@ import space.arim.universal.util.concurrent.EnhancedExecutor;
 import space.arim.universal.util.concurrent.FactoryOfTheFuture;
 import space.arim.universal.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
-import space.arim.api.chat.Message;
+import space.arim.api.chat.SendableMessage;
+import space.arim.api.env.chat.AdventureTextConverter;
 
 /**
  * Implementation of {@link PlatformHandle} specifically for Velocity servers.
@@ -74,12 +75,12 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 	}
 	
 	@Override
-	public void sendMessage(Object player, Message message) {
+	public void sendMessage(Object player, SendableMessage message) {
 		sendMessage((Player) player, message);
 	}
 	
-	public void sendMessage(Player player, Message message) {
-		player.sendMessage(new KyoriTextConverter().convertFrom(message));
+	public void sendMessage(Player player, SendableMessage message) {
+		player.sendMessage(new AdventureTextConverter().convertFrom(message));
 	}
 
 	@SuppressWarnings("unchecked")

@@ -21,7 +21,7 @@ package space.arim.api.env;
 import space.arim.universal.registry.Registry;
 import space.arim.universal.registry.RequireServices;
 
-import space.arim.api.chat.Message;
+import space.arim.api.chat.SendableMessage;
 
 /**
  * An implementation of {@link PlatformHandle} which automatically detects the platform in use.
@@ -100,7 +100,7 @@ public class DetectingPlatformHandle implements PlatformHandle {
 	}
 
 	@Override
-	public void sendMessage(Object player, Message message) {
+	public void sendMessage(Object player, SendableMessage message) {
 		delegate.sendMessage(player, message);
 	}
 

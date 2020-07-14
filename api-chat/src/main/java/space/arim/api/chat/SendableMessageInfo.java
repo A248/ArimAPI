@@ -18,16 +18,22 @@
  */
 package space.arim.api.chat;
 
+import java.util.List;
+
 /**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a {@link MessageComponent}.
+ * Information relating to a {@link SendableMessage} or {@link SendableMessage.Builder}
  * 
  * @author A248
  *
  */
-public class JsonAction {
+public interface SendableMessageInfo {
 
-	JsonAction() {
-		// Pseudo-sealed class
-	}
+	/**
+	 * Gets the components of this message or builder. The returned list
+	 * is immutable.
+	 * 
+	 * @return the immutable components
+	 */
+	List<TextualComponent> getComponents();
 	
 }

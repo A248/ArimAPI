@@ -16,18 +16,15 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat;
+package space.arim.api.chat.parser;
 
-/**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a {@link MessageComponent}.
- * 
- * @author A248
- *
- */
-public class JsonAction {
+import space.arim.api.chat.SendableMessage;
+import space.arim.api.chat.TextualComponent;
 
-	JsonAction() {
-		// Pseudo-sealed class
-	}
+abstract class InternalBuilder {
+
+	abstract void addBuilder(TextualComponent.Builder comp);
+	
+	abstract SendableMessage build();
 	
 }

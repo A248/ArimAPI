@@ -18,16 +18,34 @@
  */
 package space.arim.api.chat;
 
+import java.util.Objects;
+
 /**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a {@link MessageComponent}.
+ * An action which will show a tooltip when a player hovers over the chat message.
  * 
  * @author A248
  *
  */
-public class JsonAction {
+public final class JsonHover extends JsonAction {
 
-	JsonAction() {
-		// Pseudo-sealed class
+	private final SendableMessage tooltip;
+	
+	/**
+	 * Creates from a tooltip to show when a player hovers over the main message
+	 * 
+	 * @param tooltip the tooltip to display
+	 */
+	public JsonHover(SendableMessage tooltip) {
+		this.tooltip = Objects.requireNonNull(tooltip, "Tooltip must not be null");
+	}
+	
+	/**
+	 * Gets the {@link SendableMessage} which will be shown to players when they hover on the chat message.
+	 * 
+	 * @return the tooltip which will be shown, never {@code null}
+	 */
+	public SendableMessage getTooltip() {
+		return tooltip;
 	}
 	
 }

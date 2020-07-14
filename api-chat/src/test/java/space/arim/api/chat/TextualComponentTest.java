@@ -18,16 +18,21 @@
  */
 package space.arim.api.chat;
 
-/**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a {@link MessageComponent}.
- * 
- * @author A248
- *
- */
-public class JsonAction {
+import static org.junit.jupiter.api.Assertions.*;
 
-	JsonAction() {
-		// Pseudo-sealed class
+import org.junit.jupiter.api.Test;
+
+public class TextualComponentTest {
+
+	@Test
+	public void testStyles() {
+		TextualComponent comp = new TextualComponent.Builder()
+				.styles(MessageStyle.BOLD + MessageStyle.MAGIC + MessageStyle.UNDERLINE).build();
+		assertTrue(comp.hasStyle(MessageStyle.BOLD));
+		assertTrue(comp.hasStyle(MessageStyle.MAGIC));
+		assertTrue(comp.hasStyle(MessageStyle.UNDERLINE));
+		assertFalse(comp.hasStyle(MessageStyle.STRIKETHROUGH));
+		assertFalse(comp.hasStyle(MessageStyle.ITALIC));
 	}
 	
 }

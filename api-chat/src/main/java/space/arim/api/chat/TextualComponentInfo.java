@@ -19,15 +19,42 @@
 package space.arim.api.chat;
 
 /**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a {@link MessageComponent}.
+ * Information relating to a {@link TextualComponent} or {@link TextualComponent.Builder}
  * 
  * @author A248
  *
  */
-public class JsonAction {
+public interface TextualComponentInfo {
 
-	JsonAction() {
-		// Pseudo-sealed class
+	/**
+	 * Gets the text of this component or builder.
+	 * 
+	 * @return the text, never {@code null}
+	 */
+	String getText();
+	
+	/**
+	 * Gets the hex colour of this component or builder
+	 * 
+	 * @return the hex colour
+	 */
+	int getColour();
+	
+	/**
+	 * Gets the styles of this component or builder
+	 * 
+	 * @return the styles
+	 */
+	int getStyles();
+	
+	/**
+	 * Convenience method to determine whether this component or builder has the specified style
+	 * 
+	 * @param style the style
+	 * @return true if the style is enabled, false if disabled
+	 */
+	default boolean hasStyle(int style) {
+		return (getStyles() & style) != 0;
 	}
 	
 }

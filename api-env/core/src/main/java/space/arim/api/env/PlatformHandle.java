@@ -22,7 +22,7 @@ import space.arim.universal.registry.Registry;
 import space.arim.universal.util.concurrent.EnhancedExecutor;
 import space.arim.universal.util.concurrent.FactoryOfTheFuture;
 
-import space.arim.api.chat.Message;
+import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformPlayer;
 
 /**
@@ -55,7 +55,7 @@ public interface PlatformHandle {
 	 * @param player the recipient
 	 * @param message the message
 	 */
-	void sendMessage(@PlatformPlayer Object player, Message message);
+	void sendMessage(@PlatformPlayer Object player, SendableMessage message);
 	
 	/**
 	 * Gets the platform type detected

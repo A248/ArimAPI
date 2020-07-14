@@ -16,18 +16,24 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat;
+package space.arim.api.chat.parser;
 
-/**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a {@link MessageComponent}.
- * 
- * @author A248
- *
- */
-public class JsonAction {
+import java.util.regex.Pattern;
 
-	JsonAction() {
-		// Pseudo-sealed class
-	}
-	
+class DoublePipes {
+	static final Pattern PATTERN = Pattern.compile("||", Pattern.LITERAL);
+}
+
+class LegacyColours {
+	static final Pattern PATTERN = Pattern.compile("&[0-9A-Fa-fK-Rk-r]");
+}
+
+class AllColours {
+	static final Pattern PATTERN = Pattern.compile(
+			// Legacy colour codes
+			"(&[0-9A-Fa-fK-Rk-r])|"
+			// Hex codes such as <#00AAFF>
+			+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)|"
+			// and the shorter <#4BC>
+			+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)");
 }

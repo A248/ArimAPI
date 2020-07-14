@@ -19,15 +19,32 @@
 package space.arim.api.chat;
 
 /**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a {@link MessageComponent}.
+ * Information relating to a {@link JsonComponent} or {@link JsonComponent.Builder}
  * 
  * @author A248
  *
  */
-public class JsonAction {
+public interface JsonComponentInfo {
 
-	JsonAction() {
-		// Pseudo-sealed class
-	}
+	/**
+	 * Gets the hover action of this component or builder
+	 * 
+	 * @return the hover action or {@code null} if there is none
+	 */
+	JsonHover getHoverAction();
+	
+	/**
+	 * Gets the click action of this component or builder
+	 * 
+	 * @return the click action or {@code null} if there is none
+	 */
+	JsonClick getClickAction();
+	
+	/**
+	 * Gets the insertion action of this component or builder
+	 * 
+	 * @return the insertion action or {@code null} if there is none
+	 */
+	JsonInsertion getInsertionAction();
 	
 }

@@ -28,8 +28,9 @@ import space.arim.universal.registry.Registry;
 import space.arim.universal.util.concurrent.EnhancedExecutor;
 import space.arim.universal.util.concurrent.FactoryOfTheFuture;
 
-import space.arim.api.chat.Message;
+import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformPlayer;
+import space.arim.api.env.chat.BungeeComponentConverter;
 
 /**
  * Implementation of {@link PlatformHandle} specifically for Bukkit/Spigot servers.
@@ -62,7 +63,7 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	}
 
 	@Override
-	public void sendMessage(@PlatformPlayer Object player, Message message) {
+	public void sendMessage(@PlatformPlayer Object player, SendableMessage message) {
 		sendMessage((Player) player, message);
 	}
 	
@@ -73,7 +74,7 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	 * @param player the recipient
 	 * @param message the message
 	 */
-	public void sendMessage(Player player, Message message) {
+	public void sendMessage(Player player, SendableMessage message) {
 		player.spigot().sendMessage(new BungeeComponentConverter().convertFrom(message));
 	}
 

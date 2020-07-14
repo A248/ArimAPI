@@ -30,8 +30,9 @@ import space.arim.universal.util.concurrent.EnhancedExecutor;
 import space.arim.universal.util.concurrent.FactoryOfTheFuture;
 import space.arim.universal.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
-import space.arim.api.chat.Message;
+import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformPlayer;
+import space.arim.api.env.chat.BungeeComponentConverter;
 
 /**
  * Implementation of {@link PlatformHandle} specifically for BungeeCord proxies.
@@ -64,7 +65,7 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	}
 
 	@Override
-	public void sendMessage(@PlatformPlayer Object player, Message message) {
+	public void sendMessage(@PlatformPlayer Object player, SendableMessage message) {
 		sendMessage((ProxiedPlayer) player, message);
 	}
 	
@@ -75,7 +76,7 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	 * @param player the recipient
 	 * @param message the message
 	 */
-	public void sendMessage(ProxiedPlayer player, Message message) {
+	public void sendMessage(ProxiedPlayer player, SendableMessage message) {
 		player.sendMessage(new BungeeComponentConverter().convertFrom(message));
 	}
 
