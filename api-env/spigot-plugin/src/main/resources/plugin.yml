@@ -1,7 +1,0 @@
-name: ${plugin.name}
-main: space.arim.api.plugin.SpigotPlugin
-version: ${plugin.version}
-author: ${plugin.author}
-website: ${plugin.url}
-description: ${plugin.description}
-load: STARTUP

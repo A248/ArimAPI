@@ -132,6 +132,8 @@
 		<module>api-util</module>
 		<module>api-env</module>
 		<module>api-all</module>
+		<module>api-assemble</module>
+		<module>api-assemble-noplugin</module>
 	</modules>
 	
 	<distributionManagement>
@@ -165,22 +167,12 @@
 			</dependency>
 			<dependency>
 				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-spigot-plugin</artifactId>
+				<artifactId>arimapi-env-plugin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-bungee-plugin</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-sponge-plugin</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-velocity-plugin</artifactId>
+				<artifactId>arimapi-all</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			

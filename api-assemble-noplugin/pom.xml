@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>space.arim.api</groupId>
+		<artifactId>arimapi-parent</artifactId>
+		<version>0.17.0-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>arimapi-assemble-noplugin</artifactId>
+	<name>ArimAPI-Assemble-NoPlugin</name>
+	<description>Assembled installation without plugin classes.</description>
+	
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<finalName>${project.name}_v${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<artifactSet>
+								<includes>
+									<include>space.arim.api:*</include>
+									<include>space.arim.universal:universal-gpl</include>
+								</includes>
+							</artifactSet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Automatic-Module-Name>space.arim.api</Automatic-Module-Name>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+		<!-- All marked as optional to prevent relying on this artifact -->
+		<dependency>
+			<groupId>space.arim.universal</groupId>
+			<artifactId>universal-gpl</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-all</artifactId>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+</project>

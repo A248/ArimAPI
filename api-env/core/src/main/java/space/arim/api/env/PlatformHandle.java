@@ -24,6 +24,7 @@ import space.arim.universal.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformPlayer;
+import space.arim.api.env.chat.PlatformMessageAdapter;
 
 /**
  * An interface for working with platform-specific details, especially those not easily
@@ -50,7 +51,10 @@ public interface PlatformHandle {
 	<T> T registerDefaultServiceIfAbsent(Class<T> service);
 	
 	/**
-	 * Sends a JSON message to a player using the API associated with {@link Message}
+	 * Sends a {@link SendableMessage} to a player based on this platform. <br>
+	 * <br>
+	 * Implementations may be more efficient than using the platform's {@link PlatformMessageAdapter} to convert
+	 * to a platform specific type.
 	 * 
 	 * @param player the recipient
 	 * @param message the message

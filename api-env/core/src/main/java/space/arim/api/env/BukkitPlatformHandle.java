@@ -68,7 +68,7 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	}
 	
 	/**
-	 * Sends a message to a player. When possible, should be preferred to {@link #sendMessage(Object, Message)}
+	 * Sends a message to a player. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
 	 * due to type safety.
 	 * 
 	 * @param player the recipient

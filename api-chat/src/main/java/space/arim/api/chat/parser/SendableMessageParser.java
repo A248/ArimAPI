@@ -54,21 +54,21 @@ public interface SendableMessageParser {
 		NONE,
 		
 		/**
-		 * Parse only legacy colour codes, i.e. those starting with '&'.
+		 * Parse only legacy colour codes, i.e. those starting with '{@literal &}'.
 		 * 
 		 */
 		LEGACY_ONLY,
 		
 		/**
 		 * Parse all colour codes, including legacy colour codes, and also
-		 * hex colour codes, denoted by the pseudo regex <pre><{@literal #}(6*(A-F|0-9))></pre>. <br>
+		 * hex colour codes, denoted by the pseudo regex <pre>{@literal <#(6*(A-F|0-9))>}</pre>. <br>
 		 * <br>
 		 * Furthermore, 3-character hex values are permitted. For example, all of the following are accepted: <br>
 		 * <pre>
-		 * &a, &1, &f
-		 * <{@literal #}AA00AA>
-		 * <{@literal #}00FFFF>
-		 * <{@literal #}0FF> (equivalent to the previous)
+		 * {@literal &a, &1, &f}
+		 * {@literal <#AA00AA>}
+		 * {@literal <#00FFFF>}
+		 * {@literal <#0FF>} (equivalent to the previous)
 		 * </pre>
 		 * 
 		 */

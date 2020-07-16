@@ -9,17 +9,34 @@
 		<version>0.17.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>arimapi-env-core</artifactId>
+	<artifactId>arimapi-env-plugin</artifactId>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<finalName>${project.name}_${project.version}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<id>add-annotation-info</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 	
 	<dependencies>
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-chat</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
@@ -28,11 +45,6 @@
 		<dependency>
 			<groupId>net.md-5</groupId>
 			<artifactId>bungeecord-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.md-5</groupId>
-			<artifactId>bungeecord-chat</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

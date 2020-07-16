@@ -27,7 +27,7 @@ import space.arim.api.chat.SendableMessage;
  * 
  * @author A248
  *
- * @param <T> the platform specific class equivalent to {@link Message}
+ * @param <T> the platform specific type equivalent to {@link SendableMessage}
  */
 public interface PlatformMessageAdapter<T> {
 	

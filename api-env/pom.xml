@@ -16,24 +16,20 @@
 	
 	<properties>
 		<spigot.version>1.8.8-R0.1-SNAPSHOT</spigot.version>
-		<bungeecord.version>1.16-SNAPSHOT</bungeecord.version>
+		<bungeecord.version>1.16-R0.2</bungeecord.version>
 		<sponge.version>7.2.0</sponge.version>
 		<velocity.version>1.1.0-SNAPSHOT</velocity.version>
 		
 		<plugin.name>ArimAPI</plugin.name>
 		<plugin.annotationId>arimapi</plugin.annotationId> <!-- Used for @Plugin annotation on Sponge and Velocity -->
 		<plugin.version>${project.version}</plugin.version>
-		<plugin.author>A248</plugin.author>
 		<plugin.url>${project.parent.url}</plugin.url>
 		<plugin.description>${project.description}</plugin.description>
 	</properties>
 	
 	<modules>
 		<module>core</module>
-		<module>spigot-plugin</module>
-		<module>bungee-plugin</module>
-		<module>sponge-plugin</module>
-		<module>velocity-plugin</module>
+		<module>plugin</module>
 	</modules>
 	
 	<dependencyManagement>
@@ -46,6 +42,11 @@
 			<dependency>
 				<groupId>net.md-5</groupId>
 				<artifactId>bungeecord-api</artifactId>
+				<version>${bungeecord.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.md-5</groupId>
+				<artifactId>bungeecord-chat</artifactId>
 				<version>${bungeecord.version}</version>
 			</dependency>
 			<dependency>

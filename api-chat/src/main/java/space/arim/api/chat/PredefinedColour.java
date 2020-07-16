@@ -54,8 +54,7 @@ public enum PredefinedColour {
 	}
 	
 	/**
-	 * Gets the legacy code char. The lowercase character is returned for the codes
-	 * with letters (&a rather than &A)
+	 * Gets the legacy code char of this predefined colour. The lowercase character is returned
 	 * 
 	 * @return the legacy code character
 	 */

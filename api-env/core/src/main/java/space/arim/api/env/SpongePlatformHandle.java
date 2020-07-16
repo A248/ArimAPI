@@ -67,6 +67,13 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 		sendMessage((Player) player, message);
 	}
 	
+	/**
+	 * Sends a message to a player. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
+	 * due to type safety.
+	 * 
+	 * @param player the recipient
+	 * @param message the message
+	 */
 	public void sendMessage(Player player, SendableMessage message) {
 		player.sendMessage(new SpongeTextConverter().convertFrom(message));
 	}

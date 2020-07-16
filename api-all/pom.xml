@@ -11,52 +11,14 @@
 	
 	<artifactId>arimapi-all</artifactId>
 	<name>ArimAPI-All</name>
-	<description>Shaded combination of ArimAPI components.</description>
+	<description>Transitive combination of ArimAPI components.</description>
 	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<finalName>${project.name}_v${project.version}</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<createDependencyReducedPom>false</createDependencyReducedPom>
-							<artifactSet>
-								<includes>
-									<include>space.arim.api:*</include>
-								</includes>
-							</artifactSet>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestEntries>
-							<Automatic-Module-Name>space.arim.api</Automatic-Module-Name>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 	
 	<dependencies>
-		<dependency>
-			<groupId>space.arim.universal</groupId>
-			<artifactId>universal-gpl</artifactId>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-chat</artifactId>
@@ -68,27 +30,6 @@
 		<dependency>
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-env-core</artifactId>
-		</dependency>
-		<!-- Don't depend on these; they're for internal purposes only -->
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-spigot-plugin</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-bungee-plugin</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-sponge-plugin</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-velocity-plugin</artifactId>
-			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>
