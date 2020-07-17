@@ -67,6 +67,13 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	@Override
 	public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
 		if (factory.isPrimaryThread()) {
+			if (timeout <= 0L) {
+				if (isDone()) {
+					return get();
+				} else {
+					throw new TimeoutException();
+				}
+			}
 			long deadline = System.nanoTime() + unit.toNanos(timeout);
 			if (Thread.interrupted()) {
 				throw new InterruptedException();
