@@ -18,12 +18,7 @@
 		<finalName>${project.name}_v${project.version}</finalName>
 	</build>
 	
-	<dependencies>
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-util</artifactId>
-		</dependency>
-		
+	<dependencies>		
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
