@@ -24,12 +24,12 @@ import org.junit.jupiter.api.Test;
 
 import space.arim.api.chat.PredefinedColour;
 
-public class PredefinedHexColourTest {
+public class PredefinedColourTest {
 
 	@Test
 	public void testNearestFinderIdentity() {
 		for (PredefinedColour entry : PredefinedColour.values()) {
-			assertEquals(entry, PredefinedColour.getNearestTo(entry.getHexColour()));
+			assertEquals(entry, PredefinedColour.getNearestTo(entry.getColour()));
 		}
 	}
 	

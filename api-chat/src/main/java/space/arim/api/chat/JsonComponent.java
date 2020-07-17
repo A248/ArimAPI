@@ -30,26 +30,61 @@ public class JsonComponent extends TextualComponent implements JsonComponentInfo
 	private final JsonClick clickAction;
 	private final JsonInsertion insertionAction;
 	
-	JsonComponent(String text, int hex, int styles, JsonHover hoverAction, JsonClick clickAction, JsonInsertion insertionAction) {
-		super(text, hex, styles);
-		this.hoverAction = hoverAction;
-		this.clickAction = clickAction;
-		this.insertionAction = insertionAction;
+	/**
+	 * Creates from {@code JsonComponentInfo}. The attributes of the json component info are
+	 * copied.
+	 * 
+	 * @param info the component info whose attributes to use
+	 */
+	public JsonComponent(JsonComponentInfo info) {
+		super(info);
+		this.hoverAction = info.getHoverAction();
+		this.clickAction = info.getClickAction();
+		this.insertionAction = info.getInsertionAction();
 	}
 	
 	@Override
-	public JsonHover getHoverAction() {
+	public final JsonHover getHoverAction() {
 		return hoverAction;
 	}
 	
 	@Override
-	public JsonClick getClickAction() {
+	public final JsonClick getClickAction() {
 		return clickAction;
 	}
 	
 	@Override
-	public JsonInsertion getInsertionAction() {
+	public final JsonInsertion getInsertionAction() {
 		return insertionAction;
+	}
+	
+	@Override
+	String toString0() {
+		return "TextualComponent [text=" + getText() + ", colour=" + getColour() + ", styles=" + getStyles()
+				+ ", hoverAction=" + hoverAction + ", clickAction=" + clickAction + ", insertionAction="
+				+ insertionAction + "]";
+	}
+
+	@Override
+	int hashCode0() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + getColour();
+		result = prime * result + getStyles();
+		result = prime * result + getText().hashCode();
+		result = prime * result + ((hoverAction == null) ? 0 : hoverAction.hashCode());
+		result = prime * result + ((clickAction == null) ? 0 : clickAction.hashCode());
+		result = prime * result + ((insertionAction == null) ? 0 : insertionAction.hashCode());
+		return result;
+	}
+
+	@Override
+	boolean equals0(Object object) {
+		JsonComponent other = (JsonComponent) object;
+		return getColour() == other.getColour() && getStyles() == other.getStyles() && getText().equals(other.getText())
+				&& ((hoverAction == null) ? other.hoverAction == null : hoverAction.equals(other.hoverAction))
+				&& ((clickAction == null) ? other.clickAction == null : clickAction.equals(other.clickAction))
+				&& ((insertionAction == null) ? other.insertionAction == null : insertionAction.equals(other.insertionAction));
 	}
 	
 	/**
@@ -73,20 +108,35 @@ public class JsonComponent extends TextualComponent implements JsonComponentInfo
 		}
 		
 		/**
-		 * Creates the builder, using the provided existing {@code TextualComponentInfo} for default values. <br>
+		 * Creates the builder, using the provided existing {@code TextualComponentInfo}, whose attributes
+		 * are copied to this builder. <br>
+		 * <br>
 		 * If such component info is {@code JsonComponentInfo}, then its JSON properties will also be used.
 		 * 
-		 * @param template the component info to use for default values
+		 * @param info the component info to use for default values
 		 */
-		public Builder(TextualComponentInfo template) {
-			super(template);
-			if (template instanceof JsonComponentInfo) {
-				JsonComponentInfo jsonTemp = (JsonComponentInfo) template;
+		public Builder(TextualComponentInfo info) {
+			super(info);
+			if (info instanceof JsonComponentInfo) {
+				JsonComponentInfo jsonInfo = (JsonComponentInfo) info;
 
-				hoverAction = jsonTemp.getHoverAction();
-				clickAction = jsonTemp.getClickAction();
-				insertionAction = jsonTemp.getInsertionAction();
+				hoverAction = jsonInfo.getHoverAction();
+				clickAction = jsonInfo.getClickAction();
+				insertionAction = jsonInfo.getInsertionAction();
 			}
+		}
+		
+		/**
+		 * Creates the builder, using the provided existing {@code JsonComponentInfo}, whose attributes
+		 * are copied to this builder
+		 * 
+		 * @param info the component info to use
+		 */
+		public Builder(JsonComponentInfo info) {
+			super(info);
+			hoverAction = info.getHoverAction();
+			clickAction = info.getClickAction();
+			insertionAction = info.getInsertionAction();
 		}
 		
 		@Override
@@ -144,7 +194,7 @@ public class JsonComponent extends TextualComponent implements JsonComponentInfo
 		 */
 		@Override
 		public JsonComponent build() {
-			return new JsonComponent(getText(), getColour(), getStyles(), hoverAction, clickAction, insertionAction);
+			return new JsonComponent(this);
 		}
 
 		@Override
@@ -160,6 +210,38 @@ public class JsonComponent extends TextualComponent implements JsonComponentInfo
 		@Override
 		public JsonInsertion getInsertionAction() {
 			return insertionAction;
+		}
+		
+		@Override
+		public String toString() {
+			return "JsonComponent.Builder [text=" + getText() + ", colour=" + getColour() + ", styles=" + getStyles()
+					+ ", hoverAction=" + hoverAction + ", clickAction=" + clickAction + ", insertionAction="
+					+ insertionAction + "]";
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = super.hashCode();
+			result = prime * result + ((clickAction == null) ? 0 : clickAction.hashCode());
+			result = prime * result + ((hoverAction == null) ? 0 : hoverAction.hashCode());
+			result = prime * result + ((insertionAction == null) ? 0 : insertionAction.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+			if (object == null || getClass() != object.getClass()) {
+				return false;
+			}
+			Builder other = (Builder) object;
+			return getColour() == other.getColour() && getStyles() == other.getStyles() && getText().equals(other.getText())
+					&& ((hoverAction == null) ? other.hoverAction == null : hoverAction.equals(other.hoverAction))
+					&& ((clickAction == null) ? other.clickAction == null : clickAction.equals(other.clickAction))
+					&& ((insertionAction == null) ? other.insertionAction == null : insertionAction.equals(other.insertionAction));
 		}
 		
 	}

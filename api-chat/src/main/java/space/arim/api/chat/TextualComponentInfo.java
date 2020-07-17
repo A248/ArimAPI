@@ -19,7 +19,10 @@
 package space.arim.api.chat;
 
 /**
- * Information relating to a {@link TextualComponent} or {@link TextualComponent.Builder}
+ * Information relating to a {@link TextualComponent} or {@link TextualComponent.Builder} <br>
+ * <br>
+ * This interface defines a series of attributes regarding a textual message, but provide
+ * no guarantee of immutability.
  * 
  * @author A248
  *
@@ -56,5 +59,34 @@ public interface TextualComponentInfo {
 	default boolean hasStyle(int style) {
 		return (getStyles() & style) != 0;
 	}
+	
+	/**
+	 * Provides a string representation of this object, including all of its
+	 * properties defined in {@code TextualComponentInfo}
+	 * 
+	 * @return a string representation of this textual component info
+	 */
+	@Override
+	String toString();
+	
+	/**
+	 * Determines equality with the specified object consistent with the attributes defined
+	 * by this {@code TextualComponentInfo} interface and per such attributes' own {@code equals}
+	 * methods.
+	 * 
+	 * @param object the object to determine equality with
+	 * @return true if the objects are equal, false otherwise
+	 */
+	@Override
+	boolean equals(Object object);
+	
+	/**
+	 * Determines a hash code for this {@code TextualComponentInfo} consistent with its
+	 * attributes defined by this interface.
+	 * 
+	 * @return a hash code for this textual component info
+	 */
+	@Override
+	int hashCode();
 	
 }

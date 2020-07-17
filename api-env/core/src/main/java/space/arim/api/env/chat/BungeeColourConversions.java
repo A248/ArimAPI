@@ -34,7 +34,7 @@ class BungeeColourConversions {
 	static {
 		boolean hexSupport = false;
 		try {
-			fromHex0(PredefinedColour.GRAY.getHexColour());
+			fromHex0(PredefinedColour.GRAY.getColour());
 			hexSupport = true;
 		} catch (NoSuchMethodError ignored) {}
 		HAS_HEX_SUPPORT = hexSupport;
@@ -105,7 +105,7 @@ class BungeeColourConversions {
 			if (codeChar == 'z') {
 				return 0;
 			}
-			return PredefinedColour.getByChar(codeChar).getHexColour();
+			return PredefinedColour.getByChar(codeChar).getColour();
 		}
 	}
 	

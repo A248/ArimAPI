@@ -21,7 +21,7 @@ package space.arim.api.chat;
 import java.awt.Color;
 
 /**
- * Utility to convert from hex to and from other formats, particularly RGB.
+ * Utility to convert from a hex colour integer to and from other formats.
  * 
  * @author A248
  *
@@ -35,20 +35,20 @@ public class HexManipulator {
 	public HexManipulator() {}
 	
 	/**
-	 * Converts a hex value into a {@code java.awt.Color}
+	 * Converts a hex colour into a {@code java.awt.Color}
 	 * 
-	 * @param hex the hex value
+	 * @param colour the hex colour
 	 * @return the AWT color
 	 */
-	public Color toJavaAwt(int hex) {
-		return new Color(hex);
+	public Color toJavaAwt(int colour) {
+		return new Color(colour);
 	}
 	
 	/**
-	 * Converts a {@code java.awt.Color} into a hex value. Inverse operation of {@link #toJavaAwt(int)}
+	 * Converts a {@code java.awt.Color} into a hex colour. Inverse operation of {@link #toJavaAwt(int)}
 	 * 
 	 * @param color the AWT color
-	 * @return the hex value
+	 * @return the hex colour
 	 */
 	public int fromJavaAwt(Color color) {
 		int result = (color.getRGB() & 0xFFFFFF);
@@ -57,23 +57,23 @@ public class HexManipulator {
 	}
 	
 	/**
-	 * Converts a hex value into 3 bytes representing the RGB components of the colour. <br>
+	 * Converts a hex colour into 3 bytes representing the RGB components of the colour. <br>
 	 * The bytes may be said to be "unsigned".
 	 * 
-	 * @param hex the hex value
+	 * @param colour the hex colour
 	 * @return a byte array, always of length 3
 	 */
-	public byte[] toBytes(int hex) {
-		return new byte[] {(byte) ((hex & 0xFF0000) >> 16), (byte) ((hex & 0x00FF00) >> 8), (byte) (hex & 0x0000FF)};
+	public byte[] toBytes(int colour) {
+		return new byte[] {(byte) ((colour & 0xFF0000) >> 16), (byte) ((colour & 0x00FF00) >> 8), (byte) (colour & 0x0000FF)};
 	}
 	
 	/**
-	 * Converts 3 bytes to a hex value. Inverse operation of {@link #toBytes(int)}
+	 * Converts 3 bytes to a hex colour. Inverse operation of {@link #toBytes(int)}
 	 * 
 	 * @param red the red RGB component
 	 * @param green the green RGB component
 	 * @param blue the blue RGB component
-	 * @return the hex value
+	 * @return the hex colour
 	 */
 	public int fromBytes(byte red, byte green, byte blue) {
 		int result = (Byte.toUnsignedInt(red) << 16) | (Byte.toUnsignedInt(green) << 8) | Byte.toUnsignedInt(blue);
@@ -82,20 +82,43 @@ public class HexManipulator {
 	}
 	
 	/**
-	 * Convenience method to check the range of a hex colour
+	 * Converts 3 bytes to a hex colour. Same as {@link #fromBytes(byte, byte, byte)}
+	 * except that this takes an array and an offset
 	 * 
-	 * @param hex the hex colour integer
-	 * @throws IllegalArgumentException if {@code hex} is outside the range of a hex colour
-	 * @return the same hex value as the input, for further convenience
+	 * @param bytes the byte array, must be at least of length offset + 3
+	 * @param offset the offset after which to use the next 3 bytes
+	 * @return the hex colour
 	 */
-	public int checkRange(int hex) {
-		checkRange0(hex);
-		return hex;
+	public int fromBytes(byte[] bytes, int offset) {
+		return fromBytes(bytes[offset], bytes[offset + 1], bytes[offset + 2]);
 	}
 	
-	static void checkRange0(int hex) {
-		if (hex > 0xFFFFFF || hex < 0) {
-			throw new IllegalArgumentException("int " + hex + " is outside the range of a hex colour");
+	/**
+	 * Converts 3 bytes to a hex colour. Same as {@link #fromBytes(byte, byte, byte)}
+	 * except that this takes an array
+	 * 
+	 * @param bytes the byte array, must be at least of length 3
+	 * @return the hex colour
+	 */
+	public int fromBytes(byte[] bytes) {
+		return fromBytes(bytes[0], bytes[1], bytes[2]);
+	}
+	
+	/**
+	 * Convenience method to check the range of a hex colour
+	 * 
+	 * @param colour the hex colour integer
+	 * @throws IllegalArgumentException if {@code hex} is outside the range of a hex colour
+	 * @return the same hex colour as the input, for further convenience
+	 */
+	public int checkRange(int colour) {
+		checkRange0(colour);
+		return colour;
+	}
+	
+	static void checkRange0(int colour) {
+		if (colour > 0xFFFFFF || colour < 0) {
+			throw new IllegalArgumentException("int " + colour + " is outside the range of a hex colour");
 		}
 	}
 	

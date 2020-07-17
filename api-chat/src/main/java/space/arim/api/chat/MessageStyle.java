@@ -19,7 +19,7 @@
 package space.arim.api.chat;
 
 /**
- * Definition of specific message styles. To combine styles, simply add them together.
+ * Definition of specific message styles. To combine styles, simply bitwise OR them together.
  * 
  * @author A248
  *

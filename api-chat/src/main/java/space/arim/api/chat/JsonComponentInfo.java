@@ -19,12 +19,15 @@
 package space.arim.api.chat;
 
 /**
- * Information relating to a {@link JsonComponent} or {@link JsonComponent.Builder}
+ * Information relating to a {@link JsonComponent} or {@link JsonComponent.Builder}. <br>
+ * <br>
+ * This interface defines a series of attributes regarding a JSON message, but provide
+ * no guarantee of immutability.
  * 
  * @author A248
  *
  */
-public interface JsonComponentInfo {
+public interface JsonComponentInfo extends TextualComponentInfo {
 
 	/**
 	 * Gets the hover action of this component or builder
@@ -46,5 +49,34 @@ public interface JsonComponentInfo {
 	 * @return the insertion action or {@code null} if there is none
 	 */
 	JsonInsertion getInsertionAction();
+	
+	/**
+	 * Provides a string representation of this object, including all of its
+	 * properties defined in {@code JsonComponentInfo} and {@code TextualComponentInfo}
+	 * 
+	 * @return a string representation of this json component info
+	 */
+	@Override
+	String toString();
+	
+	/**
+	 * Determines equality with the specified object consistent with the attributes defined
+	 * by this {@code JsonComponentInfo} interface and per such attributes' own {@code equals}
+	 * methods.
+	 * 
+	 * @param object the object to determine equality with
+	 * @return true if the objects are equal, false otherwise
+	 */
+	@Override
+	boolean equals(Object object);
+	
+	/**
+	 * Determines a hash code for this {@code JsonComponentInfo} consistent with its
+	 * attributes defined by this interface.
+	 * 
+	 * @return a hash code for this json component info
+	 */
+	@Override
+	int hashCode();
 	
 }

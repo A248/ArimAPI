@@ -18,6 +18,8 @@
  */
 package space.arim.api.chat;
 
+import java.util.Locale;
+
 /**
  * Enumeration of predefined hex colours, corresponding to the legacy colour codes.
  * 
@@ -67,8 +69,17 @@ public enum PredefinedColour {
 	 * 
 	 * @return the hex colour
 	 */
-	public int getHexColour() {
+	public int getColour() {
 		return hex;
+	}
+	
+	/**
+	 * Returns a string representation of this predefined colour, specifically, its name, lowercased.
+	 * 
+	 */
+	@Override
+	public String toString() {
+		return name().toLowerCase(Locale.ENGLISH);
 	}
 	
 	/**

@@ -24,10 +24,19 @@ package space.arim.api.chat;
  * @author A248
  *
  */
-public class JsonAction {
+public abstract class JsonAction {
 
 	JsonAction() {
 		// Pseudo-sealed class
 	}
+	
+	@Override
+	public abstract String toString();
+	
+	@Override
+	public abstract boolean equals(Object object);
+	
+	@Override
+	public abstract int hashCode();
 	
 }

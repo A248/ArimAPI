@@ -47,5 +47,30 @@ public final class JsonHover extends JsonAction {
 	public SendableMessage getTooltip() {
 		return tooltip;
 	}
+
+	@Override
+	public String toString() {
+		return "JsonHover [tooltip=" + tooltip + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + tooltip.hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof JsonHover)) {
+			return false;
+		}
+		JsonHover other = (JsonHover) object;
+		return tooltip.equals(other.tooltip);
+	}
 	
 }

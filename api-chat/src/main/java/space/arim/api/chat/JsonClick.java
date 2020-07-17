@@ -104,5 +104,31 @@ public final class JsonClick extends JsonAction {
 	public static JsonClick openUrl(String url) {
 		return new JsonClick(Type.OPEN_URL, url);
 	}
+
+	@Override
+	public String toString() {
+		return "JsonClick [type=" + type + ", value=" + value + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + type.hashCode();
+		result = prime * result + value.hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof JsonClick)) {
+			return false;
+		}
+		JsonClick other = (JsonClick) object;
+		return type == other.type && value.equals(other.value);
+	}
 	
 }

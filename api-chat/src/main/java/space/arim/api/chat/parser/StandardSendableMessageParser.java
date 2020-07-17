@@ -91,7 +91,7 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 					currentStyles = 0;
 					break;
 				default:
-					currentColour = PredefinedColour.getByChar(codeChar).getHexColour();
+					currentColour = PredefinedColour.getByChar(codeChar).getColour();
 					break;
 				}
 				break;

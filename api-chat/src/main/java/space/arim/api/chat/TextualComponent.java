@@ -29,30 +29,83 @@ import java.util.Objects;
 public class TextualComponent implements TextualComponentInfo {
 
 	private final String text;
-	private final int hex;
+	private final int colour;
 	private final int styles;
 	
-	TextualComponent(String text, int hex, int styles) {
+	TextualComponent(String text, int colour, int styles) {
 		this.text = text;
-		this.hex = hex;
+		this.colour = colour;
 		this.styles = styles;
 	}
 	
+	/**
+	 * Creates from {@code TextualComponentInfo}. The attributes of the textual component info are
+	 * copied.
+	 * 
+	 * @param info the component info whose attributes to use
+	 */
+	public TextualComponent(TextualComponentInfo info) {
+		int colour = info.getColour();
+		HexManipulator.checkRange0(colour);
+		this.text = Objects.requireNonNull(info.getText(), "Text must not be null");
+		this.colour = colour;
+		this.styles = info.getStyles();
+	}
+	
 	@Override
-	public String getText() {
+	public final String getText() {
 		return text;
 	}
 	
 	@Override
-	public int getColour() {
-		return hex;
+	public final int getColour() {
+		return colour;
 	}
 	
 	@Override
-	public int getStyles() {
+	public final int getStyles() {
 		return styles;
 	}
 	
+	String toString0() {
+		return "TextualComponent [text=" + text + ", colour=" + colour + ", styles=" + styles + "]";
+	}
+	
+	@Override
+	public final String toString() {
+		return toString0();
+	}
+	
+	int hashCode0() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + colour;
+		result = prime * result + styles;
+		result = prime * result + text.hashCode();
+		return result;
+	}
+	
+	@Override
+	public final int hashCode() {
+		return hashCode0();
+	}
+	
+	boolean equals0(Object object) {
+		TextualComponent other = (TextualComponent) object;
+		return colour == other.colour && styles == other.styles && text.equals(other.text);
+	}
+
+	@Override
+	public final boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (object == null || getClass() != object.getClass()) {
+			return false;
+		}
+		return equals0(object);
+	}
+
 	/**
 	 * Builder for creating textual message components
 	 * 
@@ -62,7 +115,7 @@ public class TextualComponent implements TextualComponentInfo {
 	public static class Builder implements TextualComponentInfo {
 		
 		private String text = "";
-		private int hex;
+		private int colour;
 		private int styles;
 		
 		/**
@@ -75,14 +128,17 @@ public class TextualComponent implements TextualComponentInfo {
 		}
 		
 		/**
-		 * Creates the builder, using the provided existing {@code TextualComponentInfo} for default values
+		 * Creates the builder, using the provided existing {@code TextualComponentInfo}, whose attributes
+		 * are copied to this builder
 		 * 
-		 * @param template the component info to use for default values
+		 * @param info the component info to use
 		 */
-		public Builder(TextualComponentInfo template) {
-			text = template.getText();
-			hex = template.getColour();
-			styles = template.getStyles();
+		public Builder(TextualComponentInfo info) {
+			int colour = info.getColour();
+			HexManipulator.checkRange0(colour);
+			text = Objects.requireNonNull(info.getText(), "Text must not be null");
+			this.colour = colour;
+			styles = info.getStyles();
 		}
 
 		/**
@@ -99,13 +155,13 @@ public class TextualComponent implements TextualComponentInfo {
 		/**
 		 * Sets the hex colour of this builder to the specified value
 		 * 
-		 * @param hex the new hex colour
+		 * @param colour the new hex colour
 		 * @return the builder
 		 * @throws IllegalArgumentException if {@code hex} is outside the range of a hex colour
 		 */
-		public Builder colour(int hex) {
-			HexManipulator.checkRange0(hex);
-			this.hex = hex;
+		public Builder colour(int colour) {
+			HexManipulator.checkRange0(colour);
+			this.colour = colour;
 			return this;
 		}
 		
@@ -126,7 +182,7 @@ public class TextualComponent implements TextualComponentInfo {
 		 * @return the built textual component
 		 */
 		public TextualComponent build() {
-			return new TextualComponent(text, hex, styles);
+			return new TextualComponent(text, colour, styles);
 		}
 
 		@Override
@@ -136,12 +192,39 @@ public class TextualComponent implements TextualComponentInfo {
 
 		@Override
 		public int getColour() {
-			return hex;
+			return colour;
 		}
 
 		@Override
 		public int getStyles() {
 			return styles;
+		}
+
+		@Override
+		public String toString() {
+			return "TextualComponent.Builder [text=" + text + ", colour=" + colour + ", styles=" + styles + "]";
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + colour;
+			result = prime * result + styles;
+			result = prime * result + text.hashCode();
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+			if (object == null || getClass() != object.getClass()) {
+				return false;
+			}
+			Builder other = (Builder) object;
+			return colour == other.colour && styles == other.styles && text.equals(other.text);
 		}
 		
 	}

@@ -48,5 +48,30 @@ public final class JsonInsertion extends JsonAction {
 	public String getValue() {
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		return "JsonInsertion [value=" + value + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + value.hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof JsonInsertion)) {
+			return false;
+		}
+		JsonInsertion other = (JsonInsertion) object;
+		return value.equals(other.value);
+	}
 	
 }

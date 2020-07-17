@@ -74,14 +74,30 @@ public class HexManipulatorTest {
 		int hex = randomHex();
 		byte[] bytes = manipulator.toBytes(hex);
 		assertEquals(3, bytes.length);
-		assertEquals(hex, manipulator.fromBytes(bytes[0], bytes[1], bytes[2]));
+		assertEquals(hex, manipulator.fromBytes(bytes));
 	}
 	
 	@Test
 	public void testFromToBytes() {
 		byte[] bytes = randomBytes();
-		int hex = manipulator.fromBytes(bytes[0], bytes[1], bytes[2]);
+		int hex = manipulator.fromBytes(bytes);
 		assertArrayEquals(bytes, manipulator.toBytes(hex));
+	}
+	
+	@Test
+	public void testKnownAwt() {
+		Color awtColor = Color.DARK_GRAY; // new Color(64, 64, 64)
+		int color = manipulator.fromJavaAwt(awtColor);
+		assertEquals(0x404040, color);
+		assertEquals(awtColor, manipulator.toJavaAwt(color));
+	}
+	
+	@Test
+	public void testKnownBytes() {
+		byte[] bytes = new byte[] {(byte) 0x40, (byte) 0x40, (byte) 0x40};
+		int color = manipulator.fromBytes(bytes);
+		assertEquals(0x404040, color);
+		assertArrayEquals(bytes, manipulator.toBytes(color));
 	}
 	
 }
