@@ -18,8 +18,8 @@
  */
 package space.arim.api.env;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
 
@@ -28,7 +28,7 @@ import space.arim.universal.util.concurrent.impl.AbstractFactoryOfTheFuture;
 
 abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 
-	private final BlockingQueue<Runnable> syncTasks = new LinkedBlockingQueue<>();
+	private final Queue<Runnable> syncTasks = new ConcurrentLinkedQueue<>();
 	volatile Thread mainThread;
 	
 	private static final boolean DISABLE_LAZY_EXECUTE;
