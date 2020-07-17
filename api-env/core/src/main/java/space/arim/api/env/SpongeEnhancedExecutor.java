@@ -23,9 +23,9 @@ import java.util.concurrent.Executor;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 
-import space.arim.universal.util.concurrent.impl.SelfSchedulingEnhancedExecutor;
+import space.arim.universal.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
-class SpongeEnhancedExecutor extends SelfSchedulingEnhancedExecutor {
+class SpongeEnhancedExecutor extends SimplifiedEnhancedExecutor {
 
 	private final Executor delegate;
 	

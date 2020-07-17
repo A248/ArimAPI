@@ -21,9 +21,9 @@ package space.arim.api.env;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import space.arim.universal.util.concurrent.impl.SelfSchedulingEnhancedExecutor;
+import space.arim.universal.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
-class BukkitEnhancedExecutor extends SelfSchedulingEnhancedExecutor {
+class BukkitEnhancedExecutor extends SimplifiedEnhancedExecutor {
 
 	private final JavaPlugin plugin;
 	private final BukkitScheduler scheduler;

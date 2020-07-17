@@ -21,9 +21,9 @@ package space.arim.api.env;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.TaskScheduler;
 
-import space.arim.universal.util.concurrent.impl.SelfSchedulingEnhancedExecutor;
+import space.arim.universal.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
-class BungeeEnhancedExecutor extends SelfSchedulingEnhancedExecutor {
+class BungeeEnhancedExecutor extends SimplifiedEnhancedExecutor {
 
 	private final Plugin plugin;
 	private final TaskScheduler scheduler;

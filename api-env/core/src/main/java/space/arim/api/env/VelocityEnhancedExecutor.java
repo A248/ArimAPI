@@ -22,9 +22,9 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.Scheduler;
 
-import space.arim.universal.util.concurrent.impl.SelfSchedulingEnhancedExecutor;
+import space.arim.universal.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
-class VelocityEnhancedExecutor extends SelfSchedulingEnhancedExecutor {
+class VelocityEnhancedExecutor extends SimplifiedEnhancedExecutor {
 	
 	private final Object plugin;
 	private final Scheduler scheduler;

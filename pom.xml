@@ -23,7 +23,7 @@
 		<junit.version>5.6.2</junit.version>
 		
 		<!-- Required dependencies -->
-		<universal.version>0.13.4-SNAPSHOT</universal.version>
+		<universal.version>0.14.2-SNAPSHOT</universal.version>
 		
 		<!-- Optional dependencies -->
 		<hikari.version>3.4.5</hikari.version>
