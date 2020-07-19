@@ -24,7 +24,7 @@ package space.arim.api.chat;
  * @author A248
  *
  */
-public class JsonComponent extends TextualComponent implements JsonComponentInfo {
+public final class JsonComponent extends TextualComponent implements JsonComponentInfo {
 
 	private final JsonHover hoverAction;
 	private final JsonClick clickAction;
@@ -44,34 +44,31 @@ public class JsonComponent extends TextualComponent implements JsonComponentInfo
 	}
 	
 	@Override
-	public final JsonHover getHoverAction() {
+	public JsonHover getHoverAction() {
 		return hoverAction;
 	}
 	
 	@Override
-	public final JsonClick getClickAction() {
+	public JsonClick getClickAction() {
 		return clickAction;
 	}
 	
 	@Override
-	public final JsonInsertion getInsertionAction() {
+	public JsonInsertion getInsertionAction() {
 		return insertionAction;
 	}
 	
 	@Override
-	String toString0() {
+	public String toString() {
 		return "TextualComponent [text=" + getText() + ", colour=" + getColour() + ", styles=" + getStyles()
 				+ ", hoverAction=" + hoverAction + ", clickAction=" + clickAction + ", insertionAction="
 				+ insertionAction + "]";
 	}
-
+	
 	@Override
-	int hashCode0() {
+	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + getColour();
-		result = prime * result + getStyles();
-		result = prime * result + getText().hashCode();
+		int result = super.hashCode();
 		result = prime * result + ((hoverAction == null) ? 0 : hoverAction.hashCode());
 		result = prime * result + ((clickAction == null) ? 0 : clickAction.hashCode());
 		result = prime * result + ((insertionAction == null) ? 0 : insertionAction.hashCode());
@@ -79,14 +76,20 @@ public class JsonComponent extends TextualComponent implements JsonComponentInfo
 	}
 
 	@Override
-	boolean equals0(Object object) {
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof JsonComponent)) {
+			return false;
+		}
 		JsonComponent other = (JsonComponent) object;
 		return getColour() == other.getColour() && getStyles() == other.getStyles() && getText().equals(other.getText())
 				&& ((hoverAction == null) ? other.hoverAction == null : hoverAction.equals(other.hoverAction))
 				&& ((clickAction == null) ? other.clickAction == null : clickAction.equals(other.clickAction))
 				&& ((insertionAction == null) ? other.insertionAction == null : insertionAction.equals(other.insertionAction));
 	}
-	
+
 	/**
 	 * Builder for creating JSON message components
 	 * 
@@ -145,8 +148,8 @@ public class JsonComponent extends TextualComponent implements JsonComponentInfo
 		}
 		
 		@Override
-		public Builder colour(int hex) {
-			return (Builder) super.colour(hex);
+		public Builder colour(int colour) {
+			return (Builder) super.colour(colour);
 		}
 		
 		@Override

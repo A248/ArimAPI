@@ -21,7 +21,9 @@ package space.arim.api.chat;
 import java.util.Objects;
 
 /**
- * An immutable part of a message, specifying text, colour, and styles.
+ * An immutable part of a message, specifying text, colour, and styles. <br>
+ * <br>
+ * {@code TextualComponent} should be treated as a "sealed class" and not be subclassed.
  * 
  * @author A248
  *
@@ -50,33 +52,37 @@ public class TextualComponent implements TextualComponentInfo {
 		this.text = Objects.requireNonNull(info.getText(), "Text must not be null");
 		this.colour = colour;
 		this.styles = info.getStyles();
+		/*
+		 * Sealed class protection
+		 */
+		Class<?> clazz = getClass();
+		if (clazz != TextualComponent.class && clazz != JsonComponent.class) {
+			throw new IllegalStateException("TextualComponent cannot be subclassed except by JsonComponent");
+		}
 	}
 	
 	@Override
-	public final String getText() {
+	public String getText() {
 		return text;
 	}
 	
 	@Override
-	public final int getColour() {
+	public int getColour() {
 		return colour;
 	}
 	
 	@Override
-	public final int getStyles() {
+	public int getStyles() {
 		return styles;
 	}
 	
-	String toString0() {
+	@Override
+	public String toString() {
 		return "TextualComponent [text=" + text + ", colour=" + colour + ", styles=" + styles + "]";
 	}
 	
 	@Override
-	public final String toString() {
-		return toString0();
-	}
-	
-	int hashCode0() {
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + colour;
@@ -84,26 +90,17 @@ public class TextualComponent implements TextualComponentInfo {
 		result = prime * result + text.hashCode();
 		return result;
 	}
-	
-	@Override
-	public final int hashCode() {
-		return hashCode0();
-	}
-	
-	boolean equals0(Object object) {
-		TextualComponent other = (TextualComponent) object;
-		return colour == other.colour && styles == other.styles && text.equals(other.text);
-	}
 
 	@Override
-	public final boolean equals(Object object) {
+	public boolean equals(Object object) {
 		if (this == object) {
 			return true;
 		}
-		if (object == null || getClass() != object.getClass()) {
+		if (!(object instanceof TextualComponent) || object instanceof JsonComponent) {
 			return false;
 		}
-		return equals0(object);
+		TextualComponent other = (TextualComponent) object;
+		return colour == other.colour && styles == other.styles && text.equals(other.text);
 	}
 
 	/**

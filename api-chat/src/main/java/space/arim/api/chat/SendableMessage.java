@@ -19,8 +19,9 @@
 package space.arim.api.chat;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 
 /**
@@ -33,6 +34,8 @@ public final class SendableMessage implements SendableMessageInfo {
 
 	private final List<TextualComponent> components;
 	
+	private static final TextualComponent[] EMPTY_COMPONENT_ARRAY = new TextualComponent[] {};
+	
 	/**
 	 * Creates from a list of {@link TextualComponent}s comprising this message. <br>
 	 * The list and its elements must be nonnull. An immutable copy is made of it.
@@ -41,7 +44,7 @@ public final class SendableMessage implements SendableMessageInfo {
 	 * @throws NullPointerException if {@code components} or an element in it is null
 	 */
 	public SendableMessage(List<TextualComponent> components) {
-		this(components.toArray(new TextualComponent[] {}));
+		this(components.toArray(EMPTY_COMPONENT_ARRAY));
 	}
 	
 	/**
@@ -55,11 +58,100 @@ public final class SendableMessage implements SendableMessageInfo {
 		this.components = List.of(components);
 	}
 	
+	/**
+	 * Creates from {@code SendableMessageInfo}. The components of such info are used
+	 * in this one.
+	 * 
+	 * @param info the message info to use
+	 */
+	public SendableMessage(SendableMessageInfo info) {
+		if (info instanceof SendableMessage) {
+			components = info.getComponents();
+		} else {
+			components = List.of(info.getComponents().toArray(EMPTY_COMPONENT_ARRAY));
+		}
+	}
+	
+	/**
+	 * Gets the immutable components which comprise this sendable message. Attempts to mutate
+	 * the list will throw {@code UnsupportedOperationException}
+	 * 
+	 */
 	@Override
 	public List<TextualComponent> getComponents() {
 		return components;
 	}
 	
+	@Override
+	public String toString() {
+		return "SendableMessage [components=" + components + "]";
+	}
+	
+	/*
+	 * 
+	 * Equals and hashCode implementations are designed to ignore empty components.
+	 * This is done because empty components do not affect visual output.
+	 * 
+	 */
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		for (TextualComponent component : components) {
+			if (!component.getText().isEmpty()) {
+				result = prime * result + component.hashCode();
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof SendableMessage)) {
+			return false;
+		}
+		ListIterator<TextualComponent> it1 = components.listIterator();
+		Iterator<TextualComponent> it2 = ((SendableMessage) object).components.iterator();
+
+		for (;;) {
+			final boolean hasNext1 = it1.hasNext();
+			final boolean hasNext2 = it2.hasNext();
+			if (hasNext1 == hasNext2) {
+				if (hasNext1) {
+					// Both have another component
+					// Skip either component if it is empty
+					TextualComponent tc1 = it1.next();
+					if (tc1.getText().isEmpty()) {
+						continue;
+					}
+					TextualComponent tc2 = it2.next();
+					if (tc2.getText().isEmpty()) {
+						// Ensure not to forget the last component
+						it1.previous();
+						continue;
+					}
+					// If nonempty components are nonequal, fail
+					if (!tc1.equals(tc2)) {
+						return false;
+					}
+				} else {
+					// Both ended
+					return true;
+				}
+			} else {
+				// Only one of them has another component
+				TextualComponent further = (hasNext1) ? it1.next() : it2.next();
+				if (!further.getText().isEmpty()) {
+					return false;
+				}
+			}
+		}
+	}
+
 	/**
 	 * Builder to create {@link SendableMessage}
 	 * 
@@ -68,15 +160,24 @@ public final class SendableMessage implements SendableMessageInfo {
 	 */
 	public static class Builder implements SendableMessageInfo {
 		
-		private List<TextualComponent> components = new ArrayList<>();
-		private List<TextualComponent> componentsView;
+		private final List<TextualComponent> components;
 		
 		/**
 		 * Creates the builder
 		 * 
 		 */
 		public Builder() {
-			
+			components = new ArrayList<>();
+		}
+		
+		/**
+		 * Creates, using the provided existing {@code SendableMessageInfo}, whose components
+		 * are copied to this builder
+		 * 
+		 * @param info the message info to use
+		 */
+		public Builder(SendableMessageInfo info) {
+			components = new ArrayList<>(info.getComponents());
 		}
 		
 		/**
@@ -130,9 +231,19 @@ public final class SendableMessage implements SendableMessageInfo {
 			return new SendableMessage(components);
 		}
 
+		/**
+		 * Gets the current components in this builder. The returned list is not guaranteed
+		 * to be modifiable.
+		 * 
+		 */
 		@Override
 		public List<TextualComponent> getComponents() {
-			return (componentsView != null) ? componentsView : (componentsView = Collections.unmodifiableList(components));
+			return components;
+		}
+
+		@Override
+		public String toString() {
+			return "SendableMessage.Builder [components=" + components + "]";
 		}
 		
 	}

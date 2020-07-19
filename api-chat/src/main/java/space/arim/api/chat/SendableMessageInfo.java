@@ -30,10 +30,18 @@ public interface SendableMessageInfo {
 
 	/**
 	 * Gets the components of this message or builder. The returned list
-	 * is immutable.
+	 * may or may not be mutable.
 	 * 
-	 * @return the immutable components
+	 * @return the components of this message info
 	 */
 	List<TextualComponent> getComponents();
+	
+	/**
+	 * Provides a string representation of this object, including all of its components
+	 * 
+	 * @return a string representation of this message info
+	 */
+	@Override
+	String toString();
 	
 }

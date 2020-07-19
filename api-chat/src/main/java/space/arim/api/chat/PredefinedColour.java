@@ -46,13 +46,13 @@ public enum PredefinedColour {
 	WHITE('f', 0xFFFFFF);
 
 	private final char codeChar;
-	private final int hex;
+	private final int colour;
 	
 	private static final PredefinedColour[] VALUES = values();
 
-	private PredefinedColour(char codeChar, int hex) {
+	private PredefinedColour(char codeChar, int colour) {
 		this.codeChar = codeChar;
-		this.hex = hex;
+		this.colour = colour;
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public enum PredefinedColour {
 	 * @return the hex colour
 	 */
 	public int getColour() {
-		return hex;
+		return colour;
 	}
 	
 	/**
@@ -136,12 +136,12 @@ public enum PredefinedColour {
 	/**
 	 * Finds the predefined colour whose hex value exactly matches the specified hex colour.
 	 * 
-	 * @param hex the hex colour
+	 * @param colour the hex colour
 	 * @return the exact predefined hex colour matching the specified, else {@code null} if there is none
 	 */
-	public static PredefinedColour getExactTo(int hex) {
+	public static PredefinedColour getExactTo(int colour) {
 		for (PredefinedColour entry : VALUES) {
-			if (entry.hex == hex) {
+			if (entry.colour == colour) {
 				return entry;
 			}
 		}
@@ -151,14 +151,14 @@ public enum PredefinedColour {
 	/**
 	 * Finds the nearest predefined colour to the specified hex colour. Useful for legacy conversion.
 	 * 
-	 * @param hex the hex colour
+	 * @param colour the hex colour
 	 * @return the nearest predefined hex colour, never {@code null}
-	 * @throws IllegalArgumentException if {@code hex} is outside the range of a hex colour
+	 * @throws IllegalArgumentException if {@code colour} is outside the range of a hex colour
 	 */
-	public static PredefinedColour getNearestTo(int hex) {
-		HexManipulator.checkRange0(hex);
+	public static PredefinedColour getNearestTo(int colour) {
+		HexManipulator.checkRange0(colour);
 
-		PredefinedColour exactMatch = getExactTo(hex);
+		PredefinedColour exactMatch = getExactTo(colour);
 		if (exactMatch != null) {
 			return exactMatch;
 		}
@@ -167,7 +167,7 @@ public enum PredefinedColour {
 		double lowestDist = 0;
 		for (PredefinedColour entry : VALUES) {
 
-			double dist = distanceSquared(hex, entry.hex);
+			double dist = distanceSquared(colour, entry.colour);
 			if (dist == 0D) {
 				return entry;
 			}
@@ -179,14 +179,14 @@ public enum PredefinedColour {
 		return nearest;
 	}
 	
-	private static double distanceSquared(int hex1, int hex2) {
-		if (hex1 == hex2) {
+	private static double distanceSquared(int colour1, int colour2) {
+		if (colour1 == colour2) {
 			return 0D;
 		}
 		// Negatives okay since they'll be squared
-		double rdiff = ((hex1 & 0xFF0000) >> 16) - ((hex2 & 0xFF0000) >> 16);
-		double gdiff = ((hex1 & 0x00FF00) >> 8) - ((hex2 & 0x00FF00) >> 8);
-		double bdiff = (hex1 & 0x0000FF) - (hex2 & 0x0000FF);
+		double rdiff = ((colour1 & 0xFF0000) >> 16) - ((colour2 & 0xFF0000) >> 16);
+		double gdiff = ((colour1 & 0x00FF00) >> 8) - ((colour2 & 0x00FF00) >> 8);
+		double bdiff = (colour1 & 0x0000FF) - (colour2 & 0x0000FF);
 
 		// https://stackoverflow.com/questions/1847092/
 		return (Math.pow(rdiff * 0.3, 2) + Math.pow(gdiff * 0.59, 2) + Math.pow(bdiff * 0.11, 2));

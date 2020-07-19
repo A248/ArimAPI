@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import space.arim.api.chat.JsonClick;
@@ -121,9 +120,7 @@ public class BungeeComponentConverter implements PlatformMessageAdapter<TextComp
 			JsonHover hover = jsonComp.getHoverAction();
 			if (hover != null) {
 				BaseComponent[] hoverComponents = convertFrom0(hover.getTooltip()).toArray(new BaseComponent[] {});
-				@SuppressWarnings("deprecation")
-				HoverEvent event = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponents);
-				result.setHoverEvent(event);
+				result.setHoverEvent(BungeeTooltipConversions.createTooltip(hoverComponents));
 			}
 			JsonClick click = jsonComp.getClickAction();
 			if (click != null) {

@@ -51,6 +51,17 @@ public interface JsonComponentInfo extends TextualComponentInfo {
 	JsonInsertion getInsertionAction();
 	
 	/**
+	 * Convenience method to determine whether any of the JSON actions of this component or builder
+	 * are set. Equivalent to: <br>
+	 * <code>getHoverAction() != null || getClickAction() != null || getInsertionAction() != null</code>
+	 * 
+	 * @return true if any json action is set, false otherwise
+	 */
+	default boolean hasAnyAction() {
+		return getHoverAction() != null || getClickAction() != null || getInsertionAction() != null;
+	}
+
+	/**
 	 * Provides a string representation of this object, including all of its
 	 * properties defined in {@code JsonComponentInfo} and {@code TextualComponentInfo}
 	 * 

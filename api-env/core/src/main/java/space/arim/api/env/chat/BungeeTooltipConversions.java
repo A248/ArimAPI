@@ -18,8 +18,6 @@
  */
 package space.arim.api.env.chat;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -27,41 +25,20 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
-import space.arim.api.chat.JsonComponent;
 import space.arim.api.chat.SendableMessage;
+import space.arim.api.chat.TextualComponent;
 
 class BungeeTooltipConversions {
-
-	private static final Method LEGACY_HOVER_VALUE;
+	
+	private static final boolean LEGACY_HOVER_EVENT;
 	
 	static {
-		Method getValueMethod = null;
+		boolean legacyHoverEvent = true;
 		try {
-			getValueMethod = HoverEvent.class.getDeclaredMethod("getValue");
-		} catch (NoSuchMethodException ignored) {}
-		LEGACY_HOVER_VALUE = getValueMethod;
-	}
-	
-	private static SendableMessage convertLegacy(HoverEvent hoverEvent) {
-		// HoverEvent#getValue was broken, so this cannot compile with normal method calls
-		// https://github.com/SpigotMC/BungeeCord/issues/2905
-
-		BaseComponent[] result;
-		try {
-			Object invoked = LEGACY_HOVER_VALUE.invoke(hoverEvent);
-			if (!(invoked instanceof BaseComponent[])) {
-				return null;
-			}
-			result = (BaseComponent[]) invoked;
-
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-			ex.printStackTrace();
-			return null;
-		}
-		if (!ArrayNullnessChecker.evaluate(result)) {
-			return null;
-		}
-		return BungeeComponentConverter.convertTo0(result);
+			Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
+			legacyHoverEvent = false;
+		} catch (ClassNotFoundException ignored) {}
+		LEGACY_HOVER_EVENT = legacyHoverEvent;
 	}
 	
 	static SendableMessage convert(HoverEvent hoverEvent) {
@@ -75,8 +52,13 @@ class BungeeTooltipConversions {
 		if (action != HoverEvent.Action.SHOW_TEXT) { // Nothing else supported
 			return null;
 		}
-		if (LEGACY_HOVER_VALUE != null) {
-			return convertLegacy(hoverEvent);
+		if (LEGACY_HOVER_EVENT) {
+			@SuppressWarnings("deprecation")
+			BaseComponent[] result = hoverEvent.getValue();
+			if (!ArrayNullnessChecker.evaluate(result)) {
+				return null;
+			}
+			return BungeeComponentConverter.convertTo0(result);
 		}
 		List<Content> contents = hoverEvent.getContents();
 		if (contents == null) {
@@ -90,16 +72,31 @@ class BungeeTooltipConversions {
 			}
 			Object value = ((Text) content).getValue();
 			if (value instanceof String) {
-				parentBuilder.add(new JsonComponent.Builder().text((String) value).build());
+				parentBuilder.add(new TextualComponent.Builder().text((String) value).build());
 
 			} else if (value instanceof BaseComponent[]) {
 				BungeeComponentConverter.addAllIterativeContent(parentBuilder, (BaseComponent[]) value);
 
 			} else {
-				// who knows what Bungee did now
+				// who knows what happened
 			}
 		}
 		return parentBuilder.build();
+	}
+	
+	static HoverEvent createTooltip(BaseComponent[] value) {
+		if (LEGACY_HOVER_EVENT) {
+			@SuppressWarnings("deprecation")
+			HoverEvent legacyEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, value);
+			return legacyEvent;
+		}
+		/*
+		 * Bungee uses an ArrayList internally by default, but it does not seem to require
+		 * that the List be mutable.
+		 * If this has issues, switch to ArrayList
+		 */
+		List<Content> contents = List.of(new Text(value));
+		return new HoverEvent(HoverEvent.Action.SHOW_TEXT, contents);
 	}
 	
 }
