@@ -26,7 +26,7 @@ import java.util.Objects;
  * @author A248
  *
  */
-public class RemoteApiResult<T> {
+public final class RemoteApiResult<T> {
 	
 	private final T value;
 	private final ResultType resultType;
@@ -41,7 +41,7 @@ public class RemoteApiResult<T> {
 	 */
 	public RemoteApiResult(T value, ResultType resultType, Exception exception) {
 		this.value = value;
-		this.resultType = Objects.requireNonNull(resultType, "RemoteApiResult reason must not be null");
+		this.resultType = Objects.requireNonNull(resultType, "RemoteApiResult resultType must not be null");
 		this.exception = exception;
 	}
 	
@@ -74,6 +74,35 @@ public class RemoteApiResult<T> {
 		return exception;
 	}
 	
+	@Override
+	public String toString() {
+		return "RemoteApiResult [value=" + value + ", resultType=" + resultType + ", exception=" + exception + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((exception == null) ? 0 : exception.hashCode());
+		result = prime * result + resultType.hashCode();
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof RemoteApiResult<?>)) {
+			return false;
+		}
+		RemoteApiResult<?> other = (RemoteApiResult<?>) object;
+		return (resultType == other.resultType)
+				&& ((exception == null) ? other.exception == null : exception.equals(other.exception))
+				&& ((value == null) ? other.value == null : value.equals(other.value));
+	}
+
 	/**
 	 * Indicates the kind of the result
 	 * 
