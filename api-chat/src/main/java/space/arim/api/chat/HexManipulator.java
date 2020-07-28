@@ -64,7 +64,26 @@ public class HexManipulator {
 	 * @return a byte array, always of length 3
 	 */
 	public byte[] toBytes(int colour) {
-		return new byte[] {(byte) ((colour & 0xFF0000) >> 16), (byte) ((colour & 0x00FF00) >> 8), (byte) (colour & 0x0000FF)};
+		byte[] result = new byte[3];
+		toBytes(colour, result, 0);
+		return result;
+	}
+	
+	/**
+	 * Converts a hex colour into 3 bytes representing the RGB components of the colour. <br>
+	 * The bytes may be said to be "unsigned". <br>
+	 * <br>
+	 * Unlike {@link #toBytes(int)}, this method permits the bytes to be placed into an array
+	 * of the caller's choice at whichever start index desired.
+	 * 
+	 * @param colour the hex colour
+	 * @param bytes the array to which to write the resulting bytes, must be of length (3 + offset)
+	 * @param offset the index at which to begin writing bytes to the array
+	 */
+	public void toBytes(int colour, byte[] bytes, int offset) {
+		bytes[offset] = (byte) ((colour & 0xFF0000) >> 16);
+		bytes[offset + 1] = (byte) ((colour & 0x00FF00) >> 8);
+		bytes[offset + 2] = (byte) (colour & 0x0000FF);
 	}
 	
 	/**

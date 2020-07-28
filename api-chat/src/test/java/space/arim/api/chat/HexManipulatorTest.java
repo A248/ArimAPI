@@ -85,6 +85,15 @@ public class HexManipulatorTest {
 	}
 	
 	@Test
+	public void testToFromBytesWithOffset() {
+		int hex = randomHex();
+		int offset = ThreadLocalRandom.current().nextInt(25);
+		byte[] bytes = new byte[3 + offset];
+		manipulator.toBytes(hex, bytes, offset);
+		assertEquals(hex, manipulator.fromBytes(bytes, offset));
+	}
+	
+	@Test
 	public void testKnownAwt() {
 		Color awtColor = Color.DARK_GRAY; // new Color(64, 64, 64)
 		int color = manipulator.fromJavaAwt(awtColor);
