@@ -20,20 +20,22 @@ package space.arim.api.env;
 
 import java.util.function.Supplier;
 
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import space.arim.universal.registry.Registration;
-import space.arim.universal.registry.Registry;
-import space.arim.universal.util.concurrent.EnhancedExecutor;
-import space.arim.universal.util.concurrent.FactoryOfTheFuture;
+import space.arim.omnibus.resourcer.ResourceInfo;
+import space.arim.omnibus.resourcer.ShutdownHandlers;
+import space.arim.omnibus.util.concurrent.EnhancedExecutor;
+import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.BungeeComponentConverter;
+import space.arim.api.env.concurrent.BukkitEnhancedExecutor;
+import space.arim.api.env.concurrent.BukkitFactoryOfTheFuture;
+
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * Implementation of {@link PlatformHandle} specifically for Bukkit/Spigot servers.
+ * Implementation of {@link PlatformHandle} specifically for Bukkit servers.
  * 
  * @author A248
  *
@@ -41,16 +43,12 @@ import space.arim.api.env.chat.BungeeComponentConverter;
 public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	
 	/**
-	 * Creates from a JavaPlugin to use
+	 * Creates from a {@code JavaPlugin} to use
 	 * 
 	 * @param plugin the plugin
 	 */
 	public BukkitPlatformHandle(JavaPlugin plugin) {
-		super(PlatformType.BUKKIT, plugin.getServer().getServicesManager().load(Registry.class), plugin, plugin.getServer());
-	}
-	
-	BukkitPlatformHandle(Registry registry) {
-		super(PlatformType.BUKKIT, registry);
+		super(PlatformType.BUKKIT, plugin, plugin.getServer());
 	}
 	
 	/**
@@ -59,7 +57,7 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	 * @return the plugin
 	 */
 	public JavaPlugin getPlugin() {
-		return (JavaPlugin) pluginInfo.getPlugin();
+		return (JavaPlugin) getImplementingPluginInfo().getPlugin();
 	}
 
 	@Override
@@ -80,20 +78,17 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	<T> Supplier<Registration<T>> getDefaultServiceSupplier(Class<T> service) {
-		if (service == FactoryOfTheFuture.class) {
+	<T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> resource) {
+		if (resource == FactoryOfTheFuture.class) {
 			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new BukkitFactoryOfTheFuture(getPlugin()), "BukkitFactoryOfTheFutire");
+				var factory = new BukkitFactoryOfTheFuture(getPlugin());
+				return new ResourceInfo<T>("BukkitFactoryOfTheFuture", (T) factory, ShutdownHandlers.ofAutoClosable(factory));
 			};
 		}
-		if (service == EnhancedExecutor.class) {
+		if (resource == EnhancedExecutor.class) {
 			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new BukkitEnhancedExecutor(getPlugin()), "BukkitEnhancedExecutor");
-			};
-		}
-		if (service == PlatformScheduler.class) {
-			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new BukkitPlatformScheduler(getPlugin()), "BukkitPlatformScheduler");
+				var executor = new BukkitEnhancedExecutor(getPlugin());
+				return new ResourceInfo<T>("BukkitEnhancedExecutor", (T) executor, ShutdownHandlers.ofStoppableService(executor));
 			};
 		}
 		return null;

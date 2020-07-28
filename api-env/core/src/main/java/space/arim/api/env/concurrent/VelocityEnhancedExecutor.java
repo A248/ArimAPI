@@ -16,21 +16,35 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env;
+package space.arim.api.env.concurrent;
+
+import space.arim.omnibus.util.concurrent.EnhancedExecutor;
+import space.arim.omnibus.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.scheduler.Scheduler;
 
-import space.arim.universal.util.concurrent.impl.SimplifiedEnhancedExecutor;
-
-class VelocityEnhancedExecutor extends SimplifiedEnhancedExecutor {
+/**
+ * An implementation of {@link EnhancedExecutor} for the Velocity platform, using a specified
+ * plugin to execute tasks via the platform's common thread pool.
+ * 
+ * @author A248
+ *
+ */
+public class VelocityEnhancedExecutor extends SimplifiedEnhancedExecutor {
 	
-	private final Object plugin;
+	private final PluginContainer plugin;
 	private final Scheduler scheduler;
 	
-	VelocityEnhancedExecutor(PluginContainer plugin, ProxyServer server) {
-		this.plugin = plugin.getInstance().get();
+	/**
+	 * Creates from a {@code PluginContainer} and {@code ProxyServer} to use for execution
+	 * 
+	 * @param plugin the plugin to use
+	 * @param server the server to use
+	 */
+	public VelocityEnhancedExecutor(PluginContainer plugin, ProxyServer server) {
+		this.plugin = plugin;
 		scheduler = server.getScheduler();
 	}
 

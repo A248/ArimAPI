@@ -20,19 +20,20 @@ package space.arim.api.env;
 
 import java.util.function.Supplier;
 
-import com.velocitypowered.api.plugin.PluginContainer;
-import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
-
-import space.arim.universal.registry.Registration;
-import space.arim.universal.registry.Registry;
-import space.arim.universal.registry.UniversalRegistry;
-import space.arim.universal.util.concurrent.EnhancedExecutor;
-import space.arim.universal.util.concurrent.FactoryOfTheFuture;
-import space.arim.universal.util.concurrent.impl.IndifferentFactoryOfTheFuture;
+import space.arim.omnibus.resourcer.ResourceInfo;
+import space.arim.omnibus.resourcer.ShutdownHandler;
+import space.arim.omnibus.resourcer.ShutdownHandlers;
+import space.arim.omnibus.util.concurrent.EnhancedExecutor;
+import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
+import space.arim.omnibus.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.chat.AdventureTextConverter;
+import space.arim.api.env.concurrent.VelocityEnhancedExecutor;
+
+import com.velocitypowered.api.plugin.PluginContainer;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 
 /**
  * Implementation of {@link PlatformHandle} specifically for Velocity servers.
@@ -43,17 +44,13 @@ import space.arim.api.env.chat.AdventureTextConverter;
 public class VelocityPlatformHandle extends AbstractPlatformHandle {
 
 	/**
-	 * Creates from a PluginContainer and ProxyServer to use
+	 * Creates from a {@code PluginContainer} and {@code ProxyServer} to use
 	 * 
 	 * @param plugin the plugin
 	 * @param server the server
 	 */
 	public VelocityPlatformHandle(PluginContainer plugin, ProxyServer server) {
-		super(PlatformType.VELOCITY, UniversalRegistry.get(), plugin, server);
-	}
-	
-	VelocityPlatformHandle(Registry registry) {
-		super(PlatformType.VELOCITY, registry);
+		super(PlatformType.VELOCITY, plugin, server);
 	}
 
 	/**
@@ -62,7 +59,7 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 	 * @return the plugin
 	 */
 	public PluginContainer getPlugin() {
-		return (PluginContainer) pluginInfo.getPlugin();
+		return (PluginContainer) getImplementingPluginInfo().getPlugin();
 	}
 	
 	/**
@@ -71,7 +68,7 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 	 * @return the server
 	 */
 	public ProxyServer getServer() {
-		return (ProxyServer) pluginInfo.getServer();
+		return (ProxyServer) getImplementingPluginInfo().getServer();
 	}
 	
 	@Override
@@ -92,20 +89,17 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	<T> Supplier<Registration<T>> getDefaultServiceSupplier(Class<T> service) {
-		if (service == FactoryOfTheFuture.class) {
+	<T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> resource) {
+		if (resource == FactoryOfTheFuture.class) {
 			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new IndifferentFactoryOfTheFuture(), "VelocityFactoryOfTheFuture");
+				var factory = new IndifferentFactoryOfTheFuture();
+				return new ResourceInfo<T>("VelocityFactoryOfTheFuture", (T) factory, ShutdownHandler.none());
 			};
 		}
-		if (service == EnhancedExecutor.class) {
+		if (resource == EnhancedExecutor.class) {
 			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new VelocityEnhancedExecutor(getPlugin(), getServer()), "VelocityEnhancedExecutor");
-			};
-		}
-		if (service == PlatformScheduler.class) {
-			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new VelocityPlatformScheduler(getPlugin(), getServer()), "VelocityPlatformScheduler");
+				var executor = new VelocityEnhancedExecutor(getPlugin(), getServer());
+				return new ResourceInfo<T>("VelocityEnhancedExecutor", (T) executor, ShutdownHandlers.ofStoppableService(executor));
 			};
 		}
 		return null;

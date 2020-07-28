@@ -20,8 +20,8 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>space.arim.universal</groupId>
-			<artifactId>universal-registry</artifactId>
+			<groupId>space.arim.omnibus</groupId>
+			<artifactId>omnibus-util</artifactId>
 		</dependency>
 		
 		<dependency>

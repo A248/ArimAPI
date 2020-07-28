@@ -16,22 +16,28 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env;
+package space.arim.api.env.concurrent;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
 
-import space.arim.universal.util.concurrent.impl.BaseCentralisedFuture;
+import space.arim.omnibus.util.concurrent.impl.BaseCentralisedFuture;
 
 class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 
 	private final DeadlockFreeFutureFactory factory;
 	
 	DeadlockFreeFuture(DeadlockFreeFutureFactory factory) {
-		super(factory);
+		super(factory.trustedSyncExecutor);
 		this.factory = factory;
+	}
+	
+	static {
+		// Reduce risk of ill timed classloading
+		@SuppressWarnings("unused")
+		Class<?> ensureLoaded = LockSupport.class;
 	}
 	
 	@Override
@@ -39,7 +45,7 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 		if (factory.isPrimaryThread()) {
 			factory.unleashSyncTasks();
 			while (!isDone()) {
-				LockSupport.park();
+				LockSupport.park(this);
 				factory.unleashSyncTasks();
 			}
 		}
@@ -54,7 +60,7 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 			}
 			factory.unleashSyncTasks();
 			while (!isDone()) {
-				LockSupport.park();
+				LockSupport.park(this);
 				if (Thread.interrupted()) {
 					throw new InterruptedException();
 				}
@@ -80,7 +86,7 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 			}
 			factory.unleashSyncTasks(deadline);
 			while (!isDone()) {
-				LockSupport.parkNanos(deadline - System.nanoTime());
+				LockSupport.parkNanos(this, deadline - System.nanoTime());
 				if (Thread.interrupted()) {
 					throw new InterruptedException();
 				}

@@ -20,19 +20,20 @@ package space.arim.api.env;
 
 import java.util.function.Supplier;
 
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Plugin;
-
-import space.arim.universal.registry.Registration;
-import space.arim.universal.registry.Registry;
-import space.arim.universal.registry.UniversalRegistry;
-import space.arim.universal.util.concurrent.EnhancedExecutor;
-import space.arim.universal.util.concurrent.FactoryOfTheFuture;
-import space.arim.universal.util.concurrent.impl.IndifferentFactoryOfTheFuture;
+import space.arim.omnibus.resourcer.ResourceInfo;
+import space.arim.omnibus.resourcer.ShutdownHandler;
+import space.arim.omnibus.resourcer.ShutdownHandlers;
+import space.arim.omnibus.util.concurrent.EnhancedExecutor;
+import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
+import space.arim.omnibus.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.BungeeComponentConverter;
+import space.arim.api.env.concurrent.BungeeEnhancedExecutor;
+
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Plugin;
 
 /**
  * Implementation of {@link PlatformHandle} specifically for BungeeCord proxies.
@@ -43,16 +44,12 @@ import space.arim.api.env.chat.BungeeComponentConverter;
 public class BungeePlatformHandle extends AbstractPlatformHandle {
 
 	/**
-	 * Creates from a Plugin to use
+	 * Creates from a {@code Plugin} to use
 	 * 
 	 * @param plugin the plugin
 	 */
 	public BungeePlatformHandle(Plugin plugin) {
-		super(PlatformType.BUNGEE, UniversalRegistry.get(), plugin, plugin.getProxy());
-	}
-	
-	BungeePlatformHandle(Registry registry) {
-		super(PlatformType.BUNGEE, registry);
+		super(PlatformType.BUNGEE, plugin, plugin.getProxy());
 	}
 	
 	/**
@@ -61,7 +58,7 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	 * @return the plugin
 	 */
 	public Plugin getPlugin() {
-		return (Plugin) pluginInfo.getPlugin();
+		return (Plugin) getImplementingPluginInfo().getPlugin();
 	}
 
 	@Override
@@ -82,20 +79,17 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	<T> Supplier<Registration<T>> getDefaultServiceSupplier(Class<T> service) {
-		if (service == FactoryOfTheFuture.class) {
+	<T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> resource) {
+		if (resource == FactoryOfTheFuture.class) {
 			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new IndifferentFactoryOfTheFuture(), "BungeeFactoryOfTheFuture");
+				var factory = new IndifferentFactoryOfTheFuture();
+				return new ResourceInfo<T>("BungeeFactoryOfTheFuture", (T) factory, ShutdownHandler.none());
 			};
 		}
-		if (service == EnhancedExecutor.class) {
+		if (resource == EnhancedExecutor.class) {
 			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new BungeeEnhancedExecutor(getPlugin()), "BungeeEnhancedExecutor");
-			};
-		}
-		if (service == PlatformScheduler.class) {
-			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new BungeePlatformScheduler(getPlugin()), "BungeePlatformScheduler");
+				var executor = new BungeeEnhancedExecutor(getPlugin());
+				return new ResourceInfo<T>("BungeeEnhancedExecutor", (T) executor, ShutdownHandlers.ofStoppableService(executor));
 			};
 		}
 		return null;

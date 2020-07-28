@@ -18,12 +18,11 @@
  */
 package space.arim.api.env;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
-import space.arim.universal.registry.Registration;
-import space.arim.universal.registry.Registry;
-import space.arim.universal.registry.RegistryPriority;
+import space.arim.omnibus.resourcer.ResourceHook;
+import space.arim.omnibus.resourcer.ResourceInfo;
+import space.arim.omnibus.resourcer.Resourcer;
 
 import space.arim.api.env.annote.PlatformPlugin;
 import space.arim.api.env.annote.PlatformServer;
@@ -31,35 +30,23 @@ import space.arim.api.env.annote.PlatformServer;
 abstract class AbstractPlatformHandle implements PlatformHandle {
 
 	private final PlatformType type;
-	final Registry registry;
-	final PlatformPluginInfo pluginInfo;
+	private final PlatformPluginInfo pluginInfo;
 	
-	static final byte DEFAULT_PRIORITY = RegistryPriority.LOWEST;
-	
-	AbstractPlatformHandle(PlatformType type, Registry registry, @PlatformPlugin Object plugin, @PlatformServer Object server) {
-		this(type, registry, new PlatformPluginInfo(plugin, server));
-	}
-	
-	private AbstractPlatformHandle(PlatformType type, Registry registry, PlatformPluginInfo pluginInfo) {
+	AbstractPlatformHandle(PlatformType type, @PlatformPlugin Object plugin, @PlatformServer Object server) {
 		this.type = type;
-		this.registry = registry;
-		this.pluginInfo = pluginInfo;
-	}
-	
-	AbstractPlatformHandle(PlatformType type, Registry registry) {
-		this(type, registry, Objects.requireNonNull(registry.getProvider(PlatformPluginInfo.class)));
+		this.pluginInfo = new PlatformPluginInfo(plugin, server);
 	}
 	
 	@Override
-	public <T> T registerDefaultServiceIfAbsent(Class<T> service) {
-		Supplier<Registration<T>> supplier = getDefaultServiceSupplier(service);
-		if (supplier == null) {
-			throw new IllegalArgumentException("Service not supported with default implementation");
+	public <T> ResourceHook<T> hookPlatformResource(Resourcer resourcer, Class<T> resourceClass) {
+		Supplier<ResourceInfo<T>> defaultImplProvider = getResourceDefaultImplProvider(resourceClass);
+		if (defaultImplProvider == null) {
+			throw new IllegalArgumentException("Resource type " + resourceClass + " not supported with a default implementation");
 		}
-		return registry.registerIfAbsent(service, supplier).getProvider();
+		return resourcer.hookUsage(resourceClass, defaultImplProvider);
 	}
 	
-	abstract <T> Supplier<Registration<T>> getDefaultServiceSupplier(Class<T> service);
+	abstract <T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> service);
 
 	@Override
 	public PlatformType getPlatformType() {

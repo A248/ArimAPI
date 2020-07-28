@@ -16,26 +16,39 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env;
+package space.arim.api.env.concurrent;
 
-import java.util.concurrent.Executor;
+import space.arim.omnibus.util.concurrent.EnhancedExecutor;
+import space.arim.omnibus.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.plugin.PluginContainer;
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.scheduler.TaskScheduler;
 
-import space.arim.universal.util.concurrent.impl.SimplifiedEnhancedExecutor;
+/**
+ * An implementation of {@link EnhancedExecutor} for the BungeeCord platform, using a specified
+ * plugin to execute tasks via the platform's common thread pool.
+ * 
+ * @author A248
+ *
+ */
+public class BungeeEnhancedExecutor extends SimplifiedEnhancedExecutor {
 
-class SpongeEnhancedExecutor extends SimplifiedEnhancedExecutor {
-
-	private final Executor delegate;
+	private final Plugin plugin;
+	private final TaskScheduler scheduler;
 	
-	SpongeEnhancedExecutor(PluginContainer plugin) {
-		delegate = Sponge.getScheduler().createAsyncExecutor(plugin.getInstance().get());
+	/**
+	 * Creates from a {@code Plugin} to use for execution
+	 * 
+	 * @param plugin the plugin to use
+	 */
+	public BungeeEnhancedExecutor(Plugin plugin) {
+		this.plugin = plugin;
+		scheduler = plugin.getProxy().getScheduler();
 	}
 	
 	@Override
 	public void execute(Runnable command) {
-		delegate.execute(command);
+		scheduler.runAsync(plugin, command);
 	}
 
 }

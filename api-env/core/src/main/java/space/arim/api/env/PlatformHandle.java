@@ -18,9 +18,10 @@
  */
 package space.arim.api.env;
 
-import space.arim.universal.registry.Registry;
-import space.arim.universal.util.concurrent.EnhancedExecutor;
-import space.arim.universal.util.concurrent.FactoryOfTheFuture;
+import space.arim.omnibus.resourcer.ResourceHook;
+import space.arim.omnibus.resourcer.Resourcer;
+import space.arim.omnibus.util.concurrent.EnhancedExecutor;
+import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformPlayer;
@@ -34,21 +35,24 @@ import space.arim.api.env.chat.PlatformMessageAdapter;
  *
  */
 public interface PlatformHandle {
-
+	
 	/**
-	 * Registers a known service using {@link Registry#registerIfAbsent(Class, java.util.function.Supplier)}. <br>
+	 * Gets a resource hook for a specific resource based on this platform, using the specified {@link Resourcer}. <br>
+	 * This will use the value of {@link Resourcer#hookUsage(Class, java.util.function.Supplier)} <br>
 	 * <br>
-	 * The supported services: <br>
+	 * The supported resource types: <br>
 	 * * {@link FactoryOfTheFuture} <br>
 	 * * {@link EnhancedExecutor} <br>
-	 * * {@link PlatformScheduler}
+	 * <br>
+	 * Specifying a resource class other than the ones listed will result in a {@code IllegalArgumentException}.
 	 * 
-	 * @param <T> the service type
-	 * @param service the service class
-	 * @return the result of {@link Registry#registerIfAbsent(Class, java.util.function.Supplier)}
-	 * @throws IllegalArgumentException if the service is not supported
+	 * @param <T> the resource type
+	 * @param resourcer the {@link Resourcer} which is to manage the resource
+	 * @param resourceClass the resource class, must be one of those supported
+	 * @return the result of {@link Resourcer#hookUsage(Class, java.util.function.Supplier)}
+	 * @throws IllegalArgumentException if the resource type is not supported
 	 */
-	<T> T registerDefaultServiceIfAbsent(Class<T> service);
+	<T> ResourceHook<T> hookPlatformResource(Resourcer resourcer, Class<T> resourceClass);
 	
 	/**
 	 * Sends a {@link SendableMessage} to a player based on this platform. <br>

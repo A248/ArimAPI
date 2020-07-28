@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
-import space.arim.universal.util.function.ErringConsumer;
+import space.arim.omnibus.util.function.ErringConsumer;
 
 /**
  * Files utility.

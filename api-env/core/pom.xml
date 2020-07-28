@@ -17,6 +17,10 @@
 	
 	<dependencies>
 		<dependency>
+			<groupId>space.arim.omnibus</groupId>
+			<artifactId>omnibus-all</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-chat</artifactId>
 		</dependency>

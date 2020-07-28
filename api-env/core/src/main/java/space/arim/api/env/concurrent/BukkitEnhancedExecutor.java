@@ -16,25 +16,39 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env;
+package space.arim.api.env.concurrent;
 
-import org.bukkit.Bukkit;
+import space.arim.omnibus.util.concurrent.EnhancedExecutor;
+import space.arim.omnibus.util.concurrent.impl.SimplifiedEnhancedExecutor;
+
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-class BukkitFactoryOfTheFuture extends DeadlockFreeFutureFactory {
+/**
+ * An implementation of {@link EnhancedExecutor} for the Bukkit platform, using a specified
+ * plugin to execute tasks via the platform's common thread pool.
+ * 
+ * @author A248
+ *
+ */
+public class BukkitEnhancedExecutor extends SimplifiedEnhancedExecutor {
 
-	BukkitFactoryOfTheFuture(JavaPlugin plugin) {
-		BukkitScheduler scheduler = plugin.getServer().getScheduler();
-		scheduler.runTask(plugin, () -> {
-			mainThread = Thread.currentThread();
-		});
-		scheduler.runTaskTimer(plugin, this::unleashSyncTasks, 0L, 1L);
+	private final JavaPlugin plugin;
+	private final BukkitScheduler scheduler;
+	
+	/**
+	 * Creates from a {@code JavaPlugin} to use for execution
+	 * 
+	 * @param plugin the plugin to use
+	 */
+	public BukkitEnhancedExecutor(JavaPlugin plugin) {
+		this.plugin = plugin;
+		scheduler = plugin.getServer().getScheduler();
 	}
-
+	
 	@Override
-	boolean isPrimaryThread0() {
-		return Bukkit.isPrimaryThread();
+	public void execute(Runnable command) {
+		scheduler.runTaskAsynchronously(plugin, command);
 	}
 
 }

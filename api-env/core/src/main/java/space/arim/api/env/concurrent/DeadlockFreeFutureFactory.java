@@ -16,34 +16,25 @@
  * along with ArimAPI-env-core. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env;
+package space.arim.api.env.concurrent;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.LockSupport;
 
-import space.arim.universal.util.concurrent.CentralisedFuture;
-import space.arim.universal.util.concurrent.impl.AbstractFactoryOfTheFuture;
+import space.arim.omnibus.util.concurrent.CentralisedFuture;
+import space.arim.omnibus.util.concurrent.SynchronousExecutor;
+import space.arim.omnibus.util.concurrent.impl.AbstractFactoryOfTheFuture;
 
 abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 
 	private final Queue<Runnable> syncTasks = new ConcurrentLinkedQueue<>();
 	volatile Thread mainThread;
-	
-	private static final boolean DISABLE_LAZY_EXECUTE;
-	
-	static {
-		boolean disableLazyExec = false;
-		try {
-			disableLazyExec = Boolean.getBoolean("space.arim.api.DeadlockFreeFutureFactory.disableLazyExec");
-		} catch (SecurityException ignored) {}
-
-		DISABLE_LAZY_EXECUTE = disableLazyExec;
-	}
+	final SynchronousExecutor trustedSyncExecutor;
 	
 	DeadlockFreeFutureFactory() {
-		
+		trustedSyncExecutor = new TrustedSyncExecutor();
 	}
 	
 	boolean isPrimaryThread() {
@@ -60,18 +51,33 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	abstract boolean isPrimaryThread0();
 	
 	@Override
-	protected <T> CentralisedFuture<T> newIncompleteFuture() {
+	public <T> CentralisedFuture<T> newIncompleteFuture() {
 		return new DeadlockFreeFuture<>(this);
 	}
 	
-	@Override
-	public void executeSync(Runnable command) {
+	private static final boolean DISABLE_LAZY_EXECUTE;
+	
+	static {
+		boolean disableLazyExec = false;
+		try {
+			disableLazyExec = Boolean.getBoolean("space.arim.api.DeadlockFreeFutureFactory.disableLazyExec");
+		} catch (SecurityException ignored) {}
+
+		DISABLE_LAZY_EXECUTE = disableLazyExec;
+	}
+	
+	void executeSync0(Runnable command) {
 		if (DISABLE_LAZY_EXECUTE && isPrimaryThread()) {
 			command.run();
 			return;
 		}
 		syncTasks.offer(command);
 		LockSupport.unpark(mainThread);
+	}
+	
+	@Override
+	public void executeSync(Runnable command) {
+		executeSync0(new RunnableExceptionReporter(command));
 	}
 	
 	/**
@@ -102,6 +108,40 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 			if (System.nanoTime() - deadline >= 0) {
 				throw new TimeoutException();
 			}
+		}
+	}
+	
+	private static class RunnableExceptionReporter implements Runnable {
+		
+		private final Runnable command;
+		
+		RunnableExceptionReporter(Runnable command) {
+			this.command = command;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				command.run();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	class PeriodicSyncUnleasher implements Runnable {
+		
+		@Override
+		public void run() {
+			unleashSyncTasks();
+		}
+	}
+	
+	class TrustedSyncExecutor implements SynchronousExecutor {
+
+		@Override
+		public void executeSync(Runnable command) {
+			executeSync0(command);
 		}
 	}
 

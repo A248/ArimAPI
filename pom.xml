@@ -23,7 +23,7 @@
 		<junit.version>5.6.2</junit.version>
 		
 		<!-- Required dependencies -->
-		<universal.version>0.14.2-SNAPSHOT</universal.version>
+		<omnibus.version>0.15.3-SNAPSHOT</omnibus.version>
 		
 		<!-- Optional dependencies -->
 		<hikari.version>3.4.5</hikari.version>
@@ -200,24 +200,14 @@
 			
 			<!-- Shaded dependencies -->
 			<dependency>
-				<groupId>space.arim.universal</groupId>
-				<artifactId>universal-gpl</artifactId>
-				<version>${universal.version}</version>
+				<groupId>space.arim.omnibus</groupId>
+				<artifactId>omnibus-util</artifactId>
+				<version>${omnibus.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>space.arim.universal</groupId>
-				<artifactId>universal-registry</artifactId>
-				<version>${universal.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.universal</groupId>
-				<artifactId>universal-util</artifactId>
-				<version>${universal.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim</groupId>
-				<artifactId>shinyclasspath</artifactId>
-				<version>${shinyclasspath.version}</version>
+				<groupId>space.arim.omnibus</groupId>
+				<artifactId>omnibus-all</artifactId>
+				<version>${omnibus.version}</version>
 			</dependency>
 			
 			<!-- Shaded with server software -->

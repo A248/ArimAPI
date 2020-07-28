@@ -20,17 +20,19 @@ package space.arim.api.env;
 
 import java.util.function.Supplier;
 
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.plugin.PluginContainer;
-
-import space.arim.universal.registry.Registration;
-import space.arim.universal.registry.Registry;
-import space.arim.universal.util.concurrent.EnhancedExecutor;
-import space.arim.universal.util.concurrent.FactoryOfTheFuture;
+import space.arim.omnibus.resourcer.ResourceInfo;
+import space.arim.omnibus.resourcer.ShutdownHandlers;
+import space.arim.omnibus.util.concurrent.EnhancedExecutor;
+import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.chat.SpongeTextConverter;
+import space.arim.api.env.concurrent.SpongeEnhancedExecutor;
+import space.arim.api.env.concurrent.SpongeFactoryOfTheFuture;
+
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.plugin.PluginContainer;
 
 /**
  * Implementation of {@link PlatformHandle} specifically for Sponge servers
@@ -41,16 +43,12 @@ import space.arim.api.env.chat.SpongeTextConverter;
 public class SpongePlatformHandle extends AbstractPlatformHandle {
 	
 	/**
-	 * Creates from a plugin to use
+	 * Creates from a {@code PluginContainer} to use
 	 * 
 	 * @param plugin the plugin
 	 */
 	public SpongePlatformHandle(PluginContainer plugin) {
-		super(PlatformType.SPONGE, Sponge.getServiceManager().provideUnchecked(Registry.class), plugin, Sponge.getGame());
-	}
-	
-	SpongePlatformHandle(Registry registry) {
-		super(PlatformType.SPONGE, registry);
+		super(PlatformType.SPONGE, plugin, Sponge.getGame());
 	}
 	
 	/**
@@ -59,7 +57,7 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 * @return the plugin
 	 */
 	public PluginContainer getPlugin() {
-		return (PluginContainer) pluginInfo.getPlugin();
+		return (PluginContainer) getImplementingPluginInfo().getPlugin();
 	}
 
 	@Override
@@ -80,20 +78,17 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	<T> Supplier<Registration<T>> getDefaultServiceSupplier(Class<T> service) {
-		if (service == FactoryOfTheFuture.class) {
+	<T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> resource) {
+		if (resource == FactoryOfTheFuture.class) {
 			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new SpongeFactoryOfTheFuture(getPlugin()), "SpongeFactoryOfTheFuture");
+				var factory = new SpongeFactoryOfTheFuture(getPlugin());
+				return new ResourceInfo<T>("SpongeFactoryOfTheFuture", (T) factory, ShutdownHandlers.ofAutoClosable(factory));
 			};
 		}
-		if (service == EnhancedExecutor.class) {
+		if (resource == EnhancedExecutor.class) {
 			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new SpongeEnhancedExecutor(getPlugin()), "SpongeEnhancedExecutor");
-			};
-		}
-		if (service == PlatformScheduler.class) {
-			return () -> {
-				return new Registration<T>(DEFAULT_PRIORITY, (T) new SpongePlatformScheduler(getPlugin()), "SpongePlatformScheduler");
+				var executor = new SpongeEnhancedExecutor(getPlugin());
+				return new ResourceInfo<T>("SpongeEnhancedExecutor", (T) executor, ShutdownHandlers.ofStoppableService(executor));
 			};
 		}
 		return null;
