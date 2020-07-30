@@ -21,9 +21,7 @@ package space.arim.api.util.web;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -36,15 +34,14 @@ public abstract class RemoteNameHistoryApiTesting extends RemoteNameUUIDApiTesti
 	private static final Set<Entry<String, Long>> expectedNameHistory;
 	
 	static {
-		Set<Entry<String, Long>> expected = new HashSet<>();
-		expected.add(new SimpleImmutableEntry<>("A248_1710", 0L));
-		expected.add(new SimpleImmutableEntry<>("A248", 1427646885L));
-		expected.add(new SimpleImmutableEntry<>("Reqorted", 1460075115L));
-		expected.add(new SimpleImmutableEntry<>("_Aero__", 1462749151L));
-		expected.add(new SimpleImmutableEntry<>("__Aero__", 1468456319L));
-		expected.add(new SimpleImmutableEntry<>("Aerodactyl_", 1498836094L));
-		expected.add(new SimpleImmutableEntry<>("A248", 1574114048L));
-		expectedNameHistory = Collections.unmodifiableSet(expected);
+		expectedNameHistory = Set.of(
+				Map.entry("A248_1710", 0L),
+				Map.entry("A248", 1427646885L),
+				Map.entry("Reqorted", 1460075115L),
+				Map.entry("_Aero__", 1462749151L),
+				Map.entry("__Aero__", 1468456319L),
+				Map.entry("Aerodactyl_", 1498836094L),
+				Map.entry("A248", 1574114048L));
 	}
 	
 	@Override

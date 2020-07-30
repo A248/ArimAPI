@@ -27,7 +27,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -140,7 +139,7 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> nameInfo = (List<Map<String, Object>>) result.get("username_history");
 			for (Map<String, Object> nameChange : nameInfo) {
-				nameHistory.add(new SimpleImmutableEntry<>((String) nameChange.get("username"),
+				nameHistory.add(Map.entry((String) nameChange.get("username"),
 						isoDateToUnixSeconds((String) nameChange.get("changed_at"))));
 			}
 			return nameHistory;

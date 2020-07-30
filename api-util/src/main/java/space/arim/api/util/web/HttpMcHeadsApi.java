@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -123,7 +122,7 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> nameInfo = (List<Map<String, Object>>) result.get("name_history");
 			for (Map<String, Object> nameChange : nameInfo) {
-				nameHistory.add(new SimpleImmutableEntry<>((String) nameChange.get("name"),
+				nameHistory.add(Map.entry((String) nameChange.get("name"),
 						((Number) nameChange.getOrDefault("changedToAt", 0L)).longValue() / 1000L));
 			}
 			return nameHistory;

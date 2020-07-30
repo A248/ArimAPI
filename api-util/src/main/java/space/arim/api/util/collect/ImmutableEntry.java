@@ -30,7 +30,7 @@ import java.util.Map;
  * @param <K> the key type
  * @param <V> the value type
  * 
- * @deprecated Duplicates {@link AbstractMap.SimpleImmutableEntry}. Use that instead.
+ * @deprecated Duplicates {@link AbstractMap.SimpleImmutableEntry}. Use that or {@link Map#entry(Object, Object)} instead.
  */
 @Deprecated
 public class ImmutableEntry<K, V> implements Map.Entry<K, V> {

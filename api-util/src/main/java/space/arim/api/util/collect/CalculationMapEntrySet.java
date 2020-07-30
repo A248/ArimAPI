@@ -18,7 +18,6 @@
  */
 package space.arim.api.util.collect;
 
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,7 +58,7 @@ public class CalculationMapEntrySet<K, V> extends MapRelatedCollection<Entry<K, 
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
 		Map<K, V> original = getMap();
-		return new ImmutableCalculationIterator<K, Entry<K, V>>(original.keySet().iterator(), (key) -> new SimpleImmutableEntry<K, V>(key, original.get(key)));
+		return new ImmutableCalculationIterator<K, Entry<K, V>>(original.keySet().iterator(), (key) -> Map.entry(key, original.get(key)));
 	}
 
 }
