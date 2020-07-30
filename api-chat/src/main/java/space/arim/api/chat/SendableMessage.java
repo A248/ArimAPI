@@ -34,8 +34,6 @@ public final class SendableMessage implements SendableMessageInfo {
 
 	private final List<TextualComponent> components;
 	
-	private static final TextualComponent[] EMPTY_COMPONENT_ARRAY = new TextualComponent[] {};
-	
 	/**
 	 * Creates from a list of {@link TextualComponent}s comprising this message. <br>
 	 * The list and its elements must be nonnull. An immutable copy is made of it.
@@ -44,7 +42,7 @@ public final class SendableMessage implements SendableMessageInfo {
 	 * @throws NullPointerException if {@code components} or an element in it is null
 	 */
 	public SendableMessage(List<TextualComponent> components) {
-		this(components.toArray(EMPTY_COMPONENT_ARRAY));
+		this.components = List.copyOf(components);
 	}
 	
 	/**
@@ -68,7 +66,7 @@ public final class SendableMessage implements SendableMessageInfo {
 		if (info instanceof SendableMessage) {
 			components = info.getComponents();
 		} else {
-			components = List.of(info.getComponents().toArray(EMPTY_COMPONENT_ARRAY));
+			components = List.copyOf(info.getComponents());
 		}
 	}
 	
