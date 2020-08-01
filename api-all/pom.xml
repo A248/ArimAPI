@@ -25,6 +25,10 @@
 		</dependency>
 		<dependency>
 			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-configure</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-util</artifactId>
 		</dependency>
 		<dependency>
