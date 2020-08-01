@@ -21,6 +21,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-version</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-chat</artifactId>
 		</dependency>
 		<dependency>
