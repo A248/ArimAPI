@@ -24,7 +24,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -109,8 +110,9 @@ public abstract class ConfigTest {
 	
 	void copyFromJar(String resource, File configFile) {
 		try (InputStream is = getClass().getResourceAsStream(File.separatorChar + resource);
-				OutputStream os = new FileOutputStream(configFile)) {
-			is.transferTo(os);
+				ReadableByteChannel read = Channels.newChannel(is);
+				FileOutputStream os = new FileOutputStream(configFile)) {
+			os.getChannel().transferFrom(read, 0, Long.MAX_VALUE);
 		} catch (IOException ex) {
 			fail(ex);
 		}
