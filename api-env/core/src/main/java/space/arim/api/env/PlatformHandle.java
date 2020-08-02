@@ -24,7 +24,7 @@ import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
-import space.arim.api.env.annote.PlatformPlayer;
+import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.chat.PlatformMessageAdapter;
 
 /**
@@ -55,15 +55,15 @@ public interface PlatformHandle {
 	<T> ResourceHook<T> hookPlatformResource(Resourcer resourcer, Class<T> resourceClass);
 	
 	/**
-	 * Sends a {@link SendableMessage} to a player based on this platform. <br>
+	 * Sends a {@link SendableMessage} to a command sender based on this platform. <br>
 	 * <br>
 	 * Implementations may be more efficient than using the platform's {@link PlatformMessageAdapter} to convert
 	 * to a platform specific type.
 	 * 
-	 * @param player the recipient
+	 * @param recipient the recipient
 	 * @param message the message
 	 */
-	void sendMessage(@PlatformPlayer Object player, SendableMessage message);
+	void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message);
 	
 	/**
 	 * Gets the platform type detected

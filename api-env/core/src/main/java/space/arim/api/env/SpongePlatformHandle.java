@@ -26,12 +26,13 @@ import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
+import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.chat.SpongeTextConverter;
 import space.arim.api.env.concurrent.SpongeEnhancedExecutor;
 import space.arim.api.env.concurrent.SpongeFactoryOfTheFuture;
 
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.plugin.PluginContainer;
 
 /**
@@ -61,19 +62,19 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	}
 
 	@Override
-	public void sendMessage(Object player, SendableMessage message) {
-		sendMessage((Player) player, message);
+	public void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message) {
+		sendMessage((CommandSource) recipient, message);
 	}
 	
 	/**
-	 * Sends a message to a player. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
+	 * Sends a message to a recipient. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
 	 * due to type safety.
 	 * 
-	 * @param player the recipient
+	 * @param recipient the recipient
 	 * @param message the message
 	 */
-	public void sendMessage(Player player, SendableMessage message) {
-		player.sendMessage(new SpongeTextConverter().convertFrom(message));
+	public void sendMessage(CommandSource recipient, SendableMessage message) {
+		recipient.sendMessage(new SpongeTextConverter().convertFrom(message));
 	}
 
 	@SuppressWarnings("unchecked")

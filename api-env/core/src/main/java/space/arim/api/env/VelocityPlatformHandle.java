@@ -28,11 +28,12 @@ import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 import space.arim.omnibus.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
+import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.chat.AdventureTextConverter;
 import space.arim.api.env.concurrent.VelocityEnhancedExecutor;
 
+import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.plugin.PluginContainer;
-import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 /**
@@ -72,19 +73,19 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 	}
 	
 	@Override
-	public void sendMessage(Object player, SendableMessage message) {
-		sendMessage((Player) player, message);
+	public void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message) {
+		sendMessage((CommandSource) recipient, message);
 	}
 	
 	/**
-	 * Sends a message to a player. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
+	 * Sends a message to a recipient. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
 	 * due to type safety.
 	 * 
-	 * @param player the recipient
+	 * @param recipient the recipient
 	 * @param message the message
 	 */
-	public void sendMessage(Player player, SendableMessage message) {
-		player.sendMessage(new AdventureTextConverter().convertFrom(message));
+	public void sendMessage(CommandSource recipient, SendableMessage message) {
+		recipient.sendMessage(new AdventureTextConverter().convertFrom(message));
 	}
 
 	@SuppressWarnings("unchecked")

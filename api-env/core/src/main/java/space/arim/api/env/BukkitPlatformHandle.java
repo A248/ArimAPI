@@ -26,11 +26,13 @@ import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
-import space.arim.api.env.annote.PlatformPlayer;
+import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.chat.BungeeComponentConverter;
 import space.arim.api.env.concurrent.BukkitEnhancedExecutor;
 import space.arim.api.env.concurrent.BukkitFactoryOfTheFuture;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -61,19 +63,23 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	}
 
 	@Override
-	public void sendMessage(@PlatformPlayer Object player, SendableMessage message) {
-		sendMessage((Player) player, message);
+	public void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message) {
+		sendMessage((CommandSender) recipient, message);
 	}
 	
 	/**
-	 * Sends a message to a player. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
+	 * Sends a message to a recipient. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
 	 * due to type safety.
 	 * 
-	 * @param player the recipient
+	 * @param recipient the recipient
 	 * @param message the message
 	 */
-	public void sendMessage(Player player, SendableMessage message) {
-		player.spigot().sendMessage(new BungeeComponentConverter().convertFrom(message));
+	public void sendMessage(CommandSender recipient, SendableMessage message) {
+		if (recipient instanceof Player) {
+			((Player) recipient).spigot().sendMessage(new BungeeComponentConverter().convertFrom(message));
+		} else {
+			recipient.sendMessage(message.toLegacyMessageString(ChatColor.COLOR_CHAR));
+		}
 	}
 
 	@SuppressWarnings("unchecked")

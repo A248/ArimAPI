@@ -28,11 +28,11 @@ import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 import space.arim.omnibus.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
-import space.arim.api.env.annote.PlatformPlayer;
+import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.chat.BungeeComponentConverter;
 import space.arim.api.env.concurrent.BungeeEnhancedExecutor;
 
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Plugin;
 
 /**
@@ -62,19 +62,19 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	}
 
 	@Override
-	public void sendMessage(@PlatformPlayer Object player, SendableMessage message) {
-		sendMessage((ProxiedPlayer) player, message);
+	public void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message) {
+		sendMessage((CommandSender) recipient, message);
 	}
 	
 	/**
-	 * Sends a message to a player. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
+	 * Sends a message to a recipient. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
 	 * due to type safety.
 	 * 
-	 * @param player the recipient
+	 * @param recipient the recipient
 	 * @param message the message
 	 */
-	public void sendMessage(ProxiedPlayer player, SendableMessage message) {
-		player.sendMessage(new BungeeComponentConverter().convertFrom(message));
+	public void sendMessage(CommandSender recipient, SendableMessage message) {
+		recipient.sendMessage(new BungeeComponentConverter().convertFrom(message));
 	}
 
 	@SuppressWarnings("unchecked")
