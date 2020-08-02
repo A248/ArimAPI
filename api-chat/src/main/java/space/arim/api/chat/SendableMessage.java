@@ -149,6 +149,43 @@ public final class SendableMessage implements SendableMessageInfo {
 			}
 		}
 	}
+	
+	/**
+	 * Converts this {@code SendableMessage} into a legacy message string, using legacy colour codes. <br>
+	 * <br>
+	 * The colour of each {@code TextualComponent} in this {@code SendableMessage} is converted to the nearest
+	 * {@link PredefinedColour}. <br>
+	 * <br>
+	 * All JSON message content is removed.
+	 * 
+	 * @param legacyColourCharPrefix the legacy colour code character prefix, e.g. '{@literal &}'
+	 * @return a legacy message string
+	 */
+	public String toLegacyMessageString(char legacyColourCharPrefix) {
+		char prefix = legacyColourCharPrefix;
+		StringBuilder builder = new StringBuilder();
+		for (TextualComponent tc : getComponents()) {
+			char code = PredefinedColour.getNearestTo(tc.getColour()).getCodeChar();
+			builder.append(prefix).append('r').append(prefix).append(code);
+			if (tc.hasStyle(MessageStyle.MAGIC)) {
+				builder.append(prefix).append('k');
+			}
+			if (tc.hasStyle(MessageStyle.BOLD)) {
+				builder.append(prefix).append('l');
+			}
+			if (tc.hasStyle(MessageStyle.STRIKETHROUGH)) {
+				builder.append(prefix).append('m');
+			}
+			if (tc.hasStyle(MessageStyle.UNDERLINE)) {
+				builder.append(prefix).append('n');
+			}
+			if (tc.hasStyle(MessageStyle.ITALIC)) {
+				builder.append(prefix).append('o');
+			}
+			builder.append(tc.getText());
+		}
+		return builder.toString();
+	}
 
 	/**
 	 * Builder to create {@link SendableMessage}
