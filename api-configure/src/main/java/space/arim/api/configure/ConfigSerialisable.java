@@ -19,7 +19,7 @@
 package space.arim.api.configure;
 
 /**
- * An interface allowing {@link ConfigData#getRawMap()} to use a different representation
+ * An interface allowing {@link ConfigData#getValuesMap()} to use a different representation
  * of a type as a config string. <br>
  * <br>
  * For example, supposing an enum is stored in a config map, its {@code toString()} method may

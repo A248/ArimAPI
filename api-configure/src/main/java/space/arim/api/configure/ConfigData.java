@@ -140,26 +140,34 @@ public interface ConfigData extends ConfigValues {
 	
 	/**
 	 * Gets a raw map of this config data's keys and values. Child values are denoted by nested maps. <br>
+	 * <b>This method is provided for implementers of config serialisers. Most users will not need it. </b> <br>
 	 * <br>
 	 * The map should be safe to iterate across concurrently. If need be, the caller may create a copy through such iteration.
 	 * The caller should never modify the map.
 	 * 
 	 * @return a map of this configuration's data
 	 */
-	Map<String, Object> getRawMap();
+	Map<String, Object> getValuesMap();
 	
 	/**
-	 * Gets the comment header of this config data, as a list of {@link ConfigComment}. <br>
+	 * Gets the comments of this config data, as a map of fully qualified keys to {@link ConfigComment}s. <br>
+	 * <b>This method is provided for implementers of config serialisers. Most users will not need it. </b> <br>
 	 * <br>
-	 * The list should be safe to iterate across concurrently. If need be, the caller may create a copy through such iteration.
-	 * The caller should never modify the list.
+	 * Unlike {@link #getValuesMap()}, the structure of the returned map is not that of a hierarchical map. Rather, it is
+	 * of a flattened map of full key paths, separated by {@literal '.'}, to lists of comments. <br>
+	 * <br>
+	 * The comments at a certain key come before that key is defined in a document. The empty string key corresponds to the
+	 * final comments of the document, which come after all keys. <br>
+	 * <br>
+	 * The map should be safe to iterate across concurrently. If need be, the caller may create a copy through such iteration.
+	 * The caller should never modify the map nor its lists.
 	 * 
-	 * @return a list of this config data's header comments
+	 * @return a map of this config data's comments
 	 */
-	List<ConfigComment> getCommentHeader();
+	Map<String, List<ConfigComment>> getCommentsMap();
 	
 	/**
-	 * Determines equality with the specified object, consistent with {@link #getRawMap()} and {@link #getCommentHeader()}
+	 * Determines equality with the specified object, consistent with {@link #getValuesMap()} and {@link #getCommentsMap()}
 	 * of this config data.
 	 * 
 	 * @param object the object to determine equality with

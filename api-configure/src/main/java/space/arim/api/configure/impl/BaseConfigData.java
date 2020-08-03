@@ -30,13 +30,13 @@ import space.arim.api.configure.ConfigData;
 class BaseConfigData implements ConfigData {
 
 	private final Map<String, Object> values;
-	private final List<ConfigComment> commentHeader;
+	private final Map<String, List<ConfigComment>> comments;
 	
 	private static final Pattern NODE_SEPARATOR_PATTERN = Pattern.compile(".", Pattern.LITERAL);
 	
-	BaseConfigData(Map<String, Object> values, List<ConfigComment> commentHeader) {
+	BaseConfigData(Map<String, Object> values, Map<String, List<ConfigComment>> comments) {
 		this.values = Objects.requireNonNull(values, "Values must not be null");
-		this.commentHeader = Objects.requireNonNull(commentHeader, "Comment header must not be null");
+		this.comments = Objects.requireNonNull(comments, "Comments must not be null");
 	}
 	
 	/**
@@ -116,21 +116,21 @@ class BaseConfigData implements ConfigData {
 	}
 
 	@Override
-	public Map<String, Object> getRawMap() {
+	public Map<String, Object> getValuesMap() {
 		return values;
 	}
 
 	@Override
-	public List<ConfigComment> getCommentHeader() {
-		return commentHeader;
+	public Map<String, List<ConfigComment>> getCommentsMap() {
+		return comments;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + commentHeader.hashCode();
 		result = prime * result + values.hashCode();
+		result = prime * result + comments.hashCode();
 		return result;
 	}
 
@@ -143,7 +143,7 @@ class BaseConfigData implements ConfigData {
 			return false;
 		}
 		ConfigData other = (ConfigData) object;
-		return commentHeader.equals(other.getCommentHeader()) && values.equals(other.getRawMap());
+		return values.equals(other.getValuesMap()) && comments.equals(other.getCommentsMap());
 	}
 	
 }

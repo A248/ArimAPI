@@ -85,13 +85,13 @@ public abstract class AbstractConfigSerialiser implements ConfigSerialiser {
 		});
 	}
 
-	protected abstract ConfigWriteResult writeConfig0(Path target, Map<String, Object> values,List<ConfigComment> commentHeader);
+	protected abstract ConfigWriteResult writeConfig0(Path target, Map<String, Object> values, Map<String, List<ConfigComment>> comments);
 	
 	@Override
 	public CompletableFuture<ConfigWriteResult> writeConfig(Path target, ConfigData data) {
 		// Early null check of values and comments
-		Map<String, Object> values = Map.copyOf(data.getRawMap());
-		List<ConfigComment> commentHeader = List.copyOf(data.getCommentHeader());
+		Map<String, Object> values = data.getValuesMap();
+		Map<String, List<ConfigComment>> commentHeader = data.getCommentsMap();
 
 		return CompletableFuture.supplyAsync(() -> {
 			return writeConfig0(target, values, commentHeader);

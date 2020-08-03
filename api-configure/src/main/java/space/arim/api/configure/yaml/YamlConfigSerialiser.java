@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 import space.arim.api.configure.ConfigComment;
@@ -44,20 +45,45 @@ import space.arim.api.configure.impl.SimpleConfigWriteResult;
  */
 public class YamlConfigSerialiser extends AbstractConfigSerialiser {
 
+	private final Set<YamlOption> options;
+	
+	/**
+	 * Creates from an {@link Executor} to use for creating completable futures, and all
+	 * desired {@link YamlOption}s related to the specifics of parsing and dumping
+	 * 
+	 * @param executor the executor to use to create futures
+	 * @param options all {@link YamlOption}s related to parsing and dumping
+	 */
+	public YamlConfigSerialiser(Executor executor, Set<YamlOption> options) {
+		super(executor);
+		this.options = Set.copyOf(options);
+	}
+	
+	/**
+	 * Creates from an {@link Executor} to use for creating completable futures, and all
+	 * desired {@link YamlOption}s related to the specifics of parsing and dumping
+	 * 
+	 * @param executor the executor to use to create futures
+	 * @param options all {@link YamlOption}s related to parsing and dumping
+	 */
+	public YamlConfigSerialiser(Executor executor, YamlOption...options) {
+		this(executor, Set.of(options));
+	}
+	
 	/**
 	 * Creates from an {@link Executor} to use for creating completable futures
 	 * 
 	 * @param executor the executor to use to create futures
 	 */
 	public YamlConfigSerialiser(Executor executor) {
-		super(executor);
+		this(executor, Set.of());
 	}
 
 	@Override
 	protected ConfigReadResult readConfig0(Path source, List<ValueTransformer> transformers) {
 		ConfigData result;
-		try (CommentedYamlParser parser = new CommentedYamlParser(source)) {
-			result = parser.parse(transformers);
+		try (YamlParser parser = new YamlParser(source, transformers)) {
+			result = parser.parse();
 
 		} catch (IOException ex) {
 			return new SimpleConfigReadResult(ConfigReadResult.ResultType.FAILURE_READING, ex, null);
@@ -68,9 +94,9 @@ public class YamlConfigSerialiser extends AbstractConfigSerialiser {
 	}
 
 	@Override
-	protected ConfigWriteResult writeConfig0(Path target, Map<String, Object> values, List<ConfigComment> commentHeader) {
-		try (CommentedYamlDumper dumper = new CommentedYamlDumper(target)) {
-			dumper.dump(values, commentHeader);
+	protected ConfigWriteResult writeConfig0(Path target, Map<String, Object> values, Map<String, List<ConfigComment>> comments) {
+		try (YamlDumper dumper = new YamlDumper(target, options.contains(YamlOption.compactLists()))) {
+			dumper.dump(values, comments);
 
 		} catch (IOException ex) {
 			return new SimpleConfigWriteResult(ConfigWriteResult.ResultType.FAILURE_WRITING, ex);

@@ -19,7 +19,7 @@
 package space.arim.api.configure.configs;
 
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,13 +104,13 @@ public class MergingConfig extends AbstractConfiguration {
 	
 	private ConfigData merge(ConfigData readData) {
 		ConfigData currentData = this.currentData;
-		Map<String, Object> values = merge(currentData.getRawMap(), readData.getRawMap());
-		return new SimpleConfigData(values, currentData.getCommentHeader());
+		Map<String, Object> values = merge(currentData.getValuesMap(), readData.getValuesMap());
+		return new SimpleConfigData(values, currentData.getCommentsMap());
 	}
 	
 	@SuppressWarnings("unchecked")
 	private static Map<String, Object> merge(Map<String, Object> existing, Map<String, Object> mergeWith) {
-		Map<String, Object> result = new HashMap<>(existing);
+		Map<String, Object> result = new LinkedHashMap<>(existing);
 		for (Map.Entry<String, Object> mergeEntry : mergeWith.entrySet()) {
 			String key = mergeEntry.getKey();
 			Object value = result.get(key);
@@ -128,10 +128,10 @@ public class MergingConfig extends AbstractConfiguration {
 					result.put(key, merge((Map<String, Object>) value, (Map<String, Object>) mergeValue));
 				}
 			} else if (value.getClass() == mergeValue.getClass()) {
-				result.put(key, (mergeValue instanceof List) ? List.copyOf((List<?>) mergeValue) : mergeValue);
+				result.put(key, mergeValue);
 			}
 		}
-		return Map.copyOf(result);
+		return result;
 	}
 
 }

@@ -51,10 +51,10 @@ public class YamlConfigSerialiserTest {
 			"message", "Hi",
 			"config-ver", 2
 			);
-	private static final List<ConfigComment> COMMENTS = List.of(
+	private static final Map<String, List<ConfigComment>> COMMENTS = Map.of("enable", List.of(
 			new ConfigComment(1, " Config comment headers"),
 			new ConfigComment(2, "second line"),
-			new ConfigComment(0, " and a third line"));
+			new ConfigComment(0, " and a third line")));
 	
 	private static final ConfigData CONFIG_DATA = new SimpleConfigData(VALUES, COMMENTS);
 	

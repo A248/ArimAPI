@@ -16,32 +16,28 @@
  * along with ArimAPI-configure. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.configure.impl;
-
-import java.util.List;
-import java.util.Map;
-
-import space.arim.api.configure.ConfigComment;
-import space.arim.api.configure.ConfigData;
+package space.arim.api.configure.yaml;
 
 /**
- * Common sense implementation of {@link ConfigData} using 2 backing maps, one of config values,
- * the other of comments.
+ * All options for the {@link YamlConfigSerialiser}'s specifics.
  * 
  * @author A248
  *
  */
-public class SimpleConfigData extends BaseConfigData {
+public final class YamlOption {
 
+	private static final YamlOption COMPACT_LISTS = new YamlOption();
+	
+	private YamlOption() {}
+	
 	/**
-	 * Creates from a map of values and a map of comments
+	 * Intructs the serialiser to write lists and arrays in a compact fashion. Namely,
+	 * they will be written as "[e1, e2, e3]" instead of an expanded multiline list.
 	 * 
-	 * @param values the map of values, see {@link ConfigData#getValuesMap()} for requirements
-	 * @param comments the map of comments, see {@link ConfigData#getCommentsMap()} for requirements
-	 * @throws NullPointerException if either parameter is null
+	 * @return yaml option for compact lists
 	 */
-	public SimpleConfigData(Map<String, Object> values, Map<String, List<ConfigComment>> comments) {
-		super(values, comments);
+	public static YamlOption compactLists() {
+		return COMPACT_LISTS;
 	}
-
+	
 }
