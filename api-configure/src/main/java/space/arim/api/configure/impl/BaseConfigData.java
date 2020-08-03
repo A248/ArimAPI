@@ -145,5 +145,10 @@ class BaseConfigData implements ConfigData {
 		ConfigData other = (ConfigData) object;
 		return values.equals(other.getValuesMap()) && comments.equals(other.getCommentsMap());
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " [values=" + values + ", comments=" + comments + "]";
+	}
 	
 }

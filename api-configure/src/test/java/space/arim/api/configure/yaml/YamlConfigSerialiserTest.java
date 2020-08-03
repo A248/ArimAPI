@@ -54,14 +54,14 @@ public class YamlConfigSerialiserTest {
 	private static final Map<String, List<ConfigComment>> COMMENTS = Map.of("enable", List.of(
 			new ConfigComment(1, " Config comment headers"),
 			new ConfigComment(2, "second line"),
-			new ConfigComment(0, " and a third line")));
+			new ConfigComment(0, " and a third line")),
+			"nesting.firstvalue", List.of(new ConfigComment(2, " Commenting on a nested value")));
 	
 	private static final ConfigData CONFIG_DATA = new SimpleConfigData(VALUES, COMMENTS);
 	
 	@BeforeEach
 	public void setup() {
 		configDest = tempDir.resolve("config.yml");
-		
 		serialiser = new YamlConfigSerialiser(Runnable::run);
 	}
 	
@@ -75,7 +75,10 @@ public class YamlConfigSerialiserTest {
 	public void testRead() {
 		Path resource = JarResources.forCallerClass("config.yml");
 		ConfigTestingHelper.copyOrFail(resource, configDest);
-		assertEquals(CONFIG_DATA, readOrFail().getReadData());
+		ConfigData data = readOrFail().getReadData();
+		assertEquals(VALUES, data.getValuesMap());
+		assertEquals(COMMENTS, data.getCommentsMap());
+		assertEquals(CONFIG_DATA, data);
 	}
 	
 	@Test

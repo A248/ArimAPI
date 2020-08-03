@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executor;
 
 import space.arim.api.configure.ConfigComment;
@@ -44,31 +43,6 @@ import space.arim.api.configure.impl.SimpleConfigWriteResult;
  *
  */
 public class YamlConfigSerialiser extends AbstractConfigSerialiser {
-
-	private final Set<YamlOption> options;
-	
-	/**
-	 * Creates from an {@link Executor} to use for creating completable futures, and all
-	 * desired {@link YamlOption}s related to the specifics of parsing and dumping
-	 * 
-	 * @param executor the executor to use to create futures
-	 * @param options all {@link YamlOption}s related to parsing and dumping
-	 */
-	public YamlConfigSerialiser(Executor executor, Set<YamlOption> options) {
-		super(executor);
-		this.options = Set.copyOf(options);
-	}
-	
-	/**
-	 * Creates from an {@link Executor} to use for creating completable futures, and all
-	 * desired {@link YamlOption}s related to the specifics of parsing and dumping
-	 * 
-	 * @param executor the executor to use to create futures
-	 * @param options all {@link YamlOption}s related to parsing and dumping
-	 */
-	public YamlConfigSerialiser(Executor executor, YamlOption...options) {
-		this(executor, Set.of(options));
-	}
 	
 	/**
 	 * Creates from an {@link Executor} to use for creating completable futures
@@ -76,7 +50,7 @@ public class YamlConfigSerialiser extends AbstractConfigSerialiser {
 	 * @param executor the executor to use to create futures
 	 */
 	public YamlConfigSerialiser(Executor executor) {
-		this(executor, Set.of());
+		super(executor);
 	}
 
 	@Override
@@ -95,7 +69,7 @@ public class YamlConfigSerialiser extends AbstractConfigSerialiser {
 
 	@Override
 	protected ConfigWriteResult writeConfig0(Path target, Map<String, Object> values, Map<String, List<ConfigComment>> comments) {
-		try (YamlDumper dumper = new YamlDumper(target, options.contains(YamlOption.compactLists()))) {
+		try (YamlDumper dumper = new YamlDumper(target)) {
 			dumper.dump(values, comments);
 
 		} catch (IOException ex) {

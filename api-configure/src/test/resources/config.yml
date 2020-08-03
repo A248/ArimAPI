@@ -8,6 +8,7 @@ integer-list:
   - 4
   - 9
 nesting:
+  # Commenting on a nested value
   firstvalue: true
   more:
     message-also: 'another one'

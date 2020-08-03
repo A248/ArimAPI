@@ -34,14 +34,12 @@ import space.arim.api.configure.ConfigSerialisable;
 class YamlDumper implements AutoCloseable {
 
 	private final Writer writer;
-	private final boolean compactLists;
 	
 	private Map<String, Object> values;
 	private Map<String, List<ConfigComment>> comments;
 	
-	YamlDumper(Path target, boolean compactLists) throws IOException {
+	YamlDumper(Path target) throws IOException {
 		writer = Files.newBufferedWriter(target, StandardCharsets.UTF_8);
-		this.compactLists = compactLists;
 	}
 	
 	void dump(Map<String, Object> values, Map<String, List<ConfigComment>> comments) throws IOException {
@@ -74,15 +72,22 @@ class YamlDumper implements AutoCloseable {
 		return builder;
 	}
 	
+	private static String flattenKeyChain(String[] keyChain, String currentKey) {
+		if (keyChain.length == 0) {
+			return currentKey;
+		}
+		return flattenKeyChain(keyChain).append('.').append(currentKey).toString();
+	}
+	
 	private void writeDepth(Map<String, Object> values, int depth, String[] keyChain) throws IOException {
 		for (Map.Entry<String, Object> entry : values.entrySet()) {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 
-			writeComments(comments.get(flattenKeyChain(keyChain).toString()));
-			for (int n = 0; n < depth; n ++) {
-				// 2 spaces per depth
-				writer.append("  ");
+			writeComments(comments.get(flattenKeyChain(keyChain, key)));
+			// 2 leading spaces per depth
+			for (int n = 0; n < (depth * 2); n ++) {
+				writer.append(' ');
 			}
 			writer.append(key).append(':');
 			if (value instanceof Map<?, ?>) {
@@ -94,7 +99,6 @@ class YamlDumper implements AutoCloseable {
 				nextKeyChain[keyChain.length] = key;
 				writeDepth(subMap, depth + 1, nextKeyChain);
 			} else {
-				writer.append(' ');
 				writeConfigString(value, depth);
 				writer.append('\n');
 			}
@@ -115,29 +119,17 @@ class YamlDumper implements AutoCloseable {
 			writeList(List.copyOf((Collection<?>) obj), depth);
 			return;
 		}
-		writer.append(toConfigString(obj));
+		writer.append(' ').append(toConfigString(obj));
 	}
 	
 	private void writeList(List<?> list, final int depth) throws IOException {
-		if (compactLists) {
-			writer.append('[');
-			Object[] elements = list.toArray();
-			for (int n = 0; n < elements.length; n++) {
-				if (n != 0) {
-					writer.append(", ");
-				}
-				writer.append(toConfigString(elements[n]));
+		for (Object e : list) {
+			writer.append('\n');
+			// 2 spaces per depth + 2 initial spaces per element
+			for (int n = -2; n < depth; n++) {
+				writer.append(' ');
 			}
-			writer.append(']');
-		} else {
-			for (Object e : list) {
-				writer.append('\n');
-				// 2 spaces per depth + 2 initial spaces per element
-				for (int n = -2; n < depth; n ++) {
-					writer.append(' ');
-				}
-				writer.append("- ").append(toConfigString(e));
-			}
+			writer.append("- ").append(toConfigString(e));
 		}
 	}
 	

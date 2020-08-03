@@ -19,12 +19,14 @@
 package space.arim.api.configure.yaml;
 
 /**
- * All options for the {@link YamlConfigSerialiser}'s specifics.
+ * All options for the {@link YamlConfigSerialiser}'s specifics. <br>
+ * <br>
+ * <b>Currently unused</b>
  * 
  * @author A248
  *
  */
-public final class YamlOption {
+final class YamlOption {
 
 	private static final YamlOption COMPACT_LISTS = new YamlOption();
 	

@@ -18,8 +18,8 @@
  */
 package space.arim.api.configure.yaml;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,12 +35,17 @@ import java.util.Set;
 import space.arim.api.configure.ConfigComment;
 import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ValueTransformer;
+import space.arim.api.configure.impl.SimpleConfigData;
 
 class YamlParser implements AutoCloseable {
 
-	// Constants
+	// Static and instance constants
 	
-	private final Reader reader;
+	private static final boolean DEBUG = false;
+	
+	private static final int READ_AHEAD_LIMIT = 1024;
+	
+	private final BufferedReader reader;
 	private final List<? extends ValueTransformer> transformers;
 	
 	private final Map<String, Object> values = new LinkedHashMap<>();
@@ -57,7 +62,7 @@ class YamlParser implements AutoCloseable {
 	 * 
 	 */
 	
-	private int lineNumber; // global line increment
+	private int lineNumber = 1; // global line increment
 	
 	/*
 	 * Current state
@@ -79,14 +84,30 @@ class YamlParser implements AutoCloseable {
 	
 	private enum State {
 		
+		// After whitespace, letters start a key, # starts a comment
 		WHITESPACE(Expect.WHITESPACE, Expect.LETTERS, Expect.COMMENT_SYMBOL),
+		
+		// In a comment, everything keeps the comment going except a line break
 		COMMENT(Expect.WHITESPACE, Expect.LETTERS, Expect.COMMENT_SYMBOL),
-		KEY(false, Expect.LETTERS, Expect.COLON),
+		
+		// A key grows with letters or ends with a colon
+		// Whitespace is only accepted when reading multiline lists
+		// KEY is the only State which does not permit a LINE_BREAK
+		KEY(false, Expect.LETTERS, Expect.COLON, Expect.WHITESPACE),
+		
+		// After a colon starts a value. There is an optional single space
 		COLON(Expect.WHITESPACE, Expect.LETTERS, Expect.SINGLE_QUOTE, Expect.DOUBLE_QUOTE),
+		
+		// When a colon has a single space after it, that is a singular space, which functions alike
 		SINGULAR_SPACE(Expect.LETTERS, Expect.SINGLE_QUOTE, Expect.DOUBLE_QUOTE),
+		
+		// Values grow by more letters and end with whitespace
 		VALUE(Expect.LETTERS, Expect.WHITESPACE),
-		VALUE_SINGLEQUOTE(Expect.LETTERS, Expect.WHITESPACE, Expect.SINGLE_QUOTE),
-		VALUE_DOUBLEQUOTE(Expect.LETTERS, Expect.WHITESPACE, Expect.DOUBLE_QUOTE);
+		
+		// Quoted values grow or close with their kind of quote
+		// They accept the other kind of quote as normal text
+		VALUE_SINGLEQUOTE(Expect.LETTERS, Expect.WHITESPACE, Expect.DOUBLE_QUOTE, Expect.SINGLE_QUOTE),
+		VALUE_DOUBLEQUOTE(Expect.LETTERS, Expect.WHITESPACE, Expect.SINGLE_QUOTE, Expect.DOUBLE_QUOTE);
 		
 		final Set<Expect> expects;
 		
@@ -150,8 +171,11 @@ class YamlParser implements AutoCloseable {
 		}
 	}
 	
-	private StringBuilder flattenKeyChain() {
-		return YamlDumper.flattenKeyChain(keyChain.toArray(String[]::new));
+	private String keyChainDotPrefix(String key) {
+		if (keyChain.size() == 0) {
+			return key;
+		}
+		return YamlDumper.flattenKeyChain(keyChain.toArray(String[]::new)).append('.').append(key).toString();
 	}
 	
 	private Object transform(String key, Object value) {
@@ -164,7 +188,7 @@ class YamlParser implements AutoCloseable {
 	
 	@SuppressWarnings("unchecked")
 	private void addToMap(String key, Object value) throws YamlSyntaxException {
-		String fullKey = flattenKeyChain().append('.').append(key).toString();
+		String fullKey = keyChainDotPrefix(key);
 		Map<String, Object> currentMap = values;
 		for (String keyOnChain : keyChain) {
 			currentMap = (Map<String, Object>) currentMap.computeIfAbsent(keyOnChain, (k) -> new LinkedHashMap<>());
@@ -176,7 +200,9 @@ class YamlParser implements AutoCloseable {
 		}
 	}
 	
-	private static Object parseObject(String value) {
+	private Object parseUnquotedObject(String value) throws YamlSyntaxException {
+		checkNoQuotes(value, '\'');
+		checkNoQuotes(value, '"');
 		switch (value.toLowerCase(Locale.ENGLISH)) {
 		case "true":
 			return Boolean.TRUE;
@@ -191,16 +217,20 @@ class YamlParser implements AutoCloseable {
 		return value;
 	}
 	
+	private String errorPrefix() {
+		return ". Line number: " + lineNumber + ". State: " + state;
+	}
+	
 	private YamlSyntaxException syntaxError(Set<Expect> expects, Expect actual) {
-		return new YamlSyntaxException("Expected any of " + expects + " but got " + actual + ". Line number: " + lineNumber);
+		return new YamlSyntaxException("Expected any of " + expects + " but got " + actual + errorPrefix());
 	}
 	
 	private YamlSyntaxException syntaxError(String expected, String actual) {
-		return new YamlSyntaxException("Expected " + expected + " but got " + actual + ". Line number: " + lineNumber);
+		return new YamlSyntaxException("Expected " + expected + " but got " + actual + errorPrefix());
 	}
 	
 	private YamlSyntaxException syntaxError(String message) {
-		return new YamlSyntaxException(message + ". Line number: " + lineNumber);
+		return new YamlSyntaxException(message + errorPrefix());
 	}
 	
 	private void trimKeyChain(int whitespace) {
@@ -212,9 +242,10 @@ class YamlParser implements AutoCloseable {
 	}
 	
 	private void processChar(char ch) throws YamlSyntaxException, IOException {
-		Expect expectation = getActualExpect(ch);
+		final Expect expectation = getActualExpect(ch);
 		if (expectation == Expect.LINE_BREAK) {
 			lineNumber++;
+			reader.mark(READ_AHEAD_LIMIT);
 		}
 		if (!state.expects.contains(expectation)) {
 			throw syntaxError(state.expects, expectation);
@@ -273,7 +304,7 @@ class YamlParser implements AutoCloseable {
 			// KEY / COLON
 			currentKey = keyBuilder.toString();
 			if (currentComments != null) {
-				comments.put(flattenKeyChain().append('.').append(currentKey).toString(), currentComments);
+				comments.put(keyChainDotPrefix(currentKey), currentComments);
 				currentComments = null;
 			}
 			state = State.COLON;
@@ -281,6 +312,18 @@ class YamlParser implements AutoCloseable {
 		case 0b100000:
 			// KEY / LETTERS
 			keyBuilder.append(ch);
+			break;
+		case 0b100010:
+			// KEY / WHITESPACE
+			// When this happens, it may be because there is a multiline list
+			if (keyChain.isEmpty() || keyBuilder.toString().charAt(0) != '-') {
+				throw syntaxError("colon", "whitespace");
+			}
+			if (DEBUG) System.out.println("Parsing multiline list");
+			attemptParseMutilineList();
+			if (DEBUG) System.out.println("Parsed multiline list");
+			state = State.WHITESPACE;
+			whitespace = 0;
 			break;
 
 		// COLON
@@ -345,20 +388,24 @@ class YamlParser implements AutoCloseable {
 			// fallthrough
 		case 0b1010011:
 			// VALUE / LINE_BREAK
-			addToMap(currentKey, parseObject(valueBuilder.toString()));
+			addToMap(currentKey, parseUnquotedObject(valueBuilder.toString()));
 			state = State.WHITESPACE;
 			break;
 
 		// VALUE_SINGLEQUOTE
 		case 0b1100010:
 			// VALUE_SINGLEQUOTE / WHITESPACE - fallthrough
+		case 0b1100101:
+			// VALUE_SINGLEQUOTE / DOUBLE_QUOTE - fallthrough
 		case 0b1100000:
 			// VALUE_SINGLEQUOTE / LETTERS
 			valueBuilder.append(ch);
 			break;
 		case 0b1100100:
 			// VALUE_SINGLEQUOTE / SINGLE_QUOTE
-			addToMap(currentKey, valueBuilder.toString());
+			String value1 = valueBuilder.toString();
+			checkNoQuotes(value1, '\'');
+			addToMap(currentKey, value1);
 			eatWhitespaceUntilLineBreak();
 			state = State.WHITESPACE;
 			break;
@@ -369,13 +416,17 @@ class YamlParser implements AutoCloseable {
 		// VALUE_DOUBLEQUOTE
 		case 0b1110010:
 			// VALUE_DOUBLEQUOTE / WHITESPACE - fallthrough
+		case 0b1110100:
+			// VALUE_DOUBLEQUOTE / SINGLE_QUOTE - fallthrough
 		case 0b1110000:
 			// VALUE_DOUBLEQUOTE / LETTERS
 			valueBuilder.append(ch);
 			break;
 		case 0b1110101:
 			// VALUE_DOUBLEQUOTE / DOUBLE_QUOTE
-			addToMap(currentKey, valueBuilder.toString());
+			String value2 = valueBuilder.toString();
+			checkNoQuotes(value2, '"');
+			addToMap(currentKey, value2);
 			eatWhitespaceUntilLineBreak();
 			state = State.WHITESPACE;
 			break;
@@ -388,8 +439,84 @@ class YamlParser implements AutoCloseable {
 		if (expectation == Expect.LINE_BREAK) {
 			whitespace = 0;
 		}
+		if (DEBUG) System.out.println("State " + state + " and keyChain " + keyChain);
 	}
 	
+	private static boolean isNewLine(char ch) {
+		return (ch == '\r' || ch == '\n');
+	}
+	
+	private void attemptParseMutilineList() throws IOException, YamlSyntaxException {
+		reader.reset(); // reset to beginning of line
+
+		final int requiredWhitespace = keyChain.size() * 2;
+		StringBuilder requiredPrefixBuilder = new StringBuilder();
+		for (int n = 0; n < requiredWhitespace; n++) {
+			requiredPrefixBuilder.append(' ');
+		}
+		requiredPrefixBuilder.append("- ");
+		String requiredPrefix = requiredPrefixBuilder.toString();
+
+		int index = keyChain.size() - 1;
+		String currentKey = keyChain.get(index);
+		keyChain.remove(index);
+
+		StringBuilder lineBuilder = new StringBuilder();
+		List<Object> result = new ArrayList<>();
+		for (;;) {
+			int readResult = reader.read();
+
+			boolean endOfLine = false;
+			if (readResult == -1 || (endOfLine = isNewLine((char) readResult))) {
+				String line = lineBuilder.toString();
+				if (DEBUG) System.out.println("Matching line '" + line + "' with '" + requiredPrefix + "'");
+				if (!line.startsWith(requiredPrefix)) {
+					if (!result.isEmpty()) {
+						this.addToMap(currentKey, result);
+					}
+					reader.reset(); // reset to beginning of line
+					return;
+				}
+				Object value = parseListValue(line.substring(requiredPrefix.length()));
+				result.add(value);
+				if (endOfLine) {
+					lineNumber++;
+					reader.mark(READ_AHEAD_LIMIT);
+				} else {
+					this.addToMap(currentKey, result);
+					return;
+				}
+				lineBuilder = new StringBuilder();
+				continue;
+			}
+			lineBuilder.append((char) readResult);
+		}
+	}
+	
+	private void checkNoQuotes(String val, char quote) throws YamlSyntaxException {
+		if (val.indexOf(quote) != -1) {
+			throw syntaxError("Unclosed " + ((quote == '\'') ? "single" : " double") + " quote");
+		}
+	}
+	
+	private Object parseListValue(String val) throws YamlSyntaxException {
+		int length = val.length();
+		if (length == 0) {
+			throw syntaxError("element value within list", "line break");
+		}
+		char quote = val.charAt(0);
+		if (quote == '\'' || quote == '"') {
+			if (val.charAt(length - 1) != quote) {
+				throw syntaxError("Unclosed " + ((quote == '\'') ? "single" : " double") + " quote");
+			}
+			val = val.substring(1, length - 1);
+			checkNoQuotes(val, quote);
+			return val;
+		} else {
+			return parseUnquotedObject(val);
+		}
+	}
+
 	private void eatWhitespaceUntilLineBreak() throws IOException, YamlSyntaxException {
 		int ch;
 		while ((ch = reader.read()) != -1) {
@@ -398,6 +525,7 @@ class YamlParser implements AutoCloseable {
 				continue;
 			case '\n':
 			case '\r':
+				lineNumber++;
 				whitespace = 0;
 				return;
 			default:
@@ -407,7 +535,7 @@ class YamlParser implements AutoCloseable {
 		// stream ended, perfectly fine
 	}
 	
-	private void finish() throws YamlSyntaxException {
+	private void finish() throws YamlSyntaxException, IOException {
 		switch (state) {
 		case COLON:
 		case KEY:
@@ -415,7 +543,9 @@ class YamlParser implements AutoCloseable {
 		case VALUE:
 		case VALUE_DOUBLEQUOTE:
 		case VALUE_SINGLEQUOTE:
-			throw syntaxError("Unexpected end of file");
+			// Pretend there is a new blank line
+			processChar('\n');
+			break;
 
 		case COMMENT:
 			if (currentComments == null) {
@@ -450,8 +580,7 @@ class YamlParser implements AutoCloseable {
 	
 	ConfigData parse() throws IOException, YamlSyntaxException {
 		doParse();
-		// return new SimpleConfigData(values, comments);
-		return null;
+		return new SimpleConfigData(values, comments);
 	}
 
 	@Override
