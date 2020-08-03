@@ -27,10 +27,7 @@ import java.nio.file.Path;
  * Utility class for locating JAR resources. <br>
  * <br>
  * Each method returns a {@link Path} created from the located resource. If the resource in the specified location
- * was not found or could not be converted to valid syntax, {@code IllegalArgumentException} is thrown. <br>
- * <br>
- * Note that slashes are automatically prepended to all resource names, to ensure they are considered absolute
- * per {@link Class#getResource(String)}.
+ * was not found or could not be converted to valid syntax, {@code IllegalArgumentException} is thrown.
  * 
  * @author A248
  *
@@ -52,7 +49,10 @@ public final class JarResources {
 	}
 	
 	/**
-	 * Gets a resource in the caller class, using {@link Class#getResource(String)}
+	 * Gets a resource in the caller class, using {@link Class#getResource(String)}. <br>
+	 * <br>
+	 * Note that slashes are automatically prepended to all resource names, to ensure they are considered absolute
+	 * per {@code Class#getResource(String)}.
 	 * 
 	 * @param resourceName the resource name
 	 * @return a path pointing to the resource
@@ -64,7 +64,10 @@ public final class JarResources {
 	}
 	
 	/**
-	 * Gets a resource in the specified class, using {@link Class#getResource(String)}
+	 * Gets a resource in the specified class, using {@link Class#getResource(String)}. <br>
+	 * <br>
+	 * Note that slashes are automatically prepended to all resource names, to ensure they are considered absolute
+	 * per {@code Class#getResource(String)}.
 	 * 
 	 * @param resourceClass the resource class
 	 * @param resourceName the resource name
@@ -84,7 +87,7 @@ public final class JarResources {
 	 * @throws IllegalArgumentException if the resource could not be found or accessed
 	 */
 	public static Path forClassLoader(ClassLoader classLoader, String resourceName) {
-		return forURL(classLoader.getResource('/' + resourceName));
+		return forURL(classLoader.getResource(resourceName));
 	}
 	
 	/**
