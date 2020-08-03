@@ -29,11 +29,13 @@ import space.arim.omnibus.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
+import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.AdventureTextConverter;
 import space.arim.api.env.concurrent.VelocityEnhancedExecutor;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.plugin.PluginContainer;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 /**
@@ -72,20 +74,50 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 		return (ProxyServer) getImplementingPluginInfo().getServer();
 	}
 	
+	/**
+	 * Sends a {@link SendableMessage} to a command sender based on this platform. <br>
+	 * <br>
+	 * This method is thread safe.
+	 * 
+	 */
 	@Override
 	public void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message) {
 		sendMessage((CommandSource) recipient, message);
 	}
 	
 	/**
-	 * Sends a message to a recipient. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
-	 * due to type safety.
+	 * Disconnects a player with a reason. <br>
+	 * <br>
+	 * This method is thread safe.
+	 * 
+	 */
+	@Override
+	public void disconnectUser(@PlatformPlayer Object user, SendableMessage reason) {
+		disconnectUser((Player) user, reason);
+	}
+	
+	/**
+	 * Sends a message to a recipient. Same as {@link #sendMessage(Object, SendableMessage)} <br>
+	 * <br>
+	 * This method is thread safe.
 	 * 
 	 * @param recipient the recipient
 	 * @param message the message
 	 */
 	public void sendMessage(CommandSource recipient, SendableMessage message) {
 		recipient.sendMessage(new AdventureTextConverter().convertFrom(message));
+	}
+	
+	/**
+	 * Disconnects a player with a reason. Same as {@link #disconnectUser(Object, SendableMessage)}. <br>
+	 * <br>
+	 * This method is thread safe.
+	 * 
+	 * @param user the user to kick
+	 * @param reason the kick message
+	 */
+	public void disconnectUser(Player user, SendableMessage reason) {
+		user.disconnect(new AdventureTextConverter().convertFrom(reason));
 	}
 
 	@SuppressWarnings("unchecked")

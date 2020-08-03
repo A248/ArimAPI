@@ -27,6 +27,7 @@ import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
+import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.BungeeComponentConverter;
 import space.arim.api.env.concurrent.BukkitEnhancedExecutor;
 import space.arim.api.env.concurrent.BukkitFactoryOfTheFuture;
@@ -62,14 +63,34 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 		return (JavaPlugin) getImplementingPluginInfo().getPlugin();
 	}
 
+	/**
+	 * Sends a {@link SendableMessage} to a command sender based on this platform. <br>
+	 * <br>
+	 * <b>This method is not strictly speaking thread safe.</b> However, in practice, multiple
+	 * plugins send messages asynchronously.
+	 * 
+	 */
 	@Override
 	public void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message) {
 		sendMessage((CommandSender) recipient, message);
 	}
 	
 	/**
-	 * Sends a message to a recipient. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
-	 * due to type safety.
+	 * Disconnects a player with a reason. <br>
+	 * <br>
+	 * <b>This method is not thread safe.</b>
+	 * 
+	 */
+	@Override
+	public void disconnectUser(@PlatformPlayer Object user, SendableMessage reason) {
+		disconnectUser((Player) user, reason);
+	}
+	
+	/**
+	 * Sends a message to a recipient. Same as {@link #sendMessage(Object, SendableMessage)}. <br>
+	 * <br>
+	 * <b>This method is not strictly speaking thread safe.</b> However, in practice, multiple
+	 * plugins send messages asynchronously.
 	 * 
 	 * @param recipient the recipient
 	 * @param message the message
@@ -80,6 +101,18 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 		} else {
 			recipient.sendMessage(message.toLegacyMessageString(ChatColor.COLOR_CHAR));
 		}
+	}
+	
+	/**
+	 * Disconnects a player with a reason. Same as {@link #disconnectUser(Object, SendableMessage)}. <br>
+	 * <br>
+	 * <b>This method is not thread safe.</b>
+	 * 
+	 * @param user the user to kick
+	 * @param reason the kick message
+	 */
+	public void disconnectUser(Player user, SendableMessage reason) {
+		user.kickPlayer(reason.toLegacyMessageString(ChatColor.COLOR_CHAR));
 	}
 
 	@SuppressWarnings("unchecked")

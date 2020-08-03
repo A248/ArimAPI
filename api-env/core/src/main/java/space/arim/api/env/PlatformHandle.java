@@ -25,6 +25,7 @@ import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
+import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.PlatformMessageAdapter;
 
 /**
@@ -57,6 +58,8 @@ public interface PlatformHandle {
 	/**
 	 * Sends a {@link SendableMessage} to a command sender based on this platform. <br>
 	 * <br>
+	 * <b>This method is not thread safe on all platforms.</b> <br>
+	 * <br>
 	 * Implementations may be more efficient than using the platform's {@link PlatformMessageAdapter} to convert
 	 * to a platform specific type.
 	 * 
@@ -64,6 +67,19 @@ public interface PlatformHandle {
 	 * @param message the message
 	 */
 	void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message);
+	
+	/**
+	 * Disconnects (kicks) a player based on this platform with the reason provided {@link SendableMessage}. <br>
+	 * <br>
+	 * <b>This method is not thread safe on all platforms.</b> <br>
+	 * <br>
+	 * Implementations may be more efficient than using the platform's {@link PlatformMessageAdapter} to convert
+	 * to a platform specific type.
+	 * 
+	 * @param user the user to kick
+	 * @param reason the kick message
+	 */
+	void disconnectUser(@PlatformPlayer Object user, SendableMessage reason);
 	
 	/**
 	 * Gets the platform type detected

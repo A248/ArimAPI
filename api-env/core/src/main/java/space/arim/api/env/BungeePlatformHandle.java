@@ -29,10 +29,12 @@ import space.arim.omnibus.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
+import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.BungeeComponentConverter;
 import space.arim.api.env.concurrent.BungeeEnhancedExecutor;
 
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 /**
@@ -61,20 +63,50 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 		return (Plugin) getImplementingPluginInfo().getPlugin();
 	}
 
+	/**
+	 * Sends a {@link SendableMessage} to a command sender based on this platform. <br>
+	 * <br>
+	 * This method is thread safe.
+	 * 
+	 */
 	@Override
 	public void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message) {
 		sendMessage((CommandSender) recipient, message);
 	}
 	
 	/**
-	 * Sends a message to a recipient. When possible, should be preferred to {@link #sendMessage(Object, SendableMessage)}
-	 * due to type safety.
+	 * Disconnects a player with a reason. <br>
+	 * <br>
+	 * This method is thread safe.
+	 * 
+	 */
+	@Override
+	public void disconnectUser(@PlatformPlayer Object user, SendableMessage reason) {
+		disconnectUser((ProxiedPlayer) user, reason);
+	}
+	
+	/**
+	 * Sends a message to a recipient. Same as {@link #sendMessage(Object, SendableMessage)}. <br>
+	 * <br>
+	 * This method is thread safe.
 	 * 
 	 * @param recipient the recipient
 	 * @param message the message
 	 */
 	public void sendMessage(CommandSender recipient, SendableMessage message) {
 		recipient.sendMessage(new BungeeComponentConverter().convertFrom(message));
+	}
+	
+	/**
+	 * Disconnects a player with a reason. Same as {@link #disconnectUser(Object, SendableMessage)}. <br>
+	 * <br>
+	 * This method is thread safe.
+	 * 
+	 * @param user the user to kick
+	 * @param reason the kick message
+	 */
+	public void disconnectUser(ProxiedPlayer user, SendableMessage reason) {
+		user.disconnect(new BungeeComponentConverter().convertFrom(reason));
 	}
 
 	@SuppressWarnings("unchecked")
