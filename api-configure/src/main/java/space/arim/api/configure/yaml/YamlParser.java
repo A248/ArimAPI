@@ -181,6 +181,9 @@ class YamlParser implements AutoCloseable {
 	private Object transform(String key, Object value) {
 		Object result = value;
 		for (ValueTransformer transformer : transformers) {
+			if (result == null) {
+				return null;
+			}
 			result = transformer.transform(key, result);
 		}
 		return result;
@@ -189,11 +192,15 @@ class YamlParser implements AutoCloseable {
 	@SuppressWarnings("unchecked")
 	private void addToMap(String key, Object value) throws YamlSyntaxException {
 		String fullKey = keyChainDotPrefix(key);
+		value = transform(fullKey, value);
+		if (value == null) {
+			// transformers didn't like it
+			return;
+		}
 		Map<String, Object> currentMap = values;
 		for (String keyOnChain : keyChain) {
 			currentMap = (Map<String, Object>) currentMap.computeIfAbsent(keyOnChain, (k) -> new LinkedHashMap<>());
 		}
-		value = transform(fullKey, value);
 		Object previous = currentMap.putIfAbsent(key, value);
 		if (previous != null) {
 			throw syntaxError("Duplicate key " + fullKey);

@@ -19,7 +19,9 @@
 package space.arim.api.configure;
 
 /**
- * A transformer applied to all configuration values uploading loading such values.
+ * A transformer applied to all configuration values uploading loading such values. <br>
+ * <br>
+ * Transformers should be stateless and thread safe.
  * 
  * @author A248
  *
@@ -30,11 +32,14 @@ public interface ValueTransformer {
 	 * Rewrites the object at the specified key path to another object. <br>
 	 * <br>
 	 * If this value transformer need not apply to the specific object at this key path,
-	 * it should simply return the same {@code value} parameter.
+	 * it should simply return the same {@code value} parameter. <br>
+	 * <br>
+	 * If this transformer returns {@code null}, the entry is immediately removed and
+	 * no other transformers are invoked.
 	 * 
-	 * @param key the key path at which this object occurs
-	 * @param value the object to rewrite
-	 * @return the new object, or {@code value} to make no changes
+	 * @param key the full key path at which this object occurs, never {@code null}
+	 * @param value the object to rewrite, never {@code null}
+	 * @return the new object, or {@code value} to make no changes, or {@code null} to remove the entry
 	 */
 	Object transform(String key, Object value);
 	
