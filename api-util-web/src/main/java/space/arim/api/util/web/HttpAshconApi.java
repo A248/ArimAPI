@@ -26,7 +26,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -37,31 +39,21 @@ import java.util.function.Function;
 
 import com.google.gson.Gson;
 
-import space.arim.api.util.StringsUtil;
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
 /**
- * A handle for working with HTTP requests to the Mojang API.
+ * A handle for working with requests to Electroid's Ashcon API.
  * 
  * @author A248
  *
  */
-public class HttpMojangApi implements RemoteNameHistoryApi {
-	
+public class HttpAshconApi implements RemoteNameHistoryApi {
+
 	private static final Gson GSON = DefaultGson.GSON;
 	
-	private static final String FROM_NAME = "https://api.mojang.com/users/profiles/minecraft/";
-	private static final String FROM_UUID = "https://api.mojang.com/user/profiles/";
+	private static final String URL_BASE = "https://api.ashcon.app/mojang/v2/user/";
 	
-	/*
-	 * When the Mojang API is rate limiting, it returns a 429 status code.
-	 * 
-	 * When the request was successful but there are no results, it returns a 204.
-	 * 
-	 */
-	
-	private static final int RATE_LIMIT_STATUS_CODE = 429;
-	private static final int NOT_FOUND_STATUS_CODE = 204;
+	private static final int NOT_FOUND_STATUS_CODE = 404;
 	
 	private final HttpClient client;
 	
@@ -69,12 +61,11 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 	 * Creates an instance using a configured http client. <br>
 	 * <br>
 	 * The http client may be used to specify the connection timeout and the
-	 * {@link java.util.concurrent.Executor Executor} used to make completable futures. <br>
-	 * The Mojang API does not currently support HTTP/2, so it is recommended to use HTTP/1.1 for now.
+	 * {@link java.util.concurrent.Executor Executor} used to make completable futures.
 	 * 
 	 * @param client the http client to use
 	 */
-	public HttpMojangApi(HttpClient client) {
+	public HttpAshconApi(HttpClient client) {
 		this.client = client;
 	}
 	
@@ -82,19 +73,17 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 	 * Creates an instance using the default http client
 	 * 
 	 */
-	public HttpMojangApi() {
+	public HttpAshconApi() {
 		this(HttpClient.newHttpClient());
 	}
 	
-	private <T> CompletableFuture<RemoteApiResult<T>> queryMojangApi(String uri,
-			Function<InputStreamReader, T> readerAcceptorFunction) {
-		HttpRequest request = HttpRequest.newBuilder(URI.create(uri)).build();
+	private <T> CompletableFuture<RemoteApiResult<T>> queryAshconApi(String nameOrUuid,
+			Function<Map<String, Object>, T> mapAcceptorFunction) {
+		HttpRequest request = HttpRequest.newBuilder(URI.create(URL_BASE + nameOrUuid)).build();
 		return client.sendAsync(request, BodyHandlers.ofInputStream()).thenApply((response) -> {
 
 			int responseCode = response.statusCode();
 			switch (responseCode) {
-			case RATE_LIMIT_STATUS_CODE:
-				return new RemoteApiResult<>(null, ResultType.RATE_LIMITED, null);
 			case NOT_FOUND_STATUS_CODE:
 				return new RemoteApiResult<>(null, ResultType.NOT_FOUND, null);
 			case 200:
@@ -106,60 +95,50 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 			InputStream inputStream = response.body();
 			try (inputStream; InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
 
-				return new RemoteApiResult<>(readerAcceptorFunction.apply(reader), ResultType.FOUND, null);
+				@SuppressWarnings("unchecked")
+				Map<String, Object> map = GSON.fromJson(reader, Map.class);
+				return new RemoteApiResult<>(mapAcceptorFunction.apply(map), ResultType.FOUND, null);
 			} catch (IOException ex) {
 				return new RemoteApiResult<>(null, ResultType.ERROR, ex);
 			}
 		});
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 */
 	@Override
 	public CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name) {
 		Objects.requireNonNull(name, "Name must not be null");
 
-		return queryMojangApi(FROM_NAME + name, (reader) -> {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> profileInfo = GSON.fromJson(reader, Map.class);
-			String shortUuid = profileInfo.get("id").toString();
-			return UUID.fromString(StringsUtil.expandShortenedUUID(shortUuid));
-		});
+		return queryAshconApi(name, (result) -> UUID.fromString((String) result.get("uuid")));
 	}
 	
-	private <T> CompletableFuture<RemoteApiResult<T>> lookupByUUID(UUID uuid, Function<Map<String, Object>[], T> resultMapper) {
-		return queryMojangApi(FROM_UUID + uuid.toString().replace("-", "") + "/names", (reader) -> {
-			@SuppressWarnings("unchecked")
-			Map<String, Object>[] nameInfo = GSON.fromJson(reader, Map[].class);
-			return resultMapper.apply(nameInfo);
-		});
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 */
 	@Override
 	public CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid) {
 		Objects.requireNonNull(uuid, "UUID must not be null");
 
-		return lookupByUUID(uuid, (nameInfo) -> (String) nameInfo[nameInfo.length - 1].get("name"));
+		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> (String) result.get("username"));
 	}
 
 	@Override
 	public CompletableFuture<RemoteApiResult<Set<Entry<String, Long>>>> lookupNameHistory(UUID uuid) {
 		Objects.requireNonNull(uuid, "UUID must not be null");
 
-		return lookupByUUID(uuid, (nameInfo) -> {
+		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();
+			@SuppressWarnings("unchecked")
+			List<Map<String, Object>> nameInfo = (List<Map<String, Object>>) result.get("username_history");
 			for (Map<String, Object> nameChange : nameInfo) {
-				nameHistory.add(Map.entry((String) nameChange.get("name"),
-						((Number) nameChange.getOrDefault("changedToAt", 0L)).longValue() / 1000L));
+				nameHistory.add(Map.entry((String) nameChange.get("username"),
+						isoDateToUnixSeconds((String) nameChange.get("changed_at"))));
 			}
 			return nameHistory;
 		});
+	}
+	
+	private static final long isoDateToUnixSeconds(String isoDate) {
+		if (isoDate == null) {
+			return 0L;
+		}
+		return Instant.parse(isoDate).getEpochSecond();
 	}
 	
 }

@@ -37,6 +37,14 @@
 		</dependency>
 		<dependency>
 			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-util-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-util-sql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-env-core</artifactId>
 		</dependency>
 	</dependencies>

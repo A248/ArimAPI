@@ -18,6 +18,7 @@
  */
 package space.arim.api.util.web;
 
+import java.util.Map.Entry;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,11 +27,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -39,21 +38,17 @@ import java.util.function.Function;
 
 import com.google.gson.Gson;
 
+import space.arim.uuidvault.api.UUIDUtil;
+
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
-/**
- * A handle for working with requests to Electroid's Ashcon API.
- * 
- * @author A248
- *
- */
-public class HttpAshconApi implements RemoteNameHistoryApi {
+public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 
 	private static final Gson GSON = DefaultGson.GSON;
 	
-	private static final String URL_BASE = "https://api.ashcon.app/mojang/v2/user/";
+	private static final String URL_BASE = "https://mc-heads.net/minecraft/profile/";
 	
-	private static final int NOT_FOUND_STATUS_CODE = 404;
+	private static final int NOT_FOUND_STATUS_CODE = 204;
 	
 	private final HttpClient client;
 	
@@ -65,7 +60,7 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 	 * 
 	 * @param client the http client to use
 	 */
-	public HttpAshconApi(HttpClient client) {
+	public HttpMcHeadsApi(HttpClient client) {
 		this.client = client;
 	}
 	
@@ -73,11 +68,11 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 	 * Creates an instance using the default http client
 	 * 
 	 */
-	public HttpAshconApi() {
+	public HttpMcHeadsApi() {
 		this(HttpClient.newHttpClient());
 	}
 	
-	private <T> CompletableFuture<RemoteApiResult<T>> queryAshconApi(String nameOrUuid,
+	private <T> CompletableFuture<RemoteApiResult<T>> queryMcHeadsApi(String nameOrUuid,
 			Function<Map<String, Object>, T> mapAcceptorFunction) {
 		HttpRequest request = HttpRequest.newBuilder(URI.create(URL_BASE + nameOrUuid)).build();
 		return client.sendAsync(request, BodyHandlers.ofInputStream()).thenApply((response) -> {
@@ -104,53 +99,35 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 		});
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 */
 	@Override
 	public CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name) {
 		Objects.requireNonNull(name, "Name must not be null");
 
-		return queryAshconApi(name, (result) -> UUID.fromString((String) result.get("uuid")));
+		return queryMcHeadsApi(name,
+				(result) -> UUIDUtil.fromShortString((String) result.get("id")));
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * 
-	 */
 	@Override
 	public CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid) {
 		Objects.requireNonNull(uuid, "UUID must not be null");
 
-		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> (String) result.get("username"));
+		return queryMcHeadsApi(uuid.toString().replace("-", ""), (result) -> (String) result.get("name"));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 */
 	@Override
 	public CompletableFuture<RemoteApiResult<Set<Entry<String, Long>>>> lookupNameHistory(UUID uuid) {
 		Objects.requireNonNull(uuid, "UUID must not be null");
 
-		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> {
+		return queryMcHeadsApi(uuid.toString().replace("-", ""), (result) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();
 			@SuppressWarnings("unchecked")
-			List<Map<String, Object>> nameInfo = (List<Map<String, Object>>) result.get("username_history");
+			List<Map<String, Object>> nameInfo = (List<Map<String, Object>>) result.get("name_history");
 			for (Map<String, Object> nameChange : nameInfo) {
-				nameHistory.add(Map.entry((String) nameChange.get("username"),
-						isoDateToUnixSeconds((String) nameChange.get("changed_at"))));
+				nameHistory.add(Map.entry((String) nameChange.get("name"),
+						((Number) nameChange.getOrDefault("changedToAt", 0L)).longValue() / 1000L));
 			}
 			return nameHistory;
 		});
 	}
-	
-	private static final long isoDateToUnixSeconds(String isoDate) {
-		if (isoDate == null) {
-			return 0L;
-		}
-		return Instant.parse(isoDate).getEpochSecond();
-	}
-	
+
 }

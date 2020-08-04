@@ -9,9 +9,9 @@
 		<version>0.19.1-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>arimapi-util</artifactId>
-	<name>ArimAPI-Util</name>
-	<description>The framework and utilities component of ArimAPI.</description>
+	<artifactId>arimapi-util-web</artifactId>
+	<name>ArimAPI-Util-Web</name>
+	<description>The web API utilities component of ArimAPI.</description>
 	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -19,20 +19,17 @@
 	</build>
 	
 	<dependencies>
+		<!-- Gson 2.2, at the minimum, is required for parsing web API responses -->
 		<dependency>
-			<groupId>space.arim.omnibus</groupId>
-			<artifactId>omnibus-util</artifactId>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
 		</dependency>
-		
-		<!--
-		Used by space.arim.api.util.config, kept for now until such config framework is removed.
-		Migration to space.arim.api.configure is recommended.
-		-->
+		<!--  UUIDVault-util is used for UUID manipulation operations -->
 		<dependency>
-			<groupId>org.yaml</groupId>
-			<artifactId>snakeyaml</artifactId>
-			<version>1.26</version>
-			<optional>true</optional>
+			<groupId>space.arim.uuidvault</groupId>
+			<artifactId>util</artifactId>
+			<version>0.5.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>

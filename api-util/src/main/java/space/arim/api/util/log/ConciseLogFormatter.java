@@ -29,14 +29,22 @@ import java.util.logging.LogRecord;
  * 
  * @author A248
  *
+ * @deprecated This class provides little value. Using JUL is not recommended. Also, until recently,
+ * this class contained a thread safety issue with {@code SimpleDateFormat} (as does currently BungeeCord's);
+ * to solve this, potentially inefficient synchronisation is used.
  */
+@Deprecated
 public class ConciseLogFormatter extends Formatter {
 	
 	private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss");
 	
 	@Override
 	public String format(LogRecord record) {
-		StringBuilder builder = new StringBuilder(dateFormatter.format(record.getMillis()));
+		String format;
+		synchronized (dateFormatter) {
+			format = dateFormatter.format(record.getMillis());
+		}
+		StringBuilder builder = new StringBuilder(format);
 		builder.append(" [").append(record.getLevel().getLocalizedName()).append("] ").append(formatMessage(record)).append('\n');
 		if (record.getThrown() != null) {
 			StringWriter writer = new StringWriter();

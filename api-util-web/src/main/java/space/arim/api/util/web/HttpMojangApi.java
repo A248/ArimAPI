@@ -18,7 +18,6 @@
  */
 package space.arim.api.util.web;
 
-import java.util.Map.Entry;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,8 +27,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -38,15 +37,31 @@ import java.util.function.Function;
 
 import com.google.gson.Gson;
 
-import space.arim.api.util.StringsUtil;
+import space.arim.uuidvault.api.UUIDUtil;
+
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
-public class HttpMcHeadsApi implements RemoteNameHistoryApi {
-
+/**
+ * A handle for working with HTTP requests to the Mojang API.
+ * 
+ * @author A248
+ *
+ */
+public class HttpMojangApi implements RemoteNameHistoryApi {
+	
 	private static final Gson GSON = DefaultGson.GSON;
 	
-	private static final String URL_BASE = "https://mc-heads.net/minecraft/profile/";
+	private static final String FROM_NAME = "https://api.mojang.com/users/profiles/minecraft/";
+	private static final String FROM_UUID = "https://api.mojang.com/user/profiles/";
 	
+	/*
+	 * When the Mojang API is rate limiting, it returns a 429 status code.
+	 * 
+	 * When the request was successful but there are no results, it returns a 204.
+	 * 
+	 */
+	
+	private static final int RATE_LIMIT_STATUS_CODE = 429;
 	private static final int NOT_FOUND_STATUS_CODE = 204;
 	
 	private final HttpClient client;
@@ -55,11 +70,12 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 	 * Creates an instance using a configured http client. <br>
 	 * <br>
 	 * The http client may be used to specify the connection timeout and the
-	 * {@link java.util.concurrent.Executor Executor} used to make completable futures.
+	 * {@link java.util.concurrent.Executor Executor} used to make completable futures. <br>
+	 * The Mojang API does not currently support HTTP/2, so it is recommended to use HTTP/1.1 for now.
 	 * 
 	 * @param client the http client to use
 	 */
-	public HttpMcHeadsApi(HttpClient client) {
+	public HttpMojangApi(HttpClient client) {
 		this.client = client;
 	}
 	
@@ -67,17 +83,19 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 	 * Creates an instance using the default http client
 	 * 
 	 */
-	public HttpMcHeadsApi() {
+	public HttpMojangApi() {
 		this(HttpClient.newHttpClient());
 	}
 	
-	private <T> CompletableFuture<RemoteApiResult<T>> queryMcHeadsApi(String nameOrUuid,
-			Function<Map<String, Object>, T> mapAcceptorFunction) {
-		HttpRequest request = HttpRequest.newBuilder(URI.create(URL_BASE + nameOrUuid)).build();
+	private <T> CompletableFuture<RemoteApiResult<T>> queryMojangApi(String uri,
+			Function<InputStreamReader, T> readerAcceptorFunction) {
+		HttpRequest request = HttpRequest.newBuilder(URI.create(uri)).build();
 		return client.sendAsync(request, BodyHandlers.ofInputStream()).thenApply((response) -> {
 
 			int responseCode = response.statusCode();
 			switch (responseCode) {
+			case RATE_LIMIT_STATUS_CODE:
+				return new RemoteApiResult<>(null, ResultType.RATE_LIMITED, null);
 			case NOT_FOUND_STATUS_CODE:
 				return new RemoteApiResult<>(null, ResultType.NOT_FOUND, null);
 			case 200:
@@ -89,9 +107,7 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 			InputStream inputStream = response.body();
 			try (inputStream; InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
 
-				@SuppressWarnings("unchecked")
-				Map<String, Object> map = GSON.fromJson(reader, Map.class);
-				return new RemoteApiResult<>(mapAcceptorFunction.apply(map), ResultType.FOUND, null);
+				return new RemoteApiResult<>(readerAcceptorFunction.apply(reader), ResultType.FOUND, null);
 			} catch (IOException ex) {
 				return new RemoteApiResult<>(null, ResultType.ERROR, ex);
 			}
@@ -102,25 +118,35 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 	public CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name) {
 		Objects.requireNonNull(name, "Name must not be null");
 
-		return queryMcHeadsApi(name,
-				(result) -> UUID.fromString(StringsUtil.expandShortenedUUID((String) result.get("id"))));
+		return queryMojangApi(FROM_NAME + name, (reader) -> {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> profileInfo = GSON.fromJson(reader, Map.class);
+			String shortUuid = profileInfo.get("id").toString();
+			return UUIDUtil.fromShortString(shortUuid);
+		});
+	}
+	
+	private <T> CompletableFuture<RemoteApiResult<T>> lookupByUUID(UUID uuid, Function<Map<String, Object>[], T> resultMapper) {
+		return queryMojangApi(FROM_UUID + uuid.toString().replace("-", "") + "/names", (reader) -> {
+			@SuppressWarnings("unchecked")
+			Map<String, Object>[] nameInfo = GSON.fromJson(reader, Map[].class);
+			return resultMapper.apply(nameInfo);
+		});
 	}
 	
 	@Override
 	public CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid) {
 		Objects.requireNonNull(uuid, "UUID must not be null");
 
-		return queryMcHeadsApi(uuid.toString().replace("-", ""), (result) -> (String) result.get("name"));
+		return lookupByUUID(uuid, (nameInfo) -> (String) nameInfo[nameInfo.length - 1].get("name"));
 	}
 
 	@Override
 	public CompletableFuture<RemoteApiResult<Set<Entry<String, Long>>>> lookupNameHistory(UUID uuid) {
 		Objects.requireNonNull(uuid, "UUID must not be null");
 
-		return queryMcHeadsApi(uuid.toString().replace("-", ""), (result) -> {
+		return lookupByUUID(uuid, (nameInfo) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();
-			@SuppressWarnings("unchecked")
-			List<Map<String, Object>> nameInfo = (List<Map<String, Object>>) result.get("name_history");
 			for (Map<String, Object> nameChange : nameInfo) {
 				nameHistory.add(Map.entry((String) nameChange.get("name"),
 						((Number) nameChange.getOrDefault("changedToAt", 0L)).longValue() / 1000L));
@@ -128,5 +154,5 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 			return nameHistory;
 		});
 	}
-
+	
 }

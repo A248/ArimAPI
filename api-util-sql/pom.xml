@@ -9,9 +9,9 @@
 		<version>0.19.1-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>arimapi-configure</artifactId>
-	<name>ArimAPI-Configure</name>
-	<description>The configuration component of ArimAPI.</description>
+	<artifactId>arimapi-util-sql</artifactId>
+	<name>ArimAPI-Util-Sql</name>
+	<description>The SQL utility component of ArimAPI.</description>
 	
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -19,10 +19,14 @@
 	</build>
 	
 	<dependencies>
+		<!--
+		Optional because HikariCP is not strictly required to use the framework,
+		other versions of SqlBackend might be implemented.
+		-->
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>
