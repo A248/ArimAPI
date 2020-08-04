@@ -32,23 +32,17 @@ import java.util.concurrent.Executor;
 public interface ConfigSerialiser {
 	
 	/**
-	 * Gets the executor used by this config serialiser to create completable futures
-	 * 
-	 * @return the executor used to create futures
-	 */
-	Executor getExecutor();
-	
-	/**
 	 * Reads the specified config data from the desired target path. <br>
 	 * <br>
 	 * Returns a future which yields a nonnull {@link ConfigReadResult} allowing the caller to determine the results of the read,
 	 * including whether it succeeded or failed.
 	 * 
 	 * @param source the path from which to read the configuration
+	 * @param executor the executor used to create the resulting future
 	 * @param transformers value transformer used to process all config values
 	 * @return a future which yields a nonnull {@link ConfigWriteResult} indicating success or failure, and details of such
 	 */
-	CompletableFuture<ConfigReadResult> readConfig(Path source, List<? extends ValueTransformer> transformers);
+	CompletableFuture<ConfigReadResult> readConfig(Path source, Executor executor, List<? extends ValueTransformer> transformers);
 	
 	/**
 	 * Saves the specified config data to the desired target path on the filesystem. If the file already exists,
@@ -65,9 +59,10 @@ public interface ConfigSerialiser {
 	 * if it does not.
 	 * 
 	 * @param target the path to which to save the configuration
+	 * @param executor the executor used to create the resulting future
 	 * @param data the configuration data to save
 	 * @return a future which yields a nonnull {@link ConfigWriteResult} indicating success or failure, and details of such
 	 */
-	CompletableFuture<ConfigWriteResult> writeConfig(Path target, ConfigData data);
+	CompletableFuture<ConfigWriteResult> writeConfig(Path target, Executor executor, ConfigData data);
 	
 }

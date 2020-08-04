@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import space.arim.api.configure.ConfigAccessor;
 import space.arim.api.configure.ConfigData;
@@ -58,9 +59,9 @@ public class MergingConfig extends AbstractConfiguration {
 	
 	private final ConfigAccessor accessor;
 	
-	MergingConfig(Path defaultResource, ConfigSerialiser serialiser, List<? extends ValueTransformer> transformers,
-			ConfigData defaultData) {
-		super(defaultResource, serialiser, transformers);
+	MergingConfig(Path defaultResource, Executor executor, ConfigSerialiser serialiser,
+			List<? extends ValueTransformer> transformers, ConfigData defaultData) {
+		super(defaultResource, executor, serialiser, transformers);
 		currentData = defaultData;
 		accessor = new ConfigAccessor() {
 

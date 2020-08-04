@@ -47,8 +47,9 @@ public abstract class ConfigImplTest {
 	@BeforeEach
 	public void setup() {
 		configPath = dir.resolve("config.yml");
-		config = createInstance(new ConfigurationBuilder().defaultResource(JarResources.forCallerClass("config.yml"))
-				.serialiser(new YamlConfigSerialiser(Runnable::run))).join();
+		Path defaultResourcePath = JarResources.forCallerClass("config.yml");
+		config = createInstance(new ConfigurationBuilder().executor(Runnable::run).defaultResource(defaultResourcePath)
+				.serialiser(new YamlConfigSerialiser())).join();
 	}
 	
 	protected abstract CompletableFuture<? extends Configuration> createInstance(ConfigurationBuilder builder);

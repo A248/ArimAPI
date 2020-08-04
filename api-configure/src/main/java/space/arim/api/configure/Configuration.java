@@ -20,6 +20,7 @@ package space.arim.api.configure;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
  * A general interface for all configurations.
@@ -50,6 +51,13 @@ public interface Configuration {
 	 * @return an automatic configuration value accessor for this configuration
 	 */
 	ConfigAccessor getAccessor();
+	
+	/**
+	 * Gets the {@code Executor} used to create completable futures
+	 * 
+	 * @return the {@code Executor} used for this config
+	 */
+	Executor getExecutor();
 	
 	/**
 	 * Gets the configuration serialiser associated with this config

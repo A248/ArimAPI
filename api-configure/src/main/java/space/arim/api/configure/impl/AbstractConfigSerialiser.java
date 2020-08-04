@@ -41,21 +41,9 @@ import space.arim.api.configure.ValueTransformer;
  *
  */
 public abstract class AbstractConfigSerialiser implements ConfigSerialiser {
+	
+	protected AbstractConfigSerialiser() {
 
-	private final Executor executor;
-	
-	/**
-	 * Creates from an {@link Executor} to use for creating completable futures
-	 * 
-	 * @param executor the executor to use
-	 */
-	protected AbstractConfigSerialiser(Executor executor) {
-		this.executor = executor;
-	}
-	
-	@Override
-	public Executor getExecutor() {
-		return executor;
 	}
 	
 	static Exception getOrWrapException(Throwable value) {
@@ -68,7 +56,7 @@ public abstract class AbstractConfigSerialiser implements ConfigSerialiser {
 	protected abstract ConfigReadResult readConfig0(Path source, List<ValueTransformer> transformers);
 
 	@Override
-	public CompletableFuture<ConfigReadResult> readConfig(Path source, List<? extends ValueTransformer> transformers) {
+	public CompletableFuture<ConfigReadResult> readConfig(Path source, Executor executor, List<? extends ValueTransformer> transformers) {
 		// Early null check of transformers
 		@SuppressWarnings("unchecked")
 		List<ValueTransformer> transfos = (List<ValueTransformer>) List.copyOf(transformers);
@@ -88,7 +76,7 @@ public abstract class AbstractConfigSerialiser implements ConfigSerialiser {
 	protected abstract ConfigWriteResult writeConfig0(Path target, Map<String, Object> values, Map<String, List<ConfigComment>> comments);
 	
 	@Override
-	public CompletableFuture<ConfigWriteResult> writeConfig(Path target, ConfigData data) {
+	public CompletableFuture<ConfigWriteResult> writeConfig(Path target, Executor executor, ConfigData data) {
 		// Early null check of values and comments
 		Map<String, Object> values = data.getValuesMap();
 		Map<String, List<ConfigComment>> commentHeader = data.getCommentsMap();

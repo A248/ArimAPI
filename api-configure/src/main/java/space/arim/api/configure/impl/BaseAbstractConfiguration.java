@@ -57,7 +57,7 @@ public abstract class BaseAbstractConfiguration implements Configuration {
 			ConfigCopyResult result = new SimpleConfigCopyResult(ConfigCopyResult.ResultType.SUCCESS, null);
 			return result;
 
-		}, getSerialiser().getExecutor()).exceptionally((ex) -> {
+		}, getExecutor()).exceptionally((ex) -> {
 			return new SimpleConfigCopyResult(ConfigCopyResult.ResultType.UNKNOWN_ERROR, getOrWrapException(ex));
 		});
 	}

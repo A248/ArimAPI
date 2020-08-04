@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
 
 import space.arim.api.configure.ConfigComment;
 import space.arim.api.configure.ConfigData;
@@ -45,12 +44,11 @@ import space.arim.api.configure.impl.SimpleConfigWriteResult;
 public class YamlConfigSerialiser extends AbstractConfigSerialiser {
 	
 	/**
-	 * Creates from an {@link Executor} to use for creating completable futures
+	 * Creates a serialiser
 	 * 
-	 * @param executor the executor to use to create futures
 	 */
-	public YamlConfigSerialiser(Executor executor) {
-		super(executor);
+	public YamlConfigSerialiser() {
+		
 	}
 
 	@Override

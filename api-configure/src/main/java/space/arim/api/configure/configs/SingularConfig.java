@@ -20,6 +20,7 @@ package space.arim.api.configure.configs;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import space.arim.api.configure.ConfigAccessor;
 import space.arim.api.configure.ConfigCopyResult;
@@ -79,6 +80,11 @@ public class SingularConfig implements Configuration {
 	@Override
 	public ConfigAccessor getAccessor() {
 		return delegate.getAccessor();
+	}
+	
+	@Override
+	public Executor getExecutor() {
+		return delegate.getExecutor();
 	}
 
 	@Override

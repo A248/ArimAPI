@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,7 @@ public class YamlConfigSerialiserTest {
 	public Path tempDir;
 	
 	private Path configDest;
+	private Executor executor;
 	private YamlConfigSerialiser serialiser;
 	
 	private static final Map<String, Object> VALUES = Map.of(
@@ -62,11 +64,12 @@ public class YamlConfigSerialiserTest {
 	@BeforeEach
 	public void setup() {
 		configDest = tempDir.resolve("config.yml");
-		serialiser = new YamlConfigSerialiser(Runnable::run);
+		executor = Runnable::run;
+		serialiser = new YamlConfigSerialiser();
 	}
 	
 	private ConfigReadResult readOrFail() {
-		ConfigReadResult readResult = serialiser.readConfig(configDest, List.of()).join();
+		ConfigReadResult readResult = serialiser.readConfig(configDest, executor, List.of()).join();
 		ConfigTestingHelper.assertSuccess(readResult);
 		return readResult;
 	}
@@ -83,7 +86,7 @@ public class YamlConfigSerialiserTest {
 	
 	@Test
 	public void testWrite() {
-		ConfigWriteResult writeResult = serialiser.writeConfig(configDest, CONFIG_DATA).join();
+		ConfigWriteResult writeResult = serialiser.writeConfig(configDest, executor, CONFIG_DATA).join();
 		ConfigTestingHelper.assertSuccess(writeResult);
 		assertEquals(CONFIG_DATA, readOrFail().getReadData());
 	}

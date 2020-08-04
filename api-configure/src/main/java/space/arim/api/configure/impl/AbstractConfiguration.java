@@ -21,6 +21,7 @@ package space.arim.api.configure.impl;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ConfigReadResult;
@@ -29,13 +30,21 @@ import space.arim.api.configure.ValueTransformer;
 
 public abstract class AbstractConfiguration extends BaseAbstractConfiguration {
 
+	private final Executor executor;
 	private final ConfigSerialiser serialiser;
 	private final List<? extends ValueTransformer> transformers;
 	
-	protected AbstractConfiguration(Path defaultResource, ConfigSerialiser serialiser, List<? extends ValueTransformer> transformers) {
+	protected AbstractConfiguration(Path defaultResource, Executor executor, ConfigSerialiser serialiser,
+			List<? extends ValueTransformer> transformers) {
 		super(defaultResource);
+		this.executor = executor;
 		this.serialiser = serialiser;
 		this.transformers = List.copyOf(transformers);
+	}
+	
+	@Override
+	public Executor getExecutor() {
+		return executor;
 	}
 
 	@Override
@@ -47,7 +56,7 @@ public abstract class AbstractConfiguration extends BaseAbstractConfiguration {
 	
 	@Override
 	public CompletableFuture<ConfigReadResult> readConfig(Path source) {
-		return serialiser.readConfig(source, transformers).thenApply((result) -> {
+		return serialiser.readConfig(source, executor, transformers).thenApply((result) -> {
 			if (result.getResultDefinition() == ConfigReadResult.ResultType.SUCCESS) {
 				acceptRead(result.getReadData());
 			}

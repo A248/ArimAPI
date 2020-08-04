@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ConfigReadResult;
@@ -37,14 +38,16 @@ import space.arim.api.configure.ValueTransformer;
  * and {@link MergingConfig}. <br>
  * <br>
  * The required details of this builder which must be set before building a {@code Configuration}
- * are the default resource path and config serialiser. Adding value transformers is optional.
- * If these 2 requirements are not set when {@link #buildPairedConfig()} or {@link #buildMergingConfig()} is
- * called, {@link IllegalArgumentException} is thrown. <br>
+ * are the default resource path, an executor, and a config serialiser. Adding value transformers is optional.
+ * If these 3 requirements are not set when calling build methods, {@link IllegalArgumentException} is thrown. <br>
  * <br>
  * Having met such requirements, a {@code CompletableFuture} yielding a {@code Configuration} instance is returned.
  * The future will be completed exceptionally with {@code IllegalArgumentException} if the default config data
  * could not be copied from the jar resource identified by the default resource path, or the serialiser
- * itself was unable to parse or read values.
+ * itself was unable to parse or read values. <br>
+ * <br>
+ * If the method with an {@code Executor} is used, that executor will be used for specifically copying the default values.
+ * However, the executor of the builder, which is used for creating the resulting configuration, is still required.
  * 
  * @author A248
  *
@@ -52,8 +55,9 @@ import space.arim.api.configure.ValueTransformer;
 public class ConfigurationBuilder {
 
 	private Path defaultResource;
+	private Executor executor;
 	private ConfigSerialiser serialiser;
-	private List<ValueTransformer> transformers = new ArrayList<>();
+	private final List<ValueTransformer> transformers = new ArrayList<>();
 	
 	/**
 	 * Sets the default resource path of this builder to the specified one. <br>
@@ -65,6 +69,17 @@ public class ConfigurationBuilder {
 	 */
 	public ConfigurationBuilder defaultResource(Path defaultResource) {
 		this.defaultResource = defaultResource;
+		return this;
+	}
+	
+	/**
+	 * Sets the executor of this builder to the specified one
+	 * 
+	 * @param executor the executor
+	 * @return this builder
+	 */
+	public ConfigurationBuilder executor(Executor executor) {
+		this.executor = executor;
 		return this;
 	}
 	
@@ -121,11 +136,12 @@ public class ConfigurationBuilder {
 		}
 	}
 	
-	private static CompletableFuture<ConfigData> buildConfig(Path defaultResource, ConfigSerialiser serialiser,
+	private static CompletableFuture<ConfigData> buildConfig(Path defaultResource, Executor executor, ConfigSerialiser serialiser,
 			List<ValueTransformer> transformers) {
 		checkNonNull(defaultResource, "Default resource path");
+		checkNonNull(executor, "Executor");
 		checkNonNull(serialiser, "Config serialiser");
-		return serialiser.readConfig(defaultResource, transformers).thenApply((readResult) -> {
+		return serialiser.readConfig(defaultResource, executor, transformers).thenApply((readResult) -> {
 			if (readResult.getResultDefinition() != ConfigReadResult.ResultType.SUCCESS) {
 				throw new IllegalArgumentException(readResult.getException());
 			}
@@ -145,10 +161,11 @@ public class ConfigurationBuilder {
 	 */
 	public CompletableFuture<PairedConfig> buildPairedConfig() {
 		Path defaultResource = this.defaultResource;
+		Executor executor = this.executor;
 		ConfigSerialiser serialiser = this.serialiser;
 		List<ValueTransformer> transformers = List.copyOf(this.transformers);
-		return buildConfig(defaultResource, serialiser, transformers).thenApply((configData) -> {
-			return new PairedConfig(defaultResource, serialiser, transformers, configData);
+		return buildConfig(defaultResource, executor, serialiser, transformers).thenApply((configData) -> {
+			return new PairedConfig(defaultResource, executor, serialiser, transformers, configData);
 		});
 	}
 	
@@ -164,10 +181,11 @@ public class ConfigurationBuilder {
 	 */
 	public CompletableFuture<MergingConfig> buildMergingConfig() {
 		Path defaultResource = this.defaultResource;
+		Executor executor = this.executor;
 		ConfigSerialiser serialiser = this.serialiser;
 		List<ValueTransformer> transformers = List.copyOf(this.transformers);
-		return buildConfig(defaultResource, serialiser, transformers).thenApply((configData) -> {
-			return new MergingConfig(defaultResource, serialiser, transformers, configData);
+		return buildConfig(defaultResource, executor, serialiser, transformers).thenApply((configData) -> {
+			return new MergingConfig(defaultResource, executor, serialiser, transformers, configData);
 		});
 	}
 	
