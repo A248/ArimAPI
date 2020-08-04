@@ -76,12 +76,16 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 	public CloseMe execute(String statement, Object... args) throws SQLException {
 		Objects.requireNonNull(statement, "The statement to execute must not be null");
 		Connection connection = dataSource.getConnection();
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(statement);
+			SqlBackendImplUtils.applyArguments(preparedStatement, args);
+			preparedStatement.execute();
 
-		PreparedStatement preparedStatement = connection.prepareStatement(statement);
-		SqlBackendImplUtils.applyArguments(preparedStatement, args);
-		preparedStatement.execute();
-
-		return new CloseMeWithConnectionAndPreparedStatement(connection, preparedStatement);
+			return new CloseMeWithConnectionAndPreparedStatement(connection, preparedStatement);
+		} catch (SQLException ex) {
+			connection.close();
+			throw ex;
+		}
 	}
 
 	@Override
@@ -89,30 +93,38 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		SqlBackendImplUtils.validatePositiveLength(queries);
 		SqlBackendImplUtils.validateNoneAreNull(queries);
 		Connection connection = dataSource.getConnection();
+		try {
+			PreparedStatement[] preparedStatementArray = new PreparedStatement[queries.length];
+			for (int n = 0; n < queries.length; n++) {
+				SqlQuery query = queries[n];
 
-		PreparedStatement[] preparedStatementArray = new PreparedStatement[queries.length];
-		for (int n = 0; n < queries.length; n++) {
-			SqlQuery query = queries[n];
+				PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
+				SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
+				preparedStatement.execute();
 
-			PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
-			SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
-			preparedStatement.execute();
-
-			preparedStatementArray[n] = preparedStatement;
+				preparedStatementArray[n] = preparedStatement;
+			}
+			return new CloseMeWithConnectionAndPreparedStatementArray(connection, preparedStatementArray);
+		} catch (SQLException ex) {
+			connection.close();
+			throw ex;
 		}
-		return new CloseMeWithConnectionAndPreparedStatementArray(connection, preparedStatementArray);
 	}
 	
 	@Override
 	public ResultSet select(String statement, Object... args) throws SQLException {
 		Objects.requireNonNull(statement, "The statement to execute must not be null");
 		Connection connection = dataSource.getConnection();
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(statement);
+			SqlBackendImplUtils.applyArguments(preparedStatement, args);
+			ResultSet resultSet = preparedStatement.executeQuery();
 
-		PreparedStatement preparedStatement = connection.prepareStatement(statement);
-		SqlBackendImplUtils.applyArguments(preparedStatement, args);
-		ResultSet resultSet = preparedStatement.executeQuery();
-
-		return new ResultSetProxyWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
+			return new ResultSetProxyWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
+		} catch (SQLException ex) {
+			connection.close();
+			throw ex;
+		}
 	}
 
 	@Override
@@ -120,44 +132,52 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		SqlBackendImplUtils.validatePositiveLength(queries);
 		SqlBackendImplUtils.validateNoneAreNull(queries);
 		Connection connection = dataSource.getConnection();
+		try {
+			ResultSet[] resultSetArray = new ResultSet[queries.length];
+			for (int n = 0; n < queries.length; n++) {
+				SqlQuery query = queries[n];
 
-		ResultSet[] resultSetArray = new ResultSet[queries.length];
-		for (int n = 0; n < queries.length; n++) {
-			SqlQuery query = queries[n];
+				PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
+				SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
+				preparedStatement.execute();
 
-			PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
-			SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
-			preparedStatement.execute();
-
-			ResultSet resultSet = preparedStatement.getResultSet();
-			if (resultSet == null) {
-				preparedStatement.close();
-				resultSetArray[n] = null;
-				continue;
+				ResultSet resultSet = preparedStatement.getResultSet();
+				if (resultSet == null) {
+					preparedStatement.close();
+					resultSetArray[n] = null;
+					continue;
+				}
+				resultSetArray[n] = new ResultSetProxyWithPreparedStatement(resultSet, preparedStatement);
 			}
-			resultSetArray[n] = new ResultSetProxyWithPreparedStatement(resultSet, preparedStatement);
+			return new MultiResultSetWithConnection(resultSetArray, connection);
+		} catch (SQLException ex) {
+			connection.close();
+			throw ex;
 		}
-		return new MultiResultSetWithConnection(resultSetArray, connection);
 	}
 
 	@Override
 	public QueryResult query(String statement, Object... args) throws SQLException {
 		Objects.requireNonNull(statement, "The statement to execute must not be null");
 		Connection connection = dataSource.getConnection();
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(statement);
+			SqlBackendImplUtils.applyArguments(preparedStatement, args);
+			preparedStatement.execute();
 
-		PreparedStatement preparedStatement = connection.prepareStatement(statement);
-		SqlBackendImplUtils.applyArguments(preparedStatement, args);
-		preparedStatement.execute();
-
-		int updateCount = preparedStatement.getUpdateCount();
-		if (updateCount != -1) { // -1 means there is no update count
-			return new QueryResultAsUpdateResultUsingPreparedStatementWithConnection(updateCount, preparedStatement, connection);
+			int updateCount = preparedStatement.getUpdateCount();
+			if (updateCount != -1) { // -1 means there is no update count
+				return new QueryResultAsUpdateResultUsingPreparedStatementWithConnection(updateCount, preparedStatement, connection);
+			}
+			ResultSet resultSet = preparedStatement.getResultSet();
+			if (resultSet != null) { // null means there is no result set
+				return new QueryResultAsResultSetWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
+			}
+			return new QueryResultAsNeitherWithPreparedStatementAndConnection(preparedStatement, connection);
+		} catch (SQLException ex) {
+			connection.close();
+			throw ex;
 		}
-		ResultSet resultSet = preparedStatement.getResultSet();
-		if (resultSet != null) { // null means there is no result set
-			return new QueryResultAsResultSetWithPreparedStatementAndConnection(resultSet, preparedStatement, connection);
-		}
-		return new QueryResultAsNeitherWithPreparedStatementAndConnection(preparedStatement, connection);
 	}
 
 	@Override
@@ -165,40 +185,48 @@ public class HikariPoolSqlBackend implements ConcurrentSqlBackend {
 		SqlBackendImplUtils.validatePositiveLength(queries);
 		SqlBackendImplUtils.validateNoneAreNull(queries);
 		Connection connection = dataSource.getConnection();
+		try {
+			QueryResult[] queryResultArray = new QueryResult[queries.length];
+			for (int n = 0; n < queries.length; n++) {
+				SqlQuery query = queries[n];
 
-		QueryResult[] queryResultArray = new QueryResult[queries.length];
-		for (int n = 0; n < queries.length; n++) {
-			SqlQuery query = queries[n];
-
-			PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
-			SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
-			preparedStatement.execute();
-			
-			int updateCount = preparedStatement.getUpdateCount();
-			if (updateCount != -1) { // -1 means there is no update count
-				queryResultArray[n] = new QueryResultAsUpdateResultUsingPreparedStatement(updateCount, preparedStatement);
-				continue;
+				PreparedStatement preparedStatement = connection.prepareStatement(query.getStatement());
+				SqlBackendImplUtils.applyArguments(preparedStatement, query.getArgs());
+				preparedStatement.execute();
+				
+				int updateCount = preparedStatement.getUpdateCount();
+				if (updateCount != -1) { // -1 means there is no update count
+					queryResultArray[n] = new QueryResultAsUpdateResultUsingPreparedStatement(updateCount, preparedStatement);
+					continue;
+				}
+				ResultSet resultSet = preparedStatement.getResultSet();
+				if (resultSet != null) { // null means there is no result set
+					queryResultArray[n] = new QueryResultAsResultSetWithPreparedStatement(resultSet, preparedStatement);
+					continue;
+				}
+				queryResultArray[n] = new QueryResultAsNeitherWithPreparedStatement(preparedStatement);
 			}
-			ResultSet resultSet = preparedStatement.getResultSet();
-			if (resultSet != null) { // null means there is no result set
-				queryResultArray[n] = new QueryResultAsResultSetWithPreparedStatement(resultSet, preparedStatement);
-				continue;
-			}
-			queryResultArray[n] = new QueryResultAsNeitherWithPreparedStatement(preparedStatement);
+			return new MultiQueryResultWithConnection(queryResultArray, connection);
+		} catch (SQLException ex) {
+			connection.close();
+			throw ex;
 		}
-		return new MultiQueryResultWithConnection(queryResultArray, connection);
 	}
 	
 	@Override
 	public CompositeQueryResult composite(String statement, Object... args) throws SQLException {
 		Objects.requireNonNull(statement, "The statement to execute must not be null");
 		Connection connection = dataSource.getConnection();
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(statement);
+			SqlBackendImplUtils.applyArguments(preparedStatement, args);
+			preparedStatement.execute();
 
-		PreparedStatement preparedStatement = connection.prepareStatement(statement);
-		SqlBackendImplUtils.applyArguments(preparedStatement, args);
-		preparedStatement.execute();
-
-		return new CompositeQueryResultUsingPreparedStatementWithConnection(preparedStatement, connection);
+			return new CompositeQueryResultUsingPreparedStatementWithConnection(preparedStatement, connection);
+		} catch (SQLException ex) {
+			connection.close();
+			throw ex;
+		}
 	}
 	
 	@Override
