@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import space.arim.api.configure.ConfigComment;
 import space.arim.api.configure.ConfigData;
@@ -35,7 +36,7 @@ import space.arim.api.configure.impl.SimpleConfigWriteResult;
 /**
  * Configuration serialiser using YAML format. <br>
  * <br>
- * Note that, regarding {@link ConfigReadResult}s, the result of {@link #readConfig(Path, List)} will never return an exception
+ * Note that, regarding {@link ConfigReadResult}s, the result of {@link #readConfig(Path, Executor, List)} will never return an exception
  * for a specific implementation (such as SnakeYaml). Instead, the general {@link YamlSyntaxException} will always be used.
  * 
  * @author A248
