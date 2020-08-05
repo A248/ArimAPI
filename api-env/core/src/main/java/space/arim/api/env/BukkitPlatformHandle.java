@@ -31,6 +31,8 @@ import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.BungeeComponentConverter;
 import space.arim.api.env.concurrent.BukkitEnhancedExecutor;
 import space.arim.api.env.concurrent.BukkitFactoryOfTheFuture;
+import space.arim.api.env.realexecutor.BukkitRealExecutorFinder;
+import space.arim.api.env.realexecutor.RealExecutorFinder;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -113,6 +115,11 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	 */
 	public void disconnectUser(Player user, SendableMessage reason) {
 		user.kickPlayer(reason.toLegacyMessageString(ChatColor.COLOR_CHAR));
+	}
+	
+	@Override
+	public RealExecutorFinder getRealExecutorFinder() {
+		return new BukkitRealExecutorFinder(getPlugin());
 	}
 
 	@SuppressWarnings("unchecked")

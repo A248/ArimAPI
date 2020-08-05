@@ -31,6 +31,8 @@ import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.SpongeTextConverter;
 import space.arim.api.env.concurrent.SpongeEnhancedExecutor;
 import space.arim.api.env.concurrent.SpongeFactoryOfTheFuture;
+import space.arim.api.env.realexecutor.RealExecutorFinder;
+import space.arim.api.env.realexecutor.SpongeRealExecutorFinder;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -107,6 +109,11 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 */
 	public void disconnectUser(Player user, SendableMessage reason) {
 		user.kick(new SpongeTextConverter().convertFrom(reason));
+	}
+	
+	@Override
+	public RealExecutorFinder getRealExecutorFinder() {
+		return new SpongeRealExecutorFinder(getPlugin());
 	}
 
 	@SuppressWarnings("unchecked")

@@ -27,6 +27,7 @@ import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.PlatformMessageAdapter;
+import space.arim.api.env.realexecutor.RealExecutorFinder;
 
 /**
  * An interface for working with platform-specific details, especially those not easily
@@ -80,6 +81,13 @@ public interface PlatformHandle {
 	 * @param reason the kick message
 	 */
 	void disconnectUser(@PlatformPlayer Object user, SendableMessage reason);
+	
+	/**
+	 * Gets a {@link RealExecutorFinder} for this platform
+	 * 
+	 * @return a {@code RealExecutorFinder}
+	 */
+	RealExecutorFinder getRealExecutorFinder();
 	
 	/**
 	 * Gets the platform type detected

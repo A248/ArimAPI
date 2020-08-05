@@ -32,6 +32,8 @@ import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.AdventureTextConverter;
 import space.arim.api.env.concurrent.VelocityEnhancedExecutor;
+import space.arim.api.env.realexecutor.RealExecutorFinder;
+import space.arim.api.env.realexecutor.VelocityRealExecutorFinder;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.plugin.PluginContainer;
@@ -118,6 +120,11 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 	 */
 	public void disconnectUser(Player user, SendableMessage reason) {
 		user.disconnect(new AdventureTextConverter().convertFrom(reason));
+	}
+	
+	@Override
+	public RealExecutorFinder getRealExecutorFinder() {
+		return new VelocityRealExecutorFinder(getPlugin(), getServer());
 	}
 
 	@SuppressWarnings("unchecked")

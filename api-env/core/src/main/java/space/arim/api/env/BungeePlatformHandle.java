@@ -32,6 +32,8 @@ import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.BungeeComponentConverter;
 import space.arim.api.env.concurrent.BungeeEnhancedExecutor;
+import space.arim.api.env.realexecutor.BungeeRealExecutorFinder;
+import space.arim.api.env.realexecutor.RealExecutorFinder;
 
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -107,6 +109,11 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	 */
 	public void disconnectUser(ProxiedPlayer user, SendableMessage reason) {
 		user.disconnect(new BungeeComponentConverter().convertFrom(reason));
+	}
+	
+	@Override
+	public RealExecutorFinder getRealExecutorFinder() {
+		return new BungeeRealExecutorFinder(getPlugin());
 	}
 
 	@SuppressWarnings("unchecked")
