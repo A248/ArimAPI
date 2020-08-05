@@ -6,7 +6,7 @@
 	<groupId>space.arim.api</groupId>
 	<artifactId>arimapi-parent</artifactId>
 	<!-- Remember to update versions in all child modules -->
-	<version>0.19.3-SNAPSHOT</version>
+	<version>0.19.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>ArimAPI</name>
