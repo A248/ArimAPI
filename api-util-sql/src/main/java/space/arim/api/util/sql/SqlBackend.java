@@ -34,6 +34,9 @@ import java.sql.SQLException;
  * implementations commit the connection after all statements have been executed and before the connection is closed.
  * However, this is not a requirement. <br>
  * <br>
+ * <b>Thread Safety</b> <br>
+ * All methods must be thread safe. <br>
+ * <br>
  * <b>Composite Queries</b> <br>
  * Using {@link #composite(String, Object...)}, it is possible to execute multiple statements using one statement string.
  * Note that the relevant jdbc url property, <code>allowMultiQueries</code>, must be enabled. <br>

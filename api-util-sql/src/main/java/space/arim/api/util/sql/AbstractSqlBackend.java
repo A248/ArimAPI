@@ -18,13 +18,24 @@
  */
 package space.arim.api.util.sql;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
- * A marker interface for a {@link SqlBackend} supporting fully concurrent queries. <br>
- * For any implementation, its methods must be thread safe. This may entail locking if necessary.
+ * An abstract implementation of {@link SqlBackend} relying on {@link #getConnection()} to open connections.
  * 
  * @author A248
  *
  */
-public interface ConcurrentSqlBackend extends SqlBackend {
+public abstract class AbstractSqlBackend extends BaseSqlBackend {
 
+	/**
+	 * Gets an open connection. The connection will be closed when no longer needed.
+	 * 
+	 * @return an open connection
+	 * @throws SQLException generally, depending on the implementation, as relayed from JDBC
+	 */
+	@Override
+	protected abstract Connection getConnection() throws SQLException;
+	
 }
