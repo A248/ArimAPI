@@ -80,6 +80,27 @@ public final class SendableMessage implements SendableMessageInfo {
 		return components;
 	}
 	
+	/**
+	 * Creates a new {@code SendableMessage} which is the concatenation of this one with a
+	 * specified another.
+	 * 
+	 * @param other the other message to concatenate
+	 * @return the combined result
+	 */
+	public SendableMessage concatenate(SendableMessage other) {
+		int ourSize = components.size();
+		int size = ourSize + other.components.size();
+		TextualComponent[] result = new TextualComponent[size];
+		for (int n = 0; n < size; n++) {
+			if (n < ourSize) {
+				result[n] = components.get(n);
+			} else {
+				result[n] = other.components.get(n - ourSize);
+			}
+		}
+		return new SendableMessage(result);
+	}
+	
 	@Override
 	public String toString() {
 		return "SendableMessage [components=" + components + "]";
