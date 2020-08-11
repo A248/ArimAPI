@@ -10,8 +10,8 @@
 	<packaging>pom</packaging>
 	
 	<name>ArimAPI</name>
-	<description>An efficient, easy-to-use minecraft plugin library and framework.</description>
-	<url>https://github.com/Arim-Minecraft/ArimAPI</url>
+	<description>An efficient and powerful library and framework.</description>
+	<url>https://github.com/A248/ArimAPI</url>
 	<inceptionYear>2019</inceptionYear>
 	
 	<properties>
@@ -23,7 +23,7 @@
 		<junit.version>5.6.2</junit.version>
 		
 		<!-- Required dependencies -->
-		<omnibus.version>0.15.3-SNAPSHOT</omnibus.version>
+		<omnibus.version>0.15.4-SNAPSHOT</omnibus.version>
 		
 		<!-- Optional dependencies -->
 		<hikari.version>3.4.5</hikari.version>
@@ -136,12 +136,12 @@
 	
 	<distributionManagement>
 		<repository>
-			<id>arim-repo</id>
-			<url>https://maven.cloudsmith.io/anand-beh/arim-repo/</url>
+			<id>cloudsmith-deploy</id>
+			<url>https://maven.cloudsmith.io/anand-beh/gpl3/</url>
 		</repository>
 		<snapshotRepository>
-			<id>arim-repo</id>
-			<url>https://maven.cloudsmith.io/anand-beh/arim-repo/</url>
+			<id>cloudsmith-deploy</id>
+			<url>https://maven.cloudsmith.io/anand-beh/gpl3/</url>
 		</snapshotRepository>
 	</distributionManagement>
 	
@@ -226,8 +226,8 @@
 	
 	<repositories>
 		<repository>
-			<id>arim-repo</id>
-			<url>https://www.arim.space/maven/</url>
+			<id>arim-mvn-gpl3</id>
+			<url>https://mvn-repo.arim.space/gpl3/</url>
 		</repository>
 	</repositories>
 </project>
