@@ -26,6 +26,7 @@ import java.util.concurrent.Executor;
 import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ConfigReadResult;
 import space.arim.api.configure.ConfigSerialiser;
+import space.arim.api.configure.DefaultResourceProvider;
 import space.arim.api.configure.ValueTransformer;
 
 public abstract class AbstractConfiguration extends BaseAbstractConfiguration {
@@ -34,8 +35,8 @@ public abstract class AbstractConfiguration extends BaseAbstractConfiguration {
 	private final ConfigSerialiser serialiser;
 	private final List<? extends ValueTransformer> transformers;
 	
-	protected AbstractConfiguration(Path defaultResource, Executor executor, ConfigSerialiser serialiser,
-			List<? extends ValueTransformer> transformers) {
+	protected AbstractConfiguration(DefaultResourceProvider defaultResource, Executor executor,
+			ConfigSerialiser serialiser, List<? extends ValueTransformer> transformers) {
 		super(defaultResource);
 		this.executor = executor;
 		this.serialiser = serialiser;

@@ -18,7 +18,6 @@
  */
 package space.arim.api.configure.configs;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -26,6 +25,7 @@ import space.arim.api.configure.ConfigAccessor;
 import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ConfigDefaultUnsetException;
 import space.arim.api.configure.ConfigSerialiser;
+import space.arim.api.configure.DefaultResourceProvider;
 import space.arim.api.configure.ValueTransformer;
 import space.arim.api.configure.impl.AbstractConfiguration;
 
@@ -43,8 +43,8 @@ public class PairedConfig extends AbstractConfiguration {
 	
 	private final ConfigAccessor accessor;
 	
-	PairedConfig(Path defaultResource, Executor executor, ConfigSerialiser serialiser, List<? extends ValueTransformer> transformers,
-			ConfigData defaultData) {
+	PairedConfig(DefaultResourceProvider defaultResource, Executor executor, ConfigSerialiser serialiser,
+			List<? extends ValueTransformer> transformers, ConfigData defaultData) {
 		super(defaultResource, executor, serialiser, transformers);
 		this.defaultData = defaultData;
 		accessor = new ConfigAccessor() {

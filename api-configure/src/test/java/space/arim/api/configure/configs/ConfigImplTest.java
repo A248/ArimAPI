@@ -32,6 +32,7 @@ import org.junit.jupiter.api.io.TempDir;
 import space.arim.api.configure.ConfigAccessor;
 import space.arim.api.configure.ConfigTestingHelper;
 import space.arim.api.configure.Configuration;
+import space.arim.api.configure.DefaultResourceProvider;
 import space.arim.api.configure.JarResources;
 import space.arim.api.configure.yaml.YamlConfigSerialiser;
 
@@ -47,7 +48,7 @@ public abstract class ConfigImplTest {
 	@BeforeEach
 	public void setup() {
 		configPath = dir.resolve("config.yml");
-		Path defaultResourcePath = JarResources.forCallerClass("config.yml");
+		DefaultResourceProvider defaultResourcePath = JarResources.forCallerClass("config.yml");
 		config = createInstance(new ConfigurationBuilder().executor(Runnable::run).defaultResource(defaultResourcePath)
 				.serialiser(new YamlConfigSerialiser())).join();
 	}

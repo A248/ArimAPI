@@ -32,7 +32,21 @@ import java.util.concurrent.Executor;
 public interface ConfigSerialiser {
 	
 	/**
-	 * Reads the specified config data from the desired target path. <br>
+	 * Reads config data from a default resource provider. <br>
+	 * <br>
+	 * Returns a future which yields a nonnull {@link ConfigReadResult} allowing the caller to determine the results of the read,
+	 * including whether it succeeded or failed.
+	 * 
+	 * @param defaultResource the default resource provider from which to read the configuration
+	 * @param executor the executor used to create the resulting future
+	 * @param transformers value transformer used to process all config values
+	 * @return a future which yields a nonnull {@link ConfigWriteResult} indicating success or failure, and details of such
+	 */
+	CompletableFuture<ConfigReadResult> readConfig(DefaultResourceProvider defaultResource, Executor executor,
+			List<? extends ValueTransformer> transformers);
+	
+	/**
+	 * Reads config data from the desired target path. <br>
 	 * <br>
 	 * Returns a future which yields a nonnull {@link ConfigReadResult} allowing the caller to determine the results of the read,
 	 * including whether it succeeded or failed.
@@ -42,7 +56,8 @@ public interface ConfigSerialiser {
 	 * @param transformers value transformer used to process all config values
 	 * @return a future which yields a nonnull {@link ConfigWriteResult} indicating success or failure, and details of such
 	 */
-	CompletableFuture<ConfigReadResult> readConfig(Path source, Executor executor, List<? extends ValueTransformer> transformers);
+	CompletableFuture<ConfigReadResult> readConfig(Path source, Executor executor,
+			List<? extends ValueTransformer> transformers);
 	
 	/**
 	 * Saves the specified config data to the desired target path on the filesystem. If the file already exists,

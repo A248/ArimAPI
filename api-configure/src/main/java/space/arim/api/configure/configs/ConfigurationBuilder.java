@@ -18,7 +18,6 @@
  */
 package space.arim.api.configure.configs;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +29,7 @@ import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ConfigReadResult;
 import space.arim.api.configure.ConfigSerialiser;
 import space.arim.api.configure.Configuration;
+import space.arim.api.configure.DefaultResourceProvider;
 import space.arim.api.configure.JarResources;
 import space.arim.api.configure.ValueTransformer;
 
@@ -38,12 +38,12 @@ import space.arim.api.configure.ValueTransformer;
  * and {@link MergingConfig}. <br>
  * <br>
  * The required details of this builder which must be set before building a {@code Configuration}
- * are the default resource path, an executor, and a config serialiser. Adding value transformers is optional.
+ * are the default resource provider, an executor, and a config serialiser. Adding value transformers is optional.
  * If these 3 requirements are not set when calling build methods, {@link IllegalArgumentException} is thrown. <br>
  * <br>
  * Having met such requirements, a {@code CompletableFuture} yielding a {@code Configuration} instance is returned.
  * The future will be completed exceptionally with {@code IllegalArgumentException} if the default config data
- * could not be copied from the jar resource identified by the default resource path, or the serialiser
+ * could not be copied from the input stream provided by the default resource provider, or the serialiser
  * itself was unable to parse or read values. <br>
  * <br>
  * If the method with an {@code Executor} is used, that executor will be used for specifically copying the default values.
@@ -54,20 +54,20 @@ import space.arim.api.configure.ValueTransformer;
  */
 public class ConfigurationBuilder {
 
-	private Path defaultResource;
+	private DefaultResourceProvider defaultResource;
 	private Executor executor;
 	private ConfigSerialiser serialiser;
 	private final List<ValueTransformer> transformers = new ArrayList<>();
 	
 	/**
-	 * Sets the default resource path of this builder to the specified one. <br>
+	 * Sets the default resource provider of this builder to the specified one. <br>
 	 * <br>
 	 * To obtain such paths, {@link JarResources} may be used.
 	 * 
-	 * @param defaultResource the default resource path
+	 * @param defaultResource the default resource provider
 	 * @return this builder
 	 */
-	public ConfigurationBuilder defaultResource(Path defaultResource) {
+	public ConfigurationBuilder defaultResource(DefaultResourceProvider defaultResource) {
 		this.defaultResource = defaultResource;
 		return this;
 	}
@@ -136,8 +136,8 @@ public class ConfigurationBuilder {
 		}
 	}
 	
-	private static CompletableFuture<ConfigData> buildConfig(Path defaultResource, Executor executor, ConfigSerialiser serialiser,
-			List<ValueTransformer> transformers) {
+	private static CompletableFuture<ConfigData> buildConfig(DefaultResourceProvider defaultResource, Executor executor,
+			ConfigSerialiser serialiser, List<ValueTransformer> transformers) {
 		checkNonNull(defaultResource, "Default resource path");
 		checkNonNull(executor, "Executor");
 		checkNonNull(serialiser, "Config serialiser");
@@ -160,7 +160,7 @@ public class ConfigurationBuilder {
 	 * @throws IllegalArgumentException if the resource class, resource name, or config serialiser is not set
 	 */
 	public CompletableFuture<PairedConfig> buildPairedConfig() {
-		Path defaultResource = this.defaultResource;
+		DefaultResourceProvider defaultResource = this.defaultResource;
 		Executor executor = this.executor;
 		ConfigSerialiser serialiser = this.serialiser;
 		List<ValueTransformer> transformers = List.copyOf(this.transformers);
@@ -180,7 +180,7 @@ public class ConfigurationBuilder {
 	 * @throws IllegalArgumentException if the resource class, resource name, or config serialiser is not set
 	 */
 	public CompletableFuture<MergingConfig> buildMergingConfig() {
-		Path defaultResource = this.defaultResource;
+		DefaultResourceProvider defaultResource = this.defaultResource;
 		Executor executor = this.executor;
 		ConfigSerialiser serialiser = this.serialiser;
 		List<ValueTransformer> transformers = List.copyOf(this.transformers);

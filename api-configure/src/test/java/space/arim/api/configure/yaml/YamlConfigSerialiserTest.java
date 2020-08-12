@@ -34,6 +34,7 @@ import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ConfigReadResult;
 import space.arim.api.configure.ConfigTestingHelper;
 import space.arim.api.configure.ConfigWriteResult;
+import space.arim.api.configure.DefaultResourceProvider;
 import space.arim.api.configure.JarResources;
 import space.arim.api.configure.impl.SimpleConfigData;
 
@@ -76,8 +77,8 @@ public class YamlConfigSerialiserTest {
 	
 	@Test
 	public void testRead() {
-		Path resource = JarResources.forCallerClass("config.yml");
-		ConfigTestingHelper.copyOrFail(resource, configDest);
+		DefaultResourceProvider defaultResource = JarResources.forCallerClass("config.yml");
+		ConfigTestingHelper.copyOrFail(defaultResource, configDest);
 		ConfigData data = readOrFail().getReadData();
 		assertEquals(VALUES, data.getValuesMap());
 		assertEquals(COMMENTS, data.getCommentsMap());

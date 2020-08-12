@@ -32,6 +32,7 @@ import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ConfigReadResult;
 import space.arim.api.configure.ConfigSerialiser;
 import space.arim.api.configure.ConfigWriteResult;
+import space.arim.api.configure.DefaultResourceProvider;
 import space.arim.api.configure.ValueTransformer;
 
 /**
@@ -53,17 +54,40 @@ public abstract class AbstractConfigSerialiser implements ConfigSerialiser {
 		return new CompletionException(value);
 	}
 	
-	protected abstract ConfigReadResult readConfig0(Path source, List<ValueTransformer> transformers);
+	protected abstract ConfigReadResult readConfig0(DefaultResourceProvider defaultResource,
+			List<? extends ValueTransformer> transformers);
 
 	@Override
-	public CompletableFuture<ConfigReadResult> readConfig(Path source, Executor executor, List<? extends ValueTransformer> transformers) {
+	public CompletableFuture<ConfigReadResult> readConfig(DefaultResourceProvider defaultResource, Executor executor,
+			List<? extends ValueTransformer> transformers) {
 		// Early null check of transformers
-		@SuppressWarnings("unchecked")
-		List<ValueTransformer> transfos = (List<ValueTransformer>) List.copyOf(transformers);
+		List<? extends ValueTransformer> transfos = List.copyOf(transformers);
+
+		// Early null check of default resource
+		if (defaultResource == null) {
+			return CompletableFuture.completedFuture(new SimpleConfigReadResult(
+					ConfigReadResult.ResultType.FILE_NON_EXISTENT, new NullPointerException(), null));
+		}
+
+		return CompletableFuture.supplyAsync(() -> {
+			return readConfig0(defaultResource, transfos);
+		}, executor).exceptionally((ex) -> {
+			return new SimpleConfigReadResult(ConfigReadResult.ResultType.UNKNOWN_ERROR, getOrWrapException(ex), null);
+		});
+	}
+	
+	protected abstract ConfigReadResult readConfig0(Path source, List<? extends ValueTransformer> transformers);
+
+	@Override
+	public CompletableFuture<ConfigReadResult> readConfig(Path source, Executor executor,
+			List<? extends ValueTransformer> transformers) {
+		// Early null check of transformers
+		List<? extends ValueTransformer> transfos = List.copyOf(transformers);
 
 		// Early escape nonexistent file
 		if (!Files.exists(source)) {
-			return CompletableFuture.completedFuture(new SimpleConfigReadResult(ConfigReadResult.ResultType.FILE_NON_EXISTENT, new FileNotFoundException(), null));
+			return CompletableFuture.completedFuture(new SimpleConfigReadResult(
+					ConfigReadResult.ResultType.FILE_NON_EXISTENT, new FileNotFoundException(), null));
 		}
 
 		return CompletableFuture.supplyAsync(() -> {
@@ -73,7 +97,8 @@ public abstract class AbstractConfigSerialiser implements ConfigSerialiser {
 		});
 	}
 
-	protected abstract ConfigWriteResult writeConfig0(Path target, Map<String, Object> values, Map<String, List<ConfigComment>> comments);
+	protected abstract ConfigWriteResult writeConfig0(Path target, Map<String, Object> values,
+			Map<String, List<ConfigComment>> comments);
 	
 	@Override
 	public CompletableFuture<ConfigWriteResult> writeConfig(Path target, Executor executor, ConfigData data) {

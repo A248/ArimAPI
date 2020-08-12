@@ -18,7 +18,6 @@
  */
 package space.arim.api.configure.configs;
 
-import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import space.arim.api.configure.ConfigAccessor;
 import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ConfigDefaultUnsetException;
 import space.arim.api.configure.ConfigSerialiser;
+import space.arim.api.configure.DefaultResourceProvider;
 import space.arim.api.configure.ValueTransformer;
 import space.arim.api.configure.impl.AbstractConfiguration;
 import space.arim.api.configure.impl.SimpleConfigData;
@@ -59,7 +59,7 @@ public class MergingConfig extends AbstractConfiguration {
 	
 	private final ConfigAccessor accessor;
 	
-	MergingConfig(Path defaultResource, Executor executor, ConfigSerialiser serialiser,
+	MergingConfig(DefaultResourceProvider defaultResource, Executor executor, ConfigSerialiser serialiser,
 			List<? extends ValueTransformer> transformers, ConfigData defaultData) {
 		super(defaultResource, executor, serialiser, transformers);
 		currentData = defaultData;

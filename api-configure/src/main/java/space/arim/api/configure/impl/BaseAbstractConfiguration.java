@@ -19,6 +19,8 @@
 package space.arim.api.configure.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
@@ -29,12 +31,13 @@ import java.util.concurrent.CompletableFuture;
 
 import space.arim.api.configure.ConfigCopyResult;
 import space.arim.api.configure.Configuration;
+import space.arim.api.configure.DefaultResourceProvider;
 
 public abstract class BaseAbstractConfiguration implements Configuration {
 
-	private final Path defaultResource;
+	private final DefaultResourceProvider defaultResource;
 	
-	protected BaseAbstractConfiguration(Path defaultResource) {
+	protected BaseAbstractConfiguration(DefaultResourceProvider defaultResource) {
 		this.defaultResource = defaultResource;
 	}
 	
@@ -48,7 +51,8 @@ public abstract class BaseAbstractConfiguration implements Configuration {
 			var writeOptions = Set.of(
 					StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 			try (FileChannel fileChannel = FileChannel.open(destination, writeOptions);
-					ReadableByteChannel sourceChannel = FileChannel.open(defaultResource, StandardOpenOption.READ)){
+					InputStream sourceStream = defaultResource.openStream();
+					ReadableByteChannel sourceChannel = Channels.newChannel(sourceStream)){
 
 				fileChannel.transferFrom(sourceChannel, 0, Long.MAX_VALUE);
 			} catch (IOException ex) {

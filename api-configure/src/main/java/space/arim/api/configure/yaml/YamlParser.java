@@ -20,6 +20,8 @@ package space.arim.api.configure.yaml;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,9 +53,17 @@ class YamlParser implements AutoCloseable {
 	private final Map<String, Object> values = new LinkedHashMap<>();
 	private final Map<String, List<ConfigComment>> comments = new HashMap<>();
 	
-	YamlParser(Path source, List<? extends ValueTransformer> transformers) throws IOException {
-		reader = Files.newBufferedReader(source, StandardCharsets.UTF_8);
+	private YamlParser(BufferedReader reader, List<? extends ValueTransformer> transformers) {
+		this.reader = reader;
 		this.transformers = transformers;
+	}
+	
+	YamlParser(InputStream inputStream, List<? extends ValueTransformer> transformers) {
+		this(new BufferedReader(new InputStreamReader(inputStream)), transformers);
+	}
+	
+	YamlParser(Path source, List<? extends ValueTransformer> transformers) throws IOException {
+		this(Files.newBufferedReader(source, StandardCharsets.UTF_8), transformers);
 	}
 	
 	/*

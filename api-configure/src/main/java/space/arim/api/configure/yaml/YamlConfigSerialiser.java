@@ -19,6 +19,7 @@
 package space.arim.api.configure.yaml;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import space.arim.api.configure.ConfigComment;
 import space.arim.api.configure.ConfigData;
 import space.arim.api.configure.ConfigReadResult;
 import space.arim.api.configure.ConfigWriteResult;
+import space.arim.api.configure.DefaultResourceProvider;
 import space.arim.api.configure.ValueTransformer;
 import space.arim.api.configure.impl.AbstractConfigSerialiser;
 import space.arim.api.configure.impl.SimpleConfigReadResult;
@@ -51,9 +53,24 @@ public class YamlConfigSerialiser extends AbstractConfigSerialiser {
 	public YamlConfigSerialiser() {
 		
 	}
+	
+	@Override
+	protected ConfigReadResult readConfig0(DefaultResourceProvider defaultResource, List<? extends ValueTransformer> transformers) {
+		ConfigData result;
+		try (InputStream inputStream = defaultResource.openStream();
+				YamlParser parser = new YamlParser(inputStream, transformers)) {
+			result = parser.parse();
+
+		} catch (IOException ex) {
+			return new SimpleConfigReadResult(ConfigReadResult.ResultType.FAILURE_READING, ex, null);
+		} catch (YamlSyntaxException ex) {
+			return new SimpleConfigReadResult(ConfigReadResult.ResultType.FAILURE_PARSING, ex, null);
+		}
+		return new SimpleConfigReadResult(ConfigReadResult.ResultType.SUCCESS, null, result);
+	}
 
 	@Override
-	protected ConfigReadResult readConfig0(Path source, List<ValueTransformer> transformers) {
+	protected ConfigReadResult readConfig0(Path source, List<? extends ValueTransformer> transformers) {
 		ConfigData result;
 		try (YamlParser parser = new YamlParser(source, transformers)) {
 			result = parser.parse();
@@ -65,7 +82,7 @@ public class YamlConfigSerialiser extends AbstractConfigSerialiser {
 		}
 		return new SimpleConfigReadResult(ConfigReadResult.ResultType.SUCCESS, null, result);
 	}
-
+	
 	@Override
 	protected ConfigWriteResult writeConfig0(Path target, Map<String, Object> values, Map<String, List<ConfigComment>> comments) {
 		try (YamlDumper dumper = new YamlDumper(target)) {

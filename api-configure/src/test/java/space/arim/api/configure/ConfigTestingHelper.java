@@ -21,6 +21,8 @@ package space.arim.api.configure;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
@@ -49,18 +51,30 @@ public class ConfigTestingHelper {
 		}
 	}
 	
-	/**
-	 * Copies both paths assuming they can be opened as {@link FileChannel},
-	 * or fails the test
-	 * 
-	 * @param source the source path
-	 * @param dest the destination path
-	 */
-	public static void copyOrFail(Path source, Path dest) {
+	/*private static void copyOrFail(Path source, Path dest) {
 		var writeOptions = Set.of(
 				StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 		try (FileChannel fileChannel = FileChannel.open(dest, writeOptions);
 				ReadableByteChannel sourceChannel = FileChannel.open(source, StandardOpenOption.READ)){
+
+			fileChannel.transferFrom(sourceChannel, 0, Long.MAX_VALUE);
+		} catch (IOException ex) {
+			fail(ex);
+		}
+	}*/
+	
+	/**
+	 * Copies a default resource or fails the test
+	 * 
+	 * @param defaultResource the default resource provider
+	 * @param dest the destination path
+	 */
+	public static void copyOrFail(DefaultResourceProvider defaultResource, Path dest) {
+		var writeOptions = Set.of(
+				StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+		try (FileChannel fileChannel = FileChannel.open(dest, writeOptions);
+				InputStream inputStream = defaultResource.openStream();
+				ReadableByteChannel sourceChannel = Channels.newChannel(inputStream)){
 
 			fileChannel.transferFrom(sourceChannel, 0, Long.MAX_VALUE);
 		} catch (IOException ex) {
