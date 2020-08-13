@@ -116,8 +116,8 @@ class YamlParser implements AutoCloseable {
 		
 		// Quoted values grow or close with their kind of quote
 		// They accept the other kind of quote as normal text
-		VALUE_SINGLEQUOTE(Expect.LETTERS, Expect.WHITESPACE, Expect.DOUBLE_QUOTE, Expect.SINGLE_QUOTE),
-		VALUE_DOUBLEQUOTE(Expect.LETTERS, Expect.WHITESPACE, Expect.SINGLE_QUOTE, Expect.DOUBLE_QUOTE);
+		VALUE_SINGLEQUOTE(Expect.LETTERS, Expect.WHITESPACE, Expect.COLON, Expect.DOUBLE_QUOTE, Expect.SINGLE_QUOTE),
+		VALUE_DOUBLEQUOTE(Expect.LETTERS, Expect.WHITESPACE, Expect.COLON, Expect.SINGLE_QUOTE, Expect.DOUBLE_QUOTE);
 		
 		final Set<Expect> expects;
 		
@@ -191,10 +191,10 @@ class YamlParser implements AutoCloseable {
 	private Object transform(String key, Object value) {
 		Object result = value;
 		for (ValueTransformer transformer : transformers) {
+			result = transformer.transform(key, result);
 			if (result == null) {
 				return null;
 			}
-			result = transformer.transform(key, result);
 		}
 		return result;
 	}
@@ -410,6 +410,8 @@ class YamlParser implements AutoCloseable {
 			break;
 
 		// VALUE_SINGLEQUOTE
+		case 0b1100001:
+			// VALUE_SINGLEQUOTE / COLON - fallthrough
 		case 0b1100010:
 			// VALUE_SINGLEQUOTE / WHITESPACE - fallthrough
 		case 0b1100101:
@@ -431,6 +433,8 @@ class YamlParser implements AutoCloseable {
 			throw syntaxError("close of single quotes", "end of line");
 
 		// VALUE_DOUBLEQUOTE
+			// VALUE_DOUBLEQUOTE / COLON - fallthrough
+		case 0b1110001:
 		case 0b1110010:
 			// VALUE_DOUBLEQUOTE / WHITESPACE - fallthrough
 		case 0b1110100:
