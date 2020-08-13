@@ -98,7 +98,7 @@ class YamlParser implements AutoCloseable {
 		WHITESPACE(Expect.WHITESPACE, Expect.LETTERS, Expect.COMMENT_SYMBOL),
 		
 		// In a comment, everything keeps the comment going except a line break
-		COMMENT(Expect.WHITESPACE, Expect.LETTERS, Expect.COMMENT_SYMBOL),
+		COMMENT(Expect.WHITESPACE, Expect.LETTERS, Expect.COMMENT_SYMBOL, Expect.COLON, Expect.SINGLE_QUOTE, Expect.DOUBLE_QUOTE),
 		
 		// A key grows with letters or ends with a colon
 		// Whitespace is only accepted when reading multiline lists
@@ -311,6 +311,12 @@ class YamlParser implements AutoCloseable {
 			// COMMENT / COMMENT_SYMBOL - fallthrough
 		case 0b10010:
 			// COMMENT / WHITESPACE - fallthrough
+		case 0b10001:
+			// COMMENT / COLON - fallthrough
+		case 0b10100:
+			// COMMENT / SINGLE_QUOTE - fallthrough
+		case 0b10101:
+			// COMMENT / DOUBLE_QUOTE - fallthrough
 		case 0b10000:
 			// COMMENT / LETTERS
 			commentBuilder.append(ch);
