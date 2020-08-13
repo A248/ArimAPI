@@ -18,6 +18,7 @@
  */
 package space.arim.api.configure;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -38,9 +39,10 @@ public abstract class SingleKeyValueTransformer implements ValueTransformer {
 	 * Creates, from the singular key used in this value transformer
 	 * 
 	 * @param key the single key to use
+	 * @throws NullPointerException if {@code key} is null
 	 */
 	protected SingleKeyValueTransformer(String key) {
-		this.key = key;
+		this.key = Objects.requireNonNull(key, "key");
 	}
 	
 	/**
@@ -62,7 +64,7 @@ public abstract class SingleKeyValueTransformer implements ValueTransformer {
 	
 	@Override
 	public Object transform(String key, Object value) {
-		if (!key.equalsIgnoreCase(key))
+		if (!this.key.equalsIgnoreCase(key))
 			return value;
 		return transform(value);
 	}
@@ -73,8 +75,10 @@ public abstract class SingleKeyValueTransformer implements ValueTransformer {
 	 * @param key the single key of the transformer
 	 * @param operator the operator used to apply changes
 	 * @return a value transformer
+	 * @throws NullPointerException if either paramater is null
 	 */
 	public static SingleKeyValueTransformer create(String key, UnaryOperator<Object> operator) {
+		Objects.requireNonNull(operator, "operator");
 		return new SingleKeyValueTransformer(key) {
 			@Override
 			protected Object transform(Object value) {
@@ -92,8 +96,10 @@ public abstract class SingleKeyValueTransformer implements ValueTransformer {
 	 * @param key the single key of the transformer
 	 * @param removeIf the predicate used to determine whether to remove the entry
 	 * @return a value transformer
+	 * @throws NullPointerException if either paramater is null
 	 */
 	public static SingleKeyValueTransformer createPredicate(String key, Predicate<Object> removeIf) {
+		Objects.requireNonNull(removeIf, "removeIf");
 		return new SingleKeyValueTransformer(key) {
 			@Override
 			protected Object transform(Object value) {
