@@ -99,40 +99,36 @@ public class MergingConfig extends AbstractConfiguration {
 	@Override
 	protected void acceptRead(ConfigData successfulReadData) {
 		synchronized (lock) {
-			this.currentData = merge(successfulReadData);
+			ConfigData currentData = this.currentData;
+			this.currentData = merge(currentData, successfulReadData);
 		}
 	}
 	
-	private ConfigData merge(ConfigData readData) {
-		ConfigData currentData = this.currentData;
+	private static ConfigData merge(ConfigData currentData, ConfigData readData) {
 		Map<String, Object> values = merge(currentData.getValuesMap(), readData.getValuesMap());
 		return new SimpleConfigData(values, currentData.getCommentsMap());
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static Map<String, Object> merge(Map<String, Object> existing, Map<String, Object> mergeWith) {
-		Map<String, Object> result = new LinkedHashMap<>(existing);
-		for (Map.Entry<String, Object> mergeEntry : mergeWith.entrySet()) {
+	private static Map<String, Object> merge(Map<String, Object> original, Map<String, Object> next) {
+		Map<String, Object> combination = new LinkedHashMap<>(original);
+		for (Map.Entry<String, Object> mergeEntry : next.entrySet()) {
 			String key = mergeEntry.getKey();
-			Object value = result.get(key);
-			if (value == null) {
+			Object originalValue = combination.get(key);
+			if (originalValue == null) {
 				// non-shared key
 				continue;
 			}
 			Object mergeValue = mergeEntry.getValue();
-			if (mergeValue == null) {
-				// what is caller doing
-				continue;
-			}
-			if (value instanceof Map<?, ?>) {
+			if (originalValue instanceof Map<?, ?>) {
 				if (mergeValue instanceof Map<?, ?>) {
-					result.put(key, merge((Map<String, Object>) value, (Map<String, Object>) mergeValue));
+					combination.put(key, merge((Map<String, Object>) originalValue, (Map<String, Object>) mergeValue));
 				}
-			} else if (value.getClass() == mergeValue.getClass()) {
-				result.put(key, mergeValue);
+			} else if (mergeValue != null && originalValue.getClass() == mergeValue.getClass()) {
+				combination.put(key, mergeValue);
 			}
 		}
-		return result;
+		return combination;
 	}
 
 }
