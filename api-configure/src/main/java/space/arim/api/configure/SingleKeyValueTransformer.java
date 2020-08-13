@@ -75,7 +75,7 @@ public abstract class SingleKeyValueTransformer implements ValueTransformer {
 	 * @param key the single key of the transformer
 	 * @param operator the operator used to apply changes
 	 * @return a value transformer
-	 * @throws NullPointerException if either paramater is null
+	 * @throws NullPointerException if either parameter is null
 	 */
 	public static SingleKeyValueTransformer create(String key, UnaryOperator<Object> operator) {
 		Objects.requireNonNull(operator, "operator");
@@ -96,7 +96,7 @@ public abstract class SingleKeyValueTransformer implements ValueTransformer {
 	 * @param key the single key of the transformer
 	 * @param removeIf the predicate used to determine whether to remove the entry
 	 * @return a value transformer
-	 * @throws NullPointerException if either paramater is null
+	 * @throws NullPointerException if either parameter is null
 	 */
 	public static SingleKeyValueTransformer createPredicate(String key, Predicate<Object> removeIf) {
 		Objects.requireNonNull(removeIf, "removeIf");
