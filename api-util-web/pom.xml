@@ -25,12 +25,6 @@
 			<artifactId>gson</artifactId>
 			<version>2.2.4</version>
 		</dependency>
-		<!--  UUIDVault-util is used for UUID manipulation operations -->
-		<dependency>
-			<groupId>space.arim.uuidvault</groupId>
-			<artifactId>util</artifactId>
-			<version>0.5.1-SNAPSHOT</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>

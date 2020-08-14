@@ -38,8 +38,6 @@ import java.util.function.Function;
 
 import com.google.gson.Gson;
 
-import space.arim.uuidvault.api.UUIDUtil;
-
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
 public class HttpMcHeadsApi implements RemoteNameHistoryApi {
