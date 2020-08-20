@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>space.arim.api</groupId>
 		<artifactId>arimapi-parent</artifactId>
-		<version>0.19.10-SNAPSHOT</version>
+		<version>0.19.11-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>arimapi-chat</artifactId>
