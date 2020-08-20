@@ -16,35 +16,28 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat;
+package space.arim.api.chat.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class SendableMessageTest {
+import space.arim.api.chat.MessageStyle;
+import space.arim.api.chat.PredefinedColour;
+import space.arim.api.chat.SendableMessage;
+import space.arim.api.chat.TextualComponent;
+import space.arim.api.chat.parser.SendableMessageParser.ColourMode;
+import space.arim.api.chat.parser.SendableMessageParser.JsonMode;
+
+public class StandardSendableMessageParserTest {
 
 	@Test
-	public void testLegacyMessageString() {
+	public void testBasicParse() {
 		SendableMessage message = new SendableMessage.Builder()
 				.add(new TextualComponent.Builder().colour(PredefinedColour.BLACK.getColour()).text("Start ").build())
 				.add(new TextualComponent.Builder().colour(PredefinedColour.DARK_PURPLE.getColour()).styles(MessageStyle.BOLD).text("more").build())
 				.build();
-		assertEquals("&r&0Start &r&5&lmore", message.toLegacyMessageString('&'));
-	}
-	
-	@Test
-	public void testEquality() {
-		SendableMessage message = new SendableMessage.Builder()
-				.add(new TextualComponent.Builder().colour(PredefinedColour.BLACK.getColour()).text("Start ").build())
-				.add(new TextualComponent.Builder().colour(PredefinedColour.DARK_PURPLE.getColour()).styles(MessageStyle.BOLD).text("more").build())
-				.build();
-		SendableMessage withEmpties = new SendableMessage.Builder()
-				.add(new TextualComponent.Builder().colour(PredefinedColour.BLACK.getColour()).text("Start ").build())
-				.add(new TextualComponent.Builder().text("").build())
-				.add(new TextualComponent.Builder().colour(PredefinedColour.DARK_PURPLE.getColour()).styles(MessageStyle.BOLD).text("more").build())
-				.build();
-		assertEquals(message, withEmpties);
+		assertEquals(message, new StandardSendableMessageParser().parseMessage("&r&0Start &r&5&lmore", ColourMode.LEGACY_ONLY, JsonMode.NONE));
 	}
 	
 }

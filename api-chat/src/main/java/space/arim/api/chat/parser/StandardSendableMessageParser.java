@@ -108,7 +108,12 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 				throw new IllegalStateException("Matched colour code " + matched + " has no way to be handled");
 			}
 			// prepare for the next segment by updating the starting index
-			beginIndex = matcher.end() + 1;
+			beginIndex = matcher.end();
+		}
+		String remaining = message.substring(beginIndex);
+		if (!remaining.isEmpty()) {
+			builder.addBuilder(
+					new TextualComponent.Builder().text(remaining).colour(currentColour).styles(currentStyles));
 		}
 	}
 	
