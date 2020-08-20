@@ -60,10 +60,11 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 				builder.addBuilder(
 						new TextualComponent.Builder().text(segment).colour(currentColour).styles(currentStyles));
 			}
-			switch (matcher.group().length()) {
+			String matched = matcher.group();
+			switch (matched.length()) {
 			case 2:
 				// Legacy colour code
-				char codeChar = segment.charAt(1);
+				char codeChar = matched.charAt(1);
 				switch (codeChar) {
 				case 'K':
 				case 'k':
@@ -97,14 +98,14 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 				break;
 			case 6:
 				// Shortened hex colour code
-				currentColour = Integer.parseInt(segment.substring(2, 5), 16);
+				currentColour = Integer.parseInt(matched.substring(2, 5), 16);
 				break;
 			case 9:
 				// Full hex colour code
-				currentColour = Integer.parseInt(segment.substring(2, 8), 16);
+				currentColour = Integer.parseInt(matched.substring(2, 8), 16);
 				break;
 			default:
-				throw new IllegalStateException("Matched colour code " + segment + " has no way to be handled");
+				throw new IllegalStateException("Matched colour code " + matched + " has no way to be handled");
 			}
 			// prepare for the next segment by updating the starting index
 			beginIndex = matcher.end() + 1;
