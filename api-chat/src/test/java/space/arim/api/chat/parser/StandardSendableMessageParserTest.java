@@ -20,8 +20,11 @@ package space.arim.api.chat.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import space.arim.api.chat.HexManipulator;
+import space.arim.api.chat.HexManipulatorTest;
 import space.arim.api.chat.MessageStyle;
 import space.arim.api.chat.PredefinedColour;
 import space.arim.api.chat.SendableMessage;
@@ -31,13 +34,44 @@ import space.arim.api.chat.parser.SendableMessageParser.JsonMode;
 
 public class StandardSendableMessageParserTest {
 
+	private SendableMessageParser parser;
+	
+	@BeforeEach
+	public void setup() {
+		parser = new StandardSendableMessageParser();
+	}
+	
 	@Test
-	public void testBasicParse() {
-		SendableMessage message = new SendableMessage.Builder()
+	public void testBasicColoursParse() {
+		SendableMessage legacyColours = new SendableMessage.Builder()
 				.add(new TextualComponent.Builder().colour(PredefinedColour.BLACK.getColour()).text("Start ").build())
-				.add(new TextualComponent.Builder().colour(PredefinedColour.DARK_PURPLE.getColour()).styles(MessageStyle.BOLD).text("more").build())
+				.add(new TextualComponent.Builder().colour(PredefinedColour.DARK_PURPLE.getColour())
+						.styles(MessageStyle.BOLD).text("more").build())
 				.build();
-		assertEquals(message, new StandardSendableMessageParser().parseMessage("&r&0Start &r&5&lmore", ColourMode.LEGACY_ONLY, JsonMode.NONE));
+		String legacyColourText = "&r&0Start &r&5&lmore";
+		assertEquals(legacyColours, parser.parseMessage(legacyColourText, ColourMode.LEGACY_ONLY, JsonMode.NONE));
+		assertEquals(legacyColours, parser.parseMessage(legacyColourText, ColourMode.ALL_COLOURS, JsonMode.NONE));
+
+		int hexColour = HexManipulatorTest.randomHex();
+		SendableMessage allColours = new SendableMessage.Builder()
+				.add(new TextualComponent.Builder().colour(hexColour).text("Custom colour ").build())
+				.add(new TextualComponent.Builder().colour(PredefinedColour.DARK_AQUA.getColour()).text("legacy colour").build())
+				.build();
+
+		assertEquals(allColours, parser.parseMessage("<#" + bytesToHex(hexColour) + ">Custom colour &3legacy colour",
+				ColourMode.ALL_COLOURS, JsonMode.NONE));
+	}
+	
+	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toLowerCase().toCharArray();
+	static String bytesToHex(int hex) {
+		byte[] bytes = new HexManipulator().toBytes(hex);
+	    char[] hexChars = new char[bytes.length * 2];
+	    for (int j = 0; j < bytes.length; j++) {
+	        int v = bytes[j] & 0xFF;
+	        hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+	        hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+	    }
+	    return new String(hexChars);
 	}
 	
 }

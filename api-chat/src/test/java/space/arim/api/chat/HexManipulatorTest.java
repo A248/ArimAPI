@@ -37,7 +37,7 @@ public class HexManipulatorTest {
 		manipulator = new HexManipulator();
 	}
 	
-	private int randomHex() {
+	public static int randomHex() {
 		return ThreadLocalRandom.current().nextInt(0xFFFFFF + 1);
 	}
 	
