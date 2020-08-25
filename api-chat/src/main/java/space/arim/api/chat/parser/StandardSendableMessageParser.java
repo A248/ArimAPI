@@ -174,6 +174,7 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 				});
 			}
 		}
+		jsonBuilder.concretifyCurrent();
 		return jsonBuilder.build();
 	}
 	
