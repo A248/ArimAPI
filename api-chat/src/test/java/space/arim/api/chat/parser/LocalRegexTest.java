@@ -18,13 +18,18 @@
  */
 package space.arim.api.chat.parser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 
-public class RegexPatternsTest {
+import space.arim.api.chat.parser.LocalRegex.AllColours;
+import space.arim.api.chat.parser.LocalRegex.DoublePipes;
+import space.arim.api.chat.parser.LocalRegex.LegacyColours;
+
+public class LocalRegexTest {
 
 	@Test
 	public void testDoublePipes() {

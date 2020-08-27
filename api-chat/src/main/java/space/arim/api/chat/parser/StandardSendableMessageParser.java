@@ -40,7 +40,7 @@ import space.arim.api.chat.TextualComponent;
  */
 public class StandardSendableMessageParser implements SendableMessageParser {
 	
-	private static void addColouredContent(InternalBuilder builder, String message, Pattern colourPattern) {
+	private static void parseColours0(InternalBuilder builder, String message, Pattern colourPattern) {
 		if (colourPattern == null) {
 			// No colours requested
 			builder.addBuilder((new TextualComponent.Builder().text(message)));
@@ -117,19 +117,18 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 		}
 	}
 	
-	private static SendableMessage parseColours0(String message, Pattern colourPattern) {
+	private static SendableMessage parseColours(String message, Pattern colourPattern) {
 		SimpleBuilder simpleBuilder = new SimpleBuilder();
-		addColouredContent(simpleBuilder, message, colourPattern);
+		parseColours0(simpleBuilder, message, colourPattern);
 		return simpleBuilder.build();
 	}
 	
-	private static SendableMessage parseJson0(String message, Pattern colourPattern) {
-		JsonBuilder jsonBuilder = new JsonBuilder();
+	private static void parseJson0(JsonBuilder jsonBuilder, String message, Pattern colourPattern) {
 		JsonHover currentHover = null;
 		JsonClick currentClick = null;
 		JsonInsertion currentInsert = null;
 
-		for (String node : DoublePipes.PATTERN.split(message)) {
+		for (String node : LocalRegex.DoublePipes.PATTERN.split(message)) {
 			if (node.isEmpty()) {
 				continue;
 			}
@@ -137,13 +136,13 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 			if (tag == JsonTag.NONE) {
 
 				jsonBuilder.concretifyCurrent();
-				addColouredContent(jsonBuilder, node, colourPattern);
+				parseColours0(jsonBuilder, node, colourPattern);
 
 			} else if (jsonBuilder.hasAnyCurrent()) {
 				String value = node.substring(4);
 				switch (tag) {
 				case TTP:
-					currentHover = new JsonHover(parseColours0(value, colourPattern));
+					currentHover = new JsonHover(parseColours(value, colourPattern));
 					break;
 				case CMD:
 					currentClick = new JsonClick(JsonClick.Type.RUN_COMMAND, value);
@@ -175,7 +174,12 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 			}
 		}
 		jsonBuilder.concretifyCurrent();
-		return jsonBuilder.build();
+	}
+	
+	private static JsonBuilder parseJson(String message, Pattern colourPattern) {
+		JsonBuilder jsonBuilder = new JsonBuilder();
+		message.lines().forEach((line) -> parseJson0(jsonBuilder, message, colourPattern));
+		return jsonBuilder;
 	}
 	
 	private static Pattern getColoursPattern(ColourMode colourMode) {
@@ -183,9 +187,9 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 		case NONE:
 			return null;
 		case LEGACY_ONLY:
-			return LegacyColours.PATTERN;
+			return LocalRegex.LegacyColours.PATTERN;
 		case ALL_COLOURS:
-			return AllColours.PATTERN;
+			return LocalRegex.AllColours.PATTERN;
 		default:
 			throw new UnsupportedOperationException("Does not support ColoursMode " + colourMode);
 		}
@@ -200,9 +204,9 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 		Pattern colourPattern = getColoursPattern(coloursMode);
 		switch (jsonMode) {
 		case NONE:
-			return parseColours0(rawMessage, colourPattern);
+			return parseColours(rawMessage, colourPattern);
 		case JSON_SK:
-			return parseJson0(rawMessage, colourPattern);
+			return parseJson(rawMessage, colourPattern).build();
 		default:
 			throw new UnsupportedOperationException("Does not support JsonMode " + jsonMode);
 		}

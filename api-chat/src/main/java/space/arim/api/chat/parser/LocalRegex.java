@@ -20,20 +20,24 @@ package space.arim.api.chat.parser;
 
 import java.util.regex.Pattern;
 
-class DoublePipes {
-	static final Pattern PATTERN = Pattern.compile("||", Pattern.LITERAL);
-}
+class LocalRegex {
 
-class LegacyColours {
-	static final Pattern PATTERN = Pattern.compile("&[0-9A-Fa-fK-Rk-r]");
-}
+	static class DoublePipes {
+		static final Pattern PATTERN = Pattern.compile("||", Pattern.LITERAL);
+	}
 
-class AllColours {
-	static final Pattern PATTERN = Pattern.compile(
-			// Legacy colour codes
-			"(&[0-9A-Fa-fK-Rk-r])|"
-			// Hex codes such as <#00AAFF>
-			+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)|"
-			// and the shorter <#4BC>
-			+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)");
+	static class LegacyColours {
+		static final Pattern PATTERN = Pattern.compile("&[0-9A-Fa-fK-Rk-r]");
+	}
+
+	static class AllColours {
+		static final Pattern PATTERN = Pattern.compile(
+				// Legacy colour codes
+				"(&[0-9A-Fa-fK-Rk-r])|"
+				// Hex codes such as <#00AAFF>
+				+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)|"
+				// and the shorter <#4BC>
+				+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)");
+	}
+	
 }
