@@ -19,9 +19,13 @@
 package space.arim.api.env;
 
 /**
- * Enumeration of all platforms supported by this library
+ * Enumeration of all platforms supported by this library <br>
+ * <br>
+ * <b>Note well: This enum defines only those platforms explicitly supported by ArimAPI, but
+ * support for other platforms may be provided by implementing the relevant interfaces.</b>
  * 
  * @author A248
+ *
  *
  */
 public enum PlatformType {

@@ -48,6 +48,7 @@ abstract class AbstractPlatformHandle implements PlatformHandle {
 	
 	abstract <T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> service);
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public PlatformType getPlatformType() {
 		return type;

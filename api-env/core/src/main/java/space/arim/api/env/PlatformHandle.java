@@ -20,8 +20,6 @@ package space.arim.api.env;
 
 import space.arim.omnibus.resourcer.ResourceHook;
 import space.arim.omnibus.resourcer.Resourcer;
-import space.arim.omnibus.util.concurrent.EnhancedExecutor;
-import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
@@ -42,11 +40,10 @@ public interface PlatformHandle {
 	 * Gets a resource hook for a specific resource based on this platform, using the specified {@link Resourcer}. <br>
 	 * This will use the value of {@link Resourcer#hookUsage(Class, java.util.function.Supplier)} <br>
 	 * <br>
-	 * The supported resource types: <br>
-	 * * {@link FactoryOfTheFuture} <br>
-	 * * {@link EnhancedExecutor} <br>
-	 * <br>
-	 * Specifying a resource class other than the ones listed will result in a {@code IllegalArgumentException}.
+	 * Exactly which {@code resourceClass} values may be specified is implementation dependent, it is up to implementers
+	 * of {@code PlatformHandle} to decide which to support. Specifying a resource class other than one supported
+	 * will result in a {@code IllegalArgumentException}. However, it is recommended that most implementations
+	 * keep pace with the resource classes supported by select provided implementations as noted in the package javadoc.
 	 * 
 	 * @param <T> the resource type
 	 * @param resourcer the {@link Resourcer} which is to manage the resource
@@ -93,7 +90,11 @@ public interface PlatformHandle {
 	 * Gets the platform type detected
 	 * 
 	 * @return the platform type detected
+	 * @deprecated It is intended that {@code PlatformHandle} may be implemented for a variety of platforms,
+	 * and not merely those defined in a fixed enum. This method may therefore return inaccurate results when
+	 * the implementation cannot specify which platform from the enum it is for.
 	 */
+	@Deprecated
 	PlatformType getPlatformType();
 	
 	/**
