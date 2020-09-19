@@ -178,7 +178,7 @@ public class StandardSendableMessageParser implements SendableMessageParser {
 	
 	private static JsonBuilder parseJson(String message, Pattern colourPattern) {
 		JsonBuilder jsonBuilder = new JsonBuilder();
-		message.lines().forEach((line) -> parseJson0(jsonBuilder, message, colourPattern));
+		message.lines().forEach((line) -> parseJson0(jsonBuilder, line, colourPattern));
 		return jsonBuilder;
 	}
 	
