@@ -26,8 +26,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import space.arim.api.chat.HexManipulator;
-
 public class HexManipulatorTest {
 
 	private HexManipulator manipulator;

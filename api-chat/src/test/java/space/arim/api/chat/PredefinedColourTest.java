@@ -22,8 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import space.arim.api.chat.PredefinedColour;
-
 public class PredefinedColourTest {
 
 	@Test
