@@ -44,7 +44,15 @@ import org.spongepowered.api.plugin.PluginContainer;
  * 
  * @author A248
  *
+ * @deprecated Unfortunately, the Sponge platform relies on internals changed by
+ *             JPMS in JDK 9 and beyond and is therefore incompatible with Java
+ *             11, which ArimAPI requires. It is highly unlikely an
+ *             implementation of Sponge API 7 will have compatibility. The
+ *             maintenance burden of platform handles and adapters for Sponge
+ *             API 7 is therefore not justified.
  */
+@SuppressWarnings("deprecation")
+@Deprecated
 public class SpongePlatformHandle extends AbstractPlatformHandle {
 	
 	/**
