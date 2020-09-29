@@ -16,35 +16,33 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat;
+package space.arim.api.chat.serialiser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.jupiter.api.Test;
 
-public class PredefinedColourTest {
+import space.arim.api.chat.SendableMessage;
+
+public class SimpleTextSerialiserTest {
 	
-	@Test
-	public void testByCharIdentity() {
-		for (PredefinedColour entry : PredefinedColour.values()) {
-			char codeChar = entry.getCodeChar();
-			assertEquals(entry, PredefinedColour.getByChar(codeChar));
-			assertEquals(entry, PredefinedColour.getByChar(Character.toUpperCase(codeChar)));
-		}
+	private static String randomString() {
+		Random random = ThreadLocalRandom.current();
+		byte[] bytes = new byte[random.nextInt(255)];
+		random.nextBytes(bytes);
+		return new String(bytes, StandardCharsets.UTF_8);
 	}
 
 	@Test
-	public void testExactToIdentity() {
-		for (PredefinedColour entry : PredefinedColour.values()) {
-			assertEquals(entry, PredefinedColour.getExactTo(entry.getColour()));
-		}
-	}
-	
-	@Test
-	public void testNearestToIdentity() {
-		for (PredefinedColour entry : PredefinedColour.values()) {
-			assertEquals(entry, PredefinedColour.getNearestTo(entry.getColour()));
-		}
+	public void testDeserialiseSerialise() {
+		SimpleTextSerialiser serialiser = SimpleTextSerialiser.getInstance();
+		String randomString = randomString();
+		SendableMessage deserialised = serialiser.deserialise(randomString);
+		assertEquals(randomString, serialiser.serialise(deserialised));
 	}
 	
 }

@@ -16,15 +16,23 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat.parser;
+package space.arim.api.chat;
 
-import space.arim.api.chat.SendableMessage;
-import space.arim.api.chat.TextualComponent;
+import static org.junit.jupiter.api.Assertions.*;
 
-abstract class InternalBuilder {
+import org.junit.jupiter.api.Test;
 
-	abstract void addBuilder(TextualComponent.Builder comp);
-	
-	abstract SendableMessage build();
+public class ChatComponentTest {
+
+	@Test
+	public void testStyles() {
+		ChatComponent comp = new ChatComponent.Builder()
+				.text("non-empty text").styles(MessageStyle.BOLD + MessageStyle.MAGIC + MessageStyle.UNDERLINE).build();
+		assertTrue(comp.hasStyle(MessageStyle.BOLD));
+		assertTrue(comp.hasStyle(MessageStyle.MAGIC));
+		assertTrue(comp.hasStyle(MessageStyle.UNDERLINE));
+		assertFalse(comp.hasStyle(MessageStyle.STRIKETHROUGH));
+		assertFalse(comp.hasStyle(MessageStyle.ITALIC));
+	}
 	
 }

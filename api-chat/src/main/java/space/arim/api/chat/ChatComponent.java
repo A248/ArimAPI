@@ -20,45 +20,44 @@ package space.arim.api.chat;
 
 import java.util.Objects;
 
+import space.arim.api.chat.manipulator.ColourManipulator;
+
 /**
- * An immutable part of a message, specifying text, colour, and styles. <br>
- * <br>
- * {@code TextualComponent} should be treated as a "sealed class" and not be subclassed.
+ * An immutable part of a message, specifying text, colour, and styles.
  * 
  * @author A248
  *
  */
-public class TextualComponent implements TextualComponentInfo {
+public final class ChatComponent implements ChatComponentInfo {
 
 	private final String text;
 	private final int colour;
 	private final int styles;
 	
-	TextualComponent(String text, int colour, int styles) {
-		this.text = text;
-		this.colour = colour;
+	private static final ChatComponent EMPTY = new ChatComponent("", 0, 0);
+	
+	private ChatComponent(String text, int colour, int styles) {
+		this.text = Objects.requireNonNull(text, "text");
+		this.colour = ColourManipulator.getInstance().checkRange(colour);
 		this.styles = styles;
 	}
 	
 	/**
-	 * Creates from {@code TextualComponentInfo}. The attributes of the textual component info are
+	 * Creates from {@code ChatComponentInfo}. The attributes of the chat component info are
 	 * copied.
 	 * 
 	 * @param info the component info whose attributes to use
+	 * @return the chat component
 	 */
-	public TextualComponent(TextualComponentInfo info) {
-		int colour = info.getColour();
-		HexManipulator.checkRange0(colour);
-		this.text = Objects.requireNonNull(info.getText(), "Text must not be null");
-		this.colour = colour;
-		this.styles = info.getStyles();
-		/*
-		 * Sealed class protection
-		 */
-		Class<?> clazz = getClass();
-		if (clazz != TextualComponent.class && clazz != JsonComponent.class) {
-			throw new IllegalStateException("TextualComponent cannot be subclassed except by JsonComponent");
+	public static ChatComponent create(ChatComponentInfo info) {
+		if (info instanceof ChatComponent) {
+			return (ChatComponent) info;
 		}
+		String text = info.getText();
+		if (text.isEmpty()) {
+			return EMPTY;
+		}
+		return new ChatComponent(text, info.getColour(), info.getStyles());
 	}
 	
 	@Override
@@ -75,10 +74,10 @@ public class TextualComponent implements TextualComponentInfo {
 	public int getStyles() {
 		return styles;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "TextualComponent [text=" + text + ", colour=" + colour + ", styles=" + styles + "]";
+		return "ChatComponent [text=" + text + ", colour=" + colour + ", styles=" + styles + "]";
 	}
 	
 	@Override
@@ -96,10 +95,10 @@ public class TextualComponent implements TextualComponentInfo {
 		if (this == object) {
 			return true;
 		}
-		if (!(object instanceof TextualComponent) || object instanceof JsonComponent) {
+		if (!(object instanceof ChatComponent)) {
 			return false;
 		}
-		TextualComponent other = (TextualComponent) object;
+		ChatComponent other = (ChatComponent) object;
 		return colour == other.colour && styles == other.styles && text.equals(other.text);
 	}
 
@@ -109,7 +108,7 @@ public class TextualComponent implements TextualComponentInfo {
 	 * @author A248
 	 *
 	 */
-	public static class Builder implements TextualComponentInfo {
+	public static class Builder implements ChatComponentInfo {
 		
 		private String text = "";
 		private int colour;
@@ -125,16 +124,14 @@ public class TextualComponent implements TextualComponentInfo {
 		}
 		
 		/**
-		 * Creates the builder, using the provided existing {@code TextualComponentInfo}, whose attributes
+		 * Creates the builder, using the provided existing {@code ChatComponentInfo}, whose attributes
 		 * are copied to this builder
 		 * 
 		 * @param info the component info to use
 		 */
-		public Builder(TextualComponentInfo info) {
-			int colour = info.getColour();
-			HexManipulator.checkRange0(colour);
-			text = Objects.requireNonNull(info.getText(), "Text must not be null");
-			this.colour = colour;
+		public Builder(ChatComponentInfo info) {
+			text = Objects.requireNonNull(info.getText(), "text");
+			colour = ColourManipulator.getInstance().checkRange(info.getColour());
 			styles = info.getStyles();
 		}
 
@@ -143,9 +140,10 @@ public class TextualComponent implements TextualComponentInfo {
 		 * 
 		 * @param text the new text
 		 * @return the builder
+		 * @throws NullPointerException if {@code text} is null
 		 */
 		public Builder text(String text) {
-			this.text = Objects.requireNonNull(text, "Text must not be null");
+			this.text = Objects.requireNonNull(text, "text");
 			return this;
 		}
 		
@@ -157,8 +155,7 @@ public class TextualComponent implements TextualComponentInfo {
 		 * @throws IllegalArgumentException if {@code hex} is outside the range of a hex colour
 		 */
 		public Builder colour(int colour) {
-			HexManipulator.checkRange0(colour);
-			this.colour = colour;
+			this.colour = ColourManipulator.getInstance().checkRange(colour);
 			return this;
 		}
 		
@@ -171,15 +168,6 @@ public class TextualComponent implements TextualComponentInfo {
 		public Builder styles(int styles) {
 			this.styles = styles;
 			return this;
-		}
-		
-		/**
-		 * Creates a {@link TextualComponent} from the details of this builder
-		 * 
-		 * @return the built textual component
-		 */
-		public TextualComponent build() {
-			return new TextualComponent(text, colour, styles);
 		}
 
 		@Override
@@ -196,10 +184,19 @@ public class TextualComponent implements TextualComponentInfo {
 		public int getStyles() {
 			return styles;
 		}
+		
+		/**
+		 * Creates a {@link ChatComponent} from the details of this builder
+		 * 
+		 * @return the built chat component
+		 */
+		public ChatComponent build() {
+			return ChatComponent.create(this);
+		}
 
 		@Override
 		public String toString() {
-			return "TextualComponent.Builder [text=" + text + ", colour=" + colour + ", styles=" + styles + "]";
+			return "ChatComponent.Builder [text=" + text + ", colour=" + colour + ", styles=" + styles + "]";
 		}
 
 		@Override
@@ -217,7 +214,7 @@ public class TextualComponent implements TextualComponentInfo {
 			if (this == object) {
 				return true;
 			}
-			if (object == null || getClass() != object.getClass()) {
+			if (!(object instanceof Builder)) {
 				return false;
 			}
 			Builder other = (Builder) object;

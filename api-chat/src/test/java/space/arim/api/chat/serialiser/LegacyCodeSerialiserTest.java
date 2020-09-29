@@ -16,23 +16,23 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat;
+package space.arim.api.chat.serialiser;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-public class TextualComponentTest {
+import space.arim.api.chat.SendableMessage;
+
+public class LegacyCodeSerialiserTest {
 
 	@Test
-	public void testStyles() {
-		TextualComponent comp = new TextualComponent.Builder()
-				.styles(MessageStyle.BOLD + MessageStyle.MAGIC + MessageStyle.UNDERLINE).build();
-		assertTrue(comp.hasStyle(MessageStyle.BOLD));
-		assertTrue(comp.hasStyle(MessageStyle.MAGIC));
-		assertTrue(comp.hasStyle(MessageStyle.UNDERLINE));
-		assertFalse(comp.hasStyle(MessageStyle.STRIKETHROUGH));
-		assertFalse(comp.hasStyle(MessageStyle.ITALIC));
+	public void testDeserialiseSerialise() {
+		LegacyCodeSerialiser serialiser = LegacyCodeSerialiser.getInstance('&');
+		String original = "&6Hello &amore text";
+		SendableMessage deserialised = serialiser.deserialise(original);
+		String reserialised = serialiser.serialise(deserialised);
+		assertEquals(original, reserialised);
 	}
 	
 }

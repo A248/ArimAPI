@@ -18,15 +18,36 @@
  */
 package space.arim.api.env.chat;
 
-import space.arim.api.chat.SendableMessage;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
-/**
- * A platform message adapter which is both a {@link PlatformMessageForwardAdapter} and {@link PlatformMessageReverseAdapter}
- * 
- * @author A248
- *
- * @param <T> the platform specific type equivalent to {@link SendableMessage}
- */
-public interface PlatformMessageAdapter<T> extends PlatformMessageForwardAdapter<T>, PlatformMessageReverseAdapter<T> {
+final class AdventureColourConversions {
+	
+	private AdventureColourConversions() {}
+	
+	static int convertDecor(TextDecoration decor) {
+		return 1 << decor.ordinal();
+	}
 
+	static int convertColour(TextColor colour) {
+		return colour.value();
+	}
+	
+	static TextColor convertColour(int hex) {
+		return TextColor.color(hex);
+	}
+	
+	static Boolean booleanFromState(TextDecoration.State state) {
+		switch (state) {
+		case FALSE:
+			return Boolean.FALSE;
+		case NOT_SET:
+			return null;
+		case TRUE:
+			return Boolean.TRUE;
+		default:
+			throw new IllegalStateException("Unknown TextDecoration.State " + state);
+		}
+	}
+	
 }

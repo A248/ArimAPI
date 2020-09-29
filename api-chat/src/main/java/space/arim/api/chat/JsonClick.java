@@ -21,41 +21,79 @@ package space.arim.api.chat;
 import java.util.Objects;
 
 /**
- * An action which will act when a player clicks on the chat message.
+ * An action which will act when a player clicks on the chat message. The type and value are akin to form and matter.
  * 
  * @author A248
  *
  */
 public final class JsonClick extends JsonAction {
 
-	private final Type type;
+	private final ClickType type;
 	private final String value;
 	
+	private JsonClick(ClickType type, String value) {
+		this.type = Objects.requireNonNull(type, "type");
+		this.value = Objects.requireNonNull(value, "value");
+	}
+	
 	/**
-	 * Creates from a type and value. <br>
-	 * The type and value are akin to form and matter.
+	 * Creates from a click type and value
 	 * 
-	 * @param type the type
+	 * @param type the click type
 	 * @param value the value
+	 * @return the click action
+	 * @throws NullPointerException if either parameter is null
 	 */
-	public JsonClick(Type type, String value) {
-		this.type = Objects.requireNonNull(type, "JsonClick type must not be null");
-		this.value = Objects.requireNonNull(value, "JsonClick value must not be null");
+	public static JsonClick create(ClickType type, String value) {
+		return new JsonClick(type, value);
+	}
+	
+	/**
+	 * Create a click action which runs a command
+	 * 
+	 * @param command the command to run
+	 * @return the click action
+	 * @throws NullPointerException if {@code command} is null
+	 */
+	public static JsonClick runCommand(String command) {
+		return create(ClickType.RUN_COMMAND, command);
+	}
+	
+	/**
+	 * Create a click action which suggests a command
+	 * 
+	 * @param command the command to run
+	 * @return the click action
+	 * @throws NullPointerException if {@code command} is null
+	 */
+	public static JsonClick suggestCommand(String command) {
+		return create(ClickType.SUGGEST_COMMAND, command);
+	}
+	
+	/**
+	 * Create a click action which opens a url
+	 * 
+	 * @param url the hyperlink to open
+	 * @return the click action
+	 * @throws NullPointerException if {@code url} is null
+	 */
+	public static JsonClick openUrl(String url) {
+		return create(ClickType.OPEN_URL, url);
 	}
 	
 	/**
 	 * The type of the click action
 	 * 
-	 * @return the type, never {@code null}
+	 * @return the type, never null
 	 */
-	public Type getType() {
+	public ClickType getType() {
 		return type;
 	}
 	
 	/**
 	 * The value of the click action
 	 * 
-	 * @return the value, never {@code null}
+	 * @return the value, never null
 	 */
 	public String getValue() {
 		return value;
@@ -67,42 +105,12 @@ public final class JsonClick extends JsonAction {
 	 * @author A248
 	 *
 	 */
-	public enum Type {
+	public enum ClickType {
 		
 		RUN_COMMAND,
 		SUGGEST_COMMAND,
 		OPEN_URL
 		
-	}
-	
-	/**
-	 * Helper method to create a click action which runs a command
-	 * 
-	 * @param command the command to run
-	 * @return the click action
-	 */
-	public static JsonClick runCommand(String command) {
-		return new JsonClick(Type.RUN_COMMAND, command);
-	}
-	
-	/**
-	 * Helper method to create a click action which suggests a command
-	 * 
-	 * @param command the command to run
-	 * @return the click action
-	 */
-	public static JsonClick suggestCommand(String command) {
-		return new JsonClick(Type.SUGGEST_COMMAND, command);
-	}
-	
-	/**
-	 * Helper method to create a click action which opens a url
-	 * 
-	 * @param url the hyperlink to open
-	 * @return the click action
-	 */
-	public static JsonClick openUrl(String url) {
-		return new JsonClick(Type.OPEN_URL, url);
 	}
 
 	@Override

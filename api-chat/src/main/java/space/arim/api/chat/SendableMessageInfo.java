@@ -21,27 +21,30 @@ package space.arim.api.chat;
 import java.util.List;
 
 /**
- * Information relating to a {@link SendableMessage} or {@link SendableMessage.Builder}
+ * Information relating to a {@link SendableMessage} or {@link SendableMessage.Builder} <br>
+ * <br>
+ * Defines a message composed of a list of sections with attributes, but provides no guarantee of immutability
  * 
  * @author A248
  *
  */
-public interface SendableMessageInfo {
+public interface SendableMessageInfo extends Emptyable {
 
 	/**
-	 * Gets the components of this message or builder. The returned list
-	 * may or may not be mutable.
+	 * Gets the sections of this message or builder. The list may not be modified
 	 * 
 	 * @return the components of this message info
 	 */
-	List<TextualComponent> getComponents();
+	List<JsonSection> getSections();
 	
 	/**
-	 * Provides a string representation of this object, including all of its components
+	 * Whether this message or builder is empty
 	 * 
-	 * @return a string representation of this message info
+	 * @return true if empty, false otherwise
 	 */
 	@Override
-	String toString();
+	default boolean isEmpty() {
+		return getSections().isEmpty();
+	}
 	
 }

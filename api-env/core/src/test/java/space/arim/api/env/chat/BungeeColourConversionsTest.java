@@ -18,30 +18,26 @@
  */
 package space.arim.api.env.chat;
 
-class ArrayNullnessChecker {
-	
-	static <T> T[] check(T[] array, String name) {
-		if (array == null) {
-			throw new NullPointerException(name + " must not be null");
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+
+import space.arim.api.chat.PredefinedColour;
+import space.arim.api.chat.manipulator.ColourManipulator;
+
+import net.md_5.bungee.api.ChatColor;
+
+public class BungeeColourConversionsTest {
+
+	@Test
+	public void testPredefinedColourConversion() {
+		for (PredefinedColour colour : PredefinedColour.values()) {
+			char codeChar = colour.getCodeChar();
+			ChatColor chatColour = ChatColor.getByChar(codeChar);
+			assertNotNull(chatColour);
+			assertEquals(colour.getColour(), ColourManipulator.getInstance().fromJavaAwt(chatColour.getColor()));
 		}
-		for (T element : array) {
-			if (element == null) {
-				throw new NullPointerException(name + " element must not be null");
-			}
-		}
-		return array;
-	}
-	
-	static <T> boolean evaluate(T[] array) {
-		if (array == null) {
-			return false;
-		}
-		for (T element : array) {
-			if (element == null) {
-				return false;
-			}
-		}
-		return true;
 	}
 	
 }

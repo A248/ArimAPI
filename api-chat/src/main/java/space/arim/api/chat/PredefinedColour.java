@@ -20,6 +20,8 @@ package space.arim.api.chat;
 
 import java.util.Locale;
 
+import space.arim.api.chat.manipulator.ColourManipulator;
+
 /**
  * Enumeration of predefined hex colours, corresponding to the legacy colour codes.
  * 
@@ -47,8 +49,6 @@ public enum PredefinedColour {
 
 	private final char codeChar;
 	private final int colour;
-	
-	private static final PredefinedColour[] VALUES = values();
 
 	private PredefinedColour(char codeChar, int colour) {
 		this.codeChar = codeChar;
@@ -138,14 +138,50 @@ public enum PredefinedColour {
 	 * 
 	 * @param colour the hex colour
 	 * @return the exact predefined hex colour matching the specified, else {@code null} if there is none
+	 * @throws IllegalArgumentException if {@code colour} is outside the range of a hex colour
 	 */
 	public static PredefinedColour getExactTo(int colour) {
-		for (PredefinedColour entry : VALUES) {
-			if (entry.colour == colour) {
-				return entry;
-			}
+		ColourManipulator.getInstance().checkRange(colour);
+		return getExactTo0(colour);
+	}
+	
+	private static PredefinedColour getExactTo0(int colour) {
+		switch (colour) {
+		case 0x000000:
+			return BLACK;
+		case 0x0000AA:
+			return DARK_BLUE;
+		case 0x00AA00:
+			return DARK_GREEN;
+		case 0x00AAAA:
+			return DARK_AQUA;
+		case 0xAA0000:
+			return DARK_RED;
+		case 0xAA00AA:
+			return DARK_PURPLE;
+		case 0xFFAA00:
+			return GOLD;
+		case 0xAAAAAA:
+			return GRAY;
+		case 0x555555:
+			return DARK_GRAY;
+		case 0x5555FF:
+			return BLUE;
+		case 0x55FF55:
+			return GREEN;
+		case 0x55FFFF:
+			return AQUA;
+		case 0xFF5555:
+			return RED;
+		case 0xFF55FF:
+			return LIGHT_PURPLE;
+		case 0xFFFF55:
+			return YELLOW;
+		case 0xFFFFFF:
+			return WHITE;
+		default:
+			return null;
 		}
-		return null;
 	}
 	
 	/**
@@ -156,21 +192,17 @@ public enum PredefinedColour {
 	 * @throws IllegalArgumentException if {@code colour} is outside the range of a hex colour
 	 */
 	public static PredefinedColour getNearestTo(int colour) {
-		HexManipulator.checkRange0(colour);
-
-		PredefinedColour exactMatch = getExactTo(colour);
+		ColourManipulator.getInstance().checkRange(colour);
+		PredefinedColour exactMatch = getExactTo0(colour);
 		if (exactMatch != null) {
 			return exactMatch;
 		}
 
 		PredefinedColour nearest = null;
 		double lowestDist = 0;
-		for (PredefinedColour entry : VALUES) {
+		for (PredefinedColour entry : values()) {
 
 			double dist = distanceSquared(colour, entry.colour);
-			if (dist == 0D) {
-				return entry;
-			}
 			if (nearest == null || dist < lowestDist) {
 				nearest = entry;
 				lowestDist = dist;
@@ -180,10 +212,6 @@ public enum PredefinedColour {
 	}
 	
 	private static double distanceSquared(int colour1, int colour2) {
-		if (colour1 == colour2) {
-			return 0D;
-		}
-		// Negatives okay since they'll be squared
 		double rdiff = ((colour1 & 0xFF0000) >> 16) - ((colour2 & 0xFF0000) >> 16);
 		double gdiff = ((colour1 & 0x00FF00) >> 8) - ((colour2 & 0x00FF00) >> 8);
 		double bdiff = (colour1 & 0x0000FF) - (colour2 & 0x0000FF);

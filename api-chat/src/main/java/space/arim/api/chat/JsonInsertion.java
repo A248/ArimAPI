@@ -30,13 +30,19 @@ public final class JsonInsertion extends JsonAction {
 
 	private final String value;
 	
+	private JsonInsertion(String value) {
+		this.value = Objects.requireNonNull(value, "value");
+	}
+	
 	/**
 	 * Creates from the string to insert into the player's chat
 	 * 
 	 * @param value the string to insert
+	 * @return the insertion action
+	 * @throws NullPointerException if {@code value} is null
 	 */
-	public JsonInsertion(String value) {
-		this.value = Objects.requireNonNull(value, "Value must not be null");
+	public static JsonInsertion create(String value) {
+		return new JsonInsertion(value);
 	}
 	
 	/**

@@ -18,76 +18,65 @@
  */
 package space.arim.api.chat;
 
+import java.util.List;
+
 /**
- * Information relating to a {@link JsonComponent} or {@link JsonComponent.Builder}. <br>
+ * Information relating to a {@link JsonSection} or {@link JsonSection.Builder}. <br>
  * <br>
- * This interface defines a series of attributes regarding a JSON message, but provide
- * no guarantee of immutability.
+ * Defines a series of attributes regarding a section of a message, but provides no guarantee of immutability
  * 
  * @author A248
  *
  */
-public interface JsonComponentInfo extends TextualComponentInfo {
+public interface JsonSectionInfo extends Emptyable {
 
 	/**
-	 * Gets the hover action of this component or builder
+	 * Gets the contents of this section or builder. Neither the list nor any of its contents may be {@code null}.
+	 * The list may not be modified.
+	 * 
+	 * @return the contents of this section or builder, never {@code null}
+	 */
+	List<ChatComponent> getContents();
+	
+	/**
+	 * Whether this section or builder is empty
+	 * 
+	 * @return true if empty, false otherwise
+	 */
+	@Override
+	default boolean isEmpty() {
+		return getContents().isEmpty();
+	}
+	
+	/**
+	 * Gets the hover action of this section or builder
 	 * 
 	 * @return the hover action or {@code null} if there is none
 	 */
 	JsonHover getHoverAction();
 	
 	/**
-	 * Gets the click action of this component or builder
+	 * Gets the click action of this section or builder
 	 * 
 	 * @return the click action or {@code null} if there is none
 	 */
 	JsonClick getClickAction();
 	
 	/**
-	 * Gets the insertion action of this component or builder
+	 * Gets the insertion action of this section or builder
 	 * 
 	 * @return the insertion action or {@code null} if there is none
 	 */
 	JsonInsertion getInsertionAction();
 	
 	/**
-	 * Convenience method to determine whether any of the JSON actions of this component or builder
-	 * are set. Equivalent to: <br>
+	 * Convenience method to determine whether any of the JSON actions are set. Equivalent to: <br>
 	 * <code>getHoverAction() != null || getClickAction() != null || getInsertionAction() != null</code>
 	 * 
 	 * @return true if any json action is set, false otherwise
 	 */
-	default boolean hasAnyAction() {
+	default boolean hasAnyActions() {
 		return getHoverAction() != null || getClickAction() != null || getInsertionAction() != null;
 	}
-
-	/**
-	 * Provides a string representation of this object, including all of its
-	 * properties defined in {@code JsonComponentInfo} and {@code TextualComponentInfo}
-	 * 
-	 * @return a string representation of this json component info
-	 */
-	@Override
-	String toString();
-	
-	/**
-	 * Determines equality with the specified object consistent with the attributes defined
-	 * by this {@code JsonComponentInfo} interface and per such attributes' own {@code equals}
-	 * methods.
-	 * 
-	 * @param object the object to determine equality with
-	 * @return true if the objects are equal, false otherwise
-	 */
-	@Override
-	boolean equals(Object object);
-	
-	/**
-	 * Determines a hash code for this {@code JsonComponentInfo} consistent with its
-	 * attributes defined by this interface.
-	 * 
-	 * @return a hash code for this json component info
-	 */
-	@Override
-	int hashCode();
 	
 }

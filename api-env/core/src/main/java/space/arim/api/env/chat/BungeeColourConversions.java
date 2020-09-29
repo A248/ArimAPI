@@ -23,13 +23,15 @@ import java.awt.Color;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 
-import space.arim.api.chat.HexManipulator;
 import space.arim.api.chat.MessageStyle;
 import space.arim.api.chat.PredefinedColour;
+import space.arim.api.chat.manipulator.ColourManipulator;
 
-class BungeeColourConversions {
+final class BungeeColourConversions {
 
 	static final boolean HAS_HEX_SUPPORT;
+	
+	private BungeeColourConversions() {}
 	
 	static {
 		boolean hexSupport = false;
@@ -96,7 +98,7 @@ class BungeeColourConversions {
 				// yet another pitfall of the BungeeCord Component API
 				return 0;
 			}
-			return new HexManipulator().fromJavaAwt(awtColor);
+			return ColourManipulator.getInstance().fromJavaAwt(awtColor);
 
 		} else {
 			@SuppressWarnings("deprecation")

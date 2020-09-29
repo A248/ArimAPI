@@ -18,7 +18,7 @@
  */
 package space.arim.api.chat;
 
-import java.util.Objects;
+import java.util.List;
 
 /**
  * An action which will show a tooltip when a player hovers over the chat message.
@@ -28,36 +28,42 @@ import java.util.Objects;
  */
 public final class JsonHover extends JsonAction {
 
-	private final SendableMessage tooltip;
+	private final List<ChatComponent> contents;
+	
+	private JsonHover(List<ChatComponent> contents) {
+		this.contents = List.copyOf(contents);
+	}
 	
 	/**
 	 * Creates from a tooltip to show when a player hovers over the main message
 	 * 
-	 * @param tooltip the tooltip to display
+	 * @param contents the tooltip to display
+	 * @return the hover action
+	 * @throws NullPointerException if {@code contents} or an element in it is null
 	 */
-	public JsonHover(SendableMessage tooltip) {
-		this.tooltip = Objects.requireNonNull(tooltip, "Tooltip must not be null");
+	public static JsonHover create(List<ChatComponent> contents) {
+		return new JsonHover(contents);
 	}
 	
 	/**
-	 * Gets the {@link SendableMessage} which will be shown to players when they hover on the chat message.
+	 * Gets the contents which will be shown to players when they hover on the chat message.
 	 * 
 	 * @return the tooltip which will be shown, never {@code null}
 	 */
-	public SendableMessage getTooltip() {
-		return tooltip;
+	public List<ChatComponent> getContents() {
+		return contents;
 	}
 
 	@Override
 	public String toString() {
-		return "JsonHover [tooltip=" + tooltip + "]";
+		return "JsonHover [contents=" + contents + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + tooltip.hashCode();
+		result = prime * result + EmptyableEqualsAndHash.hashCode(contents);
 		return result;
 	}
 
@@ -70,7 +76,7 @@ public final class JsonHover extends JsonAction {
 			return false;
 		}
 		JsonHover other = (JsonHover) object;
-		return tooltip.equals(other.tooltip);
+		return EmptyableEqualsAndHash.equals(contents, other.contents);
 	}
 	
 }

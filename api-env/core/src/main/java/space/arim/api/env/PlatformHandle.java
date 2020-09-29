@@ -24,7 +24,7 @@ import space.arim.omnibus.resourcer.Resourcer;
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.annote.PlatformPlayer;
-import space.arim.api.env.chat.PlatformMessageAdapter;
+import space.arim.api.env.chat.PlatformMessageForwardAdapter;
 import space.arim.api.env.realexecutor.RealExecutorFinder;
 
 /**
@@ -58,7 +58,7 @@ public interface PlatformHandle {
 	 * <br>
 	 * <b>This method is not thread safe on all platforms.</b> <br>
 	 * <br>
-	 * Implementations may be more efficient than using the platform's {@link PlatformMessageAdapter} to convert
+	 * Implementations may be more efficient than using the platform's {@link PlatformMessageForwardAdapter} to convert
 	 * to a platform specific type.
 	 * 
 	 * @param recipient the recipient
@@ -71,7 +71,7 @@ public interface PlatformHandle {
 	 * <br>
 	 * <b>This method is not thread safe on all platforms.</b> <br>
 	 * <br>
-	 * Implementations may be more efficient than using the platform's {@link PlatformMessageAdapter} to convert
+	 * Implementations may be more efficient than using the platform's {@link PlatformMessageForwardAdapter} to convert
 	 * to a platform specific type.
 	 * 
 	 * @param user the user to kick

@@ -19,9 +19,8 @@
 package space.arim.api.chat;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 
 /**
@@ -32,52 +31,62 @@ import java.util.Objects;
  */
 public final class SendableMessage implements SendableMessageInfo {
 
-	private final List<TextualComponent> components;
+	private final List<JsonSection> sections;
 	
-	/**
-	 * Creates from a list of {@link TextualComponent}s comprising this message. <br>
-	 * The list and its elements must be nonnull. An immutable copy is made of it.
-	 * 
-	 * @param components the components of this message
-	 * @throws NullPointerException if {@code components} or an element in it is null
-	 */
-	public SendableMessage(List<TextualComponent> components) {
-		this.components = List.copyOf(components);
+	private static final SendableMessage EMPTY = new SendableMessage(List.of());
+	
+	private SendableMessage(List<JsonSection> sections) {
+		this.sections = List.copyOf(sections);
 	}
 	
 	/**
-	 * Creates from an array of {@link TextualComponent}s comprising this message. <br>
-	 * The array and its elements must be nonnull. An immutable list is made of it.
+	 * Creates from a list of {@link JsonSection}s comprising this message
 	 * 
-	 * @param components the components of this message
-	 * @throws NullPointerException if {@code components} or an element in it is null
+	 * @param sections the sections of this message
+	 * @return the sendable message
+	 * @throws NullPointerException if {@code sections} or an element in it is null
 	 */
-	public SendableMessage(TextualComponent...components) {
-		this.components = List.of(components);
+	public static SendableMessage create(List<JsonSection> sections) {
+		List<JsonSection> sectionsCopy = List.copyOf(sections);
+		if (sectionsCopy.isEmpty()) {
+			return EMPTY;
+		}
+		return new SendableMessage(sectionsCopy);
 	}
 	
 	/**
-	 * Creates from {@code SendableMessageInfo}. The components of such info are used
+	 * Creates from an array of {@link JsonSection}s comprising this message
+	 * 
+	 * @param sections the sections of this message
+	 * @return the sendable message
+	 * @throws NullPointerException if {@code sections} or an element in it is null
+	 */
+	public static SendableMessage create(JsonSection...sections) {
+		return create(List.of(sections));
+	}
+	
+	/**
+	 * Creates from {@code SendableMessageInfo}. The sections of such info are used
 	 * in this one.
 	 * 
 	 * @param info the message info to use
+	 * @return the sendable message
 	 */
-	public SendableMessage(SendableMessageInfo info) {
+	public static SendableMessage create(SendableMessageInfo info) {
 		if (info instanceof SendableMessage) {
-			components = info.getComponents();
-		} else {
-			components = List.copyOf(info.getComponents());
+			return (SendableMessage) info;
 		}
+		return create(info.getSections());
 	}
 	
 	/**
-	 * Gets the immutable components which comprise this sendable message. Attempts to mutate
+	 * Gets the immutable sections which comprise this sendable message. Attempts to mutate
 	 * the list will throw {@code UnsupportedOperationException}
 	 * 
 	 */
 	@Override
-	public List<TextualComponent> getComponents() {
-		return components;
+	public List<JsonSection> getSections() {
+		return sections;
 	}
 	
 	/**
@@ -88,43 +97,35 @@ public final class SendableMessage implements SendableMessageInfo {
 	 * @return the combined result
 	 */
 	public SendableMessage concatenate(SendableMessage other) {
-		int ourSize = components.size();
-		int size = ourSize + other.components.size();
-		TextualComponent[] result = new TextualComponent[size];
-		for (int n = 0; n < size; n++) {
-			if (n < ourSize) {
-				result[n] = components.get(n);
-			} else {
-				result[n] = other.components.get(n - ourSize);
-			}
+		if (isEmpty()) {
+			return other;
 		}
-		return new SendableMessage(result);
+		if (other.isEmpty()) {
+			return this;
+		}
+		List<JsonSection> sections = new ArrayList<>(this.sections.size() + other.sections.size());
+		sections.addAll(this.sections);
+		sections.addAll(other.sections);
+		return new SendableMessage(sections);
 	}
 	
 	@Override
 	public String toString() {
-		return "SendableMessage [components=" + components + "]";
+		return "SendableMessage [sections=" + sections + "]";
 	}
-	
-	/*
-	 * 
-	 * Equals and hashCode implementations are designed to ignore empty components.
-	 * This is done because empty components do not affect visual output.
-	 * 
-	 */
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		for (TextualComponent component : components) {
-			if (!component.getText().isEmpty()) {
-				result = prime * result + component.hashCode();
-			}
-		}
+		result = prime * result + EmptyableEqualsAndHash.hashCode(sections);
 		return result;
 	}
 
+	/**
+	 * Determines equality with another object consistent with the secions of this message
+	 * 
+	 */
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -133,79 +134,8 @@ public final class SendableMessage implements SendableMessageInfo {
 		if (!(object instanceof SendableMessage)) {
 			return false;
 		}
-		ListIterator<TextualComponent> it1 = components.listIterator();
-		Iterator<TextualComponent> it2 = ((SendableMessage) object).components.iterator();
-
-		for (;;) {
-			final boolean hasNext1 = it1.hasNext();
-			final boolean hasNext2 = it2.hasNext();
-			if (hasNext1 == hasNext2) {
-				if (hasNext1) {
-					// Both have another component
-					// Skip either component if it is empty
-					TextualComponent tc1 = it1.next();
-					if (tc1.getText().isEmpty()) {
-						continue;
-					}
-					TextualComponent tc2 = it2.next();
-					if (tc2.getText().isEmpty()) {
-						// Ensure not to forget the last component
-						it1.previous();
-						continue;
-					}
-					// If nonempty components are nonequal, fail
-					if (!tc1.equals(tc2)) {
-						return false;
-					}
-				} else {
-					// Both ended
-					return true;
-				}
-			} else {
-				// Only one of them has another component
-				TextualComponent further = (hasNext1) ? it1.next() : it2.next();
-				if (!further.getText().isEmpty()) {
-					return false;
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Converts this {@code SendableMessage} into a legacy message string, using legacy colour codes. <br>
-	 * <br>
-	 * The colour of each {@code TextualComponent} in this {@code SendableMessage} is converted to the nearest
-	 * {@link PredefinedColour}. <br>
-	 * <br>
-	 * All JSON message content is removed.
-	 * 
-	 * @param legacyColourCharPrefix the legacy colour code character prefix, e.g. '{@literal &}'
-	 * @return a legacy message string
-	 */
-	public String toLegacyMessageString(char legacyColourCharPrefix) {
-		char prefix = legacyColourCharPrefix;
-		StringBuilder builder = new StringBuilder();
-		for (TextualComponent tc : getComponents()) {
-			char code = PredefinedColour.getNearestTo(tc.getColour()).getCodeChar();
-			builder.append(prefix).append('r').append(prefix).append(code);
-			if (tc.hasStyle(MessageStyle.MAGIC)) {
-				builder.append(prefix).append('k');
-			}
-			if (tc.hasStyle(MessageStyle.BOLD)) {
-				builder.append(prefix).append('l');
-			}
-			if (tc.hasStyle(MessageStyle.STRIKETHROUGH)) {
-				builder.append(prefix).append('m');
-			}
-			if (tc.hasStyle(MessageStyle.UNDERLINE)) {
-				builder.append(prefix).append('n');
-			}
-			if (tc.hasStyle(MessageStyle.ITALIC)) {
-				builder.append(prefix).append('o');
-			}
-			builder.append(tc.getText());
-		}
-		return builder.toString();
+		SendableMessage other = (SendableMessage) object;
+		return EmptyableEqualsAndHash.equals(sections, other.sections);
 	}
 
 	/**
@@ -216,66 +146,71 @@ public final class SendableMessage implements SendableMessageInfo {
 	 */
 	public static class Builder implements SendableMessageInfo {
 		
-		private final List<TextualComponent> components;
+		private final List<JsonSection> sections;
+		private transient final List<JsonSection> sectionsView;
+		
+		private Builder(List<JsonSection> sections) {
+			this.sections = sections;
+			sectionsView = Collections.unmodifiableList(sections);
+		}
 		
 		/**
 		 * Creates the builder
 		 * 
 		 */
 		public Builder() {
-			components = new ArrayList<>();
+			this(new ArrayList<>());
 		}
 		
 		/**
-		 * Creates, using the provided existing {@code SendableMessageInfo}, whose components
+		 * Creates, using the provided existing {@code SendableMessageInfo}, whose sections
 		 * are copied to this builder
 		 * 
 		 * @param info the message info to use
 		 */
 		public Builder(SendableMessageInfo info) {
-			components = new ArrayList<>(info.getComponents());
+			this(new ArrayList<>(List.copyOf(info.getSections())));
 		}
 		
 		/**
-		 * Adds the specified component to this builder.
+		 * Adds the specified section to this builder.
 		 * 
-		 * @param component the component, must not be null
-		 * @return the builder
-		 * @throws NullPointerException if {@code component} is null
+		 * @param section the section, must not be null
+		 * @return this builder
+		 * @throws NullPointerException if {@code section} is null
 		 */
-		public Builder add(TextualComponent component) {
-			components.add(component);
+		public Builder add(JsonSection section) {
+			sections.add(Objects.requireNonNull(section, "section"));
 			return this;
 		}
 		
 		/**
-		 * Adds the specified components to this builder. <br>
-		 * Neither the array nor any element may be null
+		 * Adds the specified sections to this builder
 		 * 
-		 * @param components the component array
-		 * @return the builder
-		 * @throws NullPointerException if the array or an element is null
+		 * @param sections the section array
+		 * @return this builder
+		 * @throws NullPointerException if {@code sections} or an element in it is null
 		 */
-		public Builder add(TextualComponent...components) {
-			for (TextualComponent component : components) {
-				this.components.add(Objects.requireNonNull(component, "Component must not be null"));
-			}
+		public Builder add(JsonSection...sections) {
+			this.sections.addAll(List.of(sections));
 			return this;
 		}
 		
 		/**
-		 * Adds the specified components to this builder. <br>
-		 * Neither the list nor any element may be null
+		 * Adds the specified sections to this builder
 		 * 
-		 * @param components the component list
-		 * @return the builder
-		 * @throws NullPointerException if the list or an element is null
+		 * @param sections the section list
+		 * @return this builder
+		 * @throws NullPointerException if {@code sections} or an element in it is null
 		 */
-		public Builder add(List<TextualComponent> components) {
-			for (TextualComponent component : components) {
-				this.components.add(Objects.requireNonNull(component, "Component must not be null"));
-			}
+		public Builder add(List<JsonSection> sections) {
+			this.sections.addAll(List.copyOf(sections));
 			return this;
+		}
+
+		@Override
+		public List<JsonSection> getSections() {
+			return sectionsView;
 		}
 		
 		/**
@@ -284,22 +219,32 @@ public final class SendableMessage implements SendableMessageInfo {
 		 * @return the built message
 		 */
 		public SendableMessage build() {
-			return new SendableMessage(components);
-		}
-
-		/**
-		 * Gets the current components in this builder. The returned list is not guaranteed
-		 * to be modifiable.
-		 * 
-		 */
-		@Override
-		public List<TextualComponent> getComponents() {
-			return components;
+			return SendableMessage.create(this);
 		}
 
 		@Override
 		public String toString() {
-			return "SendableMessage.Builder [components=" + components + "]";
+			return "SendableMessage.Builder [sections=" + sections + "]";
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + EmptyableEqualsAndHash.hashCode(sections);
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+			if (!(object instanceof Builder)) {
+				return false;
+			}
+			Builder other = (Builder) object;
+			return EmptyableEqualsAndHash.equals(sections, other.sections);
 		}
 		
 	}

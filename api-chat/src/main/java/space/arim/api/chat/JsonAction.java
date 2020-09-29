@@ -19,16 +19,14 @@
 package space.arim.api.chat;
 
 /**
- * A marker class for some action which runs when a player clicks, hovers, or shift clicks on a JSON message.
+ * Parent class for some action which runs when a player clicks, hovers, or shift clicks on a message.
  * 
  * @author A248
  *
  */
 public abstract class JsonAction {
 
-	JsonAction() {
-		// Pseudo-sealed class
-	}
+	JsonAction() {}
 	
 	@Override
 	public abstract String toString();

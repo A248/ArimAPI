@@ -16,24 +16,18 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat;
+package space.arim.api.chat.manipulator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Color;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HexManipulatorTest {
+public class ColourManipulatorTest {
 
-	private HexManipulator manipulator;
-	
-	@BeforeEach
-	public void setup() {
-		manipulator = new HexManipulator();
-	}
+	private final ColourManipulator manipulator = ColourManipulator.getInstance();
 	
 	public static int randomHex() {
 		return ThreadLocalRandom.current().nextInt(0xFFFFFF + 1);

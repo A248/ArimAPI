@@ -16,23 +16,36 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat;
+package space.arim.api.chat.manipulator;
 
 import java.awt.Color;
 
 /**
- * Utility to convert from a hex colour integer to and from other formats.
+ * Utility to convert from a hex colour integer to and from other formats. <br>
+ * <br>
+ * Both {@link #getInstance()} and the constructor may be used.
  * 
  * @author A248
  *
  */
-public class HexManipulator {
+public class ColourManipulator {
 
+	private static final ColourManipulator INSTANCE = new ColourManipulator();
+	
 	/**
 	 * Creates an instance
 	 * 
 	 */
-	public HexManipulator() {}
+	public ColourManipulator() {}
+	
+	/**
+	 * Gets the common instance
+	 * 
+	 * @return the shared instance
+	 */
+	public static ColourManipulator getInstance() {
+		return INSTANCE;
+	}
 	
 	/**
 	 * Converts a hex colour into a {@code java.awt.Color}
@@ -52,7 +65,7 @@ public class HexManipulator {
 	 */
 	public int fromJavaAwt(Color color) {
 		int result = (color.getRGB() & 0xFFFFFF);
-		assert result > 0 && result < 0xFFFFFF : result;
+		assert isInRange(result) : result;
 		return result;
 	}
 	
@@ -96,7 +109,7 @@ public class HexManipulator {
 	 */
 	public int fromBytes(byte red, byte green, byte blue) {
 		int result = (Byte.toUnsignedInt(red) << 16) | (Byte.toUnsignedInt(green) << 8) | Byte.toUnsignedInt(blue);
-		assert result > 0 && result < 0xFFFFFF : result;
+		assert isInRange(result) : result;
 		return result;
 	}
 	
@@ -113,32 +126,38 @@ public class HexManipulator {
 	}
 	
 	/**
-	 * Converts 3 bytes to a hex colour. Same as {@link #fromBytes(byte, byte, byte)}
+	 * Converts 3 bytes to a colour. Same as {@link #fromBytes(byte, byte, byte)}
 	 * except that this takes an array
 	 * 
 	 * @param bytes the byte array, must be at least of length 3
 	 * @return the hex colour
 	 */
 	public int fromBytes(byte[] bytes) {
-		return fromBytes(bytes[0], bytes[1], bytes[2]);
+		return fromBytes(bytes, 0);
 	}
 	
 	/**
-	 * Convenience method to check the range of a hex colour
+	 * Checks the range of a hex colour
 	 * 
 	 * @param colour the hex colour integer
 	 * @throws IllegalArgumentException if {@code hex} is outside the range of a hex colour
-	 * @return the same hex colour as the input, for further convenience
+	 * @return the same hex colour as the input, for convenience
 	 */
 	public int checkRange(int colour) {
-		checkRange0(colour);
+		if (!isInRange(colour)) {
+			throw new IllegalArgumentException("int " + colour + " is outside the range of a hex colour");
+		}
 		return colour;
 	}
 	
-	static void checkRange0(int colour) {
-		if (colour > 0xFFFFFF || colour < 0) {
-			throw new IllegalArgumentException("int " + colour + " is outside the range of a hex colour");
-		}
+	/**
+	 * Determines whether the colour is in the range of a hex colour
+	 * 
+	 * @param colour the hex colour integer
+	 * @return true if in range, false otherwise
+	 */
+	public boolean isInRange(int colour) {
+		return colour >= 0 && colour <= 0xFFFFFF;
 	}
 	
 }

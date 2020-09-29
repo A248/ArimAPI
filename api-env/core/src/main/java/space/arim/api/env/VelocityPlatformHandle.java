@@ -107,7 +107,7 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 	 * @param message the message
 	 */
 	public void sendMessage(CommandSource recipient, SendableMessage message) {
-		recipient.sendMessage(new AdventureTextConverter().convertFrom(message));
+		recipient.sendMessage(new AdventureTextConverter().convertTo(message));
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 	 * @param reason the kick message
 	 */
 	public void disconnectUser(Player user, SendableMessage reason) {
-		user.disconnect(new AdventureTextConverter().convertFrom(reason));
+		user.disconnect(new AdventureTextConverter().convertTo(reason));
 	}
 	
 	@Override

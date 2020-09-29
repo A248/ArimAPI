@@ -21,12 +21,21 @@ package space.arim.api.env.chat;
 import space.arim.api.chat.SendableMessage;
 
 /**
- * A platform message adapter which is both a {@link PlatformMessageForwardAdapter} and {@link PlatformMessageReverseAdapter}
+ * Converts ArimAPI's {@link SendableMessage} from another API's equivalent class {@code T}. This is the
+ * complement to {@link PlatformMessageForwardAdapter}
  * 
  * @author A248
  *
  * @param <T> the platform specific type equivalent to {@link SendableMessage}
  */
-public interface PlatformMessageAdapter<T> extends PlatformMessageForwardAdapter<T>, PlatformMessageReverseAdapter<T> {
+public interface PlatformMessageReverseAdapter<T> {
 
+	/**
+	 * Converts from the platform specific type <i>to</i> ArimAPI.
+	 * 
+	 * @param message the source message, must not be null
+	 * @return an equivalent {@code SendableMessage}, never {@code null}
+	 */
+	SendableMessage convertFrom(T message);
+	
 }

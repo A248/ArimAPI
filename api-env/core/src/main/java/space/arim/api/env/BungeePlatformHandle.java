@@ -36,6 +36,7 @@ import space.arim.api.env.realexecutor.BungeeRealExecutorFinder;
 import space.arim.api.env.realexecutor.RealExecutorFinder;
 
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -96,7 +97,7 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	 * @param message the message
 	 */
 	public void sendMessage(CommandSender recipient, SendableMessage message) {
-		recipient.sendMessage(new BungeeComponentConverter().convertFrom(message));
+		recipient.sendMessage(new BungeeComponentConverter().convertTo(message).toArray(TextComponent[]::new));
 	}
 	
 	/**
@@ -108,7 +109,7 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	 * @param reason the kick message
 	 */
 	public void disconnectUser(ProxiedPlayer user, SendableMessage reason) {
-		user.disconnect(new BungeeComponentConverter().convertFrom(reason));
+		user.disconnect(new BungeeComponentConverter().convertTo(reason).toArray(TextComponent[]::new));
 	}
 	
 	@Override

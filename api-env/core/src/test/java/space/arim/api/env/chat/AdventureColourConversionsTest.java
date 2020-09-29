@@ -18,15 +18,23 @@
  */
 package space.arim.api.env.chat;
 
-import space.arim.api.chat.SendableMessage;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * A platform message adapter which is both a {@link PlatformMessageForwardAdapter} and {@link PlatformMessageReverseAdapter}
- * 
- * @author A248
- *
- * @param <T> the platform specific type equivalent to {@link SendableMessage}
- */
-public interface PlatformMessageAdapter<T> extends PlatformMessageForwardAdapter<T>, PlatformMessageReverseAdapter<T> {
+import org.junit.jupiter.api.Test;
 
+import space.arim.api.chat.MessageStyle;
+
+import net.kyori.adventure.text.format.TextDecoration;
+
+public class AdventureColourConversionsTest {
+
+	@Test
+	public void testStyleConversion() {
+		assertEquals(MessageStyle.MAGIC, AdventureColourConversions.convertDecor(TextDecoration.OBFUSCATED));
+		assertEquals(MessageStyle.BOLD, AdventureColourConversions.convertDecor(TextDecoration.BOLD));
+		assertEquals(MessageStyle.STRIKETHROUGH, AdventureColourConversions.convertDecor(TextDecoration.STRIKETHROUGH));
+		assertEquals(MessageStyle.UNDERLINE, AdventureColourConversions.convertDecor(TextDecoration.UNDERLINED));
+		assertEquals(MessageStyle.ITALIC, AdventureColourConversions.convertDecor(TextDecoration.ITALIC));
+	}
+	
 }

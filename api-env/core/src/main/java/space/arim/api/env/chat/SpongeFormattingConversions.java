@@ -23,12 +23,14 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.format.TextStyles;
 
+import space.arim.api.chat.ChatComponent;
 import space.arim.api.chat.MessageStyle;
 import space.arim.api.chat.PredefinedColour;
-import space.arim.api.chat.TextualComponent;
 
 class SpongeFormattingConversions {
 
+	private SpongeFormattingConversions() {}
+	
 	static TextColor convertColour(int hex) {
 		char codeChar = PredefinedColour.getNearestTo(hex).getCodeChar();
 		switch (codeChar) {
@@ -69,7 +71,7 @@ class SpongeFormattingConversions {
 		}
 	}
 	
-	static TextStyle convertStyles(TextualComponent component) {
+	static TextStyle convertStyles(ChatComponent component) {
 		TextStyle start = TextStyles.NONE;
 		start = start.obfuscated(component.hasStyle(MessageStyle.MAGIC));
 		start = start.bold(component.hasStyle(MessageStyle.BOLD));

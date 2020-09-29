@@ -16,28 +16,31 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat.parser;
+package space.arim.api.chat.serialiser;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
-class LocalRegex {
+import space.arim.api.chat.SendableMessage;
 
-	static class DoublePipes {
-		static final Pattern PATTERN = Pattern.compile("||", Pattern.LITERAL);
-	}
+abstract class DeserialiserImpl {
 
-	static class LegacyColours {
-		static final Pattern PATTERN = Pattern.compile("&[0-9A-Fa-fK-Rk-r]");
+	private final Pattern colourPattern;
+	private final String content;
+	
+	DeserialiserImpl(Pattern colourPattern, String content) {
+		this.colourPattern = Objects.requireNonNull(colourPattern, "internal error: colourPattern");
+		this.content = Objects.requireNonNull(content, "internal error: content");
 	}
-
-	static class AllColours {
-		static final Pattern PATTERN = Pattern.compile(
-				// Legacy colour codes
-				"(&[0-9A-Fa-fK-Rk-r])|"
-				// Hex codes such as <#00AAFF>
-				+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)|"
-				// and the shorter <#4BC>
-				+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)");
+	
+	Pattern colourPattern() {
+		return colourPattern;
 	}
+	
+	String content() {
+		return content;
+	}
+	
+	abstract SendableMessage deserialise();
 	
 }

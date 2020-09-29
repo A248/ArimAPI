@@ -22,29 +22,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
+import space.arim.api.chat.ChatComponent;
+import space.arim.api.chat.JsonClick;
+import space.arim.api.chat.SendableMessage;
+import space.arim.api.env.SpongePlatformHandle;
+
 import org.spongepowered.api.text.LiteralText;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.ClickAction;
-import org.spongepowered.api.text.action.HoverAction;
-import org.spongepowered.api.text.action.ShiftClickAction;
 import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.format.TextStyle;
-
-import space.arim.api.chat.JsonClick;
-import space.arim.api.chat.JsonComponent;
-import space.arim.api.chat.JsonHover;
-import space.arim.api.chat.JsonInsertion;
-import space.arim.api.chat.MessageStyle;
-import space.arim.api.chat.SendableMessage;
-import space.arim.api.chat.TextualComponent;
 
 /**
  * Enables compatibility with the Sponge Text API. <br>
  * <br>
- * The Sponge Text API is, not surprisingly, used for the Sponge platform. . The Text API uses {@code Optional}
- * to handle nullability. It is clearly designed with flexibility for future changes; no enums are ever used,
- * although this makes conversion somewhat more difficult. Instead of an enum of types of a specific JSON action,
- * the Text API uses parameterised generics in concrete subclasses to indicate the kind of result. <br>
+ * This API is used for the Sponge API version 7. The Text API uses {@code Optional} to handle nullability. It is
+ * clearly designed with flexibility for future changes; no enums are ever used, although this makes conversion somewhat
+ * more difficult. Instead of an enum of types of a specific JSON action, the Text API uses parameterised generics
+ * in concrete subclasses to indicate the kind of result. <br>
  * <br>
  * <b>Comparison with ArimAPI</b> <br>
  * <br>
@@ -52,8 +46,7 @@ import space.arim.api.chat.TextualComponent;
  * With regards to chat colours and style formatting, the Text API defines styles as tristates: nullable {@code Boolean}s,
  * where true indicates enabled, null unset, and false disabled. In ArimAPI, styles are either enabled or disabled.
  * Unset styles in the Text API are converted to disabled styles in ArimAPI. Since the Sponge Text API does not currently
- * support arbitrary hex colours, {@link space.arim.api.chat.PredefinedColour#getNearestTo(int)} is used.
- * This may change should the feature be implemented in the Sponge API. <br>
+ * support arbitrary hex colours, {@link space.arim.api.chat.PredefinedColour#getNearestTo(int)} is used. <br>
  * <br>
  * <i>Json Messages</i> <br>
  * ArimAPI enables tooltips, urls, commands, suggestions, and insertions. Text objects have equivalent support for each
@@ -73,8 +66,13 @@ import space.arim.api.chat.TextualComponent;
  * When there are no equivalents for a Text API feature, it is simply discarded from the final result.
  * 
  * @author A248
+ * 
+ * @deprecated See the explanation for {@link SpongePlatformHandle} on compatibility with Sponge. This class currently
+ * throws {@code UnsupportedOperationException} on conversion method calls.
  *
  */
+@SuppressWarnings({ "unused", "deprecation" })
+@Deprecated
 public class SpongeTextConverter implements PlatformMessageAdapter<LiteralText> {
 	
 	/**
@@ -82,12 +80,6 @@ public class SpongeTextConverter implements PlatformMessageAdapter<LiteralText> 
 	 * 
 	 */
 	public SpongeTextConverter() {}
-	
-	/*
-	 * 
-	 * Converting from ArimAPI
-	 * 
-	 */
 	
 	private static ClickAction<?> convertClick(JsonClick jsonClick) {
 		if (jsonClick == null) {
@@ -110,48 +102,24 @@ public class SpongeTextConverter implements PlatformMessageAdapter<LiteralText> 
 		}
 	}
 	
-	private static Text convertComponent(TextualComponent component) {
+	private static Text.Builder convertComponent0(ChatComponent component) {
 		Text.Builder builder = Text.builder(component.getText());
-
 		builder.color(SpongeFormattingConversions.convertColour(component.getColour()));
 		builder.style(SpongeFormattingConversions.convertStyles(component));
-
-		if (component instanceof JsonComponent) {
-			JsonComponent jsonComp = (JsonComponent) component;
-
-			JsonHover hoverAction = jsonComp.getHoverAction();
-			if (hoverAction != null) {
-				builder.onHover(TextActions.showText(convertFrom0(hoverAction.getTooltip())));
-			}
-			builder.onClick(convertClick(jsonComp.getClickAction()));
-			JsonInsertion insertionAction = jsonComp.getInsertionAction();
-			if (insertionAction != null) {
-				builder.onShiftClick(TextActions.insertText(insertionAction.getValue()));
-			}
-		}
-		return builder.build();
+		return builder;
 	}
 	
-	private static LiteralText convertFrom0(SendableMessage message) {
+	private static Text convertComponent(ChatComponent component) {
+		return convertComponent0(component).build();
+	}
+	
+	/*private static LiteralText convertFrom0(SendableMessage message) {
 		Text.Builder builder = Text.builder();
 		for (TextualComponent component : message.getComponents()) {
 			builder.append(convertComponent(component));
 		}
 		return (LiteralText) builder.build();
 	}
-	
-	@Override
-	public LiteralText convertFrom(SendableMessage message) {
-		Objects.requireNonNull(message, "Message must not be null");
-
-		return convertFrom0(message);
-	}
-	
-	/*
-	 * 
-	 * Converting to ArimAPI
-	 * 
-	 */
 	
 	private static int convertTextStyle(TextStyle style) {
 		int styles = 0;
@@ -186,57 +154,30 @@ public class SpongeTextConverter implements PlatformMessageAdapter<LiteralText> 
 	
 	private static JsonClick convertClickAction(ClickAction<?> clickAction) {
 		if (clickAction instanceof ClickAction.RunCommand) {
-			return new JsonClick(JsonClick.Type.RUN_COMMAND, ((ClickAction.RunCommand) clickAction).getResult());
+			return JsonClick.runCommand(((ClickAction.RunCommand) clickAction).getResult());
 		}
 		if (clickAction instanceof ClickAction.SuggestCommand) {
-			return new JsonClick(JsonClick.Type.SUGGEST_COMMAND, ((ClickAction.SuggestCommand) clickAction).getResult());
+			return JsonClick.suggestCommand(((ClickAction.SuggestCommand) clickAction).getResult());
 		}
 		if (clickAction instanceof ClickAction.OpenUrl) {
-			return new JsonClick(JsonClick.Type.OPEN_URL, ((ClickAction.OpenUrl) clickAction).getResult().toExternalForm());
+			return JsonClick.openUrl(((ClickAction.OpenUrl) clickAction).getResult().toExternalForm());
 		}
 		return null;
-	}
+	}*/
 	
-	private static void addAllContent(SendableMessage.Builder parentBuilder, LiteralText message) {
-		JsonComponent.Builder builder = new JsonComponent.Builder();
-		builder.text(message.getContent());
+	@Override
+	public LiteralText convertTo(SendableMessage message) {
+		Objects.requireNonNull(message, "message");
 
-		builder.colour(message.getColor().getColor().getRgb());
-		builder.styles(convertTextStyle(message.getStyle()));
-
-		builder.hoverAction(convertHoverAction(message.getHoverAction().orElse(null)));
-		builder.clickAction(convertClickAction(message.getClickAction().orElse(null)));
-		ShiftClickAction<?> insertion = message.getShiftClickAction().orElse(null);
-		if (insertion instanceof ShiftClickAction.InsertText) {
-			builder.insertionAction(new JsonInsertion(((ShiftClickAction.InsertText) insertion).getResult()));
-		}
-		parentBuilder.add(builder.build());
-
-		for (Text child : message.getChildren()) {
-			if (child instanceof LiteralText) {
-				addAllContent(parentBuilder, (LiteralText) child);
-			}
-		}
-	}
-	
-	private static SendableMessage convertTo0(LiteralText message) {
-		SendableMessage.Builder builder = new SendableMessage.Builder();
-		addAllContent(builder, message);
-		return builder.build();
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override
-	public SendableMessage convertTo(LiteralText message) {
-		Objects.requireNonNull(message, "Message must not be null");
+	public SendableMessage convertFrom(LiteralText message) {
+		Objects.requireNonNull(message, "message");
 
-		return convertTo0(message);
+		throw new UnsupportedOperationException();
 	}
-	
-	/*
-	 * 
-	 * Other methods
-	 * 
-	 */
 	
 	@Override
 	public boolean supportsHexColoursFunctionality() {

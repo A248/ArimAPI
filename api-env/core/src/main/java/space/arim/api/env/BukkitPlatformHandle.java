@@ -26,6 +26,7 @@ import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
+import space.arim.api.chat.serialiser.LegacyCodeSerialiser;
 import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.annote.PlatformPlayer;
 import space.arim.api.env.chat.BungeeComponentConverter;
@@ -38,6 +39,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import net.md_5.bungee.api.chat.TextComponent;
 
 /**
  * Implementation of {@link PlatformHandle} specifically for Bukkit servers.
@@ -99,9 +102,10 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	 */
 	public void sendMessage(CommandSender recipient, SendableMessage message) {
 		if (recipient instanceof Player) {
-			((Player) recipient).spigot().sendMessage(new BungeeComponentConverter().convertFrom(message));
+			((Player) recipient).spigot().sendMessage(
+					new BungeeComponentConverter().convertTo(message).toArray(TextComponent[]::new));
 		} else {
-			recipient.sendMessage(message.toLegacyMessageString(ChatColor.COLOR_CHAR));
+			recipient.sendMessage(LegacyCodeSerialiser.getInstance(ChatColor.COLOR_CHAR).serialise(message));
 		}
 	}
 	
@@ -114,7 +118,7 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	 * @param reason the kick message
 	 */
 	public void disconnectUser(Player user, SendableMessage reason) {
-		user.kickPlayer(reason.toLegacyMessageString(ChatColor.COLOR_CHAR));
+		user.kickPlayer(LegacyCodeSerialiser.getInstance(ChatColor.COLOR_CHAR).serialise(reason));
 	}
 	
 	@Override

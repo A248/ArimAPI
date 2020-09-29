@@ -16,23 +16,21 @@
  * along with ArimAPI-chat. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.chat.parser;
+package space.arim.api.chat;
 
-import space.arim.api.chat.SendableMessage;
-import space.arim.api.chat.TextualComponent;
+/**
+ * Something which can be empty
+ * 
+ * @author A248
+ *
+ */
+interface Emptyable {
 
-class SimpleBuilder extends InternalBuilder {
-
-	private final SendableMessage.Builder parentBuilder = new SendableMessage.Builder();
-	
-	@Override
-	void addBuilder(TextualComponent.Builder builder) {
-		parentBuilder.add(builder.build());
-	}
-
-	@Override
-	SendableMessage build() {
-		return parentBuilder.build();
-	}
+	/**
+	 * Whether this thing is empty
+	 * 
+	 * @return true if empty, false otherwise
+	 */
+	boolean isEmpty();
 	
 }
