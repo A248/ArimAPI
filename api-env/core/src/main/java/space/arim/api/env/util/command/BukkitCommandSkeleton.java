@@ -36,7 +36,7 @@ import org.bukkit.command.CommandSender;
  * from the default, which is a blank description, no permission, no permission message, and the name of the command. It is
  * intended that all such handling is conducted by the {@link #execute(CommandSender, String[])} method. <br>
  * <br>
- * Secondly, Bukkit it does not allow changing many details of the command once it has been registered. To reduce mutability
+ * Secondly, Bukkit does not allow changing many details of the command once it has been registered. To reduce mutability
  * to the fullest extent while complying with method contracts, the user may register this command in a command map via
  * {@code CommandMap#register(String, String, Command)} or another appropriate {@code CommandMap} method to have the server
  * recognise the command. Ideally this is done following complete construction.
