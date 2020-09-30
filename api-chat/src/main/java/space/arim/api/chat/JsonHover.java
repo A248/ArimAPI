@@ -18,6 +18,7 @@
  */
 package space.arim.api.chat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,8 +31,19 @@ public final class JsonHover extends JsonAction {
 
 	private final List<ChatComponent> contents;
 	
+	private static final JsonHover EMPTY = new JsonHover(List.of());
+	
 	private JsonHover(List<ChatComponent> contents) {
 		this.contents = List.copyOf(contents);
+	}
+	
+	private static JsonHover create0(List<ChatComponent> sourceContents) {
+		List<ChatComponent> contents = new ArrayList<>(sourceContents);
+		if (contents.isEmpty()) {
+			return EMPTY;
+		}
+		Compactions.compactComponents(contents);
+		return new JsonHover(contents);
 	}
 	
 	/**
@@ -42,7 +54,7 @@ public final class JsonHover extends JsonAction {
 	 * @throws NullPointerException if {@code contents} or an element in it is null
 	 */
 	public static JsonHover create(List<ChatComponent> contents) {
-		return new JsonHover(contents);
+		return create0(contents);
 	}
 	
 	/**
@@ -63,10 +75,14 @@ public final class JsonHover extends JsonAction {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + EmptyableEqualsAndHash.hashCode(contents);
+		result = prime * result + contents.hashCode();
 		return result;
 	}
 
+	/**
+	 * Determines equality with another object consistent with the visual output of this hover action
+	 * 
+	 */
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -76,7 +92,7 @@ public final class JsonHover extends JsonAction {
 			return false;
 		}
 		JsonHover other = (JsonHover) object;
-		return EmptyableEqualsAndHash.equals(contents, other.contents);
+		return contents.equals(other.contents);
 	}
 	
 }

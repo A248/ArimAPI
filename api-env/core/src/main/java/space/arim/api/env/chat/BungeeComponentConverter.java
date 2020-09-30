@@ -77,14 +77,14 @@ public class BungeeComponentConverter implements PlatformMessageAdapter<List<Tex
 	public BungeeComponentConverter() {}
 	
 	@Override
-	public List<TextComponent> convertTo(SendableMessage message) {
+	public List<TextComponent> convert(SendableMessage message) {
 		Objects.requireNonNull(message, "message");
 
 		return ConversionsToBungee.convertFrom0(message);
 	}
 	
 	@Override
-	public SendableMessage convertFrom(List<TextComponent> message) {
+	public SendableMessage convert(List<TextComponent> message) {
 		message = List.copyOf(message);
 
 		return new FromBungeeConverter(message).parseToMessage();

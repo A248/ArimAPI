@@ -36,6 +36,6 @@ public interface PlatformMessageReverseAdapter<T> {
 	 * @param message the source message, must not be null
 	 * @return an equivalent {@code SendableMessage}, never {@code null}
 	 */
-	SendableMessage convertFrom(T message);
+	SendableMessage convert(T message);
 	
 }

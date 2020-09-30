@@ -38,7 +38,7 @@ public interface PlatformMessageForwardAdapter<T> {
 	 * @param message the source message, must not be null
 	 * @return an equivalent platform specific result, never {@code null}
 	 */
-	T convertTo(SendableMessage message);
+	T convert(SendableMessage message);
 	
 	/**
 	 * Whether this platform supports the functionality of full hex colour support. <br>

@@ -18,6 +18,8 @@
  */
 package space.arim.api.chat;
 
+import java.util.Set;
+
 /**
  * Definition of specific message styles. To combine styles, simply bitwise OR them together.
  * 
@@ -52,6 +54,17 @@ public final class MessageStyle {
 	 */
 	public static final int ITALIC = 0b10000;
 	
+	private static final Set<Integer> VALUES = Set.of(MAGIC, BOLD, STRIKETHROUGH, UNDERLINE, ITALIC);
+	
 	private MessageStyle() {}
+	
+	/**
+	 * Gets an immutable set containing of all styles
+	 * 
+	 * @return an immutable set of all style integers
+	 */
+	public static Set<Integer> values() {
+		return VALUES;
+	}
 	
 }

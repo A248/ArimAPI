@@ -46,6 +46,16 @@ public final class JsonSection implements JsonSectionInfo {
 		this.insertionAction = insertionAction;
 	}
 	
+	private static JsonSection create0(List<ChatComponent> sourceContents, JsonHover hoverAction,
+			JsonClick clickAction, JsonInsertion insertionAction) {
+		List<ChatComponent> contents = new ArrayList<>(sourceContents);
+		if (contents.isEmpty()) {
+			return EMPTY;
+		}
+		Compactions.compactComponents(contents);
+		return new JsonSection(contents, hoverAction, clickAction, insertionAction);
+	}
+	
 	/**
 	 * Creates from {@code JsonSectionInfo}. The attributes of the json section info are copied.
 	 * 
@@ -56,12 +66,7 @@ public final class JsonSection implements JsonSectionInfo {
 		if (info instanceof JsonSection) {
 			return (JsonSection) info;
 		}
-		List<ChatComponent> contents = List.copyOf(info.getContents());
-		if (contents.isEmpty()) {
-			return EMPTY;
-		}
-		return new JsonSection(contents, info.getHoverAction(), info.getClickAction(),
-				info.getInsertionAction());
+		return create0(info.getContents(), info.getHoverAction(), info.getClickAction(), info.getInsertionAction());
 	}
 	
 	/**
@@ -72,11 +77,7 @@ public final class JsonSection implements JsonSectionInfo {
 	 * @throws NullPointerException if {@code contents} or an element in it is null
 	 */
 	public static JsonSection create(List<ChatComponent> contents) {
-		List<ChatComponent> contentsCopy = List.copyOf(contents);
-		if (contentsCopy.isEmpty()) {
-			return EMPTY;
-		}
-		return new JsonSection(contentsCopy, null, null, null);
+		return create0(contents, null, null, null);
 	}
 	
 	@Override
@@ -109,13 +110,17 @@ public final class JsonSection implements JsonSectionInfo {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + EmptyableEqualsAndHash.hashCode(contents);
-		result = prime * result + ((hoverAction == null) ? 0 : hoverAction.hashCode());
-		result = prime * result + ((clickAction == null) ? 0 : clickAction.hashCode());
-		result = prime * result + ((insertionAction == null) ? 0 : insertionAction.hashCode());
+		result = prime * result + contents.hashCode();
+		result = prime * result + Objects.hashCode(hoverAction);
+		result = prime * result + Objects.hashCode(clickAction);
+		result = prime * result + Objects.hashCode(insertionAction);
 		return result;
 	}
 
+	/**
+	 * Determines equality with another object consistent with the visual output of this section
+	 * 
+	 */
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -125,10 +130,10 @@ public final class JsonSection implements JsonSectionInfo {
 			return false;
 		}
 		JsonSection other = (JsonSection) object;
-		return EmptyableEqualsAndHash.equals(contents, other.contents)
-				&& ((hoverAction == null) ? other.hoverAction == null : hoverAction.equals(other.hoverAction))
-				&& ((clickAction == null) ? other.clickAction == null : clickAction.equals(other.clickAction))
-				&& ((insertionAction == null) ? other.insertionAction == null : insertionAction.equals(other.insertionAction));
+		return contents.equals(other.contents)
+				&& Objects.equals(hoverAction, other.hoverAction)
+				&& Objects.equals(clickAction, other.clickAction)
+				&& Objects.equals(insertionAction, other.insertionAction);
 	}
 
 	/**
@@ -270,6 +275,7 @@ public final class JsonSection implements JsonSectionInfo {
 		
 		@Override
 		public List<ChatComponent> getContents() {
+			Compactions.compactComponents(contents);
 			return contentsView;
 		}
 
@@ -302,15 +308,20 @@ public final class JsonSection implements JsonSectionInfo {
 			return "Builder [contents=" + contents + ", hoverAction=" + hoverAction + ", clickAction=" + clickAction
 					+ ", insertionAction=" + insertionAction + "]";
 		}
+		
+		private List<ChatComponent> contentsCompact() {
+			Compactions.compactComponents(contents);
+			return contents;
+		}
 
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + EmptyableEqualsAndHash.hashCode(contents);
-			result = prime * result + ((clickAction == null) ? 0 : clickAction.hashCode());
-			result = prime * result + ((hoverAction == null) ? 0 : hoverAction.hashCode());
-			result = prime * result + ((insertionAction == null) ? 0 : insertionAction.hashCode());
+			result = prime * result + contentsCompact().hashCode();
+			result = prime * result + Objects.hashCode(hoverAction);
+			result = prime * result + Objects.hashCode(clickAction);
+			result = prime * result + Objects.hashCode(insertionAction);
 			return result;
 		}
 
@@ -323,10 +334,10 @@ public final class JsonSection implements JsonSectionInfo {
 				return false;
 			}
 			Builder other = (Builder) object;
-			return EmptyableEqualsAndHash.equals(contents, other.contents)
-					&& ((hoverAction == null) ? other.hoverAction == null : hoverAction.equals(other.hoverAction))
-					&& ((clickAction == null) ? other.clickAction == null : clickAction.equals(other.clickAction))
-					&& ((insertionAction == null) ? other.insertionAction == null : insertionAction.equals(other.insertionAction));
+			return contentsCompact().equals(other.contentsCompact())
+					&& Objects.equals(hoverAction, other.hoverAction)
+					&& Objects.equals(clickAction, other.clickAction)
+					&& Objects.equals(insertionAction, other.insertionAction);
 		}
 		
 	}

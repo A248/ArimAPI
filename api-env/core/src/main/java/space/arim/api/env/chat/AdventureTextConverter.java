@@ -69,14 +69,14 @@ public class AdventureTextConverter implements PlatformMessageAdapter<TextCompon
 	public AdventureTextConverter() {}
 	
 	@Override
-	public TextComponent convertTo(SendableMessage message) {
+	public TextComponent convert(SendableMessage message) {
 		Objects.requireNonNull(message, "message");
 
 		return ConversionsToAdventure.convertFrom0(message);
 	}
 	
 	@Override
-	public SendableMessage convertFrom(TextComponent message) {
+	public SendableMessage convert(TextComponent message) {
 		Objects.requireNonNull(message, "message");
 
 		return new FromAdventureConverter(message).parseToMessage();

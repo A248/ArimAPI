@@ -104,7 +104,7 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 * @param message the message
 	 */
 	public void sendMessage(CommandSource recipient, SendableMessage message) {
-		recipient.sendMessage(new SpongeTextConverter().convertTo(message));
+		recipient.sendMessage(new SpongeTextConverter().convert(message));
 	}
 	
 	/**
@@ -116,7 +116,7 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 * @param reason the kick message
 	 */
 	public void disconnectUser(Player user, SendableMessage reason) {
-		user.kick(new SpongeTextConverter().convertTo(reason));
+		user.kick(new SpongeTextConverter().convert(reason));
 	}
 	
 	@Override

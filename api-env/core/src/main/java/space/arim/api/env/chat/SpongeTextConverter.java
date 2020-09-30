@@ -166,14 +166,14 @@ public class SpongeTextConverter implements PlatformMessageAdapter<LiteralText> 
 	}*/
 	
 	@Override
-	public LiteralText convertTo(SendableMessage message) {
+	public LiteralText convert(SendableMessage message) {
 		Objects.requireNonNull(message, "message");
 
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
-	public SendableMessage convertFrom(LiteralText message) {
+	public SendableMessage convert(LiteralText message) {
 		Objects.requireNonNull(message, "message");
 
 		throw new UnsupportedOperationException();

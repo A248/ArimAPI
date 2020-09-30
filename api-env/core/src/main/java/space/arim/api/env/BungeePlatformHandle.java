@@ -97,7 +97,7 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	 * @param message the message
 	 */
 	public void sendMessage(CommandSender recipient, SendableMessage message) {
-		recipient.sendMessage(new BungeeComponentConverter().convertTo(message).toArray(TextComponent[]::new));
+		recipient.sendMessage(new BungeeComponentConverter().convert(message).toArray(TextComponent[]::new));
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	 * @param reason the kick message
 	 */
 	public void disconnectUser(ProxiedPlayer user, SendableMessage reason) {
-		user.disconnect(new BungeeComponentConverter().convertTo(reason).toArray(TextComponent[]::new));
+		user.disconnect(new BungeeComponentConverter().convert(reason).toArray(TextComponent[]::new));
 	}
 	
 	@Override

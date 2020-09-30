@@ -47,10 +47,11 @@ public final class SendableMessage implements SendableMessageInfo {
 	 * @throws NullPointerException if {@code sections} or an element in it is null
 	 */
 	public static SendableMessage create(List<JsonSection> sections) {
-		List<JsonSection> sectionsCopy = List.copyOf(sections);
+		List<JsonSection> sectionsCopy = new ArrayList<>(sections);
 		if (sectionsCopy.isEmpty()) {
 			return EMPTY;
 		}
+		Compactions.compactSections(sectionsCopy);
 		return new SendableMessage(sectionsCopy);
 	}
 	
@@ -103,10 +104,11 @@ public final class SendableMessage implements SendableMessageInfo {
 		if (other.isEmpty()) {
 			return this;
 		}
-		List<JsonSection> sections = new ArrayList<>(this.sections.size() + other.sections.size());
-		sections.addAll(this.sections);
-		sections.addAll(other.sections);
-		return new SendableMessage(sections);
+		List<JsonSection> resultSections = new ArrayList<>(sections.size() + other.sections.size());
+		resultSections.addAll(sections);
+		resultSections.addAll(other.sections);
+		Compactions.compactSections(resultSections);
+		return new SendableMessage(resultSections);
 	}
 	
 	@Override
@@ -118,12 +120,12 @@ public final class SendableMessage implements SendableMessageInfo {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + EmptyableEqualsAndHash.hashCode(sections);
+		result = prime * result + sections.hashCode();
 		return result;
 	}
 
 	/**
-	 * Determines equality with another object consistent with the secions of this message
+	 * Determines equality with another object consistent with the visual output of this message
 	 * 
 	 */
 	@Override
@@ -135,7 +137,7 @@ public final class SendableMessage implements SendableMessageInfo {
 			return false;
 		}
 		SendableMessage other = (SendableMessage) object;
-		return EmptyableEqualsAndHash.equals(sections, other.sections);
+		return sections.equals(other.sections);
 	}
 
 	/**
@@ -210,6 +212,7 @@ public final class SendableMessage implements SendableMessageInfo {
 
 		@Override
 		public List<JsonSection> getSections() {
+			Compactions.compactSections(sections);
 			return sectionsView;
 		}
 		
@@ -226,12 +229,17 @@ public final class SendableMessage implements SendableMessageInfo {
 		public String toString() {
 			return "SendableMessage.Builder [sections=" + sections + "]";
 		}
+		
+		private List<JsonSection> sectionsCompact() {
+			Compactions.compactSections(sections);
+			return sections;
+		}
 
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + EmptyableEqualsAndHash.hashCode(sections);
+			result = prime * result + sectionsCompact().hashCode();
 			return result;
 		}
 
@@ -244,7 +252,7 @@ public final class SendableMessage implements SendableMessageInfo {
 				return false;
 			}
 			Builder other = (Builder) object;
-			return EmptyableEqualsAndHash.equals(sections, other.sections);
+			return sectionsCompact().equals(other.sectionsCompact());
 		}
 		
 	}

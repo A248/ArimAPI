@@ -119,6 +119,7 @@ public class SendableMessageManipulator {
 	 * 
 	 * @param operator the operator used to replace content
 	 * @return the new message with the text replaced according to the operator
+	 * @throws NullPointerException if {@code operator} is null
 	 */
 	public SendableMessage replaceText(UnaryOperator<String> operator) {
 		return replaceText(operator, ReplaceGoal.ALL_GOALS);
@@ -154,47 +155,86 @@ public class SendableMessageManipulator {
 		return Objects.requireNonNull(operator.apply(value), "operator returned null");
 	}
 	
-	private SendableMessage replaceText0(UnaryOperator<String> operator, Set<ReplaceGoal> goals) {
-		if (goals.isEmpty()) {
+	private SendableMessage replaceText0(final UnaryOperator<String> operator, final Set<ReplaceGoal> goals) {
+		if (goals.isEmpty() || message.isEmpty()) {
 			return message;
 		}
+		boolean changedAny = false;
 		List<JsonSection> sections = new ArrayList<>(message.getSections().size());
 		for (JsonSection section : message.getSections()) {
 
 			JsonSection.Builder sectionBuilder = new JsonSection.Builder(section);
 
 			if (goals.contains(ReplaceGoal.SIMPLE_TEXT)) {
-				sectionBuilder.contents(replaceTextInComponents(section.getContents(), operator));
+				List<ChatComponent> oldContents = section.getContents();
+				List<ChatComponent> newContents = replaceTextInComponents(oldContents, operator);
+				if (!oldContents.equals(newContents)) {
+					sectionBuilder.contents(newContents);
+				}
 			}
 			JsonHover hover;
 			if (goals.contains(ReplaceGoal.HOVER_TEXT) && (hover = section.getHoverAction()) != null) {
-				sectionBuilder.hoverAction(JsonHover.create(
-						replaceTextInComponents(hover.getContents(), operator)));
+				List<ChatComponent> oldContents = hover.getContents();
+				List<ChatComponent> newContents = replaceTextInComponents(oldContents, operator); 
+				if (!oldContents.equals(newContents)) {
+					sectionBuilder.hoverAction(JsonHover.create(newContents));
+				}
 			}
 			JsonClick click;
 			if (goals.contains(ReplaceGoal.CLICK_VALUE) && (click = section.getClickAction()) != null) {
-				sectionBuilder.clickAction(JsonClick.create(click.getType(), apply(operator, click.getValue())));
+				String oldValue = click.getValue();
+				String newValue = apply(operator, oldValue);
+				if (!oldValue.equals(newValue)) {
+					sectionBuilder.clickAction(JsonClick.create(click.getType(), newValue));
+				}
 			}
 			JsonInsertion insertion;
 			if (goals.contains(ReplaceGoal.INSERTION_VALUE) && (insertion = section.getInsertionAction()) != null) {
-				sectionBuilder.insertionAction(JsonInsertion.create(apply(operator, insertion.getValue())));
+				String oldValue = insertion.getValue();
+				String newValue = apply(operator, oldValue);
+				if (!oldValue.equals(newValue)) {
+					sectionBuilder.insertionAction(JsonInsertion.create(newValue));
+				}
 			}
-			sections.add(sectionBuilder.build());
+
+			JsonSection built = sectionBuilder.build();
+			JsonSection result;
+			if (section.equals(built)) {
+				result = section;
+			} else {
+				result = built;
+				changedAny = true;
+			}
+			sections.add(result);
+		}
+		if (!changedAny) {
+			return message;
 		}
 		return SendableMessage.create(sections);
 	}
 	
-	private static List<ChatComponent> replaceTextInComponents(List<ChatComponent> sourceContent,
+	private static List<ChatComponent> replaceTextInComponents(List<ChatComponent> sourceContents,
 			UnaryOperator<String> operator) {
-		if (sourceContent.isEmpty()) {
-			return sourceContent;
+		if (sourceContents.isEmpty()) {
+			return sourceContents;
 		}
-		List<ChatComponent> contents = new ArrayList<>(sourceContent.size());
-		for (ChatComponent component : sourceContent) {
+		boolean changedAny = false;
+		List<ChatComponent> contents = new ArrayList<>(sourceContents.size());
+		for (ChatComponent component : sourceContents) {
 
-			ChatComponent.Builder contentBuilder = new ChatComponent.Builder(component);
-			contentBuilder.text(apply(operator, contentBuilder.getText()));
-			contents.add(contentBuilder.build());
+			ChatComponent result;
+			String oldText = component.getText();
+			String newText = apply(operator, oldText);
+			if (oldText.equals(newText)) {
+				result = component;
+			} else {
+				result = new ChatComponent.Builder(component).text(newText).build();
+				changedAny = true;
+			}
+			contents.add(result);
+		}
+		if (!changedAny) {
+			return sourceContents;
 		}
 		return contents;
 	}

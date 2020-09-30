@@ -44,7 +44,7 @@ final class ConversionsToAdventure {
 		}
 		TextComponent.Builder builder = Component.text();
 		for (ChatComponent content : hover.getContents()) {
-			builder.append(convertComponent(content));
+			builder.append(convertComponent(content).build());
 		}
 		return HoverEvent.showText(builder.build());
 	}
@@ -76,7 +76,7 @@ final class ConversionsToAdventure {
 		return insertion.getValue();
 	}
 	
-	private static TextComponent.Builder convertComponent0(ChatComponent component) {
+	private static TextComponent.Builder convertComponent(ChatComponent component) {
 		TextComponent.Builder child = Component.text();
 
 		child.color(AdventureColourConversions.convertColour(component.getColour()));
@@ -87,10 +87,6 @@ final class ConversionsToAdventure {
 		return child;
 	}
 	
-	private static TextComponent convertComponent(ChatComponent component) {
-		return convertComponent0(component).build();
-	}
-	
 	private static List<TextComponent> convertSection(JsonSection section) {
 		HoverEvent<?> hoverEvent = convertHover(section.getHoverAction());
 		ClickEvent clickEvent = convertClick(section.getClickAction());
@@ -98,7 +94,7 @@ final class ConversionsToAdventure {
 
 		List<TextComponent> components = new ArrayList<>();
 		for (ChatComponent content : section.getContents()) {
-			TextComponent.Builder componentBuilder = convertComponent0(content);
+			TextComponent.Builder componentBuilder = convertComponent(content);
 			componentBuilder.hoverEvent(hoverEvent);
 			componentBuilder.clickEvent(clickEvent);
 			componentBuilder.insertion(insertion);

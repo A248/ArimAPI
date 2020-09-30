@@ -103,7 +103,7 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	public void sendMessage(CommandSender recipient, SendableMessage message) {
 		if (recipient instanceof Player) {
 			((Player) recipient).spigot().sendMessage(
-					new BungeeComponentConverter().convertTo(message).toArray(TextComponent[]::new));
+					new BungeeComponentConverter().convert(message).toArray(TextComponent[]::new));
 		} else {
 			recipient.sendMessage(LegacyCodeSerialiser.getInstance(ChatColor.COLOR_CHAR).serialise(message));
 		}
