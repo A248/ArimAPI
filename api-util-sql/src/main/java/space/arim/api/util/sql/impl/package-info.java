@@ -14,5 +14,6 @@
  * <br>
  * Also, closing objects bundled with a Connection will first commit the connection if auto-commit is disabled.
  * 
+ * @deprecated See deprecation of {@link space.arim.api.util.sql} (this entire framework is deprecated)
  */
 package space.arim.api.util.sql.impl;

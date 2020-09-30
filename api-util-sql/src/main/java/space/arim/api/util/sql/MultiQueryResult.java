@@ -25,8 +25,10 @@ import java.sql.SQLException;
  * Closing will close all of the underlying query results AND reliant connections.
  * 
  * @author A248
- *
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.sql} (this entire framework is deprecated)
  */
+@Deprecated(forRemoval = true)
 public interface MultiQueryResult extends SqlClosable {
 
 	/**

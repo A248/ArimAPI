@@ -32,8 +32,10 @@ import com.zaxxer.hikari.HikariDataSource;
  * All methods are thread safe because HikariCP is itself thread safe. <br>
  * 
  * @author A248
- *
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.sql} (this entire framework is deprecated)
  */
+@Deprecated(forRemoval = true)
 public class HikariPoolSqlBackend extends BaseSqlBackend {
 
 	private final HikariDataSource dataSource;

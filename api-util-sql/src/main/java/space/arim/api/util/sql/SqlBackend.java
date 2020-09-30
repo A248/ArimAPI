@@ -45,7 +45,9 @@ import java.sql.SQLException;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.util.sql} (this entire framework is deprecated)
  */
+@Deprecated(forRemoval = true)
 public interface SqlBackend extends SqlClosable {
 	
 	/**

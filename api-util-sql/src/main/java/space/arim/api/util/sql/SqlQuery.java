@@ -32,7 +32,9 @@ import java.util.Objects;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.util.sql} (this entire framework is deprecated)
  */
+@Deprecated(forRemoval = true)
 public class SqlQuery {
 
 	private final String statement;
