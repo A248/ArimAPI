@@ -18,6 +18,7 @@
  */
 package space.arim.api.util.config;
 
+@Deprecated(forRemoval = true)
 public class ConfigDefaultValueNotSetException extends ConfigException {
 
 	/**

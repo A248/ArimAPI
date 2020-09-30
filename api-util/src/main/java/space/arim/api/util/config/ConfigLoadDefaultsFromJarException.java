@@ -24,7 +24,9 @@ package space.arim.api.util.config;
  * 
  * @author A248
  *
+ * @deprecated See {@link space.arim.api.util.config} (this entire framework is deprecated for removal)
  */
+@Deprecated(forRemoval = true)
 public class ConfigLoadDefaultsFromJarException extends ConfigException {
 
 	/**

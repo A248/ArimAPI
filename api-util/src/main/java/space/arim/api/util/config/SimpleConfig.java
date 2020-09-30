@@ -55,7 +55,9 @@ import java.util.Set;
  * 
  * @author A248
  *
+ * @deprecated See {@link space.arim.api.util.config} (this entire framework is deprecated for removal)
  */
+@Deprecated(forRemoval = true)
 public class SimpleConfig extends AbstractYamlConfig {
 
 	private final Class<?> resourceClass;

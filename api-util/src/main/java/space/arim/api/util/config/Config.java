@@ -51,7 +51,9 @@ import java.util.Set;
  * @see SimpleConfig
  * @see FlattenedConfig
  *
+ * @deprecated See {@link space.arim.api.util.config} (this entire framework is deprecated for removal)
  */
+@Deprecated(forRemoval = true)
 public interface Config {
 
 	/**

@@ -9,5 +9,8 @@
  * <br>
  * Note that <i>this</i> package requires SnakeYAML to be present on the classpath.
  * 
+ * @deprecated This framework is deprecated for removal. <b>The recommended alternative is
+ * <a href="https://github.com/A248/DazzleConf">DazzleConf</a></b>, a typesafe configuration library
+ * by the same author of this package, which improves on many of the design mistakes in this framework.
  */
 package space.arim.api.util.config;

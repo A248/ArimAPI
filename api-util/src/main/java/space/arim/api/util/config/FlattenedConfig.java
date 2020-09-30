@@ -70,7 +70,10 @@ import java.util.Set;
  * @author A248
  *
  * @see SimpleConfig
+ * 
+ * @deprecated See {@link space.arim.api.util.config} (this entire framework is deprecated for removal)
  */
+@Deprecated(forRemoval = true)
 public class FlattenedConfig extends AbstractYamlConfig {
 
 	private final Class<?> resourceClass;
