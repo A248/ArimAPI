@@ -38,9 +38,11 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	}
 	
 	boolean isPrimaryThread() {
+		Thread mainThread = this.mainThread;
 		if (mainThread == null) {
 			if (isPrimaryThread0()) {
 				mainThread = Thread.currentThread();
+				this.mainThread = mainThread;
 				return true;
 			}
 			return false;
@@ -55,19 +57,8 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 		return new DeadlockFreeFuture<>(this);
 	}
 	
-	private static final boolean DISABLE_LAZY_EXECUTE;
-	
-	static {
-		boolean disableLazyExec = false;
-		try {
-			disableLazyExec = Boolean.getBoolean("space.arim.api.DeadlockFreeFutureFactory.disableLazyExec");
-		} catch (SecurityException ignored) {}
-
-		DISABLE_LAZY_EXECUTE = disableLazyExec;
-	}
-	
 	void executeSync0(Runnable command) {
-		if (DISABLE_LAZY_EXECUTE && isPrimaryThread()) {
+		if (isPrimaryThread()) {
 			command.run();
 			return;
 		}
