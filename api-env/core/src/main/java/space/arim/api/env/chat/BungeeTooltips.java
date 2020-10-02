@@ -32,7 +32,7 @@ import space.arim.api.chat.JsonHover;
 
 final class BungeeTooltips {
 	
-	private static final boolean LEGACY_HOVER_EVENT;
+	private static final Tooltips IMPL;
 	
 	private BungeeTooltips() {}
 	
@@ -42,7 +42,12 @@ final class BungeeTooltips {
 			Class.forName("net.md_5.bungee.api.chat.hover.content.Content");
 			legacyHoverEvent = false;
 		} catch (ClassNotFoundException ignored) {}
-		LEGACY_HOVER_EVENT = legacyHoverEvent;
+
+		if (legacyHoverEvent) {
+			IMPL = new LegacyTooltips();
+		} else {
+			IMPL = new ModernTooltips();
+		}
 	}
 	
 	static JsonHover convert(HoverEvent hoverEvent) {
@@ -50,40 +55,7 @@ final class BungeeTooltips {
 		if (action != HoverEvent.Action.SHOW_TEXT) {
 			return null;
 		}
-		if (LEGACY_HOVER_EVENT) {
-			@SuppressWarnings("deprecation")
-			BaseComponent[] hoverValue = hoverEvent.getValue();
-			if (hoverValue == null) {
-				return null;
-			}
-			List<TextComponent> components = getAllTextComponents(hoverValue);
-			List<ChatComponent> contents = new FromBungeeConverter(components).parseToContent();
-			return JsonHover.create(contents);
-		}
-		List<Content> bungeeContents = hoverEvent.getContents();
-		if (bungeeContents == null) {
-			return null;
-		}
-		List<ChatComponent> contents = new ArrayList<>();
-		for (Content bungeeContent : bungeeContents) {
-
-			if (!(bungeeContent instanceof Text)) {
-				continue;
-			}
-			Object value = ((Text) bungeeContent).getValue();
-			if (value instanceof String) {
-				contents.add(new ChatComponent.Builder().text((String) value).build());
-
-			} else if (value instanceof BaseComponent[]) {
-				BaseComponent[] hoverValue = (BaseComponent[]) value;
-				List<TextComponent> components = getAllTextComponents(hoverValue);
-				contents.addAll(new FromBungeeConverter(components).parseToContent());
-
-			} else {
-				// who knows what happened
-			}
-		}
-		return JsonHover.create(contents);
+		return IMPL.convert(hoverEvent);
 	}
 	
 	private static List<TextComponent> getAllTextComponents(BaseComponent[] hoverValue) {
@@ -97,19 +69,79 @@ final class BungeeTooltips {
 	}
 	
 	static HoverEvent createTooltip(List<? extends BaseComponent> components) {
-		BaseComponent[] value = components.toArray(BaseComponent[]::new);
-		if (LEGACY_HOVER_EVENT) {
-			@SuppressWarnings("deprecation")
-			HoverEvent legacyEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, value);
-			return legacyEvent;
+		return IMPL.createTooltip(components.toArray(BaseComponent[]::new));
+	}
+	
+	interface Tooltips {
+		
+		JsonHover convert(HoverEvent hoverEvent);
+		
+		HoverEvent createTooltip(BaseComponent[] value);
+		
+	}
+	
+	@SuppressWarnings("deprecation")
+	private static class LegacyTooltips implements Tooltips {
+
+		@Override
+		public JsonHover convert(HoverEvent hoverEvent) {
+			BaseComponent[] hoverValue = hoverEvent.getValue();
+			if (hoverValue == null) {
+				return null;
+			}
+			List<TextComponent> components = getAllTextComponents(hoverValue);
+			List<ChatComponent> contents = new FromBungeeConverter(components).parseToContent();
+			return JsonHover.create(contents);
 		}
-		/*
-		 * Bungee uses an ArrayList internally by default, but it does not seem to require
-		 * that the List be mutable.
-		 * If this has issues, switch to ArrayList
-		 */
-		List<Content> contents = List.of(new Text(value));
-		return new HoverEvent(HoverEvent.Action.SHOW_TEXT, contents);
+
+		@Override
+		public HoverEvent createTooltip(BaseComponent[] value) {
+			return new HoverEvent(HoverEvent.Action.SHOW_TEXT, value);
+		}
+		
+	}
+	
+	private static class ModernTooltips implements Tooltips {
+
+		@Override
+		public JsonHover convert(HoverEvent hoverEvent) {
+			List<Content> bungeeContents = hoverEvent.getContents();
+			if (bungeeContents == null) {
+				return null;
+			}
+			List<ChatComponent> contents = new ArrayList<>();
+			for (Content bungeeContent : bungeeContents) {
+
+				if (!(bungeeContent instanceof Text)) {
+					continue;
+				}
+				Object value = ((Text) bungeeContent).getValue();
+				if (value instanceof String) {
+					contents.add(new ChatComponent.Builder().text((String) value).build());
+
+				} else if (value instanceof BaseComponent[]) {
+					BaseComponent[] hoverValue = (BaseComponent[]) value;
+					List<TextComponent> components = getAllTextComponents(hoverValue);
+					contents.addAll(new FromBungeeConverter(components).parseToContent());
+
+				} else {
+					// who knows what happened
+				}
+			}
+			return JsonHover.create(contents);
+		}
+
+		@Override
+		public HoverEvent createTooltip(BaseComponent[] value) {
+			/*
+			 * Bungee uses an ArrayList internally by default, but it does not seem to require
+			 * that the List be mutable.
+			 * If this has issues, switch to ArrayList
+			 */
+			List<Content> contents = List.of(new Text(value));
+			return new HoverEvent(HoverEvent.Action.SHOW_TEXT, contents);
+		}
+		
 	}
 	
 }
