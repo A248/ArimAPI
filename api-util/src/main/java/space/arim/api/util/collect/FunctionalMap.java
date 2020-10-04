@@ -52,7 +52,10 @@ import space.arim.api.util.collect.helper.UnmodifiableByDefaultMap;
  *
  * @param <K> the key type
  * @param <V> the value type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect}
  */
+@Deprecated(forRemoval = true)
 public class FunctionalMap<K, V> implements UnmodifiableByDefaultMap<K, V> {
 	
 	private final Function<K, V> mappingFunction;

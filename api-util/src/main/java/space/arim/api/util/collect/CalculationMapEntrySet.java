@@ -42,7 +42,10 @@ import space.arim.api.util.collect.helper.UnmodifiableByDefaultSet;
  *
  * @param <K> the key type
  * @param <V> the value type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect}
  */
+@Deprecated(forRemoval = true)
 public class CalculationMapEntrySet<K, V> extends MapRelatedCollection<Entry<K, V>, K, V> implements SetContainsHelper<Entry<K, V>>, SetToArrayHelper<Entry<K, V>>, UnmodifiableByDefaultSet<Entry<K, V>> {
 	
 	/**

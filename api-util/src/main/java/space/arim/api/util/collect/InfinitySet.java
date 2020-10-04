@@ -45,7 +45,10 @@ import space.arim.api.util.collect.helper.SetEmptyHelper;
  * @author A248
  *
  * @param <E> the element type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect}
  */
+@Deprecated(forRemoval = true)
 public interface InfinitySet<E> extends SetEmptyHelper<E> {
 	
 	/**

@@ -34,7 +34,10 @@ import java.util.Map;
  *
  * @param <K> the key type
  * @param <V> the value type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect.helper}
  */
+@Deprecated(forRemoval = true)
 public interface UnmodifiableByDefaultMap<K, V> extends Map<K, V> {
 	
 	@Override

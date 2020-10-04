@@ -33,7 +33,10 @@ import java.util.NoSuchElementException;
  * @author A248
  *
  * @param <E> the element type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect.helper}
  */
+@Deprecated(forRemoval = true)
 public interface EmptyIterator<E> extends Iterator<E> {
 	
 	/**

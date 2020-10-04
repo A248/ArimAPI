@@ -39,7 +39,10 @@ import java.util.Set;
  * @author A248
  *
  * @param <E> the element type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect.helper}
  */
+@Deprecated(forRemoval = true)
 public interface UnmodifiableByDefaultSet<E> extends UnmodifiableByDefaultCollection<E>, Set<E> {
 	
 	@Override

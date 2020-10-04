@@ -28,7 +28,10 @@ import java.util.Set;
  * @author A248
  *
  * @param <E> the element type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect.helper}
  */
+@Deprecated(forRemoval = true)
 public interface SetContainsHelper<E> extends CollectionContainsHelper<E>, Set<E> {
 	
 	@SuppressWarnings("unlikely-arg-type")

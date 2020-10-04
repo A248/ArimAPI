@@ -32,7 +32,7 @@ import java.util.Map;
  * 
  * @deprecated Duplicates {@link AbstractMap.SimpleImmutableEntry}. Use that or {@link Map#entry(Object, Object)} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class ImmutableEntry<K, V> implements Map.Entry<K, V> {
 	
 	private final K key;

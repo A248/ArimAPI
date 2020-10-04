@@ -26,7 +26,7 @@ package space.arim.api.util;
  *
  * @deprecated since JDK 9, the StackWalker API makes this interface obsolete. ArimAPI requires JDK 11.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface CallerFinder {
 	
 	/**

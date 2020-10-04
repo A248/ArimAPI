@@ -40,7 +40,10 @@ import space.arim.api.util.collect.helper.UnmodifiableByDefaultSet;
  *
  * @param <K> the key type
  * @param <V> the value type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect}
  */
+@Deprecated(forRemoval = true)
 public class FunctionalMapEntrySet<K, V> extends MapRelatedCollection<Entry<K, V>, K, V> implements SetEmptyHelper<Entry<K, V>>, UnmodifiableByDefaultSet<Entry<K, V>> {
 	
 	FunctionalMapEntrySet(FunctionalMap<K, V> map) {

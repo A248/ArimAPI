@@ -29,11 +29,9 @@ import java.util.logging.LogRecord;
  * 
  * @author A248
  *
- * @deprecated This class provides little value. Using JUL is not recommended. Also, until recently,
- * this class contained a thread safety issue with {@code SimpleDateFormat} (as does currently BungeeCord's);
- * to solve this, potentially inefficient synchronisation is used.
+ * @deprecated This class provides little value and is slated for removal.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class ConciseLogFormatter extends Formatter {
 	
 	private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss");

@@ -27,7 +27,10 @@ import java.util.Collection;
  * @author A248
  *
  * @param <E> the element type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect}
  */
+@Deprecated(forRemoval = true)
 public interface UnmodifiableInfinitySet<E> extends InfinitySet<E> {
 	
 	/**

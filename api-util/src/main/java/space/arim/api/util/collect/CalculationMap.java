@@ -48,7 +48,10 @@ import java.util.function.Function;
  *
  * @param <K> the key type
  * @param <V> the value type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect}
  */
+@Deprecated(forRemoval = true)
 public class CalculationMap<K, V> extends FunctionalMap<K, V> {
 	
 	private final Set<K> fixedKeys;

@@ -29,7 +29,10 @@ import java.util.Iterator;
  * @author A248
  *
  * @param <E> the element type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect.helper}
  */
+@Deprecated(forRemoval = true)
 public interface CollectionEmptyHelper<E> extends Collection<E> {
 	
 	@Override

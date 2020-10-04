@@ -39,7 +39,10 @@ import space.arim.api.util.collect.helper.UnmodifiableByDefaultCollection;
  *
  * @param <K> the key type
  * @param <V> the value type
+ * 
+ * @deprecated See deprecation of {@link space.arim.api.util.collect}
  */
+@Deprecated(forRemoval = true)
 public class CalculationMapValues<K, V> extends MapRelatedCollection<V, K, V> implements CollectionContainsHelper<V>, CollectionToArrayHelper<V>, UnmodifiableByDefaultCollection<V> {
 	
 	public CalculationMapValues(Map<K, V> original) {
