@@ -10,63 +10,70 @@
 	</parent>
 	
 	<artifactId>arimapi-env</artifactId>
-	<packaging>pom</packaging>
-	<name>ArimAPI-Env</name>
-	<description>The environmental parent component of ArimAPI.</description>
-	
+
 	<properties>
 		<spigot.version>1.8.8-R0.1-SNAPSHOT</spigot.version>
 		<bungeecord.version>1.16-R0.3</bungeecord.version>
 		<sponge.version>7.2.0</sponge.version>
 		<velocity.version>1.1.0-SNAPSHOT</velocity.version>
-		
-		<plugin.name>ArimAPI</plugin.name>
-		<plugin.annotationId>arimapi</plugin.annotationId> <!-- Used for @Plugin annotation on Sponge and Velocity -->
-		<plugin.version>${project.version}</plugin.version>
-		<plugin.url>${project.parent.url}</plugin.url>
-		<plugin.description>${project.description}</plugin.description>
 	</properties>
+
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<finalName>${project.name}_${project.version}</finalName>
+	</build>
 	
-	<modules>
-		<module>core</module>
-		<module>plugin</module>
-	</modules>
-	
-	<dependencyManagement>
-		<dependencies>			
-			<dependency>
-				<groupId>org.spigotmc</groupId>
-				<artifactId>spigot-api</artifactId>
-				<version>${spigot.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>junit</groupId>
-						<artifactId>junit</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>net.md-5</groupId>
-				<artifactId>bungeecord-api</artifactId>
-				<version>${bungeecord.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>net.md-5</groupId>
-				<artifactId>bungeecord-chat</artifactId>
-				<version>${bungeecord.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.spongepowered</groupId>
-				<artifactId>spongeapi</artifactId>
-				<version>${sponge.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.velocitypowered</groupId>
-				<artifactId>velocity-api</artifactId>
-				<version>${velocity.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>space.arim.omnibus</groupId>
+			<artifactId>omnibus</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>space.arim.api</groupId>
+			<artifactId>arimapi-chat</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>${spigot.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-api</artifactId>
+			<version>${bungeecord.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-chat</artifactId>
+			<version>${bungeecord.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<version>${sponge.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.velocitypowered</groupId>
+			<artifactId>velocity-api</artifactId>
+			<version>${velocity.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 	
 	<repositories>
 		<repository>

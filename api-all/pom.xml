@@ -21,19 +21,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-version</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-chat</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-configure</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-util</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>space.arim.api</groupId>
@@ -41,11 +29,7 @@
 		</dependency>
 		<dependency>
 			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-util-sql</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-env-core</artifactId>
+			<artifactId>arimapi-env</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -120,7 +120,6 @@
 	</build>
 	
 	<modules>
-		<module>api-version</module>
 		<module>api-chat</module>
 		<module>api-configure</module>
 		<module>api-util</module>
@@ -128,8 +127,6 @@
 		<module>api-util-sql</module>
 		<module>api-env</module>
 		<module>api-all</module>
-		<module>api-assemble</module>
-		<module>api-assemble-noplugin</module>
 	</modules>
 	
 	<distributionManagement>
@@ -148,22 +145,7 @@
 			<!-- Internal dependencies -->
 			<dependency>
 				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-version</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.api</groupId>
 				<artifactId>arimapi-chat</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-configure</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-util</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -173,17 +155,7 @@
 			</dependency>
 			<dependency>
 				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-util-sql</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-env-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-env-plugin</artifactId>
+				<artifactId>arimapi-env</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

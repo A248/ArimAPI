@@ -1,6 +1,0 @@
-name: ${plugin.name}
-main: space.arim.api.env.plugin.BukkitPlugin
-version: ${plugin.version}
-author: A248
-website: ${plugin.url}
-description: ${plugin.description}
