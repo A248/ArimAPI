@@ -22,14 +22,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.function.Consumer;
-
-import space.arim.omnibus.util.function.ErringConsumer;
 
 /**
  * Files utility.
@@ -84,26 +79,6 @@ public final class FilesUtil {
 			}
 		}
 		return true;
-	}
-	
-	/**
-	 * Writes to a file easily.
-	 * 
-	 * @param file the file
-	 * @param printer essentially a Consumer for a {@link Writer}
-	 * @param exceptionHandler handle a possible IOException
-	 * @return true if everything went successfully, false otherwise
-	 */
-	public static boolean writeTo(File file, ErringConsumer<Writer, IOException> printer, Consumer<IOException> exceptionHandler) {
-		if (file.exists() || generateBlankFile(file)) {
-			try (OutputStream output = new FileOutputStream(file); OutputStreamWriter writer = new OutputStreamWriter(output, StandardCharsets.UTF_8)) {
-				printer.accept(writer);
-				return true;
-			} catch (IOException ex) {
-				exceptionHandler.accept(ex);
-			}
-		}
-		return false;
 	}
 	
 	private static boolean makeDir(File folder) {

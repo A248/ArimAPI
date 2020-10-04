@@ -18,10 +18,6 @@
  */
 package space.arim.api.env;
 
-import java.util.function.Supplier;
-
-import space.arim.omnibus.resourcer.ResourceInfo;
-import space.arim.omnibus.resourcer.ShutdownHandlers;
 import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
@@ -56,7 +52,7 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	 * @param plugin the plugin
 	 */
 	public BukkitPlatformHandle(JavaPlugin plugin) {
-		super(PlatformType.BUKKIT, plugin, plugin.getServer());
+		super(plugin, plugin.getServer());
 	}
 	
 	/**
@@ -66,6 +62,16 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	 */
 	public JavaPlugin getPlugin() {
 		return (JavaPlugin) getImplementingPluginInfo().getPlugin();
+	}
+	
+	@Override
+	public FactoryOfTheFuture createFuturesFactory() {
+		return new BukkitFactoryOfTheFuture(getPlugin());
+	}
+
+	@Override
+	public EnhancedExecutor createEnhancedExecutor() {
+		return new BukkitEnhancedExecutor(getPlugin());
 	}
 
 	/**
@@ -124,24 +130,6 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	@Override
 	public RealExecutorFinder getRealExecutorFinder() {
 		return new BukkitRealExecutorFinder(getPlugin());
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	<T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> resource) {
-		if (resource == FactoryOfTheFuture.class) {
-			return () -> {
-				var factory = new BukkitFactoryOfTheFuture(getPlugin());
-				return new ResourceInfo<T>("BukkitFactoryOfTheFuture", (T) factory, ShutdownHandlers.ofAutoClosable(factory));
-			};
-		}
-		if (resource == EnhancedExecutor.class) {
-			return () -> {
-				var executor = new BukkitEnhancedExecutor(getPlugin());
-				return new ResourceInfo<T>("BukkitEnhancedExecutor", (T) executor, ShutdownHandlers.ofStoppableService(executor));
-			};
-		}
-		return null;
 	}
 
 }

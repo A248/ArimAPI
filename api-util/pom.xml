@@ -21,12 +21,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>space.arim.omnibus</groupId>
-			<artifactId>omnibus-util</artifactId>
+			<artifactId>omnibus</artifactId>
 		</dependency>
 		
 		<!--
 		Used by space.arim.api.util.config, kept for now until such config framework is removed.
-		Migration to space.arim.api.configure is recommended.
 		-->
 		<dependency>
 			<groupId>org.yaml</groupId>

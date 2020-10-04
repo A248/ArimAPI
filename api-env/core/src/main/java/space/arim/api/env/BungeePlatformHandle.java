@@ -18,14 +18,7 @@
  */
 package space.arim.api.env;
 
-import java.util.function.Supplier;
-
-import space.arim.omnibus.resourcer.ResourceInfo;
-import space.arim.omnibus.resourcer.ShutdownHandler;
-import space.arim.omnibus.resourcer.ShutdownHandlers;
 import space.arim.omnibus.util.concurrent.EnhancedExecutor;
-import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
-import space.arim.omnibus.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
@@ -54,7 +47,7 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	 * @param plugin the plugin
 	 */
 	public BungeePlatformHandle(Plugin plugin) {
-		super(PlatformType.BUNGEE, plugin, plugin.getProxy());
+		super(plugin, plugin.getProxy());
 	}
 	
 	/**
@@ -64,6 +57,11 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	 */
 	public Plugin getPlugin() {
 		return (Plugin) getImplementingPluginInfo().getPlugin();
+	}
+	
+	@Override
+	public EnhancedExecutor createEnhancedExecutor() {
+		return new BungeeEnhancedExecutor(getPlugin());
 	}
 
 	/**
@@ -115,24 +113,6 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 	@Override
 	public RealExecutorFinder getRealExecutorFinder() {
 		return new BungeeRealExecutorFinder(getPlugin());
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	<T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> resource) {
-		if (resource == FactoryOfTheFuture.class) {
-			return () -> {
-				var factory = new IndifferentFactoryOfTheFuture();
-				return new ResourceInfo<T>("BungeeFactoryOfTheFuture", (T) factory, ShutdownHandler.none());
-			};
-		}
-		if (resource == EnhancedExecutor.class) {
-			return () -> {
-				var executor = new BungeeEnhancedExecutor(getPlugin());
-				return new ResourceInfo<T>("BungeeEnhancedExecutor", (T) executor, ShutdownHandlers.ofStoppableService(executor));
-			};
-		}
-		return null;
 	}
 
 }

@@ -18,45 +18,29 @@
  */
 package space.arim.api.env;
 
-import java.util.function.Supplier;
-
-import space.arim.omnibus.resourcer.ResourceHook;
-import space.arim.omnibus.resourcer.ResourceInfo;
-import space.arim.omnibus.resourcer.Resourcer;
+import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
+import space.arim.omnibus.util.concurrent.impl.IndifferentFactoryOfTheFuture;
 
 import space.arim.api.env.annote.PlatformPlugin;
 import space.arim.api.env.annote.PlatformServer;
 
 abstract class AbstractPlatformHandle implements PlatformHandle {
 
-	private final PlatformType type;
 	private final PlatformPluginInfo pluginInfo;
 	
-	AbstractPlatformHandle(PlatformType type, @PlatformPlugin Object plugin, @PlatformServer Object server) {
-		this.type = type;
-		this.pluginInfo = new PlatformPluginInfo(plugin, server);
-	}
-	
-	@Override
-	public <T> ResourceHook<T> hookPlatformResource(Resourcer resourcer, Class<T> resourceClass) {
-		Supplier<ResourceInfo<T>> defaultImplProvider = getResourceDefaultImplProvider(resourceClass);
-		if (defaultImplProvider == null) {
-			throw new IllegalArgumentException("Resource type " + resourceClass + " not supported with a default implementation");
-		}
-		return resourcer.hookUsage(resourceClass, defaultImplProvider);
-	}
-	
-	abstract <T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> service);
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public PlatformType getPlatformType() {
-		return type;
+	AbstractPlatformHandle(@PlatformPlugin Object plugin, @PlatformServer Object server) {
+		pluginInfo = new PlatformPluginInfo(plugin, server);
 	}
 
 	@Override
 	public PlatformPluginInfo getImplementingPluginInfo() {
 		return pluginInfo;
+	}
+	
+	@Override
+	public FactoryOfTheFuture createFuturesFactory() {
+		// Default implementation
+		return new IndifferentFactoryOfTheFuture();
 	}
 
 }

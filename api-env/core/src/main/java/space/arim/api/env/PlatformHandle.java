@@ -18,8 +18,8 @@
  */
 package space.arim.api.env;
 
-import space.arim.omnibus.resourcer.ResourceHook;
-import space.arim.omnibus.resourcer.Resourcer;
+import space.arim.omnibus.util.concurrent.EnhancedExecutor;
+import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
@@ -37,21 +37,23 @@ import space.arim.api.env.realexecutor.RealExecutorFinder;
 public interface PlatformHandle {
 	
 	/**
-	 * Gets a resource hook for a specific resource based on this platform, using the specified {@link Resourcer}. <br>
-	 * This will use the value of {@link Resourcer#hookUsage(Class, java.util.function.Supplier)} <br>
+	 * Creates a {@link FactoryOfTheFuture} implementation for this platform. <br>
 	 * <br>
-	 * Exactly which {@code resourceClass} values may be specified is implementation dependent, it is up to implementers
-	 * of {@code PlatformHandle} to decide which to support. Specifying a resource class other than one supported
-	 * will result in a {@code IllegalArgumentException}. However, it is recommended that most implementations
-	 * keep pace with the resource classes supported by select provided implementations as noted in the package javadoc.
+	 * Note that the returned implementation may or may not be {@link AutoCloseable}. The penalty for failing to
+	 * close such resources is small, but not negligible. The caller is strongly recommended to close the returned
+	 * instance when disposing of it.
 	 * 
-	 * @param <T> the resource type
-	 * @param resourcer the {@link Resourcer} which is to manage the resource
-	 * @param resourceClass the resource class, must be one of those supported
-	 * @return the result of {@link Resourcer#hookUsage(Class, java.util.function.Supplier)}
-	 * @throws IllegalArgumentException if the resource type is not supported
+	 * @return a futures factory implementation for this platform
 	 */
-	<T> ResourceHook<T> hookPlatformResource(Resourcer resourcer, Class<T> resourceClass);
+	FactoryOfTheFuture createFuturesFactory();
+	
+	/**
+	 * Creates a {@link EnhancedExecutor} implementation for this platform. The implementing
+	 * enhanced executor will take advantage of the platform's common thread pool.
+	 * 
+	 * @return an enhanced executor implementation for this platform
+	 */
+	EnhancedExecutor createEnhancedExecutor();
 	
 	/**
 	 * Sends a {@link SendableMessage} to a command sender based on this platform. <br>
@@ -85,17 +87,6 @@ public interface PlatformHandle {
 	 * @return a {@code RealExecutorFinder}
 	 */
 	RealExecutorFinder getRealExecutorFinder();
-	
-	/**
-	 * Gets the platform type detected
-	 * 
-	 * @return the platform type detected
-	 * @deprecated It is intended that {@code PlatformHandle} may be implemented for a variety of platforms,
-	 * and not merely those defined in a fixed enum. This method may therefore return inaccurate results when
-	 * the implementation cannot specify which platform from the enum it is for.
-	 */
-	@Deprecated
-	PlatformType getPlatformType();
 	
 	/**
 	 * Gets the plugin info which is used for platform-specific API methods

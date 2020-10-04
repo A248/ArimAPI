@@ -18,7 +18,6 @@
  */
 package space.arim.api.env.concurrent;
 
-import space.arim.omnibus.util.AutoClosable;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import org.bukkit.Server;
@@ -35,7 +34,7 @@ import org.bukkit.scheduler.BukkitTask;
  * @author A248
  *
  */
-public class BukkitFactoryOfTheFuture extends DeadlockFreeFutureFactory implements AutoClosable {
+public class BukkitFactoryOfTheFuture extends DeadlockFreeFutureFactory implements AutoCloseable {
 
 	private final Server server;
 	private final BukkitTask task;

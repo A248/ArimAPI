@@ -16,14 +16,12 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>11</maven.compiler.source>
-    	<maven.compiler.target>11</maven.compiler.target>
 		
 		<!-- Testing dependencies -->
-		<junit.version>5.6.2</junit.version>
+		<junit.version>5.7.0</junit.version>
 		
 		<!-- Required dependencies -->
-		<omnibus.version>0.15.4-SNAPSHOT</omnibus.version>
+		<omnibus.version>1.0.0-RC1</omnibus.version>
 		
 		<!-- Optional dependencies -->
 		<hikari.version>3.4.5</hikari.version>
@@ -94,7 +92,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-shade-plugin</artifactId>
-					<version>3.2.3</version>
+					<version>3.2.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -205,12 +203,7 @@
 			<!-- Required dependencies -->
 			<dependency>
 				<groupId>space.arim.omnibus</groupId>
-				<artifactId>omnibus-util</artifactId>
-				<version>${omnibus.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.omnibus</groupId>
-				<artifactId>omnibus-all</artifactId>
+				<artifactId>omnibus</artifactId>
 				<version>${omnibus.version}</version>
 			</dependency>
 			
