@@ -26,7 +26,10 @@ import java.util.function.Supplier;
  * @author A248
  *
  * @param <T> the type of the underlying singleton
+ * @deprecated Use of this class often incurs more cost than an eagerly initialised singleton. In cases where
+ * lazy initialisation is reasonable, a local double checked locking pattern best conveys the intent of the code.
  */
+@Deprecated(forRemoval = true)
 public class LazySingleton<T> implements Supplier<T> {
 	
 	volatile T value;

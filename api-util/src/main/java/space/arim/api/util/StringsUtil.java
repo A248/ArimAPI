@@ -29,7 +29,9 @@ import java.util.Objects;
  * 
  * @author A248
  *
+ * @deprecated Not valuable enough to maintain. Utilities in this class are easily recreatable where needed.
  */
+@Deprecated(forRemoval = true)
 public final class StringsUtil {
 	
 	private static final DateTimeFormatter BASIC_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");

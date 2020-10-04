@@ -31,7 +31,10 @@ import java.util.function.Consumer;
  * 
  * @author A248
  *
+ * @deprecated Not valuable enough to maintain. Utilities in this class are easily recreatable where needed.
+ * It is also recommended to switch to NIO which is far more readable and capable.
  */
+@Deprecated(forRemoval = true)
 public final class FilesUtil {
 
 	private FilesUtil() {}

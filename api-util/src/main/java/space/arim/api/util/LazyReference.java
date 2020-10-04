@@ -26,7 +26,9 @@ import java.util.function.Supplier;
  * @author A248
  *
  * @param <T> the kind of the underlying object
+ * @deprecated See {@link LazySingleton} deprecation
  */
+@Deprecated(forRemoval = true)
 public class LazyReference<T> extends LazySingleton<T> {
 
 	/**
