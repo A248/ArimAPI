@@ -67,19 +67,20 @@ import org.spongepowered.api.text.action.TextActions;
  * 
  * @author A248
  * 
- * @deprecated See the explanation for {@link SpongePlatformHandle} on compatibility with Sponge. This class currently
- * throws {@code UnsupportedOperationException} on conversion method calls.
- *
+ * @deprecated See deprecation of {@link SpongePlatformHandle}
  */
-@SuppressWarnings({ "unused", "deprecation" })
-@Deprecated
+@SuppressWarnings({ "unused", "removal" })
+@Deprecated(forRemoval = true)
 public class SpongeTextConverter implements PlatformMessageAdapter<LiteralText> {
 	
 	/**
 	 * Creates an instance
 	 * 
+	 * @throws UnsupportedOperationException always, see deprecation
 	 */
-	public SpongeTextConverter() {}
+	public SpongeTextConverter() {
+		throw SpongePlatformHandle.uoe();
+	}
 	
 	private static ClickAction<?> convertClick(JsonClick jsonClick) {
 		if (jsonClick == null) {
@@ -167,21 +168,17 @@ public class SpongeTextConverter implements PlatformMessageAdapter<LiteralText> 
 	
 	@Override
 	public LiteralText convert(SendableMessage message) {
-		Objects.requireNonNull(message, "message");
-
-		throw new UnsupportedOperationException();
+		throw SpongePlatformHandle.uoe();
 	}
 	
 	@Override
 	public SendableMessage convert(LiteralText message) {
-		Objects.requireNonNull(message, "message");
-
-		throw new UnsupportedOperationException();
+		throw SpongePlatformHandle.uoe();
 	}
 	
 	@Override
 	public boolean supportsHexColoursFunctionality() {
-		return false;
+		throw SpongePlatformHandle.uoe();
 	}
 	
 }

@@ -18,16 +18,12 @@
  */
 package space.arim.api.env.concurrent;
 
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import space.arim.omnibus.util.AutoClosable;
+import space.arim.omnibus.util.concurrent.CentralisedFuture;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
+import space.arim.omnibus.util.concurrent.impl.AbstractFactoryOfTheFuture;
 
-import org.spongepowered.api.Game;
-import org.spongepowered.api.Server;
-import org.spongepowered.api.Sponge;
+import space.arim.api.env.SpongePlatformHandle;
+
 import org.spongepowered.api.plugin.PluginContainer;
 
 /**
@@ -38,39 +34,35 @@ import org.spongepowered.api.plugin.PluginContainer;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link SpongePlatformHandle}
  */
-public class SpongeFactoryOfTheFuture extends DeadlockFreeFutureFactory implements AutoClosable {
-
-	private final Server server;
-	private final ScheduledFuture<?> task;
+@SuppressWarnings("removal")
+@Deprecated(forRemoval = true)
+public class SpongeFactoryOfTheFuture extends AbstractFactoryOfTheFuture implements AutoCloseable {
 	
 	/**
 	 * Creates from a {@code PluginContainer} to use for synchronous execution
 	 * 
 	 * @param plugin the plugin to use
+	 * @throws UnsupportedOperationException always, see deprecation
 	 */
 	public SpongeFactoryOfTheFuture(PluginContainer plugin) {
-		Game game = Sponge.getGame();
-		server = game.getServer();
-		ScheduledExecutorService executor = game.getScheduler().createSyncExecutor(plugin);
-		executor.execute(() -> {
-			mainThread = Thread.currentThread();
-		});
-		task = executor.scheduleWithFixedDelay(new PeriodicSyncUnleasher(), 0L, 50L, TimeUnit.MILLISECONDS);
-	}
-	
-	@Override
-	boolean isPrimaryThread0() {
-		return server.isMainThread();
+		throw SpongePlatformHandle.uoe();
 	}
 	
 	@Override
 	public void close() {
-		/*
-		 * By executing cancellation synchronously, and because our queue is FIFO,
-		 * any previous submitted task WILL have a chance to complete.
-		 */
-		executeSync0(() -> task.cancel(false));
+		
+	}
+
+	@Override
+	public void executeSync(Runnable command) {
+		throw SpongePlatformHandle.uoe();
+	}
+
+	@Override
+	public <U> CentralisedFuture<U> newIncompleteFuture() {
+		throw SpongePlatformHandle.uoe();
 	}
 
 }

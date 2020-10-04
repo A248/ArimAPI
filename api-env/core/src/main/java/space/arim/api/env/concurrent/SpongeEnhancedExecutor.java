@@ -18,12 +18,11 @@
  */
 package space.arim.api.env.concurrent;
 
-import java.util.concurrent.Executor;
-
 import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
-import org.spongepowered.api.Sponge;
+import space.arim.api.env.SpongePlatformHandle;
+
 import org.spongepowered.api.plugin.PluginContainer;
 
 /**
@@ -32,23 +31,25 @@ import org.spongepowered.api.plugin.PluginContainer;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link SpongePlatformHandle}
  */
+@SuppressWarnings("removal")
+@Deprecated(forRemoval = true)
 public class SpongeEnhancedExecutor extends SimplifiedEnhancedExecutor {
 
-	private final Executor delegate;
-	
 	/**
 	 * Creates from a {@code PluginContainer} to use for execution
 	 * 
 	 * @param plugin the plugin to use
+	 * @throws UnsupportedOperationException always, see deprecation
 	 */
 	public SpongeEnhancedExecutor(PluginContainer plugin) {
-		delegate = Sponge.getScheduler().createAsyncExecutor(plugin);
+		throw SpongePlatformHandle.uoe();
 	}
 	
 	@Override
 	public void execute(Runnable command) {
-		delegate.execute(command);
+		throw SpongePlatformHandle.uoe();
 	}
 
 }

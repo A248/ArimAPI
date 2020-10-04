@@ -18,23 +18,14 @@
  */
 package space.arim.api.env;
 
-import java.util.function.Supplier;
-
-import space.arim.omnibus.resourcer.ResourceInfo;
-import space.arim.omnibus.resourcer.ShutdownHandlers;
 import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import space.arim.api.chat.SendableMessage;
 import space.arim.api.env.annote.PlatformCommandSender;
 import space.arim.api.env.annote.PlatformPlayer;
-import space.arim.api.env.chat.SpongeTextConverter;
-import space.arim.api.env.concurrent.SpongeEnhancedExecutor;
-import space.arim.api.env.concurrent.SpongeFactoryOfTheFuture;
 import space.arim.api.env.realexecutor.RealExecutorFinder;
-import space.arim.api.env.realexecutor.SpongeRealExecutorFinder;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -51,9 +42,8 @@ import org.spongepowered.api.plugin.PluginContainer;
  *             maintenance burden of platform handles and adapters for Sponge
  *             API 7 is therefore not justified.
  */
-@SuppressWarnings("deprecation")
-@Deprecated
-public class SpongePlatformHandle extends AbstractPlatformHandle {
+@Deprecated(forRemoval = true)
+public class SpongePlatformHandle implements PlatformHandle {
 	
 	/**
 	 * Creates from a {@code PluginContainer} to use
@@ -61,7 +51,12 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 * @param plugin the plugin
 	 */
 	public SpongePlatformHandle(PluginContainer plugin) {
-		super(PlatformType.SPONGE, plugin, Sponge.getGame());
+		throw uoe();
+	}
+	
+	@Override
+	public PlatformPluginInfo getImplementingPluginInfo() {
+		throw uoe();
 	}
 	
 	/**
@@ -70,7 +65,7 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 * @return the plugin
 	 */
 	public PluginContainer getPlugin() {
-		return (PluginContainer) getImplementingPluginInfo().getPlugin();
+		throw uoe();
 	}
 
 	/**
@@ -81,7 +76,7 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 */
 	@Override
 	public void sendMessage(@PlatformCommandSender Object recipient, SendableMessage message) {
-		sendMessage((CommandSource) recipient, message);
+		throw uoe();
 	}
 	
 	/**
@@ -92,7 +87,7 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 */
 	@Override
 	public void disconnectUser(@PlatformPlayer Object user, SendableMessage reason) {
-		disconnectUser((Player) user, reason);
+		throw uoe();
 	}
 	
 	/**
@@ -104,7 +99,7 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 * @param message the message
 	 */
 	public void sendMessage(CommandSource recipient, SendableMessage message) {
-		recipient.sendMessage(new SpongeTextConverter().convert(message));
+		throw uoe();
 	}
 	
 	/**
@@ -116,30 +111,32 @@ public class SpongePlatformHandle extends AbstractPlatformHandle {
 	 * @param reason the kick message
 	 */
 	public void disconnectUser(Player user, SendableMessage reason) {
-		user.kick(new SpongeTextConverter().convert(reason));
+		throw uoe();
 	}
 	
 	@Override
 	public RealExecutorFinder getRealExecutorFinder() {
-		return new SpongeRealExecutorFinder(getPlugin());
+		throw uoe();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	<T> Supplier<ResourceInfo<T>> getResourceDefaultImplProvider(Class<T> resource) {
-		if (resource == FactoryOfTheFuture.class) {
-			return () -> {
-				var factory = new SpongeFactoryOfTheFuture(getPlugin());
-				return new ResourceInfo<T>("SpongeFactoryOfTheFuture", (T) factory, ShutdownHandlers.ofAutoClosable(factory));
-			};
-		}
-		if (resource == EnhancedExecutor.class) {
-			return () -> {
-				var executor = new SpongeEnhancedExecutor(getPlugin());
-				return new ResourceInfo<T>("SpongeEnhancedExecutor", (T) executor, ShutdownHandlers.ofStoppableService(executor));
-			};
-		}
-		return null;
+	public EnhancedExecutor createEnhancedExecutor() {
+		throw uoe();
+	}
+	
+	@Override
+	public FactoryOfTheFuture createFuturesFactory() {
+		throw uoe();
+	}
+	
+	/**
+	 * Creates an {@link UnsupportedOperationException} indicating Sponge support was removed
+	 * 
+	 * @return an unsupported operation exception
+	 */
+	public static UnsupportedOperationException uoe() {
+		String message = "Not implemented - adapters and handles for Sponge API 7 are removed. See deprecation of SpongePlatformHandle";
+		return new UnsupportedOperationException(message);
 	}
 	
 }

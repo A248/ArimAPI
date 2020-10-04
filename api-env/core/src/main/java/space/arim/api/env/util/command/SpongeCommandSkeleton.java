@@ -35,7 +35,9 @@ import org.spongepowered.api.world.World;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.env.SpongePlatformHandle SpongePlatformHandle}
  */
+@Deprecated
 public interface SpongeCommandSkeleton extends CommandCallable {
 
 	/**

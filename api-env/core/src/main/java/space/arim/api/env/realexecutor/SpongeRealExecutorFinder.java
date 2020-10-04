@@ -21,9 +21,9 @@ package space.arim.api.env.realexecutor;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-import org.spongepowered.api.Sponge;
+import space.arim.api.env.SpongePlatformHandle;
+
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.scheduler.Scheduler;
 
 /**
  * The real executor finder for Sponge servers. Relies on implementations in SpongeCommon to retrieve the common
@@ -34,24 +34,25 @@ import org.spongepowered.api.scheduler.Scheduler;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link SpongePlatformHandle}
  */
+@SuppressWarnings("removal")
+@Deprecated(forRemoval = true)
 public class SpongeRealExecutorFinder implements RealExecutorFinder {
 
-	//private final PluginContainer plugin;
-	
 	/**
 	 * Creates from a plugin to use
 	 * 
 	 * @param plugin the plugin
+	 * @throws UnsupportedOperationException always, see deprecation
 	 */
 	public SpongeRealExecutorFinder(PluginContainer plugin) {
-		//this.plugin = plugin;
+		throw SpongePlatformHandle.uoe();
 	}
 
 	@Override
 	public Executor findExecutor(Consumer<Exception> exceptionHandler) {
-		Scheduler scheduler = Sponge.getScheduler();
-		return ExecutorReflector.getFieldNamedAsyncSchedulerThenGetFieldNamedExecutorFromThat(scheduler, exceptionHandler);
+		throw SpongePlatformHandle.uoe();
 	}
 	
 }
