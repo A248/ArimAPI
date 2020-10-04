@@ -1,4 +1,8 @@
 /**
+ * <i><b>This framework is in maintenance mode and will soon be deprecated. </b>The recommended alternative is
+ * <a href="https://github.com/A248/DazzleConf">DazzleConf</a>, a typesafe configuration library
+ * by the same author of this package.</i> <br>
+ * <br>
  * A configuration framework designed to load values, copy defaults, update configurations,
  * and write values, with full thread safety. <br>
  * <br>
