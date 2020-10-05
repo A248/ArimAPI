@@ -35,8 +35,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import com.google.gson.Gson;
-
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
 /**
@@ -46,8 +44,6 @@ import space.arim.api.util.web.RemoteApiResult.ResultType;
  *
  */
 public class HttpMojangApi implements RemoteNameHistoryApi {
-	
-	private static final Gson GSON = DefaultGson.GSON;
 	
 	private static final String FROM_NAME = "https://api.mojang.com/users/profiles/minecraft/";
 	private static final String FROM_UUID = "https://api.mojang.com/user/profiles/";
@@ -68,8 +64,7 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 	 * Creates an instance using a configured http client. <br>
 	 * <br>
 	 * The http client may be used to specify the connection timeout and the
-	 * {@link java.util.concurrent.Executor Executor} used to make completable futures. <br>
-	 * The Mojang API does not currently support HTTP/2, so it is recommended to use HTTP/1.1 for now.
+	 * {@link java.util.concurrent.Executor Executor} used to make completable futures.
 	 * 
 	 * @param client the http client to use
 	 */
@@ -118,7 +113,7 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 
 		return queryMojangApi(FROM_NAME + name, (reader) -> {
 			@SuppressWarnings("unchecked")
-			Map<String, Object> profileInfo = GSON.fromJson(reader, Map.class);
+			Map<String, Object> profileInfo = DefaultGson.GSON.fromJson(reader, Map.class);
 			String shortUuid = profileInfo.get("id").toString();
 			return UUIDUtil.fromShortString(shortUuid);
 		});
@@ -127,7 +122,7 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 	private <T> CompletableFuture<RemoteApiResult<T>> lookupByUUID(UUID uuid, Function<Map<String, Object>[], T> resultMapper) {
 		return queryMojangApi(FROM_UUID + uuid.toString().replace("-", "") + "/names", (reader) -> {
 			@SuppressWarnings("unchecked")
-			Map<String, Object>[] nameInfo = GSON.fromJson(reader, Map[].class);
+			Map<String, Object>[] nameInfo = DefaultGson.GSON.fromJson(reader, Map[].class);
 			return resultMapper.apply(nameInfo);
 		});
 	}

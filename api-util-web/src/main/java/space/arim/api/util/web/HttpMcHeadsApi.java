@@ -36,14 +36,16 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import com.google.gson.Gson;
-
 import space.arim.api.util.web.RemoteApiResult.ResultType;
 
+/**
+ * A handle for working with requests to the MCHeads API
+ * 
+ * @author A248
+ *
+ */
 public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 
-	private static final Gson GSON = DefaultGson.GSON;
-	
 	private static final String URL_BASE = "https://mc-heads.net/minecraft/profile/";
 	
 	private static final int NOT_FOUND_STATUS_CODE = 204;
@@ -89,7 +91,7 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 			try (inputStream; InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
 
 				@SuppressWarnings("unchecked")
-				Map<String, Object> map = GSON.fromJson(reader, Map.class);
+				Map<String, Object> map = DefaultGson.GSON.fromJson(reader, Map.class);
 				return new RemoteApiResult<>(mapAcceptorFunction.apply(map), ResultType.FOUND, null);
 			} catch (IOException ex) {
 				return new RemoteApiResult<>(null, ResultType.ERROR, ex);

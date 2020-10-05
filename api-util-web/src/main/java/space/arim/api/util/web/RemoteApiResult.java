@@ -36,7 +36,7 @@ public final class RemoteApiResult<T> {
 	 * Creates a result from a value, reason, and exception
 	 * 
 	 * @param value the value, or null for none
-	 * @param resultType the reason, must not be null
+	 * @param resultType the reason, cannot be null
 	 * @param exception the exception, or null for none
 	 */
 	public RemoteApiResult(T value, ResultType resultType, Exception exception) {
@@ -57,7 +57,7 @@ public final class RemoteApiResult<T> {
 	/**
 	 * Get the result type
 	 * 
-	 * @return the reason, never <code>null</code>
+	 * @return the reason, never null
 	 */
 	public ResultType getResultType() {
 		return resultType;
@@ -68,7 +68,7 @@ public final class RemoteApiResult<T> {
 	 * Exceptions are most commonly associated with {@link ResultType#ERROR},
 	 * but may be attached to other results.
 	 * 
-	 * @return the exception or <code>null</code> if no exception is associated with this result
+	 * @return the exception or null if no exception is associated with this result
 	 */
 	public Exception getException() {
 		return exception;
@@ -83,9 +83,9 @@ public final class RemoteApiResult<T> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((exception == null) ? 0 : exception.hashCode());
 		result = prime * result + resultType.hashCode();
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		result = prime * result + Objects.hashCode(exception);
+		result = prime * result + Objects.hashCode(value);
 		return result;
 	}
 
@@ -99,8 +99,8 @@ public final class RemoteApiResult<T> {
 		}
 		RemoteApiResult<?> other = (RemoteApiResult<?>) object;
 		return (resultType == other.resultType)
-				&& ((exception == null) ? other.exception == null : exception.equals(other.exception))
-				&& ((value == null) ? other.value == null : value.equals(other.value));
+				&& Objects.equals(exception, other.exception)
+				&& Objects.equals(value, other.value);
 	}
 
 	/**

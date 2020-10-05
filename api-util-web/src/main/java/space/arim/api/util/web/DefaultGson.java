@@ -20,8 +20,10 @@ package space.arim.api.util.web;
 
 import com.google.gson.Gson;
 
-class DefaultGson {
+final class DefaultGson {
 
 	static final Gson GSON = new Gson();
+	
+	private DefaultGson() {}
 	
 }

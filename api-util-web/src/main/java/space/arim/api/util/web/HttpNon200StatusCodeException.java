@@ -59,7 +59,7 @@ public class HttpNon200StatusCodeException extends RuntimeException {
 	}
 	
 	/**
-	 * Crates the exception with the specified HTTP status code and cause
+	 * Creates the exception with the specified HTTP status code and cause
 	 * 
 	 * @param code the status code
 	 * @param cause the cause
