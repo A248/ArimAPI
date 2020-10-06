@@ -47,27 +47,37 @@ public abstract class RemoteNameUUIDApiTesting {
 	@Test
 	void testLookupUUID() {
 		RemoteApiResult<UUID> knownResult = remote.lookupUUID(KNOWN_NAME).join();
-		assertEquals(ResultType.FOUND, knownResult.getResultType());
-		assertEquals(KNOWN_UUID, knownResult.getValue());
-		assertNull(knownResult.getException());
-		
+		assertFoundAndEquals(KNOWN_UUID, knownResult);
+
 		RemoteApiResult<UUID> unknownResult = remote.lookupUUID(UNKNOWN_NAME).join();
-		assertEquals(ResultType.NOT_FOUND, unknownResult.getResultType());
-		assertNull(unknownResult.getValue());
-		assertNull(unknownResult.getException());
+		assertNotFound(unknownResult);
 	}
 	
 	@Test
 	void testLookupName() {
 		RemoteApiResult<String> knownResult = remote.lookupName(KNOWN_UUID).join();
-		assertEquals(ResultType.FOUND, knownResult.getResultType());
-		assertEquals(KNOWN_NAME, knownResult.getValue());
-		assertNull(knownResult.getException());
-		
+		assertFoundAndEquals(KNOWN_NAME, knownResult);
+
 		RemoteApiResult<String> unknownResult = remote.lookupName(UNKNOWN_UUID).join();
+		assertNotFound(unknownResult);
+	}
+	
+	<T> void assertFoundAndEquals(T expected, RemoteApiResult<T> knownResult) {
+		Exception ex = knownResult.getException();
+		if (ex != null) {
+			fail(ex);
+		}
+		assertEquals(ResultType.FOUND, knownResult.getResultType());
+		assertEquals(expected, knownResult.getValue());
+	}
+	
+	void assertNotFound(RemoteApiResult<?> unknownResult) {
+		Exception ex = unknownResult.getException();
+		if (ex != null) {
+			fail(ex);
+		}
 		assertEquals(ResultType.NOT_FOUND, unknownResult.getResultType());
 		assertNull(unknownResult.getValue());
-		assertNull(unknownResult.getException());
 	}
 	
 }

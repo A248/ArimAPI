@@ -18,16 +18,11 @@
  */
 package space.arim.api.util.web;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-
-import space.arim.api.util.web.RemoteApiResult.ResultType;
 
 public abstract class RemoteNameHistoryApiTesting extends RemoteNameUUIDApiTesting {
 
@@ -52,14 +47,10 @@ public abstract class RemoteNameHistoryApiTesting extends RemoteNameUUIDApiTesti
 		RemoteNameHistoryApi remote = (RemoteNameHistoryApi) super.remote;
 
 		RemoteApiResult<Set<Entry<String, Long>>> knownResult = remote.lookupNameHistory(RemoteNameUUIDApiTesting.KNOWN_UUID).join();
-		assertEquals(ResultType.FOUND, knownResult.getResultType());
-		assertEquals(expectedNameHistory, knownResult.getValue());
-		assertNull(knownResult.getException());
+		assertFoundAndEquals(expectedNameHistory, knownResult);
 
 		RemoteApiResult<Set<Entry<String, Long>>> unknownResult = remote.lookupNameHistory(RemoteNameUUIDApiTesting.UNKNOWN_UUID).join();
-		assertEquals(ResultType.NOT_FOUND, unknownResult.getResultType());
-		assertNull(unknownResult.getValue());
-		assertNull(unknownResult.getException());
+		assertNotFound(unknownResult);
 	}
 	
 }
