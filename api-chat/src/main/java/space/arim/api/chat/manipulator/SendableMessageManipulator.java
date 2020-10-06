@@ -18,11 +18,11 @@
  */
 package space.arim.api.chat.manipulator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 import space.arim.api.chat.ChatComponent;
 import space.arim.api.chat.JsonClick;
@@ -32,24 +32,57 @@ import space.arim.api.chat.JsonSection;
 import space.arim.api.chat.SendableMessage;
 
 /**
- * Utility for manipulating {@link SendableMessage} instances. <br>
+ * Utility for manipulating the text of {@link SendableMessage} instances. <br>
  * <br>
- * Both {@link #getInstance()} and the constructor may be used.
+ * A manipulator is created for a {@link SendableMessage} and a set of {@link TextGoal}. When an operation
+ * occurs, it is only applied to strings matching the goals. <br>
+ * <br>
+ * Unless otherwise noted, passing a null parameter, null collection element, or null array element to any method
+ * in this class throws {@code NullPointerException}
  * 
  * @author A248
  *
  */
-public class SendableMessageManipulator {
+public final class SendableMessageManipulator {
 
 	private final SendableMessage message;
+	private final Set<TextGoal> goals;
+	
+	private SendableMessageManipulator(SendableMessage message, Set<TextGoal> goals) {
+		this.message = Objects.requireNonNull(message, "message");
+		this.goals = Set.copyOf(goals);
+	}
 	
 	/**
-	 * Creates an instance
+	 * Creates an instance targeting all text goals
 	 * 
 	 * @param message the message to manipulate
+	 * @return the message manipulator
 	 */
-	public SendableMessageManipulator(SendableMessage message) {
-		this.message = message;
+	public static SendableMessageManipulator create(SendableMessage message) {
+		return create(message, TextGoal.ALL_GOALS);
+	}
+	
+	/**
+	 * Creates an instance targeting the specified text goals
+	 * 
+	 * @param message the message to manipulate
+	 * @param goals the text goals to target
+	 * @return the message manipulator
+	 */
+	public static SendableMessageManipulator create(SendableMessage message, TextGoal...goals) {
+		return create(message, Set.of(goals));
+	}
+	
+	/**
+	 * Creates an instance targeting the specified text goals
+	 * 
+	 * @param message the message to manipulate
+	 * @param goals the text goals to target
+	 * @return the message manipulator
+	 */
+	public static SendableMessageManipulator create(SendableMessage message, Set<TextGoal> goals) {
+		return new SendableMessageManipulator(message, goals);
 	}
 	
 	/**
@@ -62,35 +95,28 @@ public class SendableMessageManipulator {
 	}
 	
 	/**
-	 * Sums the length of all the text of the {@link ChatComponent}s of this message. This method
-	 * works by adding the length of {@link ChatComponent#getText()} from each component.
+	 * Gets the immutable set of goals determing the text this manipulator targets
 	 * 
-	 * @return the length of all text in the components of this message
+	 * @return the text goals to determine the text to be manipulated
 	 */
-	public int length() {
-		int length = 0;
-		for (JsonSection section : message.getSections()) {
-			for (ChatComponent component : section.getContents()) {
-				length += component.getText().length();
-			}
-		}
-		return length;
+	public Set<TextGoal> getGoals() {
+		return goals;
 	}
 	
 	/**
-	 * Possible parts of a {@link SendableMessage} which can be somehow replaced via string manipulation
+	 * Possible parts of a {@link SendableMessage} containing strings
 	 * 
 	 * @author A248
 	 *
 	 */
-	public enum ReplaceGoal {
+	public enum TextGoal {
 		/**
 		 * Text of components ({@link ChatComponent#getText()}) in {@link JsonSection#getContents()}
 		 * 
 		 */
 		SIMPLE_TEXT,
 		/**
-		 * Text of components ({@link ChatComponent#getText()}) in {@link JsonHover#getContent()}
+		 * Text of components ({@link ChatComponent#getText()}) in {@link JsonHover#getContents()}
 		 * 
 		 */
 		HOVER_TEXT,
@@ -109,134 +135,65 @@ public class SendableMessageManipulator {
 		 * An immutable set consisting of all replace goals
 		 * 
 		 */
-		public static final Set<ReplaceGoal> ALL_GOALS = Set.of(values());
+		public static final Set<TextGoal> ALL_GOALS = Set.of(values());
 		
 	}
 	
+	/*
+	 * 
+	 * Replacement
+	 * 
+	 */
+	
 	/**
-	 * Replaces all text in the message using the specified operator and returns a new message with
-	 * the text replaced. Equivalent to <code>replaceText(operator, ReplaceGoal.ALL_GOALS)</code>
+	 * Replaces text in the message using the specified operator and returns a new message with
+	 * the text replaced.
 	 * 
 	 * @param operator the operator used to replace content
 	 * @return the new message with the text replaced according to the operator
-	 * @throws NullPointerException if {@code operator} is null
 	 */
 	public SendableMessage replaceText(UnaryOperator<String> operator) {
-		return replaceText(operator, ReplaceGoal.ALL_GOALS);
+		return new Replacer(this, operator).replace();
 	}
 	
 	/**
-	 * Replaces all text in the message using the specified operator and returns a new message with
-	 * the text replaced. Only strings targeted the specified goals are repalced.
+	 * Replaces all text matching the specified regex pattern with the specified replacement.
 	 * 
-	 * @param operator the operator used to replace content
-	 * @param goals the specific parts of the message to replace
-	 * @return the new message with the text replaced according to the operator
-	 * @throws NullPointerException if {@code operator}, {@code goals}, or an element in {@code goals} is null
+	 * @param pattern the regex pattern
+	 * @param replacement the replacement string
+	 * @return the new message with text matched the specified pattern replaced with the replacement
 	 */
-	public SendableMessage replaceText(UnaryOperator<String> operator, ReplaceGoal...goals) {
-		return replaceText(operator, Set.of(goals));
+	public SendableMessage replaceText(Pattern pattern, String replacement) {
+		Objects.requireNonNull(pattern, "pattern");
+		Objects.requireNonNull(replacement, "replacement");
+		return replaceText((str) -> pattern.matcher(str).replaceAll(replacement));
+	}
+
+	/*
+	 * 
+	 * Predicate evaluation
+	 * 
+	 */
+	
+	/**
+	 * Checks if text contains the specified string
+	 * 
+	 * @param text the text to check for
+	 * @return true if any text matched by the specified goals contains the specified string
+	 */
+	public boolean contains(String text) {
+		Objects.requireNonNull(text, "text");
+		return evaluate((str) -> str.contains(text));
 	}
 	
 	/**
-	 * Replaces all text in the message using the specified operator and returns a new message with
-	 * the text replaced  Only strings targeted the specified goals are repalced.
+	 * Checks if any text matches the specified predicate
 	 * 
-	 * @param operator the operator used to replace content
-	 * @param goals the specific parts of the message to replace
-	 * @return the new message with the text replaced according to the operator
-	 * @throws NullPointerException if {@code operator}, {@code goals}, or an element in {@code goals} is null
+	 * @param predicate the predicate used to perform the evaluation
+	 * @return true if any text matched by the specified goals matched the predicate
 	 */
-	public SendableMessage replaceText(UnaryOperator<String> operator, Set<ReplaceGoal> goals) {
-		return replaceText0(Objects.requireNonNull(operator, "operator"), Set.copyOf(goals));
-	}
-	
-	private static String apply(UnaryOperator<String> operator, String value) {
-		return Objects.requireNonNull(operator.apply(value), "operator returned null");
-	}
-	
-	private SendableMessage replaceText0(final UnaryOperator<String> operator, final Set<ReplaceGoal> goals) {
-		if (goals.isEmpty() || message.isEmpty()) {
-			return message;
-		}
-		boolean changedAny = false;
-		List<JsonSection> sections = new ArrayList<>(message.getSections().size());
-		for (JsonSection section : message.getSections()) {
-
-			JsonSection.Builder sectionBuilder = new JsonSection.Builder(section);
-
-			if (goals.contains(ReplaceGoal.SIMPLE_TEXT)) {
-				List<ChatComponent> oldContents = section.getContents();
-				List<ChatComponent> newContents = replaceTextInComponents(oldContents, operator);
-				if (!oldContents.equals(newContents)) {
-					sectionBuilder.contents(newContents);
-				}
-			}
-			JsonHover hover;
-			if (goals.contains(ReplaceGoal.HOVER_TEXT) && (hover = section.getHoverAction()) != null) {
-				List<ChatComponent> oldContents = hover.getContents();
-				List<ChatComponent> newContents = replaceTextInComponents(oldContents, operator); 
-				if (!oldContents.equals(newContents)) {
-					sectionBuilder.hoverAction(JsonHover.create(newContents));
-				}
-			}
-			JsonClick click;
-			if (goals.contains(ReplaceGoal.CLICK_VALUE) && (click = section.getClickAction()) != null) {
-				String oldValue = click.getValue();
-				String newValue = apply(operator, oldValue);
-				if (!oldValue.equals(newValue)) {
-					sectionBuilder.clickAction(JsonClick.create(click.getType(), newValue));
-				}
-			}
-			JsonInsertion insertion;
-			if (goals.contains(ReplaceGoal.INSERTION_VALUE) && (insertion = section.getInsertionAction()) != null) {
-				String oldValue = insertion.getValue();
-				String newValue = apply(operator, oldValue);
-				if (!oldValue.equals(newValue)) {
-					sectionBuilder.insertionAction(JsonInsertion.create(newValue));
-				}
-			}
-
-			JsonSection built = sectionBuilder.build();
-			JsonSection result;
-			if (section.equals(built)) {
-				result = section;
-			} else {
-				result = built;
-				changedAny = true;
-			}
-			sections.add(result);
-		}
-		if (!changedAny) {
-			return message;
-		}
-		return SendableMessage.create(sections);
-	}
-	
-	private static List<ChatComponent> replaceTextInComponents(List<ChatComponent> sourceContents,
-			UnaryOperator<String> operator) {
-		if (sourceContents.isEmpty()) {
-			return sourceContents;
-		}
-		boolean changedAny = false;
-		List<ChatComponent> contents = new ArrayList<>(sourceContents.size());
-		for (ChatComponent component : sourceContents) {
-
-			ChatComponent result;
-			String oldText = component.getText();
-			String newText = apply(operator, oldText);
-			if (oldText.equals(newText)) {
-				result = component;
-			} else {
-				result = new ChatComponent.Builder(component).text(newText).build();
-				changedAny = true;
-			}
-			contents.add(result);
-		}
-		if (!changedAny) {
-			return sourceContents;
-		}
-		return contents;
+	public boolean evaluate(Predicate<String> predicate) {
+		return new Evaluator(this, predicate).evaluate();
 	}
 	
 }
