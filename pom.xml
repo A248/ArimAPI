@@ -5,7 +5,6 @@
 	
 	<groupId>space.arim.api</groupId>
 	<artifactId>arimapi-parent</artifactId>
-	<!-- Remember to update versions in all child modules -->
 	<version>0.19.13-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
@@ -59,7 +58,7 @@
 					<execution>
 						<id>attach-sources</id>
 						<goals>
-							<goal>aggregate</goal>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -72,8 +71,8 @@
 					<execution>
 						<id>attach-javadocs</id>
 						<goals>
-							<goal>aggregate</goal>
-							<goal>aggregate-jar</goal>
+							<goal>javadoc</goal>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
