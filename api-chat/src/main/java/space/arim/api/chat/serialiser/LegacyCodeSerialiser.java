@@ -65,7 +65,7 @@ public final class LegacyCodeSerialiser implements SendableMessageSerialiser {
 	
 	@Override
 	public SendableMessage deserialise(String message) {
-		return new ColourDeserialiserImpl(colourPattern, message).deserialise();
+		return new LegacyColourDeserialiserImpl(colourPattern, message).deserialise();
 	}
 
 	@Override

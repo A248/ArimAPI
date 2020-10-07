@@ -18,21 +18,58 @@
  */
 package space.arim.api.chat.serialiser;
 
-import java.util.Objects;
-import space.arim.api.chat.SendableMessage;
+import java.util.Locale;
 
-abstract class DeserialiserImpl {
-
-	private final String content;
+enum JsonTag {
 	
-	DeserialiserImpl(String content) {
-		this.content = Objects.requireNonNull(content, "internal error: content");
+	/**
+	 * No tag specified
+	 */
+	NONE,
+	/**
+	 * Explicitly no tag, "nil:"
+	 */
+	NIL,
+	/**
+	 * Tooltip tag, "ttp:"
+	 */
+	TTP,
+	/**
+	 * Command tag, "cmd:"
+	 */
+	CMD,
+	/**
+	 * Suggestion tag, "sgt:"
+	 */
+	SGT,
+	/**
+	 * URL tag, "url:"
+	 */
+	URL,
+	/**
+	 * Insertion tag, "ins:" 
+	 */
+	INS;
+	
+	static JsonTag getTag(String segment) {
+		if (segment.length() <= 4) {
+			return NONE;
+		}
+		switch (segment.substring(0, 4).toLowerCase(Locale.ROOT)) {
+		case "nil:":
+			return NIL;
+		case "ttp:":
+			return TTP;
+		case "cmd:":
+			return CMD;
+		case "sgt:":
+			return SGT;
+		case "url:":
+			return URL;
+		case "ins:":
+			return INS;
+		default:
+			return NONE;
+		}
 	}
-	
-	String content() {
-		return content;
-	}
-	
-	abstract SendableMessage deserialise();
-	
 }

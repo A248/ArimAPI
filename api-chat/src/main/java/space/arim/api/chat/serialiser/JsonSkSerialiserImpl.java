@@ -45,30 +45,30 @@ class JsonSkSerialiserImpl {
 			if (section.isEmpty()) {
 				continue;
 			}
-			if (!first) {
-				builder.append("||");
-			} else {
+			if (first) {
 				first = false;
+			} else {
+				builder.append("||");
 			}
 
-			appendSimpleColoured(builder, section.getContents());
+			appendSimpleColoured(section.getContents());
 
 			JsonHover hover = section.getHoverAction();
 			if (hover != null) {
 				builder.append("||ttp:");
-				appendSimpleColoured(builder, hover.getContents());
+				appendComponents(builder, hover.getContents());
 			}
-			appendClick(builder, section.getClickAction());
+			appendClick(section.getClickAction());
 
 			JsonInsertion insertion = section.getInsertionAction();
 			if (insertion != null) {
-				builder.append("||ins:").append(insertion.getValue());
+				builder.append("||ins:").append(escapeDoublePipes(insertion.getValue()));
 			}
 		}
 		return builder.toString();
 	}
 	
-	private void appendClick(StringBuilder builder, JsonClick click) {
+	private void appendClick(JsonClick click) {
 		if (click == null) {
 			return;
 		}
@@ -86,10 +86,20 @@ class JsonSkSerialiserImpl {
 		default:
 			throw new UnsupportedOperationException("Not implemented for " + click.getType());
 		}
-		builder.append(':').append(click.getValue());
+		builder.append(':').append(escapeDoublePipes(click.getValue()));
 	}
 	
-	private void appendSimpleColoured(StringBuilder builder, List<ChatComponent> components) {
+	private void appendSimpleColoured(List<ChatComponent> components) {
+		StringBuilder localBuilder = new StringBuilder();
+		appendComponents(localBuilder, components);
+		String localString = localBuilder.toString();
+		if (JsonTag.getTag(localString) != JsonTag.NONE || localString.startsWith("||")) {
+			builder.append("nil:");
+		}
+		builder.append(localString);
+	}
+	
+	private static void appendComponents(StringBuilder builder, List<ChatComponent> components) {
 		for (ChatComponent component : components) {
 			if (component.isEmpty()) {
 				continue;
@@ -102,8 +112,12 @@ class JsonSkSerialiserImpl {
 				builder.append('&').append(code);
 			}
 			new StyleSerialiserImpl('&', builder).serialiseStylesFrom(component);
-			builder.append(component.getText());
+			builder.append(escapeDoublePipes(component.getText()));
 		}
+	}
+	
+	private static String escapeDoublePipes(String text) {
+		return text.replace("||", "||||");
 	}
 	
 	private static String bytesToHex(int hex) {

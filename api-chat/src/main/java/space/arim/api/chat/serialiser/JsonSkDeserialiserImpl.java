@@ -18,7 +18,10 @@
  */
 package space.arim.api.chat.serialiser;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.regex.Pattern;
 
 import space.arim.api.chat.JsonClick;
@@ -29,41 +32,102 @@ import space.arim.api.chat.SendableMessage;
 
 class JsonSkDeserialiserImpl extends DeserialiserImpl {
 	
-	private static final Pattern COLOUR_PATTERN = Pattern.compile(
-			// Legacy colour codes
-			"(&[0-9A-Fa-fK-Rk-r])|"
-			// Hex codes such as <#00AAFF>
-			+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)|"
-			// and the shorter <#4BC>
-			+ "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)");
-	
 	private static final Pattern DOUBLE_PIPES_PATTERN = Pattern.compile("||", Pattern.LITERAL);
 	
 	private final SendableMessage.Builder messageBuilder = new SendableMessage.Builder();
 	
 	private JsonSection.Builder sectionBuilder = new JsonSection.Builder();
-	private JsonHover currentHover;
-	private JsonClick currentClick;
-	private JsonInsertion currentInsert;
 
 	JsonSkDeserialiserImpl(String content) {
-		super(COLOUR_PATTERN, content);
+		super(content);
 	}
 	
-	private void parseJson(String content) {
-		for (String node : DOUBLE_PIPES_PATTERN.split(content)) {
-			if (node.isEmpty()) {
+	private List<String> getSegmentsIgnoringEscaped() {
+		String content = content();
+		String[] split = DOUBLE_PIPES_PATTERN.split(content);
+		if (content.indexOf("||||") == -1) {
+			return Arrays.asList(split);
+		}
+		List<CharSequence> segments = new ArrayList<>(split.length - 1);
+
+		/*
+		 * Objective: convert all |||| to ||
+		 */
+		mainLoop:
+		for (int n = 0; n < split.length; n++) {
+			int emptyCount = 0;
+			while (split[n].isEmpty()) {
+				emptyCount++;
+				n++;
+				if (n == split.length) {
+					addDoublePipesToLastSegment(segments, emptyCount);
+					break mainLoop;
+				}
+			}
+			if (emptyCount > 0) {
+				addDoublePipesToLastSegment(segments, emptyCount);
+			}
+			String preSegment = split[n];
+			if (emptyCount % 2 == 0) {
+				// Empty count is even - new segment
+				segments.add(preSegment);
+			} else {
+				// Add to last segment
+				int lastIndex = segments.size() - 1;
+				segments.set(lastIndex, new StringBuilder(segments.get(lastIndex)).append(preSegment));
+			}
+		}
+		// Build all unfinished StringBuilders
+		for (ListIterator<CharSequence> it = segments.listIterator(); it.hasNext();) {
+			it.set(it.next().toString());
+		}
+		@SuppressWarnings("unchecked")
+		List<String> casted = (List<String>) ((List<? extends CharSequence>) segments);
+		return casted;
+	}
+	
+	private static void addDoublePipesToLastSegment(List<CharSequence> segments, int emptyCount) {
+		/*
+		 * |||| - 1 empty, 1 pipes
+		 * |||| || - 2 empty, 1 pipes
+		 * |||| |||| - 3 empty, 2 pipes
+		 * |||| |||| || - 4 empty, 2 pipes
+		 * |||| |||| |||| - 5 empty, 3 pipes
+		 * 
+		 * e - p = floor (e/2)
+		 * p = e - floor (e/2)
+		 */
+		int doublePipeCount = emptyCount - (emptyCount / 2);
+		StringBuilder pipesBuilder = new StringBuilder();
+		for (int n = 0; n < doublePipeCount; n++) {
+			pipesBuilder.append("||");
+		}
+		int lastIndex = segments.size() - 1;
+		if (lastIndex >= 0) {
+			segments.set(lastIndex, new StringBuilder(segments.get(lastIndex)).append(pipesBuilder));
+		} else {
+			segments.add(pipesBuilder);
+		}
+	}
+	
+	private void parseJson() {
+		List<String> segments = getSegmentsIgnoringEscaped();
+		for (String segment : segments) {
+			if (segment.isEmpty()) {
 				continue;
 			}
-			JsonTag tag = JsonTag.getTag(node);
-			if (tag == JsonTag.NONE) {
+			JsonTag tag = JsonTag.getTag(segment);
+			if (tag == JsonTag.NONE || tag == JsonTag.NIL) {
 
+				if (tag == JsonTag.NIL) {
+					segment = segment.substring(4);
+				}
 				messageBuilder.add(sectionBuilder.build());
-				sectionBuilder = new ColourDeserialiserImpl(colourPattern(), node).deserialiseBuilder();
+				sectionBuilder = new AllColourDeserialiserImpl(segment).deserialiseBuilder();
 
 			} else if (!sectionBuilder.isEmpty()) {
 
-				parseTag(tag, node.substring(4));
+				parseTag(tag, segment.substring(4));
 			}
 		}
 		messageBuilder.add(sectionBuilder.build());
@@ -72,59 +136,29 @@ class JsonSkDeserialiserImpl extends DeserialiserImpl {
 	private void parseTag(JsonTag tag, String value) {
 		switch (tag) {
 		case TTP:
-			currentHover = JsonHover.create(new ColourDeserialiserImpl(colourPattern(), value).deserialiseBuilder().getContents());
+			JsonHover hover = JsonHover.create(new AllColourDeserialiserImpl(value).deserialiseBuilder().getContents());
+			sectionBuilder.hoverAction(hover);
 			break;
 		case CMD:
-			currentClick = JsonClick.runCommand(value);
+			sectionBuilder.clickAction(JsonClick.runCommand(value));
 			break;
 		case SGT:
-			currentClick = JsonClick.suggestCommand(value);
+			sectionBuilder.clickAction(JsonClick.suggestCommand(value));
 			break;
 		case URL:
-			currentClick = JsonClick.openUrl(value);
+			sectionBuilder.clickAction(JsonClick.openUrl(value));
 			break;
 		case INS:
-			currentInsert = JsonInsertion.create(value);
+			sectionBuilder.insertionAction(JsonInsertion.create(value));
 			break;
 		default:
 			throw new IllegalStateException("Unknown JsonTag " + tag);
-		}
-		sectionBuilder.hoverAction(currentHover).clickAction(currentClick).insertionAction(currentInsert);
-	}
-	
-	private enum JsonTag {
-		
-		NONE,
-		TTP,
-		CMD,
-		SGT,
-		URL,
-		INS;
-		
-		static JsonTag getTag(String node) {
-			if (node.length() <= 4) {
-				return NONE;
-			}
-			switch (node.substring(0, 4).toLowerCase(Locale.ROOT)) {
-			case "ttp:":
-				return TTP;
-			case "cmd:":
-				return CMD;
-			case "sgt:":
-				return SGT;
-			case "url:":
-				return URL;
-			case "ins:":
-				return INS;
-			default:
-				return NONE;
-			}
 		}
 	}
 
 	@Override
 	SendableMessage deserialise() {
-		content().lines().forEach(this::parseJson);
+		parseJson();
 		return messageBuilder.build();
 	}
 	
