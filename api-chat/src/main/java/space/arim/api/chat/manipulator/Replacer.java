@@ -78,13 +78,12 @@ class Replacer extends ManipulationFeature {
 				sectionBuilder.contents(newContents);
 			}
 		}
-		JsonHover hover;
+		JsonHover oldHover;
 		if (hasGoal(TextGoal.HOVER_TEXT)
-				&& (hover = section.getHoverAction()) != null) {
-			List<ChatComponent> oldContents = hover.getContents();
-			List<ChatComponent> newContents = replaceTextInComponents(oldContents); 
-			if (!oldContents.equals(newContents)) {
-				sectionBuilder.hoverAction(JsonHover.create(newContents));
+				&& (oldHover = section.getHoverAction()) != null) {
+			JsonHover newHover = JsonHover.create(replaceTextInComponents(oldHover.getContents()));
+			if (!oldHover.equals(newHover)) {
+				sectionBuilder.hoverAction(newHover);
 			}
 		}
 		JsonClick click;
