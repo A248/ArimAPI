@@ -31,9 +31,9 @@ import space.arim.api.chat.manipulator.SendableMessageManipulator.TextGoal;
 
 class Evaluator extends ManipulationFeature {
 
-	private final Predicate<String> predicate;
+	private final Predicate<? super String> predicate;
 	
-	Evaluator(SendableMessageManipulator manipulator, Predicate<String> predicate) {
+	Evaluator(SendableMessageManipulator manipulator, Predicate<? super String> predicate) {
 		super(manipulator);
 		this.predicate = Objects.requireNonNull(predicate, "predicate");
 	}

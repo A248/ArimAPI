@@ -21,7 +21,7 @@ package space.arim.api.chat.manipulator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
 import space.arim.api.chat.ChatComponent;
 import space.arim.api.chat.JsonClick;
@@ -33,9 +33,9 @@ import space.arim.api.chat.manipulator.SendableMessageManipulator.TextGoal;
 
 class Replacer extends ManipulationFeature {
 
-	private final UnaryOperator<String> operator;
+	private final Function<? super String, String> operator;
 	
-	Replacer(SendableMessageManipulator manipulator, UnaryOperator<String> operator) {
+	Replacer(SendableMessageManipulator manipulator, Function<? super String, String> operator) {
 		super(manipulator);
 		this.operator = Objects.requireNonNull(operator, "operator");
 	}
@@ -44,7 +44,7 @@ class Replacer extends ManipulationFeature {
 		return Objects.requireNonNull(operator.apply(value), "operator returned null");
 	}
 	
-	SendableMessageManipulator replace() {
+	SendableMessage replace() {
 		if (isNoOp()) {
 			return message();
 		}
@@ -65,7 +65,7 @@ class Replacer extends ManipulationFeature {
 		if (!changedAny) {
 			return message();
 		}
-		return deriveManipulator(SendableMessage.create(sections));
+		return SendableMessage.create(sections);
 	}
 	
 	private JsonSection rebuildSection(JsonSection section) {

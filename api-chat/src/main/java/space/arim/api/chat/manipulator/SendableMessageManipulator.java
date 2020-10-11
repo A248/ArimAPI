@@ -20,8 +20,8 @@ package space.arim.api.chat.manipulator;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 import space.arim.api.chat.ChatComponent;
@@ -162,7 +162,7 @@ public final class SendableMessageManipulator {
 	 * @param operator the operator used to replace content
 	 * @return a manipulator wrapping the new message with the text replaced according to the operator
 	 */
-	public SendableMessageManipulator replaceText(UnaryOperator<String> operator) {
+	public SendableMessage replaceText(Function<? super String, String> operator) {
 		return new Replacer(this, operator).replace();
 	}
 	
@@ -173,7 +173,7 @@ public final class SendableMessageManipulator {
 	 * @param replacement the replacement character sequence
 	 * @return a manipulator wrapping the new message with text matched the specified pattern replaced with the replacement
 	 */
-	public SendableMessageManipulator replaceText(Pattern pattern, CharSequence replacement) {
+	public SendableMessage replaceText(Pattern pattern, String replacement) {
 		Objects.requireNonNull(pattern, "pattern");
 		Objects.requireNonNull(replacement, "replacement");
 		return replaceText((str) -> pattern.matcher(str).replaceAll(replacement));
@@ -186,7 +186,7 @@ public final class SendableMessageManipulator {
 	 * @param replacement the replacement character sequence
 	 * @return a manipulator wrapping the new message with text matched the specified text replaced with the replacement
 	 */
-	public SendableMessageManipulator replaceText(CharSequence text, CharSequence replacement) {
+	public SendableMessage replaceText(CharSequence text, CharSequence replacement) {
 		Objects.requireNonNull(text, "text");
 		Objects.requireNonNull(replacement, "replacement");
 		return replaceText((str) -> str.replace(text, replacement));
