@@ -39,6 +39,7 @@ public final class ChatComponent implements ChatComponentInfo {
 	private ChatComponent(String text, int colour, int styles) {
 		this.text = Objects.requireNonNull(text, "text");
 		this.colour = ColourManipulator.getInstance().checkRange(colour);
+		MessageStyle.checkStylesRange(styles);
 		this.styles = styles;
 	}
 	
@@ -164,8 +165,10 @@ public final class ChatComponent implements ChatComponentInfo {
 		 * 
 		 * @param styles the new styles
 		 * @return the builder
+		 * @throws IllegalArgumentException if {@code styles} is outside the range of those defined by {@link MessageStyle}
 		 */
 		public Builder styles(int styles) {
+			MessageStyle.checkStylesRange(styles);
 			this.styles = styles;
 			return this;
 		}

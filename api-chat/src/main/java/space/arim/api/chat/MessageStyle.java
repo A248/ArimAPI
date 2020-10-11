@@ -67,4 +67,19 @@ public final class MessageStyle {
 		return VALUES;
 	}
 	
+	/**
+	 * Gets a combined style comprising all the message styles
+	 * 
+	 * @return all the message styles
+	 */
+	public static int allStyles() {
+		return MAGIC | BOLD | STRIKETHROUGH | UNDERLINE | ITALIC;
+	}
+	
+	static void checkStylesRange(int styles) {
+		if ((styles & ~MessageStyle.allStyles()) != 0) {
+			throw new IllegalArgumentException("Styles " + Integer.toBinaryString(styles) + " out of range");
+		}
+	}
+	
 }
