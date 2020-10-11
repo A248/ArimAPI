@@ -63,6 +63,9 @@ public final class SendableMessage implements SendableMessageInfo {
 	 * @throws NullPointerException if {@code sections} or an element in it is null
 	 */
 	public static SendableMessage create(JsonSection...sections) {
+		if (sections.length == 0) {
+			return EMPTY;
+		}
 		return create(List.of(sections));
 	}
 	
@@ -78,6 +81,15 @@ public final class SendableMessage implements SendableMessageInfo {
 			return (SendableMessage) info;
 		}
 		return create(info.getSections());
+	}
+	
+	/**
+	 * Creates an empty message
+	 * 
+	 * @return an empty sendable message
+	 */
+	public static SendableMessage empty() {
+		return EMPTY;
 	}
 	
 	/**
