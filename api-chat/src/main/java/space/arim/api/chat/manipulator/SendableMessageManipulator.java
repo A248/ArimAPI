@@ -139,6 +139,16 @@ public final class SendableMessageManipulator {
 		
 	}
 	
+	/**
+	 * Derives another manipulator for another message, using the same goals as in this manipulator
+	 * 
+	 * @param message the message to manipulate
+	 * @return a sendable message manipulator for the specified message with the same goals as this one
+	 */
+	public SendableMessageManipulator deriveManipulator(SendableMessage message) {
+		return new SendableMessageManipulator(message, goals);
+	}
+	
 	/*
 	 * 
 	 * Replacement
@@ -150,23 +160,36 @@ public final class SendableMessageManipulator {
 	 * the text replaced.
 	 * 
 	 * @param operator the operator used to replace content
-	 * @return the new message with the text replaced according to the operator
+	 * @return a manipulator wrapping the new message with the text replaced according to the operator
 	 */
-	public SendableMessage replaceText(UnaryOperator<String> operator) {
+	public SendableMessageManipulator replaceText(UnaryOperator<String> operator) {
 		return new Replacer(this, operator).replace();
 	}
 	
 	/**
-	 * Replaces all text matching the specified regex pattern with the specified replacement.
+	 * Replaces all text matching the regex pattern with the specified replacement
 	 * 
 	 * @param pattern the regex pattern
-	 * @param replacement the replacement string
-	 * @return the new message with text matched the specified pattern replaced with the replacement
+	 * @param replacement the replacement character sequence
+	 * @return a manipulator wrapping the new message with text matched the specified pattern replaced with the replacement
 	 */
-	public SendableMessage replaceText(Pattern pattern, String replacement) {
+	public SendableMessageManipulator replaceText(Pattern pattern, CharSequence replacement) {
 		Objects.requireNonNull(pattern, "pattern");
 		Objects.requireNonNull(replacement, "replacement");
 		return replaceText((str) -> pattern.matcher(str).replaceAll(replacement));
+	}
+	
+	/**
+	 * Replaces all text matching the literal string with the specified replacement
+	 * 
+	 * @param text the text to replace
+	 * @param replacement the replacement character sequence
+	 * @return a manipulator wrapping the new message with text matched the specified text replaced with the replacement
+	 */
+	public SendableMessageManipulator replaceText(CharSequence text, CharSequence replacement) {
+		Objects.requireNonNull(text, "text");
+		Objects.requireNonNull(replacement, "replacement");
+		return replaceText((str) -> str.replace(text, replacement));
 	}
 
 	/*
@@ -176,12 +199,12 @@ public final class SendableMessageManipulator {
 	 */
 	
 	/**
-	 * Checks if text contains the specified string
+	 * Checks if any text contains the specified char sequence
 	 * 
-	 * @param text the text to check for
+	 * @param text the car sequence to check for
 	 * @return true if any text matched by the specified goals contains the specified string
 	 */
-	public boolean contains(String text) {
+	public boolean contains(CharSequence text) {
 		Objects.requireNonNull(text, "text");
 		return evaluate((str) -> str.contains(text));
 	}
@@ -192,7 +215,7 @@ public final class SendableMessageManipulator {
 	 * @param predicate the predicate used to perform the evaluation
 	 * @return true if any text matched by the specified goals matched the predicate
 	 */
-	public boolean evaluate(Predicate<String> predicate) {
+	public boolean evaluate(Predicate<? super String> predicate) {
 		return new Evaluator(this, predicate).evaluate();
 	}
 	

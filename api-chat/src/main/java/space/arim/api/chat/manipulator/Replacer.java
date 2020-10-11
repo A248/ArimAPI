@@ -44,7 +44,7 @@ class Replacer extends ManipulationFeature {
 		return Objects.requireNonNull(operator.apply(value), "operator returned null");
 	}
 	
-	SendableMessage replace() {
+	SendableMessageManipulator replace() {
 		if (isNoOp()) {
 			return message();
 		}
@@ -65,7 +65,7 @@ class Replacer extends ManipulationFeature {
 		if (!changedAny) {
 			return message();
 		}
-		return SendableMessage.create(sections);
+		return deriveManipulator(SendableMessage.create(sections));
 	}
 	
 	private JsonSection rebuildSection(JsonSection section) {

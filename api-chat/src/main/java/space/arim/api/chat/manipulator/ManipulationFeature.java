@@ -33,6 +33,10 @@ class ManipulationFeature {
 		return message().isEmpty() || manipulator.getGoals().isEmpty();
 	}
 	
+	SendableMessageManipulator deriveManipulator(SendableMessage message) {
+		return manipulator.deriveManipulator(message);
+	}
+	
 	SendableMessage message() {
 		return manipulator.getMessage();
 	}
