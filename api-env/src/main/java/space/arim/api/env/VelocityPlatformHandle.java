@@ -33,6 +33,8 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 
+import net.kyori.adventure.identity.Identity;
+
 /**
  * Implementation of {@link PlatformHandle} specifically for Velocity servers.
  * 
@@ -105,7 +107,7 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 	 * @param message the message
 	 */
 	public void sendMessage(CommandSource recipient, SendableMessage message) {
-		recipient.sendMessage(new AdventureTextConverter().convert(message));
+		recipient.sendMessage(Identity.nil(), new AdventureTextConverter().convert(message));
 	}
 	
 	/**
