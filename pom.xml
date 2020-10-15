@@ -20,7 +20,7 @@
 		<junit.version>5.7.0</junit.version>
 		
 		<!-- Required dependencies -->
-		<omnibus.version>1.0.0-RC1</omnibus.version>
+		<omnibus.version>1.0.0-RC3</omnibus.version>
 		
 		<!-- Optional dependencies -->
 		<hikari.version>3.4.5</hikari.version>
