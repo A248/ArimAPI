@@ -42,7 +42,7 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	
 	@Override
 	public T join() {
-		if (factory.isPrimaryThread()) {
+		if (factory.isPrimaryThread() && !isDone()) {
 			factory.unleashSyncTasks();
 			while (!isDone()) {
 				LockSupport.park(this);
@@ -54,7 +54,7 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	
 	@Override
 	public T get() throws InterruptedException, ExecutionException {
-		if (factory.isPrimaryThread()) {
+		if (factory.isPrimaryThread() && !isDone()) {
 			if (Thread.interrupted()) {
 				throw new InterruptedException();
 			}
@@ -73,12 +73,11 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	@Override
 	public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
 		if (factory.isPrimaryThread()) {
+			if (isDone()) {
+				return super.get();
+			}
 			if (timeout <= 0L) {
-				if (isDone()) {
-					return get();
-				} else {
-					throw new TimeoutException();
-				}
+				throw new TimeoutException();
 			}
 			long deadline = System.nanoTime() + unit.toNanos(timeout);
 			if (Thread.interrupted()) {
