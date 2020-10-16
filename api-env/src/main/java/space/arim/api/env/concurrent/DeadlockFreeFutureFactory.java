@@ -21,7 +21,9 @@ package space.arim.api.env.concurrent;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import space.arim.omnibus.util.concurrent.CentralisedFuture;
 import space.arim.omnibus.util.concurrent.SynchronousExecutor;
@@ -31,10 +33,18 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 
 	private final Queue<Runnable> syncTasks = new ConcurrentLinkedQueue<>();
 	volatile Thread mainThread;
-	final SynchronousExecutor trustedSyncExecutor;
+	transient final SynchronousExecutor trustedSyncExecutor;
+	
+	final Lock completionLock = new ReentrantLock();
+	final Condition completionCondition = completionLock.newCondition();
 	
 	DeadlockFreeFutureFactory() {
 		trustedSyncExecutor = new TrustedSyncExecutor();
+	}
+	
+	@Override
+	public <T> CentralisedFuture<T> newIncompleteFuture() {
+		return DeadlockFreeFuture.create(this);
 	}
 	
 	boolean isPrimaryThread() {
@@ -52,18 +62,22 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	
 	abstract boolean isPrimaryThread0();
 	
-	@Override
-	public <T> CentralisedFuture<T> newIncompleteFuture() {
-		return new DeadlockFreeFuture<>(this);
-	}
-	
 	void executeSync0(Runnable command) {
 		if (isPrimaryThread()) {
 			command.run();
 			return;
 		}
 		syncTasks.offer(command);
-		LockSupport.unpark(mainThread);
+		signal();
+	}
+	
+	void signal() {
+		completionLock.lock();
+		try {
+			completionCondition.signal();
+		} finally {
+			completionLock.unlock();
+		}
 	}
 	
 	@Override
@@ -134,6 +148,11 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 		public void executeSync(Runnable command) {
 			executeSync0(command);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " [syncTasks=" + syncTasks + ", mainThread=" + mainThread + "]";
 	}
 
 }

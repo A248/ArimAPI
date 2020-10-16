@@ -24,6 +24,7 @@
 	</build>
 	
 	<dependencies>
+		<!-- Required dependencies -->
 		<dependency>
 			<groupId>space.arim.omnibus</groupId>
 			<artifactId>omnibus</artifactId>
@@ -32,11 +33,18 @@
 			<groupId>space.arim.api</groupId>
 			<artifactId>arimapi-chat</artifactId>
 		</dependency>
+		
+		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
+
+		<!-- Platform dependencies -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
