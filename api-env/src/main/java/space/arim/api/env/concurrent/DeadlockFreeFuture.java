@@ -18,6 +18,9 @@
  */
 package space.arim.api.env.concurrent;
 
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -35,6 +38,8 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 
 	private final DeadlockFreeFutureFactory factory;
 	
+	private static final Object ABSENT_VALUE = new Object();
+	
 	private DeadlockFreeFuture(DeadlockFreeFutureFactory factory) {
 		super(factory);
 		this.factory = factory;
@@ -46,76 +51,138 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	}
 	
 	/*
+	 * 
 	 * Managed wait implementation
+	 * 
 	 */
+	
+	// Used to avoid double volatile reads
+	
+	/**
+	 * Gets the completed value, or {@code ABSENT_VALUE} if not completed. <br>
+	 * <br>
+	 * If completed exceptionally, throws in accordance with {@link CompletableFuture#join()}
+	 * 
+	 * @return the completed value or {@code ABSENT_VALUE}
+	 * @throws CancellationException if the computation was cancelled
+	 * @throws CompletionException if this future completed exceptionally or a completion computation threw an exception
+	 */
+	@SuppressWarnings("unchecked")
+	private T getNowJoin() {
+		return getNow((T) ABSENT_VALUE);
+	}
+	
+	/**
+	 * Gets the completed value, or {@code ABSENT_VALUE} if not completed. <br>
+	 * <br>
+	 * If completed exceptionally, throws in accordance with {@link CompletableFuture#get()}
+	 * 
+	 * @return the completed value or {@code ABSENT_VALUE}
+	 * @throws CancellationException if the computation was cancelled
+	 * @throws ExecutionException if this future completed exceptionally
+	 */
+	private T getNowGet() throws ExecutionException {
+		try {
+			return getNowJoin();
+		} catch (CompletionException ex) {
+			Throwable cause = ex.getCause();
+			throw new ExecutionException((cause == null) ? ex : cause);
+		}
+	}
+	
+	// Managed waits
 	
 	@Override
 	public T join() {
-		if (factory.isPrimaryThread() && !isDone()) {
+		if (!factory.isPrimaryThread()) {
+			return super.join();
+		}
+
+		T result;
+		if ((result = getNowJoin()) != ABSENT_VALUE) {	// if (isDone()) {
+			return result;								// return super.join(); }
+		}
+		for (;;) {
 			factory.unleashSyncTasks();
-			while (!isDone()) {
-				factory.completionLock.lock();
-				try {
-					factory.completionCondition.awaitUninterruptibly();
-				} finally {
-					factory.completionLock.unlock();
+			factory.completionLock.lock();
+			try {
+				if ((result = getNowJoin()) != ABSENT_VALUE) {	// if (isDone()) {
+					return result;								// return super.join(); }
 				}
-				factory.unleashSyncTasks();
+				factory.completionCondition.awaitUninterruptibly();
+			} finally {
+				factory.completionLock.unlock();
+			}
+			if ((result = getNowJoin()) != ABSENT_VALUE) {	// if (isDone()) {
+				return result;								// return super.join(); }
 			}
 		}
-		return super.join();
 	}
 	
 	@Override
 	public T get() throws InterruptedException, ExecutionException {
-		if (factory.isPrimaryThread() && !isDone()) {
-			if (Thread.interrupted()) {
-				throw new InterruptedException();
-			}
+		if (!factory.isPrimaryThread()) {
+			return super.get();
+		}
+
+		T result;
+		if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
+			return result;								// return super.get(); }
+		}
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
+		for (;;) {
 			factory.unleashSyncTasks();
-			while (!isDone()) {
-				factory.completionLock.lock();
-				try {
-					factory.completionCondition.await();
-				} finally {
-					factory.completionLock.unlock();
+			factory.completionLock.lock();
+			try {
+				if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
+					return result;								// return super.get(); }
 				}
-				factory.unleashSyncTasks();
+				factory.completionCondition.await();
+			} finally {
+				factory.completionLock.unlock();
+			}
+			if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
+				return result;								// return super.get(); }
 			}
 		}
-		return super.get();
 	}
 
 	@Override
 	public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-		if (factory.isPrimaryThread()) {
-			if (isDone()) {
-				return super.get();
+		if (!factory.isPrimaryThread()) {
+			return super.get(timeout, unit);
+		}
+
+		T result;
+		if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
+			return result;								// return super.get(); }
+		}
+		if (timeout <= 0L) {
+			throw new TimeoutException();
+		}
+		long deadline = System.nanoTime() + unit.toNanos(timeout);
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
+		for (;;) {
+			factory.unleashSyncTasks(deadline);
+			factory.completionLock.lock();
+			try {
+				if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
+					return result;								// return super.get(); }
+				}
+				factory.completionCondition.awaitNanos(deadline - System.nanoTime());
+			} finally {
+				factory.completionLock.unlock();
 			}
-			if (timeout <= 0L) {
+			if (System.nanoTime() - deadline >= 0) {
 				throw new TimeoutException();
 			}
-			long deadline = System.nanoTime() + unit.toNanos(timeout);
-			if (Thread.interrupted()) {
-				throw new InterruptedException();
+			if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
+				return result;								// return super.get(); }
 			}
-			factory.unleashSyncTasks(deadline);
-			while (!isDone()) {
-				factory.completionLock.lock();
-				try {
-					factory.completionCondition.awaitNanos(deadline - System.nanoTime());
-				} finally {
-					factory.completionLock.unlock();
-				}
-				if (System.nanoTime() - deadline >= 0) {
-					throw new TimeoutException();
-				}
-				factory.unleashSyncTasks(deadline);
-			}
-			return super.get();
-
-		} else {
-			return super.get(timeout, unit);
 		}
 	}
 
@@ -165,11 +232,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	}
 
 	@Override
-	public <U> CentralisedFuture<U> thenApplySync(Function<? super T, ? extends U> fn) {
-		return applySignal(super.thenApplySync(fn));
-	}
-
-	@Override
 	public CentralisedFuture<Void> thenAccept(Consumer<? super T> action) {
 		return applySignal(super.thenAccept(action));
 	}
@@ -185,11 +247,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	}
 
 	@Override
-	public CentralisedFuture<Void> thenAcceptSync(Consumer<? super T> action) {
-		return applySignal(super.thenAcceptSync(action));
-	}
-
-	@Override
 	public CentralisedFuture<Void> thenRun(Runnable action) {
 		return applySignal(super.thenRun(action));
 	}
@@ -202,11 +259,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	@Override
 	public CentralisedFuture<Void> thenRunAsync(Runnable action, Executor executor) {
 		return applySignal(super.thenRunAsync(action, executor));
-	}
-
-	@Override
-	public CentralisedFuture<Void> thenRunSync(Runnable action) {
-		return applySignal(super.thenRunSync(action));
 	}
 
 	@Override
@@ -228,12 +280,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	}
 
 	@Override
-	public <U, V> CentralisedFuture<V> thenCombineSync(CompletionStage<? extends U> other,
-			BiFunction<? super T, ? super U, ? extends V> fn) {
-		return applySignal(super.thenCombineSync(other, fn));
-	}
-
-	@Override
 	public <U> CentralisedFuture<Void> thenAcceptBoth(CompletionStage<? extends U> other,
 			BiConsumer<? super T, ? super U> action) {
 		return applySignal(super.thenAcceptBoth(other, action));
@@ -252,12 +298,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	}
 
 	@Override
-	public <U> CentralisedFuture<Void> thenAcceptBothSync(CompletionStage<? extends U> other,
-			BiConsumer<? super T, ? super U> action) {
-		return applySignal(super.thenAcceptBothSync(other, action));
-	}
-
-	@Override
 	public CentralisedFuture<Void> runAfterBoth(CompletionStage<?> other, Runnable action) {
 		return applySignal(super.runAfterBoth(other, action));
 	}
@@ -270,11 +310,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	@Override
 	public CentralisedFuture<Void> runAfterBothAsync(CompletionStage<?> other, Runnable action, Executor executor) {
 		return applySignal(super.runAfterBothAsync(other, action, executor));
-	}
-
-	@Override
-	public CentralisedFuture<Void> runAfterBothSync(CompletionStage<?> other, Runnable action) {
-		return applySignal(super.runAfterBothSync(other, action));
 	}
 
 	@Override
@@ -294,11 +329,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	}
 
 	@Override
-	public <U> CentralisedFuture<U> applyToEitherSync(CompletionStage<? extends T> other, Function<? super T, U> fn) {
-		return applySignal(super.applyToEitherSync(other, fn));
-	}
-
-	@Override
 	public CentralisedFuture<Void> acceptEither(CompletionStage<? extends T> other, Consumer<? super T> action) {
 		return applySignal(super.acceptEither(other, action));
 	}
@@ -315,11 +345,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	}
 
 	@Override
-	public CentralisedFuture<Void> acceptEitherSync(CompletionStage<? extends T> other, Consumer<? super T> action) {
-		return applySignal(super.acceptEitherSync(other, action));
-	}
-
-	@Override
 	public CentralisedFuture<Void> runAfterEither(CompletionStage<?> other, Runnable action) {
 		return applySignal(super.runAfterEither(other, action));
 	}
@@ -332,11 +357,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	@Override
 	public CentralisedFuture<Void> runAfterEitherAsync(CompletionStage<?> other, Runnable action, Executor executor) {
 		return applySignal(super.runAfterEitherAsync(other, action, executor));
-	}
-
-	@Override
-	public CentralisedFuture<Void> runAfterEitherSync(CompletionStage<?> other, Runnable action) {
-		return applySignal(super.runAfterEitherSync(other, action));
 	}
 
 	@Override
@@ -356,11 +376,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	}
 
 	@Override
-	public <U> CentralisedFuture<U> thenComposeSync(Function<? super T, ? extends CompletionStage<U>> fn) {
-		return applySignal(super.thenComposeSync(fn));
-	}
-
-	@Override
 	public <U> CentralisedFuture<U> handle(BiFunction<? super T, Throwable, ? extends U> fn) {
 		return applySignal(super.handle(fn));
 	}
@@ -376,11 +391,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	}
 
 	@Override
-	public <U> CentralisedFuture<U> handleSync(BiFunction<? super T, Throwable, ? extends U> fn) {
-		return applySignal(super.handleSync(fn));
-	}
-
-	@Override
 	public CentralisedFuture<T> whenComplete(BiConsumer<? super T, ? super Throwable> action) {
 		return applySignal(super.whenComplete(action));
 	}
@@ -393,11 +403,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	@Override
 	public CentralisedFuture<T> whenCompleteAsync(BiConsumer<? super T, ? super Throwable> action, Executor executor) {
 		return applySignal(super.whenCompleteAsync(action, executor));
-	}
-
-	@Override
-	public CentralisedFuture<T> whenCompleteSync(BiConsumer<? super T, ? super Throwable> action) {
-		return applySignal(super.whenCompleteSync(action));
 	}
 
 	@Override

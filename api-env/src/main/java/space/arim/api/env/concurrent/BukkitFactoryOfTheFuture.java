@@ -48,9 +48,7 @@ public class BukkitFactoryOfTheFuture extends DeadlockFreeFutureFactory implemen
 		Server server = plugin.getServer();
 		this.server = server;
 		BukkitScheduler scheduler = server.getScheduler();
-		scheduler.runTask(plugin, () -> {
-			mainThread = Thread.currentThread();
-		});
+		isPrimaryThread(); // init main thread
 		task = scheduler.runTaskTimer(plugin, new PeriodicSyncUnleasher(), 0L, 1L);
 	}
 

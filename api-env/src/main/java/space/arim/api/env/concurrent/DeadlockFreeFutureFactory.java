@@ -32,7 +32,7 @@ import space.arim.omnibus.util.concurrent.impl.AbstractFactoryOfTheFuture;
 abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 
 	private final Queue<Runnable> syncTasks = new ConcurrentLinkedQueue<>();
-	volatile Thread mainThread;
+	private volatile Thread mainThread;
 	transient final SynchronousExecutor trustedSyncExecutor;
 	
 	final Lock completionLock = new ReentrantLock();
@@ -72,6 +72,10 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	}
 	
 	void signal() {
+		/*
+		 * If this encounters significant contention, move to a Lock/Condition per DeadlockFreeFuture,
+		 * enqueue all future instances in this factory, and signal each
+		 */
 		completionLock.lock();
 		try {
 			completionCondition.signal();
