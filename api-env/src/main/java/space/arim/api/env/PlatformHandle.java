@@ -96,4 +96,15 @@ public interface PlatformHandle {
 	 */
 	PlatformPluginInfo getImplementingPluginInfo();
 	
+	/**
+	 * Gets an informative string describing the version of the platform this handle is operating on. <br>
+	 * <br>
+	 * This is intended for debugging and/or monitoring purposes.
+	 * 
+	 * @return the platform version
+	 */
+	default String getPlatformVersion() {
+		return "";
+	}
+	
 }

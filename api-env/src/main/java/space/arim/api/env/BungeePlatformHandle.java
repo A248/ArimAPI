@@ -115,4 +115,9 @@ public class BungeePlatformHandle extends AbstractPlatformHandle {
 		return new BungeeRealExecutorFinder(getPlugin());
 	}
 
+	@Override
+	public String getPlatformVersion() {
+		return getPlugin().getProxy().getVersion();
+	}
+
 }

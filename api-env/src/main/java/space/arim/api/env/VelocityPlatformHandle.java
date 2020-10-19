@@ -126,5 +126,10 @@ public class VelocityPlatformHandle extends AbstractPlatformHandle {
 	public RealExecutorFinder getRealExecutorFinder() {
 		return new VelocityRealExecutorFinder(getPlugin(), getServer());
 	}
+
+	@Override
+	public String getPlatformVersion() {
+		return getServer().getVersion().getVersion();
+	}
 	
 }

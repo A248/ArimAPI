@@ -32,6 +32,7 @@ import space.arim.api.env.realexecutor.BukkitRealExecutorFinder;
 import space.arim.api.env.realexecutor.RealExecutorFinder;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -130,6 +131,12 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	@Override
 	public RealExecutorFinder getRealExecutorFinder() {
 		return new BukkitRealExecutorFinder(getPlugin());
+	}
+
+	@Override
+	public String getPlatformVersion() {
+		Server server = getPlugin().getServer();
+		return server.getVersion() + " (API " + server.getBukkitVersion() + ")";
 	}
 
 }
