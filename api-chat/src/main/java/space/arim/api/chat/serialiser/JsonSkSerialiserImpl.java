@@ -100,19 +100,41 @@ class JsonSkSerialiserImpl {
 	}
 	
 	private static void appendComponents(StringBuilder builder, List<ChatComponent> components) {
+		int currentStyles = 0;
+		int currentColour = 0;
+		char formattingChar = '&';
 		for (ChatComponent component : components) {
 			if (component.isEmpty()) {
 				continue;
 			}
-			PredefinedColour predefinedColour = PredefinedColour.getExactTo(component.getColour());
-			if (predefinedColour == null) {
-				builder.append("<#").append(bytesToHex(component.getColour())).append('>');
-			} else {
-				char code = predefinedColour.getCodeChar();
-				builder.append('&').append(code);
+			int colour = component.getColour();
+			int styles = component.getStyles();
+			if (styles != currentStyles) {
+				// Reset and re-apply colours and styles
+				if (currentStyles != 0) {
+					builder.append(formattingChar).append('r');
+				}
+				appendColour(builder, colour);
+				new StyleSerialiserImpl(formattingChar, builder)
+					.serialiseStylesFrom(component);
+
+			} else if (colour != currentColour) {
+				// Same styles, different colour
+				appendColour(builder, colour);
 			}
-			new StyleSerialiserImpl('&', builder).serialiseStylesFrom(component);
+			currentColour = colour;
+			currentStyles = styles;
 			builder.append(escapeDoublePipes(component.getText()));
+		}
+	}
+	
+	private static void appendColour(StringBuilder builder, int colour) {
+		PredefinedColour predefinedColour = PredefinedColour.getExactTo(colour);
+		if (predefinedColour == null) {
+			builder.append("<#").append(bytesToHex(colour)).append('>');
+		} else {
+			char code = predefinedColour.getCodeChar();
+			builder.append('&').append(code);
 		}
 	}
 	

@@ -21,15 +21,16 @@ package space.arim.api.chat;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 
-final class Compactions {
+abstract class Compactions<T extends Emptyable> {
 
-	private Compactions() {}
+	private final List<T> mutableList;
 	
-	private static <T extends Emptyable> void compact(List<T> mutableList, BiPredicate<T, T> similarity,
-			BiFunction<T, T, T> combiner) {
+	Compactions(List<T> mutableList) {
+		this.mutableList = mutableList;
+	}
+
+	private void compact() {
 		T previous = null;
 		for (ListIterator<T> it = mutableList.listIterator(); it.hasNext();) {
 
@@ -38,9 +39,9 @@ final class Compactions {
 				it.remove();
 				continue;
 			}
-			if (previous != null && similarity.test(previous, current)) {
+			if (previous != null && testSimilarity(previous, current)) {
 				// Update current section by combining previous with current contents
-				T updated = combiner.apply(previous, current);
+				T updated = combine(previous, current);
 				it.set(updated);
 				// Move temporarily back, then remove the element there
 				it.previous();
@@ -49,28 +50,63 @@ final class Compactions {
 				// Move back to place
 				T updatedVerify = it.next();
 				assert updated == updatedVerify : updatedVerify;
+				previous = updated;
+			} else {
+				previous = current;
 			}
-			previous = current;
 		}
 	}
 	
-	static void compactComponents(List<ChatComponent> components) {
-		compact(components, (previous, current) -> {
-			return previous.getColour() == current.getColour()
-					&& previous.getStyles() == current.getStyles();
-		}, (previous, current) -> {
+	abstract boolean testSimilarity(T previous, T current);
+
+	abstract T combine(T previous, T current);
+
+	private static class ComponentCompactor extends Compactions<ChatComponent> {
+
+		ComponentCompactor(List<ChatComponent> mutableList) {
+			super(mutableList);
+		}
+
+		@Override
+		boolean testSimilarity(ChatComponent previous, ChatComponent current) {
+			return previous.getColour() == current.getColour() && previous.getStyles() == current.getStyles();
+		}
+
+		@Override
+		ChatComponent combine(ChatComponent previous, ChatComponent current) {
 			return new ChatComponent.Builder(previous).text(previous.getText().concat(current.getText())).build();
-		});
+		}
+
 	}
 	
-	static void compactSections(List<JsonSection> sections) {
-		compact(sections, (previous, current) -> {
+	static void compactComponents(List<ChatComponent> components) {
+		Compactions<?> compactor = new ComponentCompactor(components);
+		compactor.compact();
+	}
+
+	private static class SectionCompactor extends Compactions<JsonSection> {
+
+		SectionCompactor(List<JsonSection> mutableList) {
+			super(mutableList);
+		}
+
+		@Override
+		boolean testSimilarity(JsonSection previous, JsonSection current) {
 			return Objects.equals(previous.getHoverAction(), current.getHoverAction())
 					&& Objects.equals(previous.getClickAction(), current.getClickAction())
 					&& Objects.equals(previous.getInsertionAction(), current.getInsertionAction());
-		}, (previous, current) -> {
+		}
+
+		@Override
+		JsonSection combine(JsonSection previous, JsonSection current) {
 			return new JsonSection.Builder(previous).addContent(current.getContents()).build();
-		});
+		}
+
+	}
+
+	static void compactSections(List<JsonSection> sections) {
+		Compactions<?> compactor = new SectionCompactor(sections);
+		compactor.compact();
 	}
 	
 }

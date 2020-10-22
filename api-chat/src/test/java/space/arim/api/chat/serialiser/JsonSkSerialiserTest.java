@@ -87,4 +87,18 @@ public class JsonSkSerialiserTest {
 		assertEquals(expected, serialiser.deserialise(backToString));
 	}
 	
+	@Test
+	public void testDeserialiseReserialise() {
+		String original = "&aBanned &c&o%VICTIM%&r&a for &a&o%DURATION%&r&a because of &e&o%REASON%&r&a.";
+		SendableMessage deserialised = serialiser.deserialise(original);
+		assertEquals(original, serialiser.serialise(deserialised));
+	}
+	
+	@Test
+	public void testRedundantColours() {
+		String original = "&aBanned &c&o%VICTIM%&a for &a&o%DURATION%&a because of &e&o%REASON%&a.";
+		String reserialised = serialiser.serialise(serialiser.deserialise(original));
+		assertEquals("&aBanned &c&o%VICTIM%&a for %DURATION% because of &e%REASON%&a.", reserialised);
+	}
+	
 }
