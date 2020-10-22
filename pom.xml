@@ -21,7 +21,7 @@
 		<slf4j.version>1.7.30</slf4j.version>
 		
 		<!-- Required dependencies -->
-		<omnibus.version>1.0.0-RC4</omnibus.version>
+		<omnibus.version>1.0.0-RC5</omnibus.version>
 		
 		<!-- Optional dependencies -->
 		<hikari.version>3.4.5</hikari.version>
