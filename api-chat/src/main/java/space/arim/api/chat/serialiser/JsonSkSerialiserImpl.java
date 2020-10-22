@@ -19,6 +19,7 @@
 package space.arim.api.chat.serialiser;
 
 import java.util.List;
+import java.util.Locale;
 
 import space.arim.api.chat.ChatComponent;
 import space.arim.api.chat.JsonClick;
@@ -131,7 +132,7 @@ class JsonSkSerialiserImpl {
 	private static void appendColour(StringBuilder builder, int colour) {
 		PredefinedColour predefinedColour = PredefinedColour.getExactTo(colour);
 		if (predefinedColour == null) {
-			builder.append("<#").append(bytesToHex(colour)).append('>');
+			builder.append("<#").append(hexToString(colour)).append('>');
 		} else {
 			char code = predefinedColour.getCodeChar();
 			builder.append('&').append(code);
@@ -142,7 +143,7 @@ class JsonSkSerialiserImpl {
 		return text.replace("||", "||||");
 	}
 	
-	private static String bytesToHex(int hex) {
+	private static String hexToString(int hex) {
 		byte[] bytes = ColourManipulator.getInstance().toBytes(hex);
 	    char[] hexChars = new char[bytes.length * 2];
 	    for (int j = 0; j < bytes.length; j++) {
@@ -155,6 +156,6 @@ class JsonSkSerialiserImpl {
 	    }
 	    return String.valueOf(hexChars);
 	}
-	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toLowerCase().toCharArray();
+	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toLowerCase(Locale.ROOT).toCharArray();
 	
 }

@@ -23,29 +23,29 @@ import space.arim.api.chat.MessageStyle;
 
 class StyleSerialiserImpl {
 
-	private final char codeChar;
+	private final char formattingChar;
 	private final StringBuilder builder;
 	
 	StyleSerialiserImpl(char codeChar, StringBuilder builder) {
-		this.codeChar = codeChar;
+		this.formattingChar = codeChar;
 		this.builder = builder;
 	}
 	
 	void serialiseStylesFrom(ChatComponent component) {
 		if (component.hasStyle(MessageStyle.MAGIC)) {
-			builder.append(codeChar).append('k');
+			builder.append(formattingChar).append('k');
 		}
 		if (component.hasStyle(MessageStyle.BOLD)) {
-			builder.append(codeChar).append('l');
+			builder.append(formattingChar).append('l');
 		}
 		if (component.hasStyle(MessageStyle.STRIKETHROUGH)) {
-			builder.append(codeChar).append('m');
+			builder.append(formattingChar).append('m');
 		}
 		if (component.hasStyle(MessageStyle.UNDERLINE)) {
-			builder.append(codeChar).append('n');
+			builder.append(formattingChar).append('n');
 		}
 		if (component.hasStyle(MessageStyle.ITALIC)) {
-			builder.append(codeChar).append('o');
+			builder.append(formattingChar).append('o');
 		}
 	}
 	

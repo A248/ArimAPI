@@ -33,7 +33,7 @@ import space.arim.api.chat.SendableMessage;
  */
 public final class LegacyCodeSerialiser implements SendableMessageSerialiser {
 
-	private final char codeChar;
+	private final char formattingChar;
 	private final Pattern colourPattern;
 	
 	private static final char AMPERSAND = '&';
@@ -41,25 +41,25 @@ public final class LegacyCodeSerialiser implements SendableMessageSerialiser {
 	private static final char SECTION_SIGN = '\u00a7';
 	private static final LegacyCodeSerialiser SECTION_SIGN_INSTANCE = new LegacyCodeSerialiser(SECTION_SIGN);
 	
-	private LegacyCodeSerialiser(char codeChar) {
-		this.codeChar = codeChar;
-		colourPattern = Pattern.compile(Pattern.quote(String.valueOf(codeChar)) + "[0-9A-Fa-fK-Rk-r]");
+	private LegacyCodeSerialiser(char formattingChar) {
+		this.formattingChar = formattingChar;
+		colourPattern = Pattern.compile(Pattern.quote(String.valueOf(formattingChar)) + "[0-9A-Fa-fK-Rk-r]");
 	}
 	
 	/**
-	 * Creates from a legacy colour code character
+	 * Creates from a legacy formatting character
 	 * 
-	 * @param codeChar the code character, such as {@literal '&'}
-	 * @return an instance for the code character
+	 * @param formattingChar the code character, such as {@literal '&'}
+	 * @return a serialiser instance for the formatting character
 	 */
-	public static LegacyCodeSerialiser getInstance(char codeChar) {
-		switch (codeChar) {
+	public static LegacyCodeSerialiser getInstance(char formattingChar) {
+		switch (formattingChar) {
 		case AMPERSAND:
 			return AMPERSAND_INSTANCE;
 		case SECTION_SIGN:
 			return SECTION_SIGN_INSTANCE;
 		default:
-			return new LegacyCodeSerialiser(codeChar);
+			return new LegacyCodeSerialiser(formattingChar);
 		}
 	}
 	
@@ -83,15 +83,15 @@ public final class LegacyCodeSerialiser implements SendableMessageSerialiser {
 				if (styles != currentStyles) {
 					// Reset and re-apply colours and styles
 					if (currentStyles != 0) {
-						builder.append(codeChar).append('r');
+						builder.append(formattingChar).append('r');
 					}
-					builder.append(codeChar).append(colour);
-					new StyleSerialiserImpl(codeChar, builder)
+					builder.append(formattingChar).append(colour);
+					new StyleSerialiserImpl(formattingChar, builder)
 						.serialiseStylesFrom(component);
 
 				} else if (colour != currentColour) {
 					// Same styles, different colour
-					builder.append(codeChar).append(colour);
+					builder.append(formattingChar).append(colour);
 				}
 				currentColour = colour;
 				currentStyles = styles;
