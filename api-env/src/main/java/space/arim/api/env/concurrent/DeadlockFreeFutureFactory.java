@@ -44,7 +44,7 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	
 	@Override
 	public <T> CentralisedFuture<T> newIncompleteFuture() {
-		return DeadlockFreeFuture.create(this);
+		return new DeadlockFreeFuture<>(this);
 	}
 	
 	boolean isPrimaryThread() {
@@ -72,10 +72,6 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	}
 	
 	void signal() {
-		/*
-		 * If this encounters significant contention, move to a Lock/Condition per DeadlockFreeFuture,
-		 * enqueue all future instances in this factory, and signal each
-		 */
 		completionLock.lock();
 		try {
 			completionCondition.signal();
@@ -132,7 +128,7 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 		public void run() {
 			try {
 				command.run();
-			} catch (Exception ex) {
+			} catch (RuntimeException ex) {
 				ex.printStackTrace();
 			}
 		}
