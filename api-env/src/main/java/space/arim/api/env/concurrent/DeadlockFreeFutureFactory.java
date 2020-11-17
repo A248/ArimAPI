@@ -22,7 +22,6 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import space.arim.omnibus.util.concurrent.CentralisedFuture;
@@ -33,14 +32,12 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 
 	private final Queue<Runnable> syncTasks = new ConcurrentLinkedQueue<>();
 	private volatile Thread mainThread;
-	transient final SynchronousExecutor trustedSyncExecutor;
+	transient final SynchronousExecutor trustedSyncExecutor = new TrustedSyncExecutor();
 	
-	final Lock completionLock = new ReentrantLock();
+	final ReentrantLock completionLock = new ReentrantLock();
 	final Condition completionCondition = completionLock.newCondition();
 	
-	DeadlockFreeFutureFactory() {
-		trustedSyncExecutor = new TrustedSyncExecutor();
-	}
+	DeadlockFreeFutureFactory() {}
 	
 	@Override
 	public <T> CentralisedFuture<T> newIncompleteFuture() {
@@ -82,7 +79,17 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	
 	@Override
 	public void executeSync(Runnable command) {
-		executeSync0(new RunnableExceptionReporter(command));
+		class RunnableExceptionReporter implements Runnable {
+			@Override
+			public void run() {
+				try {
+					command.run();
+				} catch (RuntimeException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		executeSync0(new RunnableExceptionReporter());
 	}
 	
 	/**
@@ -112,24 +119,6 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 			toRun.run();
 			if (System.nanoTime() - deadline >= 0) {
 				throw new TimeoutException();
-			}
-		}
-	}
-	
-	private static class RunnableExceptionReporter implements Runnable {
-		
-		private final Runnable command;
-		
-		RunnableExceptionReporter(Runnable command) {
-			this.command = command;
-		}
-		
-		@Override
-		public void run() {
-			try {
-				command.run();
-			} catch (RuntimeException ex) {
-				ex.printStackTrace();
 			}
 		}
 	}

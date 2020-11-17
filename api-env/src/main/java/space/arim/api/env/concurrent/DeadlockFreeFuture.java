@@ -57,7 +57,11 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	 */
 	
 	@Override
-	public synchronized <U> CentralisedFuture<U> newIncompleteFuture() {
+	public <U> CentralisedFuture<U> newIncompleteFuture() {
+		boolean noSignalChild;
+		synchronized (this) {
+			noSignalChild = this.noSignalChild;
+		}
 		if (noSignalChild) {
 			return new DeadlockFreeFuture<>(factory, null);
 		} else {
@@ -120,11 +124,11 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 			return super.join();
 		}
 
-		T result;
-		if ((result = getNowJoin()) != ABSENT_VALUE) {	// if (isDone()) {
-			return result;								// return super.join(); }
-		}
 		for (;;) {
+			T result;
+			if ((result = getNowJoin()) != ABSENT_VALUE) {	// if (isDone()) {
+				return result;								// return super.join(); }
+			}
 			factory.unleashSyncTasks();
 			factory.completionLock.lock();
 			try {
@@ -134,9 +138,6 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 				factory.completionCondition.awaitUninterruptibly();
 			} finally {
 				factory.completionLock.unlock();
-			}
-			if ((result = getNowJoin()) != ABSENT_VALUE) {	// if (isDone()) {
-				return result;								// return super.join(); }
 			}
 		}
 	}
@@ -151,12 +152,12 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 		if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
 			return result;								// return super.get(); }
 		}
-		if (Thread.interrupted()) {
-			throw new InterruptedException();
-		}
 		for (;;) {
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
+			}
 			factory.unleashSyncTasks();
-			factory.completionLock.lock();
+			factory.completionLock.lockInterruptibly();
 			try {
 				if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
 					return result;								// return super.get(); }
@@ -185,12 +186,12 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 			throw new TimeoutException();
 		}
 		long deadline = System.nanoTime() + unit.toNanos(timeout);
-		if (Thread.interrupted()) {
-			throw new InterruptedException();
-		}
 		for (;;) {
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
+			}
 			factory.unleashSyncTasks(deadline);
-			factory.completionLock.lock();
+			factory.completionLock.lockInterruptibly();
 			try {
 				if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
 					return result;								// return super.get(); }
