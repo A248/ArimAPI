@@ -31,7 +31,7 @@ abstract class ColourDeserialiserImpl extends DeserialiserImpl {
 	
 	private final JsonSection.Builder sectionBuilder = new JsonSection.Builder();
 	
-	private int currentColour;
+	private int currentColour = 0xFFFFFF;
 	private int currentStyles;
 	
 	ColourDeserialiserImpl(Pattern colourPattern, String content) {

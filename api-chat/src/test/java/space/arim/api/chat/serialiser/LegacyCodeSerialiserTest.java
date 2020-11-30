@@ -22,17 +22,54 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import space.arim.api.chat.ChatComponent;
+import space.arim.api.chat.JsonSection;
 import space.arim.api.chat.SendableMessage;
 
 public class LegacyCodeSerialiserTest {
 
+	private final LegacyCodeSerialiser serialiser = LegacyCodeSerialiser.getInstance('&');
+
 	@Test
 	public void testDeserialiseSerialise() {
-		LegacyCodeSerialiser serialiser = LegacyCodeSerialiser.getInstance('&');
 		String original = "&6Hello &amore text";
 		SendableMessage deserialised = serialiser.deserialise(original);
 		String reserialised = serialiser.serialise(deserialised);
 		assertEquals(original, reserialised);
 	}
-	
+
+	@Test
+	public void testOrderOfDeserialisationAndConcatentationEquivalent() {
+		String rawPrefix = "&6&lPrefix &r&8»&7 ";
+		String rawContent = "&7Message";
+
+		SendableMessage concatThenDeserialise = serialiser.deserialise(rawPrefix + rawContent);
+
+		SendableMessage prefix = serialiser.deserialise(rawPrefix);
+		SendableMessage content = serialiser.deserialise(rawContent);
+		SendableMessage deserialiseThenConcat = prefix.concatenate(content);
+
+		assertEquals(concatThenDeserialise, deserialiseThenConcat);
+		assertEquals(serialiser.serialise(concatThenDeserialise), serialiser.serialise(deserialiseThenConcat));
+	}
+
+	@Test
+	public void testConcatnatePrefixDifferentColour() {
+		String rawPrefix = "&6&lPrefix &r&8»&7 ";
+		String rawContent = "Platform category Paper";
+		SendableMessage prefix = serialiser.deserialise(rawPrefix);
+		SendableMessage content = serialiser.deserialise(rawContent);
+		SendableMessage deserialiseThenConcat = prefix.concatenate(content);
+		assertEquals("&6&lPrefix &r&8»&7 &fPlatform category Paper", serialiser.serialise(deserialiseThenConcat));
+	}
+
+	@Test
+	public void testWhiteColourByDefault() {
+		SendableMessage expected = SendableMessage.create(
+				new JsonSection.Builder().addContent(
+						new ChatComponent.Builder().text("Platform category Paper").build()
+				).build());
+		assertEquals(expected, serialiser.deserialise("Platform category Paper"));
+	}
+
 }

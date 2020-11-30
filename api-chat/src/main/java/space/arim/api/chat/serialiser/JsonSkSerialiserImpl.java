@@ -102,7 +102,7 @@ class JsonSkSerialiserImpl {
 	
 	private static void appendComponents(StringBuilder builder, List<ChatComponent> components) {
 		int currentStyles = 0;
-		int currentColour = 0;
+		int currentColour = 0xFFFFFF;
 		char formattingChar = '&';
 		for (ChatComponent component : components) {
 			if (component.isEmpty()) {

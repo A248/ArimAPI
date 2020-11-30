@@ -34,7 +34,7 @@ public final class ChatComponent implements ChatComponentInfo {
 	private final int colour;
 	private final int styles;
 	
-	private static final ChatComponent EMPTY = new ChatComponent("", 0, 0);
+	private static final ChatComponent EMPTY = new ChatComponent("", 0xFFFFFF, 0);
 	
 	private ChatComponent(String text, int colour, int styles) {
 		this.text = Objects.requireNonNull(text, "text");
@@ -112,7 +112,7 @@ public final class ChatComponent implements ChatComponentInfo {
 	public static class Builder implements ChatComponentInfo {
 		
 		private String text = "";
-		private int colour;
+		private int colour = 0xFFFFFF;
 		private int styles;
 		
 		/**

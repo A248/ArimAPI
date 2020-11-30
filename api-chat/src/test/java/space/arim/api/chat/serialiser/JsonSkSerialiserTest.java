@@ -73,7 +73,7 @@ public class JsonSkSerialiserTest {
 				.hoverAction(JsonHover.create(List.of(component(getColour('7'), 0, "That is a tooltip"))))
 				.build();
 		JsonSection section2 = section(component(getColour('c'), 0, "and more"));
-		JsonSection section3 = section(component(0, 0, "ttp: with 'ttp:' too"));
+		JsonSection section3 = section(component(0xFFFFFF, 0, "ttp: with 'ttp:' too"));
 
 		SendableMessage expected = SendableMessage.create(section1, section2, section3);
 

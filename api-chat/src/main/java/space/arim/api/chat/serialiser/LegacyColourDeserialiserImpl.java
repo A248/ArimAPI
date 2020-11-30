@@ -55,7 +55,7 @@ class LegacyColourDeserialiserImpl extends ColourDeserialiserImpl {
 			break;
 		case 'R':
 		case 'r':
-			setColour(0);
+			setColour(0xFFFFFF);
 			setStyles(0);
 			break;
 		default:
