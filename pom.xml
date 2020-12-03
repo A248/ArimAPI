@@ -5,7 +5,7 @@
 	
 	<groupId>space.arim.api</groupId>
 	<artifactId>arimapi-parent</artifactId>
-	<version>0.20.7-SNAPSHOT</version>
+	<version>0.20.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>ArimAPI</name>
