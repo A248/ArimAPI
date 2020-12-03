@@ -22,9 +22,6 @@
 		
 		<!-- Required dependencies -->
 		<omnibus.version>1.0.0-RC5</omnibus.version>
-		
-		<!-- Optional dependencies -->
-		<hikari.version>3.4.5</hikari.version>
 	</properties>
 	
 	<licenses>
@@ -124,7 +121,6 @@
 		<module>api-configure</module>
 		<module>api-util</module>
 		<module>api-util-web</module>
-		<module>api-util-sql</module>
 		<module>api-env</module>
 		<module>api-all</module>
 	</modules>
@@ -183,14 +179,6 @@
 				<groupId>space.arim.omnibus</groupId>
 				<artifactId>omnibus</artifactId>
 				<version>${omnibus.version}</version>
-			</dependency>
-			
-			<!-- Optional dependencies -->
-			<dependency>
-				<groupId>com.zaxxer</groupId>
-				<artifactId>HikariCP</artifactId>
-				<version>${hikari.version}</version>
-				<optional>true</optional>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
