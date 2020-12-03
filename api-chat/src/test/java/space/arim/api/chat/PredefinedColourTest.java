@@ -21,30 +21,29 @@ package space.arim.api.chat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class PredefinedColourTest {
 	
-	@Test
-	public void testByCharIdentity() {
-		for (PredefinedColour entry : PredefinedColour.values()) {
-			char codeChar = entry.getCodeChar();
-			assertEquals(entry, PredefinedColour.getByChar(codeChar));
-			assertEquals(entry, PredefinedColour.getByChar(Character.toUpperCase(codeChar)));
-		}
+	@ParameterizedTest
+	@EnumSource
+	public void testByCharIdentity(PredefinedColour colour) {
+		char codeChar = colour.getCodeChar();
+		assertEquals(colour, PredefinedColour.getByChar(codeChar));
+		assertEquals(colour, PredefinedColour.getByChar(Character.toUpperCase(codeChar)));
 	}
 
-	@Test
-	public void testExactToIdentity() {
-		for (PredefinedColour entry : PredefinedColour.values()) {
-			assertEquals(entry, PredefinedColour.getExactTo(entry.getColour()));
-		}
+	@ParameterizedTest
+	@EnumSource
+	public void testExactToIdentity(PredefinedColour colour) {
+		assertEquals(colour, PredefinedColour.getExactTo(colour.getColour()));
 	}
-	
-	@Test
-	public void testNearestToIdentity() {
-		for (PredefinedColour entry : PredefinedColour.values()) {
-			assertEquals(entry, PredefinedColour.getNearestTo(entry.getColour()));
-		}
+
+	@ParameterizedTest
+	@EnumSource
+	public void testNearestToIdentity(PredefinedColour colour) {
+		assertEquals(colour, PredefinedColour.getNearestTo(colour.getColour()));
 	}
 	
 }

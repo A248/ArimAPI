@@ -18,20 +18,21 @@
  */
 package space.arim.api.chat;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.Test;
 
 public class MessageStylesTest {
 
 	@Test
 	public void testOutOfRange() {
-		try {
-			MessageStyle.checkStylesRange(0b100000);
-		} catch (IllegalArgumentException expected) {}
+		assertThrows(IllegalArgumentException.class, () -> MessageStyle.checkStylesRange(0b100000));
 	}
 	
 	@Test
 	public void testInRange() {
 		MessageStyle.checkStylesRange(MessageStyle.BOLD + MessageStyle.ITALIC);
+		MessageStyle.checkStylesRange(MessageStyle.allStyles());
 	}
 	
 }

@@ -21,7 +21,8 @@ package space.arim.api.env.chat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import space.arim.api.chat.PredefinedColour;
 import space.arim.api.chat.manipulator.ColourManipulator;
@@ -30,14 +31,13 @@ import net.md_5.bungee.api.ChatColor;
 
 public class BungeeColourConversionsTest {
 
-	@Test
-	public void testPredefinedColourConversion() {
-		for (PredefinedColour colour : PredefinedColour.values()) {
-			char codeChar = colour.getCodeChar();
-			ChatColor chatColour = ChatColor.getByChar(codeChar);
-			assertNotNull(chatColour);
-			assertEquals(colour.getColour(), ColourManipulator.getInstance().fromJavaAwt(chatColour.getColor()));
-		}
+	@ParameterizedTest
+	@EnumSource
+	public void testPredefinedColourConversion(PredefinedColour colour) {
+		char codeChar = colour.getCodeChar();
+		ChatColor chatColour = ChatColor.getByChar(codeChar);
+		assertNotNull(chatColour);
+		assertEquals(colour.getColour(), ColourManipulator.getInstance().fromJavaAwt(chatColour.getColor()));
 	}
 	
 }
