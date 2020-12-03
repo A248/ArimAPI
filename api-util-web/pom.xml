@@ -16,6 +16,12 @@
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<finalName>${project.name}_v${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 	
 	<dependencies>
@@ -28,8 +34,7 @@
 		
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
+			<artifactId>junit-jupiter-params</artifactId>
 		</dependency>
 	</dependencies>
 </project>

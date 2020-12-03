@@ -18,11 +18,17 @@
  */
 package space.arim.api.util.web;
 
-public class HttpMojangApiTest extends RemoteNameHistoryApiTesting {
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+
+public class RemoteNameHistoryImplProvider implements ArgumentsProvider {
 
 	@Override
-	RemoteNameHistoryApi createInstance() {
-		return new HttpMojangApi();
+	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+		return Stream.of(new HttpMojangApi(), new HttpAshconApi(), new HttpMcHeadsApi()).map(Arguments::of);
 	}
-	
+
 }

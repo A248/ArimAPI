@@ -18,18 +18,22 @@
  */
 package space.arim.api.util.web;
 
+import static space.arim.api.util.web.RemoteApiResultAssertions.assertFoundAndEquals;
+import static space.arim.api.util.web.RemoteApiResultAssertions.assertNotFound;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
-public abstract class RemoteNameHistoryApiTesting extends RemoteNameUUIDApiTesting {
+public class RemoteNameHistoryApiIT {
 
-	private static final Set<Entry<String, Long>> expectedNameHistory;
+	private static final Set<Entry<String, Long>> EXPECTED_NAME_HISTORY;
 	
 	static {
-		expectedNameHistory = Set.of(
+		EXPECTED_NAME_HISTORY = Set.of(
 				Map.entry("A248_1710", 0L),
 				Map.entry("A248", 1427646885L),
 				Map.entry("Reqorted", 1460075115L),
@@ -39,17 +43,13 @@ public abstract class RemoteNameHistoryApiTesting extends RemoteNameUUIDApiTesti
 				Map.entry("A248", 1574114048L));
 	}
 	
-	@Override
-	abstract RemoteNameHistoryApi createInstance();
-	
-	@Test
-	void testNameHistory() {
-		RemoteNameHistoryApi remote = (RemoteNameHistoryApi) super.remote;
+	@ParameterizedTest
+	@ArgumentsSource(RemoteNameHistoryImplProvider.class)
+	public void testNameHistory(RemoteNameHistoryApi remote) {
+		RemoteApiResult<Set<Entry<String, Long>>> knownResult = remote.lookupNameHistory(RemoteNameUUIDApiIT.KNOWN_UUID).join();
+		assertFoundAndEquals(EXPECTED_NAME_HISTORY, knownResult);
 
-		RemoteApiResult<Set<Entry<String, Long>>> knownResult = remote.lookupNameHistory(RemoteNameUUIDApiTesting.KNOWN_UUID).join();
-		assertFoundAndEquals(expectedNameHistory, knownResult);
-
-		RemoteApiResult<Set<Entry<String, Long>>> unknownResult = remote.lookupNameHistory(RemoteNameUUIDApiTesting.UNKNOWN_UUID).join();
+		RemoteApiResult<Set<Entry<String, Long>>> unknownResult = remote.lookupNameHistory(RemoteNameUUIDApiIT.UNKNOWN_UUID).join();
 		assertNotFound(unknownResult);
 	}
 	

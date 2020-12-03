@@ -18,16 +18,15 @@
  */
 package space.arim.api.util.web;
 
+import static space.arim.api.util.web.RemoteApiResultAssertions.assertFoundAndEquals;
+import static space.arim.api.util.web.RemoteApiResultAssertions.assertNotFound;
+
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
-import space.arim.api.util.web.RemoteApiResult.ResultType;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-public abstract class RemoteNameUUIDApiTesting {
+public class RemoteNameUUIDApiIT {
 
 	private static final String KNOWN_NAME = "A248";
 	static final UUID KNOWN_UUID = UUID.fromString("ed5f12cd-6007-45d9-a4b9-940524ddaecf");
@@ -35,17 +34,10 @@ public abstract class RemoteNameUUIDApiTesting {
 	private static final String UNKNOWN_NAME = "asygufbhn"; // Who would ever take this name?
 	static final UUID UNKNOWN_UUID = UUID.fromString("c003d6d3-6a0b-4a80-890b-dcedf87799b3");
 	
-	RemoteNameUUIDApi remote;
-	
-	@BeforeEach
-	public void setup() {
-		remote = createInstance();
-	}
-	
-	abstract RemoteNameUUIDApi createInstance();
-	
-	@Test
-	void testLookupUUID() {
+	@ParameterizedTest
+	@ArgumentsSource(RemoteNameHistoryImplProvider.class)
+	public void testLookupUUID(RemoteNameUUIDApi remote) {
+
 		RemoteApiResult<UUID> knownResult = remote.lookupUUID(KNOWN_NAME).join();
 		assertFoundAndEquals(KNOWN_UUID, knownResult);
 
@@ -53,31 +45,15 @@ public abstract class RemoteNameUUIDApiTesting {
 		assertNotFound(unknownResult);
 	}
 	
-	@Test
-	void testLookupName() {
+	@ParameterizedTest
+	@ArgumentsSource(RemoteNameHistoryImplProvider.class)
+	public void testLookupName(RemoteNameUUIDApi remote) {
+
 		RemoteApiResult<String> knownResult = remote.lookupName(KNOWN_UUID).join();
 		assertFoundAndEquals(KNOWN_NAME, knownResult);
 
 		RemoteApiResult<String> unknownResult = remote.lookupName(UNKNOWN_UUID).join();
 		assertNotFound(unknownResult);
-	}
-	
-	<T> void assertFoundAndEquals(T expected, RemoteApiResult<T> knownResult) {
-		Exception ex = knownResult.getException();
-		if (ex != null) {
-			fail(ex);
-		}
-		assertEquals(ResultType.FOUND, knownResult.getResultType());
-		assertEquals(expected, knownResult.getValue());
-	}
-	
-	void assertNotFound(RemoteApiResult<?> unknownResult) {
-		Exception ex = unknownResult.getException();
-		if (ex != null) {
-			fail(ex);
-		}
-		assertEquals(ResultType.NOT_FOUND, unknownResult.getResultType());
-		assertNull(unknownResult.getValue());
 	}
 	
 }

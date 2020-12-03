@@ -102,7 +102,32 @@
 					<version>3.0.0-M5</version>
 					<configuration>
 						<trimStackTrace>false</trimStackTrace>
+						<argLine>-Xverify:none -XX:TieredStopAtLevel=1 -XX:-TieredCompilation</argLine>
 					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.junit.jupiter</groupId>
+							<artifactId>junit-jupiter-engine</artifactId>
+							<version>${junit.version}</version>
+							<scope>runtime</scope>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>3.0.0-M5</version>
+					<configuration>
+						<trimStackTrace>false</trimStackTrace>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>integration-test</goal>
+								<goal>verify</goal>
+							</goals>
+						</execution>
+					</executions>
 					<dependencies>
 						<dependency>
 							<groupId>org.junit.jupiter</groupId>
@@ -164,6 +189,12 @@
 			<dependency>
 				<groupId>org.junit.jupiter</groupId>
 				<artifactId>junit-jupiter-api</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter-params</artifactId>
 				<version>${junit.version}</version>
 				<scope>test</scope>
 			</dependency>

@@ -18,10 +18,30 @@
  */
 package space.arim.api.util.web;
 
-public class HttpAshconApiTest extends RemoteNameHistoryApiTesting {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-	@Override
-	RemoteNameHistoryApi createInstance() {
-		return new HttpAshconApi();
+import space.arim.api.util.web.RemoteApiResult.ResultType;
+
+final class RemoteApiResultAssertions {
+
+	static <T> void assertFoundAndEquals(T expected, RemoteApiResult<T> knownResult) {
+		Exception ex = knownResult.getException();
+		if (ex != null) {
+			fail(ex);
+		}
+		assertEquals(ResultType.FOUND, knownResult.getResultType());
+		assertEquals(expected, knownResult.getValue());
 	}
+	
+	static void assertNotFound(RemoteApiResult<?> unknownResult) {
+		Exception ex = unknownResult.getException();
+		if (ex != null) {
+			fail(ex);
+		}
+		assertEquals(ResultType.NOT_FOUND, unknownResult.getResultType());
+		assertNull(unknownResult.getValue());
+	}
+
 }
