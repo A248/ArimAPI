@@ -144,7 +144,6 @@
 	<modules>
 		<module>api-chat</module>
 		<module>api-configure</module>
-		<module>api-util</module>
 		<module>api-util-web</module>
 		<module>api-env</module>
 		<module>api-all</module>
