@@ -32,9 +32,7 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 
 	private final DeadlockFreeFutureFactory factory;
 	
-	private boolean noSignalChild;
-	
-	private static final Object ABSENT_VALUE = new Object();
+	private boolean dontSignalChildFuture;
 	
 	/**
 	 * Creates without signalling completion
@@ -42,14 +40,16 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	 * @param factory the deadlock free future factory
 	 * @param sig parameter used to distinguish signature 
 	 */
-	private DeadlockFreeFuture(DeadlockFreeFutureFactory factory, Void sig) {
+	private DeadlockFreeFuture(DeadlockFreeFutureFactory factory, @SuppressWarnings("unused") Void sig) {
 		super(factory.trustedSyncExecutor);
 		this.factory = factory;
 	}
 	
 	DeadlockFreeFuture(DeadlockFreeFutureFactory factory) {
 		this(factory, null);
-		whenCompleteSignal();
+		if (factory.requireSignalWhenFutureCompleted()) {
+			whenCompleteSignal();
+		}
 	}
 	
 	/*
@@ -58,23 +58,22 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	
 	@Override
 	public <U> CentralisedFuture<U> newIncompleteFuture() {
-		boolean noSignalChild;
-		synchronized (this) {
-			noSignalChild = this.noSignalChild;
+		DeadlockFreeFuture<U> childFuture = new DeadlockFreeFuture<>(factory, null);
+
+		if (factory.requireSignalWhenFutureCompleted()) {
+			synchronized (this) {
+				if (!dontSignalChildFuture) {
+					childFuture.whenCompleteSignal();
+				}
+			}
 		}
-		if (noSignalChild) {
-			return new DeadlockFreeFuture<>(factory, null);
-		} else {
-			return new DeadlockFreeFuture<>(factory);
-		}
+		return childFuture;
 	}
 	
 	private synchronized void whenCompleteSignal() {
-		noSignalChild = true;
-		super.whenComplete((ignore1, ignore2) -> {
-			factory.signal();
-		});
-		noSignalChild = false;
+		dontSignalChildFuture = true;
+		super.whenComplete((ignore1, ignore2) -> factory.signalFutureCompleted());
+		dontSignalChildFuture = false;
 	}
 	
 	/*
@@ -82,34 +81,45 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 	 * Managed wait implementation
 	 * 
 	 */
-	
+
 	/**
-	 * Gets the completed value, or {@code ABSENT_VALUE} if not completed. <br>
+	 * Placeholder for value not yet complete
+	 *
+	 */
+	static final Object ABSENT_VALUE = new Object();
+
+	/**
+	 * Gets the completed value, or {@code ABSENT_VALUE} if not completed. If completed exceptionally,
+	 * throws in accordance with {@link CompletableFuture#join()}. <br>
 	 * <br>
-	 * If completed exceptionally, throws in accordance with {@link CompletableFuture#join()}
-	 * 
+	 * This method is used primarily for performance purposes. It avoids the double volatile read
+	 * which would be associated with: <br>
+	 * <code>if (future.isDone()) { return future.join(); }</code>
+	 *
+	 * @param <T> the type of the future
+	 * @param future the future
 	 * @return the completed value or {@code ABSENT_VALUE}
 	 * @throws CancellationException if the computation was cancelled
 	 * @throws CompletionException if this future completed exceptionally or a completion computation threw an exception
 	 */
-	// Used to avoid double volatile reads
 	@SuppressWarnings("unchecked")
-	private T getNowJoin() {
-		return getNow((T) ABSENT_VALUE);
+	static <T> T reportJoin(CentralisedFuture<T> future) {
+		return future.getNow((T) ABSENT_VALUE);
 	}
 	
 	/**
-	 * Gets the completed value, or {@code ABSENT_VALUE} if not completed. <br>
-	 * <br>
-	 * If completed exceptionally, throws in accordance with {@link CompletableFuture#get()}
-	 * 
+	 * Gets the completed value, or {@code ABSENT_VALUE} if not completed. If completed exceptionally,
+	 * throws in accordance with {@link CompletableFuture#get()}
+	 *
+	 * @param <T> the type of the future
+	 * @param future the future
 	 * @return the completed value or {@code ABSENT_VALUE}
 	 * @throws CancellationException if the computation was cancelled
 	 * @throws ExecutionException if this future completed exceptionally
 	 */
-	private T getNowGet() throws ExecutionException {
+	static <T> T reportGet(CentralisedFuture<T> future) throws ExecutionException {
 		try {
-			return getNowJoin();
+			return reportJoin(future);
 		} catch (CompletionException ex) {
 			Throwable cause = ex.getCause();
 			throw new ExecutionException((cause == null) ? ex : cause);
@@ -123,23 +133,11 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 		if (!factory.isPrimaryThread()) {
 			return super.join();
 		}
-
-		for (;;) {
-			T result;
-			if ((result = getNowJoin()) != ABSENT_VALUE) {	// if (isDone()) {
-				return result;								// return super.join(); }
-			}
-			factory.unleashSyncTasks();
-			factory.completionLock.lock();
-			try {
-				if ((result = getNowJoin()) != ABSENT_VALUE) {	// if (isDone()) {
-					return result;								// return super.join(); }
-				}
-				factory.completionCondition.awaitUninterruptibly();
-			} finally {
-				factory.completionLock.unlock();
-			}
+		T result;
+		if ((result = reportJoin(this)) != ABSENT_VALUE) {		// if (isDone()) {
+			return result;										// return super.join(); }
 		}
+		return factory.await(this);
 	}
 	
 	@Override
@@ -147,29 +145,11 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 		if (!factory.isPrimaryThread()) {
 			return super.get();
 		}
-
 		T result;
-		if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
-			return result;								// return super.get(); }
+		if ((result = reportGet(this)) != ABSENT_VALUE) {	// if (isDone()) {
+			return result;									// return super.get(); }
 		}
-		for (;;) {
-			if (Thread.interrupted()) {
-				throw new InterruptedException();
-			}
-			factory.unleashSyncTasks();
-			factory.completionLock.lockInterruptibly();
-			try {
-				if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
-					return result;								// return super.get(); }
-				}
-				factory.completionCondition.await();
-			} finally {
-				factory.completionLock.unlock();
-			}
-			if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
-				return result;								// return super.get(); }
-			}
-		}
+		return factory.awaitInterruptibly(this);
 	}
 
 	@Override
@@ -177,36 +157,14 @@ class DeadlockFreeFuture<T> extends BaseCentralisedFuture<T> {
 		if (!factory.isPrimaryThread()) {
 			return super.get(timeout, unit);
 		}
-
 		T result;
-		if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
-			return result;								// return super.get(); }
+		if ((result = reportGet(this)) != ABSENT_VALUE) {	// if (isDone()) {
+			return result;									// return super.get(); }
 		}
 		if (timeout <= 0L) {
 			throw new TimeoutException();
 		}
-		long deadline = System.nanoTime() + unit.toNanos(timeout);
-		for (;;) {
-			if (Thread.interrupted()) {
-				throw new InterruptedException();
-			}
-			factory.unleashSyncTasks(deadline);
-			factory.completionLock.lockInterruptibly();
-			try {
-				if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
-					return result;								// return super.get(); }
-				}
-				factory.completionCondition.awaitNanos(deadline - System.nanoTime());
-			} finally {
-				factory.completionLock.unlock();
-			}
-			if (System.nanoTime() - deadline >= 0) {
-				throw new TimeoutException();
-			}
-			if ((result = getNowGet()) != ABSENT_VALUE) {	// if (isDone()) {
-				return result;								// return super.get(); }
-			}
-		}
+		return factory.awaitUntil(this, timeout, unit);
 	}
 
 }

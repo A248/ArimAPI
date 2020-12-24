@@ -18,31 +18,57 @@
  */
 package space.arim.api.env.concurrent;
 
+import org.junit.jupiter.api.extension.ExtensionContext;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-class FactoryImpl extends DeadlockFreeFutureFactory {
+class FactoryImpl extends DeadlockFreeFutureFactory implements ExtensionContext.Store.CloseableResource {
 
-	private final Thread mainThread = Thread.currentThread();
-	private final ScheduledFuture<?> task;
+	private final ScheduledExecutorService mainThreadExecutor;
+	private Thread mainThread;
+	private ScheduledFuture<?> task;
 	
-	FactoryImpl(ScheduledExecutorService scheduledExecutor) {
-		Logger logger = LoggerFactory.getLogger(getClass());
-		logger.debug("Created factory " + this + " on main thread " + mainThread.getName());
-		task = scheduledExecutor.scheduleWithFixedDelay(new PeriodicSyncUnleasher(), 0L, 100L, TimeUnit.MILLISECONDS);
+	FactoryImpl(ManagedWaitStrategy waitStrategy, ScheduledExecutorService mainThreadExecutor) {
+		super(waitStrategy);
+		this.mainThreadExecutor = mainThreadExecutor;
 	}
-	
-	void cancel() {
-		task.cancel(false);
+
+	static FactoryImpl create(ManagedWaitStrategy waitStrategy) {
+		ScheduledExecutorService mainThreadExecutor = Executors.newScheduledThreadPool(1,
+				(runnable) -> new Thread(runnable, "true-main-thread"));
+		FactoryImpl factory = new FactoryImpl(waitStrategy, mainThreadExecutor);
+
+		try {
+			factory.mainThread = mainThreadExecutor.submit(Thread::currentThread).get();
+		} catch (InterruptedException | ExecutionException ex) {
+			fail(ex);
+		}
+		factory.task = mainThreadExecutor.scheduleWithFixedDelay(factory.runQueuedTasks, 0L, 100L, TimeUnit.MILLISECONDS);
+
+		return factory;
+	}
+
+	ScheduledExecutorService mainThreadExecutor() {
+		return mainThreadExecutor;
 	}
 	
 	@Override
 	boolean isPrimaryThread0() {
 		return Thread.currentThread() == mainThread;
 	}
-	
+
+	@Override
+	public void close() throws Throwable {
+		task.cancel(false);
+		mainThreadExecutor.shutdown();
+		assertTrue(mainThreadExecutor.awaitTermination(1L, TimeUnit.SECONDS));
+	}
+
 }

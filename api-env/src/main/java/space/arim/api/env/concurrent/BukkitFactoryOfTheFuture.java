@@ -22,7 +22,6 @@ import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
@@ -34,22 +33,33 @@ import org.bukkit.scheduler.BukkitTask;
  * @author A248
  *
  */
-public class BukkitFactoryOfTheFuture extends DeadlockFreeFutureFactory implements AutoCloseable {
+public final class BukkitFactoryOfTheFuture extends DeadlockFreeFutureFactory implements AutoCloseable {
 
 	private final Server server;
 	private final BukkitTask task;
 	
 	/**
-	 * Creates from a {@code JavaPlugin} to use for synchronous execution
+	 * Creates from a {@code JavaPlugin} to use, with the default wait strategy
 	 * 
 	 * @param plugin the plugin to use
 	 */
 	public BukkitFactoryOfTheFuture(JavaPlugin plugin) {
+		this(plugin, new LightSleepManagedWaitStrategy());
+	}
+
+	/**
+	 * Creates from a {@code JavaPlugin} and {@link ManagedWaitStrategy} to use for managed waits
+	 *
+	 * @param plugin the plugin
+	 * @param waitStrategy the managed wait strategy
+	 */
+	public BukkitFactoryOfTheFuture(JavaPlugin plugin, ManagedWaitStrategy waitStrategy) {
+		super(waitStrategy);
 		Server server = plugin.getServer();
 		this.server = server;
-		BukkitScheduler scheduler = server.getScheduler();
-		isPrimaryThread(); // init main thread
-		task = scheduler.runTaskTimer(plugin, new PeriodicSyncUnleasher(), 0L, 1L);
+
+		isPrimaryThread(); // init main thread if possible
+		task = server.getScheduler().runTaskTimer(plugin, runQueuedTasks, 0L, 1L);
 	}
 
 	@Override
@@ -63,7 +73,7 @@ public class BukkitFactoryOfTheFuture extends DeadlockFreeFutureFactory implemen
 		 * By executing cancellation synchronously, and because our queue is FIFO,
 		 * any previous submitted task WILL have a chance to complete.
 		 */
-		executeSync0(task::cancel);
+		executeSync(task::cancel);
 	}
 
 }

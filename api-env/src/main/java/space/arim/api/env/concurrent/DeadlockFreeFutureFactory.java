@@ -20,9 +20,9 @@ package space.arim.api.env.concurrent;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 
 import space.arim.omnibus.util.concurrent.CentralisedFuture;
 import space.arim.omnibus.util.concurrent.SynchronousExecutor;
@@ -32,12 +32,14 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 
 	private final Queue<Runnable> syncTasks = new ConcurrentLinkedQueue<>();
 	private volatile Thread mainThread;
-	transient final SynchronousExecutor trustedSyncExecutor = new TrustedSyncExecutor();
+	final Runnable runQueuedTasks = new PeriodicSyncUnleasher();
+	final SynchronousExecutor trustedSyncExecutor = new TrustedSyncExecutor();
+
+	private final ManagedWaitStrategy waitStrategy;
 	
-	final ReentrantLock completionLock = new ReentrantLock();
-	final Condition completionCondition = completionLock.newCondition();
-	
-	DeadlockFreeFutureFactory() {}
+	DeadlockFreeFutureFactory(ManagedWaitStrategy waitStrategy) {
+		this.waitStrategy = waitStrategy;
+	}
 	
 	@Override
 	public <T> CentralisedFuture<T> newIncompleteFuture() {
@@ -59,71 +61,53 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 	
 	abstract boolean isPrimaryThread0();
 	
-	void executeSync0(Runnable command) {
+	private void executeSyncNoExceptionGuard(Runnable command) {
 		if (isPrimaryThread()) {
 			command.run();
 			return;
 		}
 		syncTasks.offer(command);
-		signal();
+		waitStrategy.signalWhenTaskAdded(mainThread);
 	}
-	
-	void signal() {
-		completionLock.lock();
-		try {
-			completionCondition.signal();
-		} finally {
-			completionLock.unlock();
-		}
+
+	boolean requireSignalWhenFutureCompleted() {
+		return waitStrategy.requireSignalWhenFutureCompleted();
+	}
+
+	void signalFutureCompleted() {
+		waitStrategy.signalWhenFutureCompleted(mainThread);
+	}
+
+	<T> T await(DeadlockFreeFuture<T> future) {
+		return waitStrategy.await(runQueuedTasks, future);
+	}
+
+	<T> T awaitInterruptibly(DeadlockFreeFuture<T> future) throws InterruptedException, ExecutionException {
+		return waitStrategy.awaitInterruptibly(runQueuedTasks, future);
+	}
+
+	<T> T awaitUntil(DeadlockFreeFuture<T> future, long timeout, TimeUnit unit)
+			throws InterruptedException, TimeoutException, ExecutionException {
+		return waitStrategy.awaitUntil(runQueuedTasks, future, timeout, unit);
 	}
 	
 	@Override
 	public void executeSync(Runnable command) {
-		class RunnableExceptionReporter implements Runnable {
-			@Override
-			public void run() {
-				try {
-					command.run();
-				} catch (RuntimeException ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
-		executeSync0(new RunnableExceptionReporter());
+		executeSyncNoExceptionGuard(new RunnableExceptionReporter(command));
 	}
 	
 	/**
-	 * Runs all scheduled tasks. Should only be called on main thread.
+	 * Runs all scheduled tasks. Should only be called if known to be on main thread.
 	 * 
 	 */
-	void unleashSyncTasks() {
-		assert isPrimaryThread() : mainThread;
-
-		Runnable toRun;
-		while ((toRun = syncTasks.poll()) != null) {
-			toRun.run();
-		}
-	}
-
-	/**
-	 * Same as previous, but with a checked timeout deadline after each ran task
-	 * 
-	 * @param deadline the deadline corresponding to <code>System.nanoTime()</code>
-	 * @throws TimeoutException if the deadline was hit
-	 */
-	void unleashSyncTasks(long deadline) throws TimeoutException {
-		assert isPrimaryThread() : mainThread;
-
-		Runnable toRun;
-		while ((toRun = syncTasks.poll()) != null) {
-			toRun.run();
-			if (System.nanoTime() - deadline >= 0) {
-				throw new TimeoutException();
-			}
+	private void unleashSyncTasks() {
+		Runnable syncTask;
+		while ((syncTask = syncTasks.poll()) != null) {
+			syncTask.run();
 		}
 	}
 	
-	class PeriodicSyncUnleasher implements Runnable {
+	private class PeriodicSyncUnleasher implements Runnable {
 		
 		@Override
 		public void run() {
@@ -131,11 +115,11 @@ abstract class DeadlockFreeFutureFactory extends AbstractFactoryOfTheFuture {
 		}
 	}
 	
-	class TrustedSyncExecutor implements SynchronousExecutor {
+	private class TrustedSyncExecutor implements SynchronousExecutor {
 
 		@Override
 		public void executeSync(Runnable command) {
-			executeSync0(command);
+			executeSyncNoExceptionGuard(command);
 		}
 	}
 
