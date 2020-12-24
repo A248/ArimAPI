@@ -34,7 +34,6 @@ import java.lang.annotation.Target;
  * <br>
  * Bukkit: CommandSender (org.bukkit.command.CommandSender) <br>
  * Bungee: CommandSender (net.md_5.bungee.api.CommandSender) <br>
- * Sponge: CommandSource (org.spongepowered.api.command.CommandSource) <br>
  * Velocity: CommandSource (com.velocitypowered.api.command.CommandSource)
  * 
  * @author A248

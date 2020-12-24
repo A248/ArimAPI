@@ -34,7 +34,6 @@ import java.lang.annotation.Target;
  * <br>
  * Bukkit: JavaPlugin which must be enabled (org.bukkit.plugin.java.JavaPlugin) <br>
  * Bungee: Plugin which must be enabled (net.md_5.bungee.api.plugin.Plugin) <br>
- * Sponge: PluginContainer with loaded instance (org.spongepowered.api.plugin.PluginContainer) <br>
  * Velocity: PluginContainer with loaded instance (com.velocitypowered.api.plugin.PluginContainer)
  * 
  * 

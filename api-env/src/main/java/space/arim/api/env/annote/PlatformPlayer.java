@@ -34,7 +34,6 @@ import java.lang.annotation.Target;
  * <br>
  * Bukkit: Player (org.bukkit.entity.Player) <br>
  * Bungee: ProxiedPlayer (net.md_5.bungee.api.connection.ProxiedPlayer) <br>
- * Sponge: Player (org.spongepowered.api.entity.living.player.Player) <br>
  * Velocity: Player (com.velocitypowered.api.proxy.Player)
  * 
  * @author A248

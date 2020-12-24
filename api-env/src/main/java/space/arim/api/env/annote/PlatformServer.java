@@ -34,7 +34,6 @@ import java.lang.annotation.Target;
  * <br>
  * Bukkit: Server (org.bukkit.Server) <br>
  * Bungee: ProxyServer (net.md_5.bungee.api.ProxyServer) <br>
- * Sponge: Game (org.spongepowered.api.Game) <br>
  * Velocity: ProxyServer (com.velocitypowered.api.proxy.ProxyServer)
  * 
  * 
