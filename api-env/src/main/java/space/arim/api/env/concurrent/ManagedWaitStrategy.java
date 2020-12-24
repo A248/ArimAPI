@@ -18,7 +18,7 @@ import java.util.concurrent.TimeoutException;
  * the managed wait itself. The core objective of these methods is to wait for the completion
  * of a given future, without stalling absolutely. That is, implementations ought to be able
  * to run queued tasks while simultaneously awaiting the completion of the future. This is
- * somewhat similar to the idea of work-stealing. <br
+ * somewhat similar to the idea of work-stealing. <br>
  * <br>
  * Implementations are primarily based on some kind of spin loop. It is not necessary to check
  * whether the future is already complete before entering a spin loop. That is, implementations
@@ -71,8 +71,10 @@ public interface ManagedWaitStrategy {
 	/**
 	 * Awaits indefinitely. See the class javadoc for implementation guidance.
 	 *
+	 * @param <T> the type of the future result
 	 * @param runQueuedTasks a runnable which will run outstanding tasks
 	 * @param future the future to await
+	 * @return the awaited value
 	 * @throws CompletionException if the future completed exceptionally
 	 * @throws CancellationException if the future was cancelled
 	 */
@@ -82,8 +84,10 @@ public interface ManagedWaitStrategy {
 	 * Awaits indefinitely, in an interruptible fashion. See the class javadoc for
 	 * implementation guidance.
 	 *
+	 * @param <T> the type of the future result
 	 * @param runQueuedTasks a runnable which will run outstanding tasks
 	 * @param future the future to await
+	 * @return the awaited value
 	 * @throws InterruptedException if interrupted while waiting
 	 * @throws ExecutionException if the future contained an exception
 	 * @throws CancellationException if the future was cancelled
@@ -95,10 +99,12 @@ public interface ManagedWaitStrategy {
 	 * Awaits until the specified timeout elapses, in an interruptible fashion. See the class
 	 * javadoc for implementation guidance.
 	 *
+	 * @param <T> the type of the future result
 	 * @param runQueuedTasks a runnable which will run outstanding tasks
 	 * @param future the future to await
 	 * @param timeout the timeout, always positive
 	 * @param unit the unit of the timeout
+	 * @return the awaited value
 	 * @throws InterruptedException if interrupted while waiting
 	 * @throws TimeoutException if the timeout elapsed
 	 * @throws ExecutionException if the future contained an exception
