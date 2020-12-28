@@ -21,7 +21,9 @@ package space.arim.api.util.web;
 import java.util.Objects;
 
 /**
- * The result of a request to a remote API server or backend.
+ * The result of a request to a remote API server or backend. Can succeed or fail in various ways. <br>
+ * <br>
+ * See {@link ResultType} for possible outcomes
  * 
  * @author A248
  *
@@ -38,11 +40,55 @@ public final class RemoteApiResult<T> {
 	 * @param value the value, or null for none
 	 * @param resultType the reason, cannot be null
 	 * @param exception the exception, or null for none
+	 * @deprecated Use the factory methods which better maps arguments to result types.
 	 */
+	@Deprecated
 	public RemoteApiResult(T value, ResultType resultType, Exception exception) {
 		this.value = value;
 		this.resultType = Objects.requireNonNull(resultType, "RemoteApiResult resultType must not be null");
 		this.exception = exception;
+	}
+
+	/**
+	 * Creates a successfully found result
+	 *
+	 * @param value the result value, cannot be null
+	 * @param <T> the type of the result object
+	 * @return the found result
+	 */
+	public static <T> RemoteApiResult<T> found(T value) {
+		return new RemoteApiResult<>(Objects.requireNonNull(value, "value"), ResultType.FOUND, null);
+	}
+
+	/**
+	 * Creates a not found result
+	 *
+	 * @param <T> the type of the result object
+	 * @return the not found result
+	 */
+	public static <T> RemoteApiResult<T> notFound() {
+		return new RemoteApiResult<>(null, ResultType.NOT_FOUND, null);
+	}
+
+	/**
+	 * Creates an error result
+	 *
+	 * @param exception the exception which caused the error
+	 * @param <T> the type of the result object
+	 * @return the result
+	 */
+	public static <T> RemoteApiResult<T> error(Exception exception) {
+		return new RemoteApiResult<>(null, ResultType.ERROR, exception);
+	}
+
+	/**
+	 * Creates a rate limited result
+	 *
+	 * @param <T> the type of the result object
+	 * @return the result
+	 */
+	public static <T> RemoteApiResult<T> rateLimited() {
+		return new RemoteApiResult<>(null, ResultType.RATE_LIMITED, null);
 	}
 	
 	/**
@@ -133,8 +179,12 @@ public final class RemoteApiResult<T> {
 		ERROR,
 		/**
 		 * Indicates an unknown problem
-		 * 
+		 *
+		 * @deprecated This result type is ambiguous, and is in all cases
+		 * best replaced by {@code ERROR}. If necessary, an explicit exception
+		 * (e.g. IllegalStateException) should be supplied.
 		 */
+		@Deprecated
 		UNKNOWN;
 		
 	}

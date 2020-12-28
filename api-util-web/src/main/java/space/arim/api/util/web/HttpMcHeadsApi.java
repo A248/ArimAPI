@@ -36,7 +36,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import space.arim.api.util.web.RemoteApiResult.ResultType;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * A handle for working with requests to the MCHeads API
@@ -80,28 +80,28 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 			int responseCode = response.statusCode();
 			switch (responseCode) {
 			case NOT_FOUND_STATUS_CODE:
-				return new RemoteApiResult<>(null, ResultType.NOT_FOUND, null);
+				return RemoteApiResult.notFound();
 			case 200:
 				break;
 			default:
-				return new RemoteApiResult<>(null, ResultType.ERROR, new HttpNon200StatusCodeException(responseCode));
+				return RemoteApiResult.error(new HttpNon200StatusCodeException(responseCode));
 			}
 
 			InputStream inputStream = response.body();
 			try (inputStream; InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
 
-				@SuppressWarnings("unchecked")
-				Map<String, Object> map = DefaultGson.GSON.fromJson(reader, Map.class);
-				return new RemoteApiResult<>(mapAcceptorFunction.apply(map), ResultType.FOUND, null);
+				Map<String, Object> map = DefaultGson.GSON.fromJson(reader,
+						new TypeToken<Map<String, Object>>() {}.getType());
+				return RemoteApiResult.found(mapAcceptorFunction.apply(map));
 			} catch (IOException ex) {
-				return new RemoteApiResult<>(null, ResultType.ERROR, ex);
+				return RemoteApiResult.error(ex);
 			}
 		});
 	}
 	
 	@Override
 	public CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name) {
-		Objects.requireNonNull(name, "Name must not be null");
+		Objects.requireNonNull(name, "name");
 
 		return queryMcHeadsApi(name,
 				(result) -> UUIDUtil.fromShortString((String) result.get("id")));
@@ -109,14 +109,14 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 	
 	@Override
 	public CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid) {
-		Objects.requireNonNull(uuid, "UUID must not be null");
+		Objects.requireNonNull(uuid, "uuid");
 
 		return queryMcHeadsApi(uuid.toString().replace("-", ""), (result) -> (String) result.get("name"));
 	}
 
 	@Override
 	public CompletableFuture<RemoteApiResult<Set<Entry<String, Long>>>> lookupNameHistory(UUID uuid) {
-		Objects.requireNonNull(uuid, "UUID must not be null");
+		Objects.requireNonNull(uuid, "uuid");
 
 		return queryMcHeadsApi(uuid.toString().replace("-", ""), (result) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();

@@ -37,7 +37,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import space.arim.api.util.web.RemoteApiResult.ResultType;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * A handle for working with requests to Electroid's Ashcon API.
@@ -81,42 +81,42 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 			int responseCode = response.statusCode();
 			switch (responseCode) {
 			case NOT_FOUND_STATUS_CODE:
-				return new RemoteApiResult<>(null, ResultType.NOT_FOUND, null);
+				return RemoteApiResult.notFound();
 			case 200:
 				break;
 			default:
-				return new RemoteApiResult<>(null, ResultType.ERROR, new HttpNon200StatusCodeException(responseCode));
+				return RemoteApiResult.error(new HttpNon200StatusCodeException(responseCode));
 			}
 
 			InputStream inputStream = response.body();
 			try (inputStream; InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
 
-				@SuppressWarnings("unchecked")
-				Map<String, Object> map = DefaultGson.GSON.fromJson(reader, Map.class);
-				return new RemoteApiResult<>(mapAcceptorFunction.apply(map), ResultType.FOUND, null);
+				Map<String, Object> map = DefaultGson.GSON.fromJson(reader,
+						new TypeToken<Map<String, Object>>() {}.getType());
+				return RemoteApiResult.found(mapAcceptorFunction.apply(map));
 			} catch (IOException ex) {
-				return new RemoteApiResult<>(null, ResultType.ERROR, ex);
+				return RemoteApiResult.error(ex);
 			}
 		});
 	}
 	
 	@Override
 	public CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name) {
-		Objects.requireNonNull(name, "Name must not be null");
+		Objects.requireNonNull(name, "name");
 
 		return queryAshconApi(name, (result) -> UUID.fromString((String) result.get("uuid")));
 	}
 	
 	@Override
 	public CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid) {
-		Objects.requireNonNull(uuid, "UUID must not be null");
+		Objects.requireNonNull(uuid, "uuid");
 
 		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> (String) result.get("username"));
 	}
 
 	@Override
 	public CompletableFuture<RemoteApiResult<Set<Entry<String, Long>>>> lookupNameHistory(UUID uuid) {
-		Objects.requireNonNull(uuid, "UUID must not be null");
+		Objects.requireNonNull(uuid, "uuid");
 
 		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();
@@ -130,7 +130,7 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 		});
 	}
 	
-	private static final long isoDateToUnixSeconds(String isoDate) {
+	private long isoDateToUnixSeconds(String isoDate) {
 		if (isoDate == null) {
 			return 0L;
 		}

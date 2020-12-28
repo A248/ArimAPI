@@ -30,22 +30,18 @@ import java.util.concurrent.CompletableFuture;
 public interface RemoteNameUUIDApi {
 
 	/**
-	 * Fetches a player name from a uuid, wraps the result and other information in a {@link RemoteApiResult}. <br>
-	 * The future will not be null, nor will the result wrapper be null. However, components of the result
-	 * may be null.
+	 * Finds a player's present name from their UUID.
 	 * 
 	 * @param uuid the uuid of the player whose name to find
-	 * @return a completable future, never null, which returns a nonnull api result
+	 * @return a future which yields the result containing the name
 	 */
 	CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid);
 	
 	/**
-	 * Fetches a player uuid from a name, wraps the result and other information in a {@link RemoteApiResult}. <br>
-	 * The future will not be null, nor will the result wrapper be null. However, components of the result
-	 * may be null.
+	 * Finds the UUID of the player who presently holds a given name.
 	 * 
 	 * @param name the name of the player whose uuid to find
-	 * @return a completable future, never null, which returns a nonnull api result
+	 * @return a future which yields the result containing the uuid
 	 */
 	CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name);
 	

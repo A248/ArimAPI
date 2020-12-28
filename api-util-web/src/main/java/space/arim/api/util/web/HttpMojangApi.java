@@ -18,6 +18,8 @@
  */
 package space.arim.api.util.web;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,6 +28,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,8 +37,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-
-import space.arim.api.util.web.RemoteApiResult.ResultType;
 
 /**
  * A handle for working with HTTP requests to the Mojang API.
@@ -88,55 +89,43 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 			int responseCode = response.statusCode();
 			switch (responseCode) {
 			case RATE_LIMIT_STATUS_CODE:
-				return new RemoteApiResult<>(null, ResultType.RATE_LIMITED, null);
+				return RemoteApiResult.rateLimited();
 			case NOT_FOUND_STATUS_CODE:
-				return new RemoteApiResult<>(null, ResultType.NOT_FOUND, null);
+				return RemoteApiResult.notFound();
 			case 200:
 				break;
 			default:
-				return new RemoteApiResult<>(null, ResultType.ERROR, new HttpNon200StatusCodeException(responseCode));
+				return RemoteApiResult.error(new HttpNon200StatusCodeException(responseCode));
 			}
 
 			InputStream inputStream = response.body();
 			try (inputStream; InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
 
-				return new RemoteApiResult<>(readerAcceptorFunction.apply(reader), ResultType.FOUND, null);
+				return RemoteApiResult.found(readerAcceptorFunction.apply(reader));
 			} catch (IOException ex) {
-				return new RemoteApiResult<>(null, ResultType.ERROR, ex);
+				return RemoteApiResult.error(ex);
 			}
-		});
-	}
-	
-	@Override
-	public CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name) {
-		Objects.requireNonNull(name, "Name must not be null");
-
-		return queryMojangApi(FROM_NAME + name, (reader) -> {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> profileInfo = DefaultGson.GSON.fromJson(reader, Map.class);
-			String shortUuid = profileInfo.get("id").toString();
-			return UUIDUtil.fromShortString(shortUuid);
 		});
 	}
 	
 	private <T> CompletableFuture<RemoteApiResult<T>> lookupByUUID(UUID uuid, Function<Map<String, Object>[], T> resultMapper) {
 		return queryMojangApi(FROM_UUID + uuid.toString().replace("-", "") + "/names", (reader) -> {
-			@SuppressWarnings("unchecked")
-			Map<String, Object>[] nameInfo = DefaultGson.GSON.fromJson(reader, Map[].class);
+			Map<String, Object>[] nameInfo = DefaultGson.GSON.fromJson(reader,
+					new TypeToken<Map<String, Object>[]>() {}.getType());
 			return resultMapper.apply(nameInfo);
 		});
 	}
 	
 	@Override
 	public CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid) {
-		Objects.requireNonNull(uuid, "UUID must not be null");
+		Objects.requireNonNull(uuid, "uuid");
 
 		return lookupByUUID(uuid, (nameInfo) -> (String) nameInfo[nameInfo.length - 1].get("name"));
 	}
 
 	@Override
 	public CompletableFuture<RemoteApiResult<Set<Entry<String, Long>>>> lookupNameHistory(UUID uuid) {
-		Objects.requireNonNull(uuid, "UUID must not be null");
+		Objects.requireNonNull(uuid, "uuid");
 
 		return lookupByUUID(uuid, (nameInfo) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();
@@ -146,6 +135,31 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 			}
 			return nameHistory;
 		});
+	}
+
+	private CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name, long timestamp) {
+		Objects.requireNonNull(name, "name");
+
+		String url = FROM_NAME + name;
+		if (timestamp != -1L) {
+			url = url + "?at=" + timestamp;
+		}
+		return queryMojangApi(url, (reader) -> {
+			Map<String, Object> profileInfo = DefaultGson.GSON.fromJson(reader,
+					new TypeToken<Map<String, Object>>() {}.getType());
+			String shortUuid = profileInfo.get("id").toString();
+			return UUIDUtil.fromShortString(shortUuid);
+		});
+	}
+
+	@Override
+	public CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name) {
+		return lookupUUID(name, -1L);
+	}
+
+	@Override
+	public CompletableFuture<RemoteApiResult<UUID>> lookupUUIDAtTimestamp(String name, Instant timestamp) {
+		return lookupUUID(name, timestamp.getEpochSecond());
 	}
 	
 }
