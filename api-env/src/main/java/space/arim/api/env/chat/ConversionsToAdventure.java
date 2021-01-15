@@ -84,6 +84,7 @@ final class ConversionsToAdventure {
 			child.decoration(decor,
 					component.hasStyle(AdventureColourConversions.convertDecor(decor)));
 		}
+		child.content(component.getText());
 		return child;
 	}
 	
