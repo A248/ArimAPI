@@ -104,7 +104,7 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 		Objects.requireNonNull(name, "name");
 
 		return queryMcHeadsApi(name,
-				(result) -> UUIDUtil.fromShortString((String) result.get("id")));
+				(result) -> space.arim.omnibus.util.UUIDUtil.fromShortString((String) result.get("id")));
 	}
 	
 	@Override

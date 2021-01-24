@@ -148,7 +148,7 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 			Map<String, Object> profileInfo = DefaultGson.GSON.fromJson(reader,
 					new TypeToken<Map<String, Object>>() {}.getType());
 			String shortUuid = profileInfo.get("id").toString();
-			return UUIDUtil.fromShortString(shortUuid);
+			return space.arim.omnibus.util.UUIDUtil.fromShortString(shortUuid);
 		});
 	}
 

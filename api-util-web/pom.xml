@@ -25,6 +25,10 @@
 	</build>
 	
 	<dependencies>
+		<dependency>
+			<groupId>space.arim.omnibus</groupId>
+			<artifactId>omnibus</artifactId>
+		</dependency>
 		<!-- Gson 2.2, at the minimum, is required for parsing web API responses -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
