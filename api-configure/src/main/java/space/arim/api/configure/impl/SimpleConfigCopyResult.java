@@ -25,7 +25,9 @@ import space.arim.api.configure.ConfigCopyResult;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.configure} (this entire framework is deprecated)
  */
+@Deprecated(forRemoval = true)
 public class SimpleConfigCopyResult extends AbstractConfigResult implements ConfigCopyResult {
 
 	public SimpleConfigCopyResult(ResultType resultType, Exception exception) {

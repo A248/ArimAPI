@@ -33,6 +33,11 @@ import space.arim.api.configure.ConfigCopyResult;
 import space.arim.api.configure.Configuration;
 import space.arim.api.configure.DefaultResourceProvider;
 
+/**
+ *
+ * @deprecated See deprecation of {@link space.arim.api.configure} (this entire framework is deprecated)
+ */
+@Deprecated(forRemoval = true)
 public abstract class BaseAbstractConfiguration implements Configuration {
 
 	private final DefaultResourceProvider defaultResource;

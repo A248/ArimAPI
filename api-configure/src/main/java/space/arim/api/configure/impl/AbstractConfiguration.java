@@ -29,6 +29,11 @@ import space.arim.api.configure.ConfigSerialiser;
 import space.arim.api.configure.DefaultResourceProvider;
 import space.arim.api.configure.ValueTransformer;
 
+/**
+ *
+ * @deprecated See deprecation of {@link space.arim.api.configure} (this entire framework is deprecated)
+ */
+@Deprecated(forRemoval = true)
 public abstract class AbstractConfiguration extends BaseAbstractConfiguration {
 
 	private final Executor executor;

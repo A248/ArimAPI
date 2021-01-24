@@ -23,7 +23,9 @@ package space.arim.api.configure.yaml;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.configure} (this entire framework is deprecated)
  */
+@Deprecated(forRemoval = true)
 public class YamlSyntaxException extends Exception {
 
 	/**
