@@ -18,6 +18,10 @@
  */
 package space.arim.api.env.concurrent;
 
+import space.arim.managedwaits.LightSleepManagedWaitStrategy;
+import space.arim.managedwaits.ManagedWaitStrategy;
+import space.arim.managedwaits.SimpleTaskQueue;
+import space.arim.managedwaits.TaskQueue;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 import org.bukkit.Server;
@@ -33,18 +37,26 @@ import org.bukkit.scheduler.BukkitTask;
  * @author A248
  *
  */
-public final class BukkitFactoryOfTheFuture extends DeadlockFreeFutureFactory implements AutoCloseable {
+public final class BukkitFactoryOfTheFuture extends MainThreadCachingFutureFactory implements AutoCloseable {
 
 	private final Server server;
 	private final BukkitTask task;
-	
+
+	private BukkitFactoryOfTheFuture(TaskQueue taskQueue, ManagedWaitStrategy waitStrategy,
+									 Server server, BukkitTask task) {
+		super(taskQueue, waitStrategy);
+		this.server = server;
+		this.task = task;
+	}
+
 	/**
 	 * Creates from a {@code JavaPlugin} to use, with the default wait strategy
-	 * 
-	 * @param plugin the plugin to use
+	 *
+	 * @param plugin the plugin
+	 * @return the futures factory, which should be closed when disposed of
 	 */
-	public BukkitFactoryOfTheFuture(JavaPlugin plugin) {
-		this(plugin, new LightSleepManagedWaitStrategy());
+	public static BukkitFactoryOfTheFuture create(JavaPlugin plugin) {
+		return create(plugin, new LightSleepManagedWaitStrategy());
 	}
 
 	/**
@@ -52,14 +64,16 @@ public final class BukkitFactoryOfTheFuture extends DeadlockFreeFutureFactory im
 	 *
 	 * @param plugin the plugin
 	 * @param waitStrategy the managed wait strategy
+	 * @return the futures factory, which should be closed when disposed of
 	 */
-	public BukkitFactoryOfTheFuture(JavaPlugin plugin, ManagedWaitStrategy waitStrategy) {
-		super(waitStrategy);
+	public static BukkitFactoryOfTheFuture create(JavaPlugin plugin, ManagedWaitStrategy waitStrategy) {
 		Server server = plugin.getServer();
-		this.server = server;
+		SimpleTaskQueue taskQueue = new SimpleTaskQueue();
+		BukkitTask task = server.getScheduler().runTaskTimer(plugin, taskQueue::pollAndRunAll, 0L, 1L);
 
-		isPrimaryThread(); // init main thread if possible
-		task = server.getScheduler().runTaskTimer(plugin, runQueuedTasks, 0L, 1L);
+		BukkitFactoryOfTheFuture futuresFactory = new BukkitFactoryOfTheFuture(taskQueue, waitStrategy, server, task);
+		futuresFactory.isPrimaryThread(); // init main thread if possible
+		return futuresFactory;
 	}
 
 	@Override

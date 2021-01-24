@@ -67,7 +67,7 @@ public class BukkitPlatformHandle extends AbstractPlatformHandle {
 	
 	@Override
 	public FactoryOfTheFuture createFuturesFactory() {
-		return new BukkitFactoryOfTheFuture(getPlugin());
+		return BukkitFactoryOfTheFuture.create(getPlugin());
 	}
 
 	@Override
