@@ -11,17 +11,46 @@
 	
 	<artifactId>arimapi-chat</artifactId>
 	<name>ArimAPI-Chat</name>
-	<description>The chat component of ArimAPI.</description>
-	
+	<description>The json chat features of ArimAPI.</description>
+
+	<properties>
+		<kyori-adventure.version>4.7.0</kyori-adventure.version>
+	</properties>
+
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<finalName>${project.name}_v${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-XX:TieredStopAtLevel=1 -XX:-TieredCompilation
+						--add-opens space.arim.api.jsonchat/space.arim.api.jsonchat=ALL-UNNAMED</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 	
-	<dependencies>		
+	<dependencies>
+		<dependency>
+			<groupId>net.kyori</groupId>
+			<artifactId>adventure-api</artifactId>
+			<version>${kyori-adventure.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.kyori</groupId>
+			<artifactId>adventure-text-serializer-legacy</artifactId>
+			<version>${kyori-adventure.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-params</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
 		</dependency>
 	</dependencies>
 </project>

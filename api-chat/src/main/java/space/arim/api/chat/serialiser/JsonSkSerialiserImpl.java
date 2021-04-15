@@ -19,16 +19,15 @@
 package space.arim.api.chat.serialiser;
 
 import java.util.List;
-import java.util.Locale;
 
 import space.arim.api.chat.ChatComponent;
 import space.arim.api.chat.JsonClick;
 import space.arim.api.chat.JsonHover;
 import space.arim.api.chat.JsonInsertion;
 import space.arim.api.chat.JsonSection;
-import space.arim.api.chat.PredefinedColour;
 import space.arim.api.chat.SendableMessage;
-import space.arim.api.chat.manipulator.ColourManipulator;
+
+import static space.arim.api.jsonchat.adventure.internal.ComponentSerialization.appendColor;
 
 class JsonSkSerialiserImpl {
 	
@@ -115,13 +114,13 @@ class JsonSkSerialiserImpl {
 				if (currentStyles != 0) {
 					builder.append(formattingChar).append('r');
 				}
-				appendColour(builder, colour);
+				appendColor(colour, builder);
 				new StyleSerialiserImpl(formattingChar, builder)
 					.serialiseStylesFrom(component);
 
 			} else if (colour != currentColour) {
 				// Same styles, different colour
-				appendColour(builder, colour);
+				appendColor(colour, builder);
 			}
 			currentColour = colour;
 			currentStyles = styles;
@@ -129,33 +128,8 @@ class JsonSkSerialiserImpl {
 		}
 	}
 	
-	private static void appendColour(StringBuilder builder, int colour) {
-		PredefinedColour predefinedColour = PredefinedColour.getExactTo(colour);
-		if (predefinedColour == null) {
-			builder.append("<#").append(hexToString(colour)).append('>');
-		} else {
-			char code = predefinedColour.getCodeChar();
-			builder.append('&').append(code);
-		}
-	}
-	
 	private static String escapeDoublePipes(String text) {
 		return text.replace("||", "||||");
 	}
-	
-	private static String hexToString(int hex) {
-		byte[] bytes = ColourManipulator.getInstance().toBytes(hex);
-	    char[] hexChars = new char[bytes.length * 2];
-	    for (int j = 0; j < bytes.length; j++) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-	        hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-	    }
-	    if (hexChars[0] == hexChars[1] && hexChars[2] == hexChars[3] && hexChars[4] == hexChars[5]) {
-	    	return String.valueOf(new char[] {hexChars[0], hexChars[2], hexChars[4]});
-	    }
-	    return String.valueOf(hexChars);
-	}
-	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toLowerCase(Locale.ROOT).toCharArray();
 	
 }
