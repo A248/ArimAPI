@@ -34,7 +34,9 @@ import java.util.function.Consumer;
  * 
  * @author A248
  *
+ * @deprecated See {@link space.arim.api.env.realexecutor}
  */
+@Deprecated
 public interface RealExecutorFinder {
 
 	/**

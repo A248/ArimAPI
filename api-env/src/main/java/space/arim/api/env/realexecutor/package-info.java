@@ -16,6 +16,9 @@
  * <br>
  * Using this package, one may take advantage of the common thread pools on all platforms without
  * having to write platform-specific code or creating an own thread pool.
- * 
+ *
+ * @deprecated A leaky abstraction across platforms relying on mechanisms prone to failure.
+ * It is better to simply create an own thread pool or use the common ForkJoinPool.
  */
+@Deprecated
 package space.arim.api.env.realexecutor;

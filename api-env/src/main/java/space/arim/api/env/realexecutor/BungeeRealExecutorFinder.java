@@ -31,7 +31,9 @@ import net.md_5.bungee.api.scheduler.TaskScheduler;
  * 
  * @author A248
  *
+ * @deprecated See {@link space.arim.api.env.realexecutor}
  */
+@Deprecated
 public class BungeeRealExecutorFinder implements RealExecutorFinder {
 
 	private final Plugin plugin;

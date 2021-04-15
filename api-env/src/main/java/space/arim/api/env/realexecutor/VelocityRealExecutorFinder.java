@@ -31,7 +31,9 @@ import com.velocitypowered.api.scheduler.Scheduler;
  * 
  * @author A248
  *
+ * @deprecated See {@link space.arim.api.env.realexecutor}
  */
+@Deprecated
 public class VelocityRealExecutorFinder implements RealExecutorFinder {
 
 	private final PluginContainer plugin;

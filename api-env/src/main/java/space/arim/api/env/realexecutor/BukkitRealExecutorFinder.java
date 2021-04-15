@@ -35,7 +35,9 @@ import org.bukkit.scheduler.BukkitScheduler;
  * 
  * @author A248
  *
+ * @deprecated See {@link space.arim.api.env.realexecutor}
  */
+@Deprecated
 public class BukkitRealExecutorFinder implements RealExecutorFinder {
 	
 	private final JavaPlugin plugin;

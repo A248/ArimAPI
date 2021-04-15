@@ -85,7 +85,9 @@ public interface PlatformHandle {
 	 * Gets a {@link RealExecutorFinder} for this platform
 	 * 
 	 * @return a {@code RealExecutorFinder}
+	 * @deprecated See {@link space.arim.api.env.realexecutor}
 	 */
+	@Deprecated
 	RealExecutorFinder getRealExecutorFinder();
 	
 	/**
