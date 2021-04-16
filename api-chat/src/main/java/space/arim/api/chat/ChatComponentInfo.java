@@ -25,7 +25,9 @@ package space.arim.api.chat;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
+@Deprecated
 public interface ChatComponentInfo extends Emptyable {
 
 	/**

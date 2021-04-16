@@ -26,7 +26,9 @@ import java.util.List;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
+@Deprecated
 public final class JsonHover extends JsonAction {
 
 	private final List<ChatComponent> contents;

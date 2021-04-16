@@ -27,7 +27,11 @@ import java.awt.Color;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.chat}. In addition to that,
+ * this class is terminally deprecated because it introduces a dependency on
+ * the {@code java.desktop} module due to usage of {@code java.awt.Color}
  */
+@Deprecated(forRemoval = true)
 public class ColourManipulator {
 
 	private static final ColourManipulator INSTANCE = new ColourManipulator();

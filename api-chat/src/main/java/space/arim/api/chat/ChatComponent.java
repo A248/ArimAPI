@@ -27,7 +27,9 @@ import space.arim.api.chat.manipulator.ColourManipulator;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
+@Deprecated
 public final class ChatComponent implements ChatComponentInfo {
 
 	private final String text;

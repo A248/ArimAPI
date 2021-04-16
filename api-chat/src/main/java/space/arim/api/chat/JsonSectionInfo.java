@@ -27,7 +27,9 @@ import java.util.List;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
+@Deprecated
 public interface JsonSectionInfo extends Emptyable {
 
 	/**

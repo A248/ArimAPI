@@ -27,7 +27,9 @@ import space.arim.api.chat.manipulator.ColourManipulator;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
+@Deprecated
 public enum PredefinedColour {
 
 	BLACK('0', 0x000000),

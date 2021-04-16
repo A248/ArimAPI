@@ -30,7 +30,9 @@ import space.arim.api.chat.SendableMessage;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
+@Deprecated
 public final class LegacyCodeSerialiser implements SendableMessageSerialiser {
 
 	private final char formattingChar;
