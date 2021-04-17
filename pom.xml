@@ -154,7 +154,6 @@
 		<module>api-configure</module>
 		<module>api-util-web</module>
 		<module>api-env</module>
-		<module>api-all</module>
 	</modules>
 	
 	<distributionManagement>
@@ -179,16 +178,6 @@
 			<dependency>
 				<groupId>space.arim.api</groupId>
 				<artifactId>arimapi-util-web</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-env</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>space.arim.api</groupId>
-				<artifactId>arimapi-all</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			
