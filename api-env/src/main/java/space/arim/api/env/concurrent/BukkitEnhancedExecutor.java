@@ -18,6 +18,7 @@
  */
 package space.arim.api.env.concurrent;
 
+import space.arim.api.env.bukkit.BukkitPlatformHandle;
 import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
@@ -30,7 +31,10 @@ import org.bukkit.scheduler.BukkitScheduler;
  * 
  * @author A248
  *
+ * @deprecated Use {@link BukkitPlatformHandle} and {@code createEnhancedExecutor} instead.
+ * Relying on the identity of this implementation is not supported.
  */
+@Deprecated
 public class BukkitEnhancedExecutor extends SimplifiedEnhancedExecutor {
 
 	private final JavaPlugin plugin;

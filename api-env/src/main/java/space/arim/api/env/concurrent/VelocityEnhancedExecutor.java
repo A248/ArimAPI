@@ -18,6 +18,7 @@
  */
 package space.arim.api.env.concurrent;
 
+import space.arim.api.env.velocity.VelocityPlatformHandle;
 import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
@@ -31,7 +32,10 @@ import com.velocitypowered.api.scheduler.Scheduler;
  * 
  * @author A248
  *
+ * @deprecated Use {@link VelocityPlatformHandle} and {@code createEnhancedExecutor} instead.
+ * Relying on the identity of this implementation is not supported.
  */
+@Deprecated
 public class VelocityEnhancedExecutor extends SimplifiedEnhancedExecutor {
 	
 	private final PluginContainer plugin;

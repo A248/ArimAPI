@@ -17,24 +17,13 @@
  * and navigate to version 3 of the GNU General Public License.
  */
 
-package space.arim.api.env;
-
-import net.md_5.bungee.api.plugin.Plugin;
+/**
+ * The location of platform APIs implemented on Bukkit. In the future,
+ * this will be moved to a separate module.
+ */
 
 /**
- * Previous location of {@code PlatformHandle} implementation for bungeecord.
- * Now moved to {@link space.arim.api.env.bungee.BungeePlatformHandle}
- *
- * @deprecated Use {@link space.arim.api.env.bungee.BungeePlatformHandle} instead
+ * The location of platform APIs implemented on Bukkit. In the future,
+ * this will be moved to a separate module.
  */
-@Deprecated
-public class BungeePlatformHandle extends space.arim.api.env.bungee.BungeePlatformHandle {
-    /**
-     * Creates from a {@code Plugin} to use
-     *
-     * @param plugin the plugin
-     */
-    public BungeePlatformHandle(Plugin plugin) {
-        super(plugin);
-    }
-}
+package space.arim.api.env.bungee;

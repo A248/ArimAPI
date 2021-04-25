@@ -17,24 +17,9 @@
  * and navigate to version 3 of the GNU General Public License.
  */
 
-package space.arim.api.env;
-
-import net.md_5.bungee.api.plugin.Plugin;
-
 /**
- * Previous location of {@code PlatformHandle} implementation for bungeecord.
- * Now moved to {@link space.arim.api.env.bungee.BungeePlatformHandle}
+ * Allows converting between {@code SendableMessage} and platform chat APIs.
  *
- * @deprecated Use {@link space.arim.api.env.bungee.BungeePlatformHandle} instead
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
-@Deprecated
-public class BungeePlatformHandle extends space.arim.api.env.bungee.BungeePlatformHandle {
-    /**
-     * Creates from a {@code Plugin} to use
-     *
-     * @param plugin the plugin
-     */
-    public BungeePlatformHandle(Plugin plugin) {
-        super(plugin);
-    }
-}
+package space.arim.api.env.chat;

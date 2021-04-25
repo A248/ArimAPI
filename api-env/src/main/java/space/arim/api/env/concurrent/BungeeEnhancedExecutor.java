@@ -18,6 +18,7 @@
  */
 package space.arim.api.env.concurrent;
 
+import space.arim.api.env.bungee.BungeePlatformHandle;
 import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
@@ -30,7 +31,10 @@ import net.md_5.bungee.api.scheduler.TaskScheduler;
  * 
  * @author A248
  *
+ * @deprecated Use {@link BungeePlatformHandle} and {@code createEnhancedExecutor} instead.
+ * Relying on the identity of this implementation is not supported.
  */
+@Deprecated
 public class BungeeEnhancedExecutor extends SimplifiedEnhancedExecutor {
 
 	private final Plugin plugin;

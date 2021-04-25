@@ -36,8 +36,11 @@ import org.bukkit.scheduler.BukkitTask;
  * 
  * @author A248
  *
+ * @deprecated Use {@link space.arim.api.env.bukkit.BukkitFactoryOfTheFuture} which does not expose
+ * the identity of the implementation and is better located.
  */
-public final class BukkitFactoryOfTheFuture extends MainThreadCachingFutureFactory implements AutoCloseable {
+@Deprecated
+public final class BukkitFactoryOfTheFuture extends MainThreadCachingFutureFactory implements ClosableFactoryOfTheFuture {
 
 	private final Server server;
 	private final BukkitTask task;

@@ -17,24 +17,13 @@
  * and navigate to version 3 of the GNU General Public License.
  */
 
-package space.arim.api.env;
+package space.arim.api.env.concurrent;
 
-import net.md_5.bungee.api.plugin.Plugin;
+import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 /**
- * Previous location of {@code PlatformHandle} implementation for bungeecord.
- * Now moved to {@link space.arim.api.env.bungee.BungeePlatformHandle}
+ * Combination interface to guarantee that a {@link FactoryOfTheFuture} is {@code AutoCloseable}
  *
- * @deprecated Use {@link space.arim.api.env.bungee.BungeePlatformHandle} instead
  */
-@Deprecated
-public class BungeePlatformHandle extends space.arim.api.env.bungee.BungeePlatformHandle {
-    /**
-     * Creates from a {@code Plugin} to use
-     *
-     * @param plugin the plugin
-     */
-    public BungeePlatformHandle(Plugin plugin) {
-        super(plugin);
-    }
+public interface ClosableFactoryOfTheFuture extends FactoryOfTheFuture, AutoCloseable {
 }
