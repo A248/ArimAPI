@@ -13,14 +13,16 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+		<maven.compiler.release>11</maven.compiler.release>
+
 		<!-- Testing dependencies -->
 		<junit.version>5.7.1</junit.version>
 		<mockito.version>3.9.0</mockito.version>
 		<slf4j.version>1.7.30</slf4j.version>
-		
+
 		<!-- Required dependencies -->
 		<omnibus.version>1.1.0-M2</omnibus.version>
+		<kyori-adventure.version>4.7.0</kyori-adventure.version>
 	</properties>
 
 	<scm>
@@ -95,9 +97,6 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
-					<configuration>
-						<release>11</release>
-					</configuration>
 					<executions>
 						<execution>
 							<id>default-testCompile</id>
@@ -143,8 +142,14 @@
 					</configuration>
 					<executions>
 						<execution>
+							<id>run-integration-tests</id>
 							<goals>
 								<goal>integration-test</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>verify-integration-tests</id>
+							<goals>
 								<goal>verify</goal>
 							</goals>
 						</execution>
@@ -193,7 +198,7 @@
 				<artifactId>arimapi-util-web</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			
+
 			<!-- Testing Dependencies -->
 			<dependency>
 				<groupId>org.junit.jupiter</groupId>
@@ -219,12 +224,27 @@
 				<version>${slf4j.version}</version>
 				<scope>test</scope>
 			</dependency>
-			
+
 			<!-- Required dependencies -->
 			<dependency>
 				<groupId>space.arim.omnibus</groupId>
 				<artifactId>omnibus</artifactId>
 				<version>${omnibus.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.kyori</groupId>
+				<artifactId>adventure-api</artifactId>
+				<version>${kyori-adventure.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.kyori</groupId>
+				<artifactId>adventure-text-serializer-legacy</artifactId>
+				<version>${kyori-adventure.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.kyori</groupId>
+				<artifactId>adventure-text-serializer-gson</artifactId>
+				<version>${kyori-adventure.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

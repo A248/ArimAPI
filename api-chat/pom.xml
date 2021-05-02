@@ -11,10 +11,6 @@
 	<name>ArimAPI-Chat</name>
 	<description>The json chat features of ArimAPI.</description>
 
-	<properties>
-		<kyori-adventure.version>4.7.0</kyori-adventure.version>
-	</properties>
-
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<finalName>${project.name}_v${project.version}</finalName>
@@ -34,12 +30,10 @@
 		<dependency>
 			<groupId>net.kyori</groupId>
 			<artifactId>adventure-api</artifactId>
-			<version>${kyori-adventure.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.kyori</groupId>
 			<artifactId>adventure-text-serializer-legacy</artifactId>
-			<version>${kyori-adventure.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
