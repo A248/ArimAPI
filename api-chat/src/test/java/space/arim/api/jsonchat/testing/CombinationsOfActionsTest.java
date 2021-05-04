@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static space.arim.api.jsonchat.testing.CombinationsOfActionsTest.Action.A1;
 import static space.arim.api.jsonchat.testing.CombinationsOfActionsTest.Action.A2;
 import static space.arim.api.jsonchat.testing.CombinationsOfActionsTest.Action.A3;
@@ -63,5 +64,12 @@ public class CombinationsOfActionsTest {
         A1,
         A2,
         A3
+    }
+
+    @Test
+    public void zeroLengthCombinations() {
+        CombinationsOfActions<Boolean> combinationsOfActions = new CombinationsOfActions<>(new Boolean[] {true, false});
+        //noinspection ResultOfMethodCallIgnored
+        assertThrows(IllegalArgumentException.class, () -> combinationsOfActions.getAllCombinations(0).toList());
     }
 }

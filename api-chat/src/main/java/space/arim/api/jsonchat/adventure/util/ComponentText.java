@@ -135,6 +135,8 @@ public final class ComponentText {
      * @return the new component
      */
     public Component replaceText(CharSequence target, CharSequence replacement) {
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(replacement, "replacement");
         return replaceText((str) -> str.replace(target, replacement));
     }
 

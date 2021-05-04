@@ -61,6 +61,9 @@ public final class CombinationsOfActions<A> {
      * @return all possible combinations
      */
     public Stream<A[]> getAllCombinations(int exponent) {
+        if (exponent == 0) {
+            throw new IllegalArgumentException("Cannot have 0-length combinations");
+        }
         Iterator<A[]> iterator = new CombinationsOfActionsIterator<>(actions, exponent);
         int spliteratorCharacteristics = Spliterator.DISTINCT | Spliterator.IMMUTABLE
                 | Spliterator.NONNULL | Spliterator.ORDERED;
