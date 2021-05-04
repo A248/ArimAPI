@@ -24,11 +24,15 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 import static net.kyori.adventure.text.format.Style.style;
+import static space.arim.api.jsonchat.testing.TestUtil.randomColor;
+import static space.arim.api.jsonchat.testing.TestUtil.randomString;
 
 public final class AdventureUtil {
 
@@ -56,6 +60,17 @@ public final class AdventureUtil {
 
     public static TextComponent.Builder textBuilder() {
         return Component.text().style(plainStyle());
+    }
+
+    public static TextComponent randomSimpleComponent() {
+        var tlr = ThreadLocalRandom.current();
+        TextComponent.Builder textBuilder = Component.text()
+                .content(randomString())
+                .color(randomColor());
+        for (TextDecoration decoration : TextDecoration.values()) {
+            textBuilder.decoration(decoration, tlr.nextBoolean());
+        }
+        return textBuilder.build();
     }
 
 }

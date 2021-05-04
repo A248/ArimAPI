@@ -20,48 +20,24 @@
 package space.arim.api.jsonchat.adventure.internal;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.junit.jupiter.api.Test;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static space.arim.api.jsonchat.testing.TestUtil.randomColor;
-import static space.arim.api.jsonchat.testing.TestUtil.randomString;
+import static space.arim.api.jsonchat.testing.AdventureUtil.randomSimpleComponent;
+import static space.arim.api.jsonchat.testing.TestUtil.assertIteratorsEqual;
+import static space.arim.api.jsonchat.testing.TestUtil.mapList;
 
 public class ComponentIteratorTest {
-
-    private <T> void assertIteratorsEqual(Iterator<T> iter1, Iterator<T> iter2) {
-        while (iter1.hasNext()) {
-            assertTrue(iter2.hasNext(), "Iterator1 has more elements than Iterator2");
-            assertEquals(iter1.next(), iter2.next(), "Iterator elements do not match");
-        }
-        assertFalse(iter2.hasNext(), "Iterator2 has more elements than Iterator1");
-    }
 
     private void assertMatches(List<Component> componentsIterated, Component mainComponent) {
         assertIteratorsEqual(componentsIterated.iterator(), new ComponentIterator(mainComponent));
     }
 
-    private Component randomSimpleComponent() {
-        var tlr = ThreadLocalRandom.current();
-        TextComponent.Builder textBuilder = Component.text()
-                .content(randomString())
-                .color(randomColor());
-        for (TextDecoration decoration : TextDecoration.values()) {
-            textBuilder.decoration(decoration, tlr.nextBoolean());
-        }
-        return textBuilder.build();
-    }
-
     @Test
     public void simpleComponent() {
-
         var component = randomSimpleComponent();
         assertMatches(List.of(component), component);
     }
@@ -89,6 +65,35 @@ public class ComponentIteratorTest {
         assertMatches(
                 List.of(main, extraOne, deepExtrasOne[0], deepExtrasOne[1],
                         extraTwo, deepExtrasTwo[0], deepExtrasTwo[1], deepExtrasTwo[2]),
+                main);
+    }
+
+    @Test
+    public void nestingWithInheritance() {
+        Component[] deepExtrasOne = new Component[] {
+                randomSimpleComponent(), randomSimpleComponent()};
+        ClickEvent deepExtrasTwoOverridingClick = ClickEvent.suggestCommand("/suggestion");
+        Component[] deepExtrasTwo = new Component[] {
+                randomSimpleComponent().clickEvent(deepExtrasTwoOverridingClick),
+                randomSimpleComponent().clickEvent(deepExtrasTwoOverridingClick),
+                randomSimpleComponent().clickEvent(deepExtrasTwoOverridingClick)};
+
+        HoverEvent<?> inheritedHover = HoverEvent.showText(randomSimpleComponent());
+        Component extraOne = randomSimpleComponent().children(List.of(deepExtrasOne)).hoverEvent(inheritedHover);
+
+        // This ClickEvent is not inherited because child components override it
+        ClickEvent uninheritedClick = ClickEvent.runCommand("/say hello");
+        Component extraTwo = randomSimpleComponent().children(List.of(deepExtrasTwo)).clickEvent(uninheritedClick);
+
+        Component[] extras = new Component[] {extraOne, extraTwo};
+        String everyonesInsertion = "insert me";
+        Component main = randomSimpleComponent().children(List.of(extras)).insertion(everyonesInsertion);
+
+        assertMatches(
+                mapList(List.of(main, extraOne,
+                        deepExtrasOne[0].hoverEvent(inheritedHover), deepExtrasOne[1].hoverEvent(inheritedHover),
+                        extraTwo, deepExtrasTwo[0], deepExtrasTwo[1], deepExtrasTwo[2]),
+                        (component) -> component.insertion(everyonesInsertion)),
                 main);
     }
 }

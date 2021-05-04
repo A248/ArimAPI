@@ -19,12 +19,8 @@
 
 package space.arim.api.jsonchat.testing;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -33,9 +29,10 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static net.kyori.adventure.text.format.Style.style;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class TestUtil {
 
@@ -83,6 +80,14 @@ public final class TestUtil {
             color = randomColor();
         } while (color instanceof NamedTextColor || NamedTextColor.ofExact(color.value()) != null);
         return color;
+    }
+
+    public static <T> void assertIteratorsEqual(Iterator<T> iter1, Iterator<T> iter2) {
+        while (iter1.hasNext()) {
+            assertTrue(iter2.hasNext(), "Iterator1 has more elements than Iterator2");
+            assertEquals(iter1.next(), iter2.next(), "Iterator elements do not match");
+        }
+        assertFalse(iter2.hasNext(), "Iterator2 has more elements than Iterator1");
     }
 
 }
