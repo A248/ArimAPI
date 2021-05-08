@@ -68,6 +68,12 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm-commons</artifactId>
+			<version>9.1</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!--
 		Platform dependencies

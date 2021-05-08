@@ -36,6 +36,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * the intended set of methods.
  *
  */
+/*
+ * Changes to this class should be updated likewise in MessageOnlyAudience and DelegatingAudience
+ */
 public interface AbstractAudience extends Audience {
 
     @Override
