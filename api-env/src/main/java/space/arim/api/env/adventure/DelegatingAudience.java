@@ -42,9 +42,9 @@ public abstract class DelegatingAudience implements Audience {
     protected DelegatingAudience() {}
 
     /**
-     * Gets the delegate adventure to be used
+     * Gets the delegate audience to be used
      *
-     * @return the delegate adventure
+     * @return the delegate audience
      */
     protected abstract Audience delegate();
 
