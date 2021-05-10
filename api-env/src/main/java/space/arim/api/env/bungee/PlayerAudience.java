@@ -31,7 +31,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import space.arim.api.env.adventure.MessageOnlyAudience;
 
 import java.time.Duration;
-import java.util.Objects;
 
 import static space.arim.api.env.bungee.BungeeAudienceRepresenter.convertComponent;
 
@@ -47,13 +46,14 @@ final class PlayerAudience implements MessageOnlyAudience {
 
     @Override
     public void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
-        Objects.requireNonNull(type, "type");
         BaseComponent[] converted = convertComponent(message);
         if (!source.equals(Identity.nil())) {
-            if (type != MessageType.CHAT) {
+            if (!type.equals(MessageType.CHAT)) {
                 throw new UnsupportedOperationException(
                         "BungeeCord does not allow specifying both a non-default message type and non-default source");
             }
+            // BungeeCord has an atrocious lack of documentation, but the implementation indicates
+            // that sendMessage(UUID, BaseComponent[]) uses ChatMessageType.CHAT
             player.sendMessage(source.uuid(), converted);
         } else {
             ChatMessageType messageType;
@@ -87,11 +87,13 @@ final class PlayerAudience implements MessageOnlyAudience {
                 .title(convertComponent(title.title()))
                 .subTitle(convertComponent(title.subtitle()));
         Title.Times titleTimes = title.times();
-        if (titleTimes != null) {
+        if (titleTimes == null) {
+            bungeeTitle = bungeeTitle.fadeIn(0).stay(0).fadeOut(0);
+        } else {
             bungeeTitle = bungeeTitle
                     .fadeIn(durationToTicks(titleTimes.fadeIn()))
-                    .fadeOut(durationToTicks(titleTimes.fadeOut()))
-                    .stay(durationToTicks(titleTimes.stay()));
+                    .stay(durationToTicks(titleTimes.stay()))
+                    .fadeOut(durationToTicks(titleTimes.fadeOut()));
         }
         player.sendTitle(bungeeTitle);
     }

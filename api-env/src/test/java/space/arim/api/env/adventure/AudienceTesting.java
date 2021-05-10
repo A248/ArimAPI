@@ -25,6 +25,7 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.DynamicNode;
+import org.junit.jupiter.api.function.Executable;
 import space.arim.omnibus.util.ArraysUtil;
 
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -105,6 +107,35 @@ public class AudienceTesting {
 
     private static <T> T[] combine(T[] original, T extra) {
         return ArraysUtil.expandAndInsert(original, extra, 0);
+    }
+
+    public DynamicNode verifyDoesNotSupport(Identity identity, MessageType messageType) {
+        Component message = Component.text("message");
+        Executable test = () -> {
+            assertThrows(UnsupportedOperationException.class,() -> audience.sendMessage(identity, message, messageType));
+        };
+        return dynamicTest("Does not support identity " + identity + " and message type " + messageType, test);
+    }
+
+    public DynamicNode verifyDoesSupport(Identity identity, MessageType messageType) {
+        Component message = Component.text("message");
+        Executable test = () -> {
+            assertDoesNotThrow(() -> audience.sendMessage(identity, message, messageType));
+        };
+        return dynamicTest("Does support identity " + identity + " and message type " + messageType, test);
+    }
+
+    public Stream<DynamicNode> verifyDoesNotSupportNonDefaultIdentityAndOrType() {
+        Set<DynamicNode> tests = new HashSet<>();
+        for (Identity identity : new Identity[] {Identity.identity(UUID.randomUUID()), Identity.nil()}) {
+            for (MessageType type : MessageType.values()) {
+                if (identity.equals(Identity.nil()) && type.equals(MessageType.SYSTEM)) {
+                    continue;
+                }
+                tests.add(verifyDoesNotSupport(identity, type));
+            }
+        }
+        return tests.stream();
     }
 
 }

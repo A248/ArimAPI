@@ -36,8 +36,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Objects;
 
-import static java.util.Objects.requireNonNull;
-
 final class PlayerAudience implements MessageOnlyAudience {
 
     private static final GsonComponentSerializer SERIALIZER;
@@ -94,9 +92,12 @@ final class PlayerAudience implements MessageOnlyAudience {
 
     @Override
     public void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
-        Objects.requireNonNull(source, "source");
-        Objects.requireNonNull(type, "type");
-        player.spigot().sendMessage(convertComponent(message));
+        BaseComponent[] bungeeMessage = convertComponent(message);
+        if (!source.equals(Identity.nil()) | !type.equals(MessageType.SYSTEM)) {
+            throw new UnsupportedOperationException(
+                    "This platform supports neither a non-system message type nor a non-default source");
+        }
+        player.spigot().sendMessage(bungeeMessage);
     }
 
     @Override
@@ -116,13 +117,11 @@ final class PlayerAudience implements MessageOnlyAudience {
 
     @Override
     public void sendPlayerListHeaderAndFooter(@NonNull Component header, @NonNull Component footer) {
-        requireNonNull(header, "header");
-        requireNonNull(footer, "footer");
+        BaseComponent[] bungeeHeader = convertComponent(header);
+        BaseComponent[] bungeeFooter = convertComponent(footer);
         if (SET_PLAYER_LIST_HEADER_FOOTER == null) {
             throw notSupportedException();
         }
-        BaseComponent[] bungeeHeader = convertComponent(header);
-        BaseComponent[] bungeeFooter = convertComponent(footer);
         try {
             SET_PLAYER_LIST_HEADER_FOOTER.invokeExact(player, bungeeHeader, bungeeFooter);
         } catch (RuntimeException | Error ex) {
@@ -134,7 +133,7 @@ final class PlayerAudience implements MessageOnlyAudience {
 
     @Override
     public void showTitle(@NonNull Title title) {
-        requireNonNull(title, "title");
+        Objects.requireNonNull(title, "title");
         TITLE_SUPPORT.showTitle(player, title);
     }
 
