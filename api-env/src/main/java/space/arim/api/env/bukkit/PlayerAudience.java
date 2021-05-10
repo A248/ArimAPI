@@ -24,6 +24,8 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.title.Title;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -34,22 +36,47 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 final class PlayerAudience implements MessageOnlyAudience {
 
     private static final GsonComponentSerializer SERIALIZER;
+
     private static final MethodHandle SEND_ACTION_BAR;
+    private static final MethodHandle SET_PLAYER_LIST_HEADER_FOOTER;
+    private static final TitleSupport TITLE_SUPPORT;
 
     static {
         SERIALIZER = GsonComponentSerializer.builder().downsampleColors().emitLegacyHoverEvent().build();
+
         MethodHandle sendActionBar;
         try {
             sendActionBar = MethodHandles.lookup().findVirtual(Player.class, "sendActionBar", MethodType.methodType(void.class, String.class));
         } catch (NoSuchMethodException ex) {
             sendActionBar = null;
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException(ex);
+            throw new ExceptionInInitializerError(ex);
         }
         SEND_ACTION_BAR = sendActionBar;
+
+        MethodHandle setPlayerListHeaderFooter;
+        try {
+            setPlayerListHeaderFooter = MethodHandles.lookup().findVirtual(Player.class, "setPlayerListHeaderFooter", MethodType.methodType(void.class, BaseComponent[].class, BaseComponent[].class));
+        } catch (NoSuchMethodException ex) {
+            setPlayerListHeaderFooter = null;
+        } catch (IllegalAccessException ex) {
+            throw new ExceptionInInitializerError(ex);
+        }
+        SET_PLAYER_LIST_HEADER_FOOTER = setPlayerListHeaderFooter;
+
+        TitleSupport titleSupport;
+        try {
+            Class.forName("com.destroystokyo.paper.Title");
+            titleSupport = new TitleSupport.PaperTitleSupport();
+        } catch (ClassNotFoundException ex) {
+            titleSupport = new TitleSupport.NoTitleSupport();
+        }
+        TITLE_SUPPORT = titleSupport;
     }
 
     private final Player player;
@@ -58,21 +85,25 @@ final class PlayerAudience implements MessageOnlyAudience {
         this.player = player;
     }
 
+    static BaseComponent[] convertComponent(Component message) {
+        // Careful with GsonComponentSerializer, which will silently accept nulls!
+        Objects.requireNonNull(message, "message");
+        // Adventure -> json -> BungeeChat
+        return ComponentSerializer.parse(SERIALIZER.serialize(message));
+    }
+
     @Override
     public void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(type, "type");
-        // Careful with GsonComponentSerializer, which will silently accept nulls!
-        Objects.requireNonNull(message, "message");
-        // Adventure -> json -> BungeeChat
-        player.spigot().sendMessage(ComponentSerializer.parse(SERIALIZER.serialize(message)));
+        player.spigot().sendMessage(convertComponent(message));
     }
 
     @Override
     public void sendActionBar(@NonNull Component message) {
         String actionBar = LegacyComponentSerializer.legacySection().serialize(message);
         if (SEND_ACTION_BAR == null) {
-            throw new UnsupportedOperationException("This version of the Bukkit API does not support Player.sendActionBar");
+            throw notSupportedException();
         }
         try {
             SEND_ACTION_BAR.invokeExact(player, actionBar);
@@ -84,7 +115,45 @@ final class PlayerAudience implements MessageOnlyAudience {
     }
 
     @Override
+    public void sendPlayerListHeaderAndFooter(@NonNull Component header, @NonNull Component footer) {
+        requireNonNull(header, "header");
+        requireNonNull(footer, "footer");
+        if (SET_PLAYER_LIST_HEADER_FOOTER == null) {
+            throw notSupportedException();
+        }
+        BaseComponent[] bungeeHeader = convertComponent(header);
+        BaseComponent[] bungeeFooter = convertComponent(footer);
+        try {
+            SET_PLAYER_LIST_HEADER_FOOTER.invokeExact(player, bungeeHeader, bungeeFooter);
+        } catch (RuntimeException | Error ex) {
+            throw ex;
+        } catch (Throwable ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void showTitle(@NonNull Title title) {
+        requireNonNull(title, "title");
+        TITLE_SUPPORT.showTitle(player, title);
+    }
+
+    @Override
+    public void clearTitle() {
+        TITLE_SUPPORT.clearTitle(player);
+    }
+
+    @Override
+    public void resetTitle() {
+        TITLE_SUPPORT.resetTitle(player);
+    }
+
+    @Override
     public UnsupportedOperationException notSupportedException() {
+        return notSupported();
+    }
+
+    static UnsupportedOperationException notSupported() {
         return new UnsupportedOperationException("Not supported on this platform");
     }
 }

@@ -21,6 +21,7 @@ package space.arim.api.env.bukkit;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.DynamicNode;
@@ -45,16 +46,47 @@ public class BukkitAudienceRepresenterTest {
         assertThrows(NullPointerException.class, () ->  representer.toAudience(null));
     }
 
+    private Audience playerAudience() {
+        return representer.toAudience(mock(Player.class));
+    }
+
     @TestFactory
     public Stream<DynamicNode> basicAudienceContracts() {
-        return Stream.of(representer.toAudience(mock(CommandSender.class)), representer.toAudience(mock(Player.class)))
+        return Stream.of(representer.toAudience(mock(CommandSender.class)), playerAudience())
                 .flatMap((audience) -> new AudienceTesting(audience).verifyBasicContracts());
     }
 
     @Test
     public void sendActionBar() {
-        Audience audience = representer.toAudience(mock(Player.class));
+        Audience audience = playerAudience();
         Component actionBar = Component.text("action");
         assertThrows(UnsupportedOperationException.class, () -> audience.sendActionBar(actionBar));
+    }
+
+    @Test
+    public void sendPlayerListHeaderAndFooter() {
+        Audience audience = playerAudience();
+        Component header = Component.text("header");
+        Component footer = Component.text("footer");
+        assertThrows(UnsupportedOperationException.class, () -> audience.sendPlayerListHeaderAndFooter(header, footer));
+    }
+
+    @Test
+    public void showTitle() {
+        Audience audience = playerAudience();
+        Title title = Title.title(Component.empty(), Component.empty());
+        assertThrows(UnsupportedOperationException.class, () -> audience.showTitle(title));
+    }
+
+    @Test
+    public void clearTitle() {
+        Audience audience = playerAudience();
+        assertThrows(UnsupportedOperationException.class, audience::clearTitle);
+    }
+
+    @Test
+    public void resetTitle() {
+        Audience audience = playerAudience();
+        assertThrows(UnsupportedOperationException.class, audience::resetTitle);
     }
 }
