@@ -27,7 +27,9 @@ import space.arim.api.chat.SendableMessage;
  * @author A248
  *
  * @param <T> the platform specific type equivalent to {@link SendableMessage}
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
+@Deprecated
 public interface PlatformMessageReverseAdapter<T> {
 
 	/**

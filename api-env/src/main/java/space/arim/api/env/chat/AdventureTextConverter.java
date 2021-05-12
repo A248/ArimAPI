@@ -59,7 +59,9 @@ import net.kyori.adventure.text.TextComponent;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
+@Deprecated
 public class AdventureTextConverter implements PlatformMessageAdapter<TextComponent> {
 
 	/**

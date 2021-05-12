@@ -67,7 +67,9 @@ import net.md_5.bungee.api.chat.TextComponent;
  * 
  * @author A248
  *
+ * @deprecated See deprecation of {@link space.arim.api.chat}
  */
+@Deprecated
 public class BungeeComponentConverter implements PlatformMessageAdapter<List<TextComponent>> {
 	
 	/**
