@@ -185,6 +185,17 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 		return lookupUUID(name, -1L);
 	}
 
+	/**
+	 * Finds the UUID of the player who had a name at a certain time in the past.
+	 *
+	 * @param name the name of the player whose uuid to find
+	 * @param timestamp the time at which this name was held
+	 * @return a future which yields the result containing the uuid
+	 * @deprecated This feature is currently broken, possibly intentionally, in the HTTP API endpoint.
+	 * It does not seem that it will be fixed, but rather that support will be dropped entirely.
+	 * For more information, refer to https://bugs.mojang.com/browse/WEB-3367
+	 */
+	@Deprecated
 	@Override
 	public CompletableFuture<RemoteApiResult<UUID>> lookupUUIDAtTimestamp(String name, Instant timestamp) {
 		return lookupUUID(name, timestamp.getEpochSecond());

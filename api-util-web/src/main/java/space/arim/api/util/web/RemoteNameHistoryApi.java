@@ -53,7 +53,10 @@ public interface RemoteNameHistoryApi extends RemoteNameUUIDApi {
 	 * @param name the name of the player whose uuid to find
 	 * @param timestamp the time at which this name was held
 	 * @return a future which yields the result containing the uuid
+	 * @deprecated Support in the respective implementations which provided this parameter has dropped.
+	 * It is likely that this feature will continue to decline.
 	 */
+	@Deprecated
 	default CompletableFuture<RemoteApiResult<UUID>> lookupUUIDAtTimestamp(String name, Instant timestamp) {
 		return CompletableFuture.completedFuture(RemoteApiResult.notFound());
 	}
