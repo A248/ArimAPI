@@ -18,6 +18,7 @@
  */
 package space.arim.api.util.web;
 
+import java.net.http.HttpClient;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -28,7 +29,10 @@ public class RemoteNameHistoryImplProvider implements ArgumentsProvider {
 
 	@Override
 	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-		return Stream.of(new HttpMojangApi(), new HttpAshconApi(), new HttpMcHeadsApi()).map(Arguments::of);
+		return Stream.of(HttpClient.newHttpClient())
+				.flatMap((client) -> Stream.of(
+						HttpMojangApi.create(client), HttpAshconApi.create(client), HttpMcHeadsApi.create(client)))
+				.map(Arguments::of);
 	}
 
 }

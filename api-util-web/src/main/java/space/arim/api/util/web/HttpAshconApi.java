@@ -40,7 +40,9 @@ import java.util.function.Function;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * A handle for working with requests to Electroid's Ashcon API.
+ * A handle for working with requests to Electroid's Ashcon API. <br>
+ * <br>
+ * Subclassing this is deprecated. Use the {@code create} methods to obtain an instance.
  * 
  * @author A248
  *
@@ -60,17 +62,43 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 	 * {@link java.util.concurrent.Executor Executor} used to make completable futures.
 	 * 
 	 * @param client the http client to use
+	 * @deprecated Use {@link #create(HttpClient)} instead. Subclassing is deprecated without replacement.
 	 */
+	@Deprecated
 	public HttpAshconApi(HttpClient client) {
 		this.client = client;
 	}
 	
 	/**
 	 * Creates an instance using the default http client
-	 * 
+	 *
+	 * @deprecated Use {@link #create()} instead. Subclassing is deprecated without replacement.
 	 */
+	@Deprecated
 	public HttpAshconApi() {
 		this(HttpClient.newHttpClient());
+	}
+
+	/**
+	 * Creates using a configured http client. <br>
+	 * <br>
+	 * The http client may be used to specify the connection timeout and the
+	 * {@link java.util.concurrent.Executor Executor} used to make completable futures.
+	 *
+	 * @param client the http client to use
+	 * @return the instance
+	 */
+	public static HttpAshconApi create(HttpClient client) {
+		return new HttpAshconApi(Objects.requireNonNull(client, "client"));
+	}
+
+	/**
+	 * Creates using the default http client
+	 *
+	 * @return the instance
+	 */
+	public static HttpAshconApi create() {
+		return create(HttpClient.newHttpClient());
 	}
 	
 	private <T> CompletableFuture<RemoteApiResult<T>> queryAshconApi(String nameOrUuid,

@@ -39,7 +39,9 @@ import java.util.function.Function;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * A handle for working with requests to the MCHeads API
+ * A handle for working with requests to the MCHeads API <br>
+ * <br>
+ * Subclassing this is deprecated. Use the {@code create} methods to obtain an instance.
  * 
  * @author A248
  *
@@ -59,17 +61,43 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 	 * {@link java.util.concurrent.Executor Executor} used to make completable futures.
 	 * 
 	 * @param client the http client to use
+	 * @deprecated Use {@link #create(HttpClient)} instead. Subclassing is deprecated without replacement.
 	 */
+	@Deprecated
 	public HttpMcHeadsApi(HttpClient client) {
 		this.client = client;
 	}
 	
 	/**
 	 * Creates an instance using the default http client
-	 * 
+	 *
+	 * @deprecated Use {@link #create()} instead. Subclassing is deprecated without replacement.
 	 */
+	@Deprecated
 	public HttpMcHeadsApi() {
 		this(HttpClient.newHttpClient());
+	}
+
+	/**
+	 * Creates using a configured http client. <br>
+	 * <br>
+	 * The http client may be used to specify the connection timeout and the
+	 * {@link java.util.concurrent.Executor Executor} used to make completable futures.
+	 *
+	 * @param client the http client to use
+	 * @return the instance
+	 */
+	public static HttpMcHeadsApi create(HttpClient client) {
+		return new HttpMcHeadsApi(Objects.requireNonNull(client, "client"));
+	}
+
+	/**
+	 * Creates using the default http client
+	 *
+	 * @return the instance
+	 */
+	public static HttpMcHeadsApi create() {
+		return create(HttpClient.newHttpClient());
 	}
 	
 	private <T> CompletableFuture<RemoteApiResult<T>> queryMcHeadsApi(String nameOrUuid,
