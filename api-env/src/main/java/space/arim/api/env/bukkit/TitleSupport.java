@@ -78,7 +78,7 @@ interface TitleSupport {
                         int.class, int.class, int.class));
                 // Player#sendTitle(Title)
                 SEND_TITLE = lookup.findVirtual(Player.class, "sendTitle", MethodType.methodType(void.class, titleClass));
-                // Player#clearTitle()
+                // Player#hideTitle()
                 HIDE_TITLE = lookup.findVirtual(Player.class, "hideTitle", MethodType.methodType(void.class));
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException ex) {
                 throw new ExceptionInInitializerError(ex);

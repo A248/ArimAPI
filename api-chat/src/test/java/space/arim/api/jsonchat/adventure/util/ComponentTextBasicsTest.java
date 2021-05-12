@@ -53,7 +53,6 @@ public class ComponentTextBasicsTest {
         assertThrows(NullPointerException.class, () -> ComponentText.create(null));
         assertThrows(NullPointerException.class,
                 () -> ComponentText.create(Component.empty(), (Set<TextGoal>) null));
-        assertThrows(NullPointerException.class, () -> ComponentText.create(null));
         assertThrows(NullPointerException.class,
                 () -> ComponentText.create(Component.empty(), Collections.singleton(null)));
     }
@@ -114,6 +113,13 @@ public class ComponentTextBasicsTest {
         });
     }
 
+    /**
+     * Returns a random string. If {@code containing}, the generated string includes
+     * the given {@code value}, if not, it does not
+     * @param value the value to contain or not
+     * @param containing whether to contain the value
+     * @return a random string containing the value or not
+     */
     private static String randomStringContainingOrNot(String value, boolean containing) {
         if (containing) {
             return randomString() + value + randomString();
@@ -125,6 +131,7 @@ public class ComponentTextBasicsTest {
         return result;
     }
 
+    /** A runnable test for {@code contains} */
     record TestData(String target, Set<GoalAndContains> goalAndContainsCombinations) {
         Set<TextGoal> goals() {
             return goalAndContainsCombinations().stream().map(GoalAndContains::goal).collect(Collectors.toUnmodifiableSet());
@@ -139,6 +146,7 @@ public class ComponentTextBasicsTest {
             }
             return new CombinationsOfActions<>(new Boolean[] {true, false}).getAllCombinations(goals.size())
                     .map((contains) -> {
+                        // Pair each goal with whether it is contained in this test
                         Set<GoalAndContains> goalAndContainsCombinations = new HashSet<>();
                         int n = 0;
                         for (TextGoal goal : goals) {
