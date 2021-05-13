@@ -139,14 +139,16 @@ public class HttpAshconApi implements RemoteNameHistoryApi {
 	public CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid) {
 		Objects.requireNonNull(uuid, "uuid");
 
-		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> (String) result.get("username"));
+		String uuidString = space.arim.omnibus.util.UUIDUtil.toShortString(uuid);
+		return queryAshconApi(uuidString, (result) -> (String) result.get("username"));
 	}
 
 	@Override
 	public CompletableFuture<RemoteApiResult<Set<Entry<String, Long>>>> lookupNameHistory(UUID uuid) {
 		Objects.requireNonNull(uuid, "uuid");
 
-		return queryAshconApi(uuid.toString().replace("-", ""), (result) -> {
+		String uuidString = space.arim.omnibus.util.UUIDUtil.toShortString(uuid);
+		return queryAshconApi(uuidString, (result) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();
 			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> nameInfo = (List<Map<String, Object>>) result.get("username_history");

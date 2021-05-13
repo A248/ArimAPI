@@ -139,14 +139,16 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 	public CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid) {
 		Objects.requireNonNull(uuid, "uuid");
 
-		return queryMcHeadsApi(uuid.toString().replace("-", ""), (result) -> (String) result.get("name"));
+		String uuidString = space.arim.omnibus.util.UUIDUtil.toShortString(uuid);
+		return queryMcHeadsApi(uuidString, (result) -> (String) result.get("name"));
 	}
 
 	@Override
 	public CompletableFuture<RemoteApiResult<Set<Entry<String, Long>>>> lookupNameHistory(UUID uuid) {
 		Objects.requireNonNull(uuid, "uuid");
 
-		return queryMcHeadsApi(uuid.toString().replace("-", ""), (result) -> {
+		String uuidString = space.arim.omnibus.util.UUIDUtil.toShortString(uuid);
+		return queryMcHeadsApi(uuidString, (result) -> {
 			Set<Entry<String, Long>> nameHistory = new HashSet<>();
 			@SuppressWarnings("unchecked")
 			List<Map<String, Object>> nameInfo = (List<Map<String, Object>>) result.get("name_history");

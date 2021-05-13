@@ -136,8 +136,10 @@ public class HttpMojangApi implements RemoteNameHistoryApi {
 		});
 	}
 	
-	private <T> CompletableFuture<RemoteApiResult<T>> lookupByUUID(UUID uuid, Function<Map<String, Object>[], T> resultMapper) {
-		return queryMojangApi(FROM_UUID + uuid.toString().replace("-", "") + "/names", (reader) -> {
+	private <T> CompletableFuture<RemoteApiResult<T>> lookupByUUID(UUID uuid,
+																   Function<Map<String, Object>[], T> resultMapper) {
+		String uuidString = space.arim.omnibus.util.UUIDUtil.toShortString(uuid);
+		return queryMojangApi(FROM_UUID + uuidString + "/names", (reader) -> {
 			Map<String, Object>[] nameInfo = DefaultGson.GSON.fromJson(reader,
 					new TypeToken<Map<String, Object>[]>() {}.getType());
 			return resultMapper.apply(nameInfo);
