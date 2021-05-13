@@ -6,13 +6,14 @@
  * the basis of most user code. <br>
  * <br>
  * Note that {@code space.arim.api.chat} and sub-packages are terminally deprecated.
- * They are part of a independent API which does not depend on Adventure.
+ * They are part of an independent API which does not depend on Adventure.
  * Such API is slated for removal.
  *
  */
 module space.arim.api.jsonchat {
     exports space.arim.api.jsonchat;
     exports space.arim.api.jsonchat.adventure;
+    exports space.arim.api.jsonchat.adventure.util;
     requires transitive net.kyori.adventure;
     requires static transitive org.checkerframework.checker.qual;
 
