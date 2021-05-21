@@ -163,13 +163,13 @@ public final class ComponentText {
      * @param operator the function to run all text through
      * @return the new component
      */
-    public Component replaceText(Function<String, ? extends CharSequence> operator) {
+    public Component replaceText(Function<? super String, ? extends CharSequence> operator) {
         Objects.requireNonNull(operator, "operator");
         return mapComponent(component, operator, goals);
     }
 
     private static Component mapComponent(Component component,
-                                          Function<String, ? extends CharSequence> operator, Set<TextGoal> goals) {
+                                          Function<? super String, ? extends CharSequence> operator, Set<TextGoal> goals) {
         boolean changed = false;
         ComponentBuilder<?, ?> builder;
         if (component instanceof TextComponent) {
