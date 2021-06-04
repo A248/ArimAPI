@@ -20,10 +20,11 @@
 package space.arim.api.jsonchat.adventure.internal;
 
 import net.kyori.adventure.text.format.TextColor;
-import space.arim.api.chat.PredefinedColour;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+
+import static space.arim.api.jsonchat.adventure.internal.ColorCodes.*;
 
 public final class ComponentSerialization {
 
@@ -50,15 +51,63 @@ public final class ComponentSerialization {
     }
 
     public static void appendColor(int color, Appendable builder) throws IOException {
-        PredefinedColour predefinedColor = PredefinedColour.getExactTo(color);
-        if (predefinedColor == null) {
+        char codeChar;
+        switch (color) {
+        case BLACK:
+            codeChar = '0';
+            break;
+        case DARK_BLUE:
+            codeChar = '1';
+            break;
+        case DARK_GREEN:
+            codeChar = '2';
+            break;
+        case DARK_AQUA:
+            codeChar = '3';
+            break;
+        case DARK_RED:
+            codeChar = '4';
+            break;
+        case DARK_PURPLE:
+            codeChar = '5';
+            break;
+        case GOLD:
+            codeChar = '6';
+            break;
+        case GRAY:
+            codeChar = '7';
+            break;
+        case DARK_GRAY:
+            codeChar = '8';
+            break;
+        case BLUE:
+            codeChar = '9';
+            break;
+        case GREEN:
+            codeChar = 'a';
+            break;
+        case AQUA:
+            codeChar = 'b';
+            break;
+        case RED:
+            codeChar = 'c';
+            break;
+        case LIGHT_PURPLE:
+            codeChar = 'd';
+            break;
+        case YELLOW:
+            codeChar = 'e';
+            break;
+        case WHITE:
+            codeChar = 'f';
+            break;
+        default:
             builder.append("<#");
             hexToString(color, builder);
             builder.append('>');
-        } else {
-            char code = predefinedColor.getCodeChar();
-            builder.append('&').append(code);
+            return;
         }
+        builder.append('&').append(codeChar);
     }
 
     public static void appendColor(TextColor color, Appendable builder) throws IOException {

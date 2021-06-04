@@ -7,7 +7,8 @@
 		<version>0.23.3-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>arimapi-env</artifactId>
+	<artifactId>arimapi-env-parent</artifactId>
+	<packaging>pom</packaging>
 
 	<properties>
 		<managedwait.version>0.1.3</managedwait.version>
@@ -17,152 +18,93 @@
 		<velocity.version>1.1.0</velocity.version>
 	</properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-invoker-plugin</artifactId>
-				<!-- Configured mostly by common-parent -->
-				<configuration>
-					<settingsFile>src/it/settings.xml</settingsFile>
-					<parallelThreads>2</parallelThreads>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	
-	<dependencies>
-		<!-- Required dependencies -->
-		<dependency>
-			<groupId>space.arim.managedwaits</groupId>
-			<artifactId>managedwaits</artifactId>
-			<version>${managedwait.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.omnibus</groupId>
-			<artifactId>omnibus</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.arim.api</groupId>
-			<artifactId>arimapi-chat</artifactId>
-		</dependency>
-		<dependency> <!-- Used by env.bukkit and env.bungee -->
-			<groupId>net.kyori</groupId>
-			<artifactId>adventure-text-serializer-gson</artifactId>
-		</dependency>
-		<dependency> <!-- Used by env.bukkit -->
-			<groupId>net.kyori</groupId>
-			<artifactId>adventure-text-serializer-legacy</artifactId>
-		</dependency>
-		
-		<!-- Test dependencies -->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-params</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.asm</groupId>
-			<artifactId>asm-commons</artifactId>
-			<version>9.1</version>
-			<scope>test</scope>
-		</dependency>
+	<modules>
+		<module>api-env</module>
+		<module>api-env-bukkit</module>
+		<module>api-env-bungee</module>
+		<module>api-env-velocity</module>
+	</modules>
 
-		<!--
-		Platform dependencies
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>space.arim.api</groupId>
+				<artifactId>arimapi-env</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>space.arim.managedwaits</groupId>
+				<artifactId>managedwaits</artifactId>
+				<version>${managedwait.version}</version>
+			</dependency>
+			<!--
+			Platform dependencies
 
-		1. Exclude junit:junit leaking from spigot-api
-		2. Exclude transitive dependencies with SNAPSHOT versions
-		3. Exclude unusable dependencies like Guava and Velocity's toml
-		-->
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>${spigot.version}</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>net.md-5</groupId>
-			<artifactId>bungeecord-api</artifactId>
-			<version>${bungeecord.version}</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>net.md-5</groupId>
-					<artifactId>brigadier</artifactId>
-					<!-- SNAPSHOT -->
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>net.md-5</groupId>
-			<artifactId>bungeecord-chat</artifactId>
-			<version>${bungeecord.version}</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.velocitypowered</groupId>
-			<artifactId>velocity-api</artifactId>
-			<version>${velocity.version}</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>net.kyori</groupId>
-					<artifactId>adventure-text-serializer-legacy-text3</artifactId>
-					<!-- SNAPSHOT -->
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.moanddjiezana.toml</groupId>
-					<artifactId>toml</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
+			1. Exclude junit:junit leaking from spigot-api
+			2. Exclude transitive dependencies with SNAPSHOT versions
+			3. Exclude unusable dependencies like Guava and Velocity's toml
+			-->
+			<dependency>
+				<groupId>org.spigotmc</groupId>
+				<artifactId>spigot-api</artifactId>
+				<version>${spigot.version}</version>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>junit</groupId>
+						<artifactId>junit</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.google.guava</groupId>
+						<artifactId>guava</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.md-5</groupId>
+				<artifactId>bungeecord-api</artifactId>
+				<version>${bungeecord.version}</version>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>net.md-5</groupId>
+						<artifactId>brigadier</artifactId>
+						<!-- SNAPSHOT -->
+					</exclusion>
+					<exclusion>
+						<groupId>com.google.guava</groupId>
+						<artifactId>guava</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.velocitypowered</groupId>
+				<artifactId>velocity-api</artifactId>
+				<version>${velocity.version}</version>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>net.kyori</groupId>
+						<artifactId>adventure-text-serializer-legacy-text3</artifactId>
+						<!-- SNAPSHOT -->
+					</exclusion>
+					<exclusion>
+						<groupId>com.google.guava</groupId>
+						<artifactId>guava</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.moanddjiezana.toml</groupId>
+						<artifactId>toml</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	
 	<repositories>
 		<repository>
 			<id>arim-mvn-gpl3</id>
 			<url>https://mvn-repo.arim.space/gpl3/</url>
-		</repository>
-
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-		</repository>
-		<repository>
-			<id>velocity</id>
-			<url>https://nexus.velocitypowered.com/repository/maven-public/</url>
 		</repository>
 	</repositories>
 </project>

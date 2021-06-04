@@ -26,7 +26,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import space.arim.api.chat.PredefinedColour;
+import space.arim.api.jsonchat.adventure.internal.ColorCodes;
 import space.arim.api.jsonchat.adventure.internal.ComponentSerialization;
 
 import java.io.IOException;
@@ -55,8 +55,8 @@ import java.util.regex.Pattern;
  */
 public final class JsonSkFormattingSerializer implements FormattingSerializer {
 
-    private static final Pattern COLOUR_PATTERN = Pattern.compile(
-            // Legacy colour codes
+    private static final Pattern COLOR_PATTERN = Pattern.compile(
+            // Legacy color codes
             "(&[0-9A-Fa-fK-Rk-r])|"
             // Hex codes such as <#00AAFF>
             + "(<#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]>)|"
@@ -73,7 +73,7 @@ public final class JsonSkFormattingSerializer implements FormattingSerializer {
         ReadingState currentState = new ReadingState();
         int beginIndex = 0;
 
-        Matcher matcher = COLOUR_PATTERN.matcher(text);
+        Matcher matcher = COLOR_PATTERN.matcher(text);
         while (matcher.find()) {
 
             int currentIndex = matcher.start();
@@ -132,9 +132,8 @@ public final class JsonSkFormattingSerializer implements FormattingSerializer {
                 currentColor = NamedTextColor.WHITE;
                 return true;
             default:
-                int color = PredefinedColour.getByChar(codeChar).getColour();
+                int color = ColorCodes.obtainColorFromCode(codeChar);
                 currentColor = TextColor.color(color);
-                decorations.clear();
                 return true;
             }
             return false;
@@ -216,7 +215,7 @@ public final class JsonSkFormattingSerializer implements FormattingSerializer {
                     output.append("&r");
                 }
                 if (colorDiffers
-                        // If we didn't reset or the new color is white, don't write &f
+                        // If we didn't reset or the current color is white, don't write &f
                         || reset && !color.equals(NamedTextColor.WHITE)) {
                     appendColor(color);
                 }
