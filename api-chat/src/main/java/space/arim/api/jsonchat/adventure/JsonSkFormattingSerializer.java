@@ -104,7 +104,7 @@ public final class JsonSkFormattingSerializer implements FormattingSerializer {
             components.add(componentBuilder);
         }
 
-        private boolean updateFormattingFromCodeAndDetermineWhetherToClearDecorations(String formatCode) {
+        private void updateFormattingFromCode(String formatCode) {
             char codeChar = formatCode.charAt(1);
             switch (codeChar) {
             case 'K':
@@ -130,20 +130,24 @@ public final class JsonSkFormattingSerializer implements FormattingSerializer {
             case 'R':
             case 'r':
                 currentColor = NamedTextColor.WHITE;
-                return true;
+                break;
             default:
                 int color = ColorCodes.obtainColorFromCode(codeChar);
                 currentColor = TextColor.color(color);
-                return true;
+                break;
             }
-            return false;
+        }
+
+        private void setHexColor(String hex) {
+            int color = Integer.parseInt(hex, 16);
+            currentColor = TextColor.color(color);
         }
 
         void updateFormatting(String formatGroup) {
-            boolean clearDecorations = true;
+            TextColor oldColor = currentColor;
             switch (formatGroup.length()) {
             case 2:
-                clearDecorations = updateFormattingFromCodeAndDetermineWhetherToClearDecorations(formatGroup);
+                updateFormattingFromCode(formatGroup);
                 break;
             case 6:
                 // Shortened hex colour code
@@ -158,14 +162,9 @@ public final class JsonSkFormattingSerializer implements FormattingSerializer {
             default:
                 throw new IllegalStateException("Matched formatting " + formatGroup + " has no known way to be handled");
             }
-            if (clearDecorations) {
+            if (!currentColor.equals(oldColor)) {
                 decorations.clear();
             }
-        }
-
-        private void setHexColor(String hex) {
-            int color = Integer.parseInt(hex, 16);
-            currentColor = TextColor.color(color);
         }
 
         List<? extends ComponentLike> finish() {
@@ -205,24 +204,20 @@ public final class JsonSkFormattingSerializer implements FormattingSerializer {
 
             boolean decorsDiffer = !currentStyleDecorationsMatch(style);
             boolean colorDiffers = !currentColor.equals(color);
-            if (decorsDiffer) {
-                // Change to the new styles
+            if (colorDiffers) {
+                appendColor(color);
+                // Re-apply styles since changing color is an implicit reset
+                appendStyles(style);
 
-                // If there were no existing styles, no need to reset
-                // If the colors differ, they reset the style
-                boolean reset = anyDecorationPresent(currentStyle) && !colorDiffers;
+            } else if (decorsDiffer) {
+                // Change to the new styles
+                // Possible future improvement: Don't reset when the new styles are a superset of the old ones
+                boolean reset = anyDecorationPresent(currentStyle);
                 if (reset) {
                     output.append("&r");
-                }
-                if (colorDiffers
-                        // If we didn't reset or the current color is white, don't write &f
-                        || reset && !color.equals(NamedTextColor.WHITE)) {
                     appendColor(color);
                 }
                 appendStyles(style);
-            } else if (colorDiffers) {
-                // Same styles, different colour
-                appendColor(color);
             }
             currentColor = color;
             currentStyle = style;

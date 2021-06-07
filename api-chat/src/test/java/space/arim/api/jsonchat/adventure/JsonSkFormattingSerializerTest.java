@@ -28,12 +28,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.List;
 
 import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextColor.color;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,7 +54,7 @@ public class JsonSkFormattingSerializerTest {
         verifyContractOfReadFormatting(readFormatting);
         assertEquals(componentList, readFormatting);
 
-        assertEquals(text, formattingSerializer.writeFormatting(componentList).toString());
+        assertEquals(text, formattingSerializer.writeFormatting(componentList).toString(), "Rewriting failed");
     }
 
     private static void verifyContractOfReadFormatting(List<Component> readFormatting) {
@@ -71,9 +74,9 @@ public class JsonSkFormattingSerializerTest {
     private static TextDecoration decorationFromLetter(String letter) {
         return switch (letter) {
             case "k" -> TextDecoration.OBFUSCATED;
-            case "l" -> TextDecoration.BOLD;
+            case "l" -> BOLD;
             case "m" -> TextDecoration.STRIKETHROUGH;
-            case "n" -> TextDecoration.UNDERLINED;
+            case "n" -> UNDERLINED;
             case "o" -> TextDecoration.ITALIC;
             default -> throw new IllegalArgumentException();
         };
@@ -96,6 +99,16 @@ public class JsonSkFormattingSerializerTest {
                 text("some "), text("text ", GREEN), text("with ", color(0xcc5941)),
                 text("formatting ", style(RED, decorationFromLetter(styleLetter))),
                 text("is annoying", style(color(0x152aa6))), text(" unless reset "), text("in fire", GRAY));
+    }
+
+    @Test
+    public void sameStylesDifferentColor() {
+        assertRoundTrip("&6&lSome &a&lbold text", text("Some ", GOLD, BOLD), text("bold text", GREEN, BOLD));
+    }
+
+    @Test
+    public void sameColorDifferentStyles() {
+        assertRoundTrip("&6&lSome &r&6&nbold text", text("Some ", GOLD, BOLD), text("bold text", GOLD, UNDERLINED));
     }
 
 }

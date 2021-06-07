@@ -54,6 +54,10 @@ public final class AdventureUtil {
         return Component.text(text, plainStyle().color(color));
     }
 
+    public static Component text(String text, TextColor color, TextDecoration decoration) {
+        return text(text, color).decorate(decoration);
+    }
+
     public static Component text(String text, Style style) {
         return Component.text(text, style.merge(plainStyle(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
     }
