@@ -28,7 +28,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import space.arim.api.env.adventure.MessageOnlyAudience;
+import space.arim.api.jsonchat.adventure.implementor.MessageOnlyAudience;
 
 import java.time.Duration;
 

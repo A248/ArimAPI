@@ -25,7 +25,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import space.arim.api.env.adventure.MessageOnlyAudience;
+import space.arim.api.jsonchat.adventure.implementor.MessageOnlyAudience;
 
 import java.util.Objects;
 

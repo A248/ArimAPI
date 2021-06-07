@@ -17,7 +17,7 @@
  * and navigate to version 3 of the GNU General Public License.
  */
 
-package space.arim.api.env.adventure;
+package space.arim.api.jsonchat.adventure.implementor;
 
 import net.kyori.adventure.audience.MessageType;
 import org.junit.jupiter.api.Test;

@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>space.arim.api</groupId>
-            <artifactId>arimapi-env</artifactId>
+            <artifactId>arimapi-chat</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <type>test-jar</type>

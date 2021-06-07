@@ -29,7 +29,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import space.arim.api.env.adventure.MessageOnlyAudience;
+import space.arim.api.jsonchat.adventure.implementor.MessageOnlyAudience;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

@@ -34,7 +34,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.junit.jupiter.MockitoExtension;
-import space.arim.api.env.adventure.AudienceTesting;
+import space.arim.api.jsonchat.adventure.implementor.AudienceTesting;
 
 import java.util.stream.Stream;
 

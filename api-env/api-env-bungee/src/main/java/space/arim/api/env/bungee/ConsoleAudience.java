@@ -24,7 +24,7 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import space.arim.api.env.adventure.MessageOnlyAudience;
+import space.arim.api.jsonchat.adventure.implementor.MessageOnlyAudience;
 
 import java.util.Objects;
 

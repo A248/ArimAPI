@@ -8,6 +8,7 @@
 module space.arim.api.jsonchat {
     exports space.arim.api.jsonchat;
     exports space.arim.api.jsonchat.adventure;
+    exports space.arim.api.jsonchat.adventure.implementor;
     exports space.arim.api.jsonchat.adventure.util;
 
     requires transitive net.kyori.adventure;
