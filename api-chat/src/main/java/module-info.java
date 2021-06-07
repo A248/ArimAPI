@@ -9,6 +9,7 @@ module space.arim.api.jsonchat {
     exports space.arim.api.jsonchat;
     exports space.arim.api.jsonchat.adventure;
     exports space.arim.api.jsonchat.adventure.util;
+
     requires transitive net.kyori.adventure;
-    requires static transitive org.checkerframework.checker.qual;
+    requires static org.checkerframework.checker.qual;
 }
