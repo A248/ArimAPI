@@ -78,6 +78,6 @@ public class ComponentTextReplacementTest {
             return str.replace("%ONE%", replacement1).replace("%TWO%", replacement2)
                     .replace("%THREE%", replacement3).replace("%FOUR%", replacement4);
         };
-        assertEquals(component(operator), componentText.replaceText(operator));
+        assertEquals(component(operator), componentText.replaceText(operator).asComponent());
     }
 }

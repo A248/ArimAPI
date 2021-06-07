@@ -22,9 +22,11 @@ package space.arim.api.jsonchat.adventure.util;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import space.arim.api.jsonchat.adventure.internal.ComponentIterator;
 
 import java.util.ArrayList;
@@ -43,12 +45,13 @@ import static space.arim.api.jsonchat.adventure.util.TextGoal.SIMPLE_TEXT;
 /**
  * Manipulator class for transforming and analyzing text in components. <br>
  * <br>
- * All "mutative" operations return new components, because a {@code Component} is immutable. <br>
+ * Instances are immutable. All "mutative" operations return new component text with
+ * the same goals and the resulting component. <br>
  * <br>
  * A {@code ComponentText} is itself immutable and thread-safe.
  *
  */
-public final class ComponentText {
+public final class ComponentText implements ComponentLike {
 
     private final Component component;
     private final Set<TextGoal> goals;
@@ -88,6 +91,16 @@ public final class ComponentText {
      */
     public static ComponentText create(Component component) {
         return create(component, TextGoal.allGoals());
+    }
+
+    /**
+     * Gets the underlying component this component text wraps
+     *
+     * @return the underlying component
+     */
+    @Override
+    public @NonNull Component asComponent() {
+        return component;
     }
 
     /**
@@ -132,9 +145,9 @@ public final class ComponentText {
      *
      * @param target the text to literally match
      * @param replacement the replacement text
-     * @return the new component
+     * @return the new component text
      */
-    public Component replaceText(CharSequence target, CharSequence replacement) {
+    public ComponentText replaceText(CharSequence target, CharSequence replacement) {
         Objects.requireNonNull(target, "target");
         Objects.requireNonNull(replacement, "replacement");
         return replaceText((str) -> str.replace(target, replacement));
@@ -146,9 +159,9 @@ public final class ComponentText {
      *
      * @param regex the pattern to match match
      * @param replacement the replacement text
-     * @return the new component
+     * @return the new component text
      */
-    public Component replaceText(Pattern regex, CharSequence replacement) {
+    public ComponentText replaceText(Pattern regex, CharSequence replacement) {
         Objects.requireNonNull(regex, "regex");
         String replacementValue = replacement.toString();
         return replaceText((str) -> regex.matcher(str).replaceAll(replacementValue));
@@ -163,9 +176,9 @@ public final class ComponentText {
      * @param operator the function to run all text through
      * @return the new component
      */
-    public Component replaceText(Function<? super String, ? extends CharSequence> operator) {
+    public ComponentText replaceText(Function<? super String, ? extends CharSequence> operator) {
         Objects.requireNonNull(operator, "operator");
-        return mapComponent(component, operator, goals);
+        return new ComponentText(mapComponent(component, operator, goals), goals);
     }
 
     private static Component mapComponent(Component component,
