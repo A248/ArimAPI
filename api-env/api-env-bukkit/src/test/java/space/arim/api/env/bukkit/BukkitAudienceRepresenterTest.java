@@ -24,7 +24,6 @@ import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +36,6 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.junit.jupiter.MockitoExtension;
 import space.arim.api.env.adventure.AudienceTesting;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,7 +43,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static space.arim.api.env.bukkit.BaseComponentMatcher.fixEqualsHashCode;
+import static space.arim.api.env.bukkit.test.BaseComponentMatcher.fixEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class BukkitAudienceRepresenterTest {
@@ -85,7 +83,7 @@ public class BukkitAudienceRepresenterTest {
             Audience audience = playerAudience(player);
             String message = "message";
             audience.sendMessage(Identity.nil(), Component.text(message), MessageType.SYSTEM);
-            verify(playerSpigot).sendMessage(fixEqualsHashCode(TextComponent.fromLegacyText(message)));
+            verify(playerSpigot).sendMessage(fixEquals(TextComponent.fromLegacyText(message)));
         };
         return Stream.concat(
                 testableAudiences().map(at -> at.verifyDoesSupport(Identity.nil(), MessageType.SYSTEM)),

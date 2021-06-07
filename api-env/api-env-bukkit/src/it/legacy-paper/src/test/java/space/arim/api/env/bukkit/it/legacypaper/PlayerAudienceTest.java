@@ -17,7 +17,7 @@
  * and navigate to version 3 of the GNU General Public License.
  */
 
-package space.arim.api.env.legacypaper;
+package space.arim.api.env.bukkit.it.legacypaper;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -50,6 +50,10 @@ public class PlayerAudienceTest {
         audience = new BukkitAudienceRepresenter().toAudience(player);
     }
 
+    private com.destroystokyo.paper.Title fixEquals(com.destroystokyo.paper.Title expectedTitle) {
+        return argThat(new TitleMatcher(expectedTitle));
+    }
+
     @Test
     public void sendActionBar() {
         Component actionBar = Component.text("Action bar!", NamedTextColor.GREEN);
@@ -73,7 +77,7 @@ public class PlayerAudienceTest {
         Title title = Title.title(Component.text("title"), Component.text("subtitle"), null);
         assertDoesNotThrow(() -> audience.showTitle(title));
         verify(player).sendTitle(
-                fixEqualsHashCode(new com.destroystokyo.paper.Title(
+                fixEquals(new com.destroystokyo.paper.Title(
                         TextComponent.fromLegacyText("title"), TextComponent.fromLegacyText("subtitle"),
                         // A null Title.Times corresponds to packet values of 0
                         0, 0, 0)));
@@ -87,13 +91,9 @@ public class PlayerAudienceTest {
                 Title.Times.of(Duration.ofMillis(50L), Duration.ofMillis(100L), Duration.ofMillis(150L)));
         assertDoesNotThrow(() -> audience.showTitle(title));
         verify(player).sendTitle(
-                fixEqualsHashCode(new com.destroystokyo.paper.Title(
+                fixEquals(new com.destroystokyo.paper.Title(
                         TextComponent.fromLegacyText("title"), TextComponent.fromLegacyText("subtitle"), 1, 2, 3)));
         verifyNoMoreInteractions(player);
-    }
-
-    private com.destroystokyo.paper.Title fixEqualsHashCode(com.destroystokyo.paper.Title expectedTitle) {
-        return argThat(new TitleMatcher(expectedTitle));
     }
 
     @Test

@@ -17,7 +17,7 @@
  * and navigate to version 3 of the GNU General Public License.
  */
 
-package space.arim.api.env.legacypaper;
+package space.arim.api.env.bukkit.it.legacypaper;
 
 import com.destroystokyo.paper.Title;
 import org.mockito.ArgumentMatcher;
