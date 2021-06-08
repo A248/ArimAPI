@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,9 +54,10 @@ public class PeekingIteratorTest {
                     () -> new Container(impl).iterate(combination));
         });
         Stream<DynamicNode> nseTests = Stream.of(
-                DynamicTest.dynamicTest("peekNSE", () -> new Container(impl).peekNSE()),
-                DynamicTest.dynamicTest("nextNSE", () -> new Container(impl).nextNSE())
-        );
+                ElementAction.CHECK_THEN_NEXT, ElementAction.NEXT, ElementAction.CHECK_THEN_PEEK, ElementAction.PEEK)
+                .map((how) -> {
+                    return DynamicTest.dynamicTest("expectNoSuchElement", () -> new Container(impl).expectNoSuchElement(how));
+                });
         return Stream.concat(nseTests, iterationTests);
     }
 
@@ -77,19 +79,30 @@ public class PeekingIteratorTest {
         }
 
         private void consumeAll() {
-            for (Integer ignored : ELEMENTS) {
-                iter.next();
+            for (Integer element : ELEMENTS) {
+                assertEquals(element, iter.next(), "Consumed wrong element");
             }
         }
 
-        void peekNSE() {
+        void expectNoSuchElement(ElementAction how) {
             consumeAll();
-            assertThrows(NoSuchElementException.class, iter::peek);
-        }
-
-        void nextNSE() {
-            consumeAll();
-            assertThrows(NoSuchElementException.class, iter::next);
+            switch (how) {
+            case CHECK_THEN_NEXT -> {
+                assertFalse(iter.hasNext());
+                assertThrows(NoSuchElementException.class, iter::next);
+            }
+            case NEXT -> assertThrows(NoSuchElementException.class, iter::next);
+            case CHECK_THEN_PEEK -> {
+                assertFalse(iter.hasNext());
+                assertThrows(NoSuchElementException.class, iter::peek);
+            }
+            case PEEK -> assertThrows(NoSuchElementException.class, iter::peek);
+            default -> throw new IllegalArgumentException();
+            }
+            switch (how) {
+            case CHECK_THEN_NEXT, NEXT -> assertThrows(NoSuchElementException.class, iter::peek);
+            case CHECK_THEN_PEEK, PEEK -> assertThrows(NoSuchElementException.class, iter::next);
+            }
         }
 
         void iterate(ElementAction[] how) {

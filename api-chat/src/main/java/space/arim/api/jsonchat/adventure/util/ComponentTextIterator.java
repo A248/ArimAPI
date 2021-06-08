@@ -52,45 +52,53 @@ final class ComponentTextIterator extends IteratorBase<String> {
 
     @Override
     protected String getNext() {
-        if (childIterator != null) {
-            if (childIterator.hasNext()) {
-                return childIterator.next();
+        // Use loop instead of recursion
+        for (;;) {
+            if (childIterator != null) {
+                if (childIterator.hasNext()) {
+                    return childIterator.next();
+                }
+                childIterator = null;
             }
-            childIterator = null;
-        }
-        if (current != null) {
+            if (current == null) {
+                if (!delegate.hasNext()) {
+                    return null;
+                }
+                current = delegate.next();
+                Objects.requireNonNull(current, "Delegate iterator returned null");
+            }
             int position = positionOnCurrent++;
             switch (position) {
             case CONTENT:
                 if (!goals.contains(TextGoal.SIMPLE_TEXT)) {
-                    return getNext();
+                    continue;
                 }
                 if (!(current instanceof TextComponent)) {
-                    return getNext();
+                    continue;
                 }
                 return ((TextComponent) current).content();
 
             case HOVER_VALUE:
                 if (!goals.contains(TextGoal.HOVER_TEXT)) {
-                    return getNext();
+                    continue;
                 }
                 HoverEvent<?> hoverEvent = current.hoverEvent();
                 Object hoverValue;
                 if (hoverEvent == null || !((hoverValue = hoverEvent.value()) instanceof Component)) {
-                    return getNext();
+                    continue;
                 }
-                // The getNext() call will traverse this iterator
+                // Traverse this iterator next
                 childIterator = new ComponentTextIterator(
                         new ComponentIterator((Component) hoverValue), TextGoal.simpleTextOnly());
-                return getNext();
+                continue;
 
             case CLICK_VALUE:
                 if (!goals.contains(TextGoal.CLICK_VALUE)) {
-                    return getNext();
+                    continue;
                 }
                 ClickEvent clickEvent = current.clickEvent();
                 if (clickEvent == null) {
-                    return getNext();
+                    continue;
                 }
                 return clickEvent.value();
 
@@ -98,14 +106,14 @@ final class ComponentTextIterator extends IteratorBase<String> {
                 // The current component has been exhausted. Nullify and reset
                 Component current = this.current;
                 this.current = null;
-                positionOnCurrent = 0;
+                positionOnCurrent = CONTENT;
 
                 if (!goals.contains(TextGoal.INSERTION_VALUE)) {
-                    return getNext();
+                    continue;
                 }
                 String insertion = current.insertion();
                 if (insertion == null) {
-                    return getNext();
+                    continue;
                 }
                 return insertion;
 
@@ -113,12 +121,6 @@ final class ComponentTextIterator extends IteratorBase<String> {
                 throw new IllegalStateException("Unexpected position " + position);
             }
         }
-        if (!delegate.hasNext()) {
-            return null;
-        }
-        current = delegate.next();
-        Objects.requireNonNull(current, "Delegate iterator returned null");
-        return getNext();
     }
 
 }

@@ -19,7 +19,6 @@
 
 package space.arim.api.jsonchat.adventure.implementor;
 
-import net.kyori.adventure.audience.Audience;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -51,15 +50,14 @@ public class AbstractAudienceTest {
                 return false;
             }
             Class<?> declaringClass = method.getDeclaringClass();
-            if (declaringClass.equals(Audience.class)) {
+            if (!declaringClass.equals(AbstractAudience.class)) {
                 try {
                     AbstractAudience.class.getDeclaredMethod(method.getName(), method.getParameterTypes());
                     return false; // Skip this method - it is overridden in AbstractAudience
-                } catch (NoSuchMethodException ex) {
-                    return true; // Analyze
-                }
+                } catch (NoSuchMethodException ignored) { }
             }
-            return AbstractAudience.class.isAssignableFrom(declaringClass);
+            // Analyze
+            return true;
         }).map((method) -> {
             return DynamicTest.dynamicTest("For method " + method, () -> verifyNoEmptyMethods(method));
         });
