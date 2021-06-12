@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>space.arim.api</groupId>
+        <artifactId>arimapi-parent</artifactId>
+        <version>0.23.3-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>arimapi-util-dazzleconf</artifactId>
+    <description>Provides useful serializers for dazzleconf</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>space.arim.dazzleconf</groupId>
+            <artifactId>dazzleconf-core</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>space.arim.api</groupId>
+            <artifactId>arimapi-chat</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>space.arim.dazzleconf</groupId>
+            <artifactId>dazzleconf-ext-gson</artifactId>
+            <version>1.2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-plain</artifactId>
+        </dependency>
+    </dependencies>
+</project>

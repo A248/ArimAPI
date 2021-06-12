@@ -266,6 +266,21 @@ public final class ComponentText implements ComponentLike {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ComponentText that = (ComponentText) o;
+        return component.equals(that.component) && goals.equals(that.goals);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = component.hashCode();
+        result = 31 * result + goals.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "ComponentText{" +
                 "component=" + component +

@@ -119,6 +119,7 @@
 	<modules>
 		<module>api-chat</module>
 		<module>api-configure</module>
+		<module>api-util-dazzleconf</module>
 		<module>api-util-web</module>
 		<module>api-env</module>
 	</modules>
@@ -189,6 +190,12 @@
 				<groupId>net.kyori</groupId>
 				<artifactId>adventure-text-serializer-gson</artifactId>
 				<version>${kyori-adventure.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.kyori</groupId>
+				<artifactId>adventure-text-serializer-plain</artifactId>
+				<version>${kyori-adventure.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
