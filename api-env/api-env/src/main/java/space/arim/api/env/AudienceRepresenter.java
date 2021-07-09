@@ -37,4 +37,15 @@ public interface AudienceRepresenter<@PlatformCommandSender C> {
      */
     Audience toAudience(C commandSender);
 
+    /**
+     * Obtains an audience representer for a command sender type
+     * which is known to already be an {@code Audience}.
+     *
+     * @param <C> the command sender type
+     * @return the audience representer, which simply passes through the audience
+     */
+    static <C extends Audience> AudienceRepresenter<C> identity() {
+        return (audience) -> audience;
+    }
+
 }

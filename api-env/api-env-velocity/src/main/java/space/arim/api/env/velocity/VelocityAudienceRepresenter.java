@@ -26,7 +26,9 @@ import space.arim.api.env.AudienceRepresenter;
 import java.util.Objects;
 
 /**
- * Simple, transparent implementation of {@code AudienceRepresenter} for Velocity
+ * Simple, transparent implementation of {@code AudienceRepresenter} for Velocity. <br>
+ * <br>
+ * See also {@link AudienceRepresenter#identity()}
  *
  */
 public final class VelocityAudienceRepresenter implements AudienceRepresenter<CommandSource> {
