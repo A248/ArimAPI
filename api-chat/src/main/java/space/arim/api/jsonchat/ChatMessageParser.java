@@ -143,13 +143,24 @@ public final class ChatMessageParser {
     }
 
     private void doParse() {
+        if (content.isEmpty()) {
+            visitor.visitPlainText(content);
+            return;
+        }
         List<String> segments = getSegments();
         for (String segmentValue : segments) {
             if (segmentValue.isEmpty()) {
                 continue;
             }
-            String unprefixedValue = segmentValue.substring(4);
-            JsonTag tag = JsonTag.getTag(segmentValue);
+            String unprefixedValue;
+            JsonTag tag;
+            if (segmentValue.length() > 4) {
+                unprefixedValue = segmentValue.substring(4);
+                tag = JsonTag.getTag(segmentValue);
+            } else {
+                unprefixedValue = segmentValue;
+                tag = JsonTag.NONE;
+            }
             switch (tag) {
             case NIL:
                 visitor.visitPlainText(unprefixedValue);

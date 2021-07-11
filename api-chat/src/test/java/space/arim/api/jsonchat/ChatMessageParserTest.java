@@ -44,8 +44,16 @@ public class ChatMessageParserTest {
         new ChatMessageParser(visitor, text).parse();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"", "h", "hi", " \n \n   "})
+    public void simpleText(String text) {
+        parse(text);
+        verify(visitor).visitPlainText(text);
+        verifyNoMoreInteractions(visitor);
+    }
+
     @Test
-    public void simpleText() {
+    public void simpleRandomText() {
         String text = randomString().replace("||", "");
         parse(text);
         verify(visitor).visitPlainText(text);
