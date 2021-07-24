@@ -33,7 +33,7 @@ import java.util.Objects;
  * A configuration serializer using a {@link ComponentSerializer} to serialize to
  * and from string values. <br>
  * <br>
- * The backing component serializer's {@code deserialise} implementation should
+ * The backing component serializer's {@code deserialize} implementation should
  * not usually throw exceptions, but this is not a hard requirement. <br>
  * <br>
  * Since this serializer does not provide a {@code getInstance} method or a default
