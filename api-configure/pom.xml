@@ -9,11 +9,22 @@
 	
 	<artifactId>arimapi-configure</artifactId>
 	<name>ArimAPI-Configure</name>
-	<description>The configuration component of ArimAPI.</description>
+	<description>Deprecated configuration library.</description>
 	
 	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<finalName>${project.name}_v${project.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Automatic-Module-Name>space.arim.api.configure</Automatic-Module-Name>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 	
 	<dependencies>
