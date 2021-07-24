@@ -4,7 +4,7 @@
     <parent>
         <groupId>space.arim.api</groupId>
         <artifactId>arimapi-env-parent</artifactId>
-        <version>0.24.3</version>
+        <version>0.24.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>arimapi-env-bukkit</artifactId>
