@@ -90,7 +90,7 @@ public class InjectableConstructor {
         Set<Class<?>> scannedClasses;
         try (ScanResult scan = new ClassGraph()
                 .enableClassInfo()
-                .acceptModules(subject.getModule().getName())
+                .acceptModules(Objects.requireNonNullElse(subject.getModule().getName(), "*"))
                 .scan()) {
             String superclassName = superclass.getName();
             ClassInfoList classInfoList = (superclass.isInterface()) ?
