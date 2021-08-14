@@ -8,7 +8,7 @@
         <version>0.24.5-SNAPSHOT</version>
     </parent>
 
-    <artifactId>api-util-testing</artifactId>
+    <artifactId>arimapi-util-testing</artifactId>
 
     <dependencies>
         <dependency>
