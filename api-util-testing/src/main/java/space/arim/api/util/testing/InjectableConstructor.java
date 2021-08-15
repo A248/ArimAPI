@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -78,15 +79,19 @@ public class InjectableConstructor {
 
     /**
      * Scans the classpath/module path for all classes which are a subclass or implementing
-     * class of the given class or interface. Then verifies that the injectable constructor's
-     * parameters contain at least the discovered classes. <br>
+     * class of the given class or interface. Filters the discovered subclasses by the
+     * predicate. Then verifies that the injectable constructor's parameters contain at least
+     * the filtered classes. <br>
      * <br>
-     * Will only scan for classes that are in the same module as the given one
+     * If the given superclass is in a module, this will only scan for classes that are in the
+     * same module.
      *
      * @param superclass the superclass
+     * @param filter a filter on the subclasses, if a class does not pass the filter, it is not included
+     *               in the check
      * @throws AssertionError if the verification failed
      */
-    public void verifyParametersContainSubclassesOf(Class<?> superclass) {
+    public void verifyParametersContainSubclassesOf(Class<?> superclass, Predicate<? super Class<?>> filter) {
         Set<Class<?>> scannedClasses;
         try (ScanResult scan = new ClassGraph()
                 .enableClassInfo()
@@ -96,16 +101,33 @@ public class InjectableConstructor {
             ClassInfoList classInfoList = (superclass.isInterface()) ?
                     scan.getClassesImplementing(superclassName) : scan.getSubclasses(superclassName);
             scannedClasses = classInfoList
-                    .getNames()
-                    .stream().map((name) -> {
+                    .getNames().stream()
+                    .map((name) -> {
                         try {
                             return Class.forName(name);
                         } catch (ClassNotFoundException ex) {
-                            throw new IllegalStateException(ex);
+                            throw new IllegalStateException("Scanned class does not exist", ex);
                         }
-                    }).collect(Collectors.toUnmodifiableSet());
+                    })
+                    .filter(filter)
+                    .collect(Collectors.toUnmodifiableSet());
         }
         verifyParametersContain(scannedClasses);
+    }
+
+    /**
+     * Scans the classpath/module path for all classes which are a subclass or implementing
+     * class of the given class or interface. Then verifies that the injectable constructor's
+     * parameters contain at least the discovered classes. <br>
+     * <br>
+     * If the given superclass is in a module, this will only scan for classes that are in the
+     * same module.
+     *
+     * @param superclass the superclass
+     * @throws AssertionError if the verification failed
+     */
+    public void verifyParametersContainSubclassesOf(Class<?> superclass) {
+        verifyParametersContainSubclassesOf(superclass, (cls) -> true);
     }
 
 }
