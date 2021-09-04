@@ -45,6 +45,9 @@ import static space.arim.api.jsonchat.adventure.util.TextGoal.SIMPLE_TEXT;
 /**
  * Manipulator class for transforming and analyzing text in components. <br>
  * <br>
+ * For any operation, only text matching the preset goals will be used. The text
+ * goals are set at creation time. <br>
+ * <br>
  * Instances are immutable. All "mutative" operations return new component text with
  * the same goals and the resulting component. <br>
  * <br>
@@ -104,9 +107,9 @@ public final class ComponentText implements ComponentLike {
     }
 
     /**
-     * Sums the length of all the text in the component
+     * Sums the length of the text in the component
      *
-     * @return the sum of the lengths of all text
+     * @return the sum of the lengths of text
      */
     public int sumLength() {
         int sum = 0;
@@ -115,6 +118,20 @@ public final class ComponentText implements ComponentLike {
             sum += next.length();
         }
         return sum;
+    }
+
+    /**
+     * Determines whether the text in the component is empty
+     *
+     * @return whether the text in the component is empty
+     */
+    public boolean isEmpty() {
+        for (Iterator<String> iter = iter(); iter.hasNext(); ) {
+            if (!iter.next().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

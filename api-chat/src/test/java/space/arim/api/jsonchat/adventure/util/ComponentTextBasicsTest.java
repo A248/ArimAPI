@@ -113,6 +113,37 @@ public class ComponentTextBasicsTest {
         });
     }
 
+    @TestFactory
+    public Stream<DynamicNode> isEmpty() {
+        String content = randomString();
+        String hoverValue = randomString();
+        String clickValue = randomString();
+        String insertion = randomString();
+        Component component = Component.text().content(content)
+                .hoverEvent(HoverEvent.showText(Component.text(hoverValue)))
+                .clickEvent(ClickEvent.openUrl(clickValue))
+                .insertion(insertion)
+                .build();
+        return possibleTextGoals().map((goals) -> {
+            return DynamicTest.dynamicTest("Using goals " + goals, () -> {
+                boolean isEmpty = true;
+                if (goals.contains(SIMPLE_TEXT)) {
+                    isEmpty = content.isEmpty();
+                }
+                if (goals.contains(HOVER_TEXT)) {
+                    isEmpty = isEmpty && hoverValue.isEmpty();
+                }
+                if (goals.contains(CLICK_VALUE)) {
+                    isEmpty = isEmpty && clickValue.isEmpty();
+                }
+                if (goals.contains(INSERTION_VALUE)) {
+                    isEmpty = isEmpty && insertion.isEmpty();
+                }
+                assertEquals(isEmpty, ComponentText.create(component, goals).isEmpty());
+            });
+        });
+    }
+
     /**
      * Returns a random string. If {@code containing}, the generated string includes
      * the given {@code value}, if not, it does not
