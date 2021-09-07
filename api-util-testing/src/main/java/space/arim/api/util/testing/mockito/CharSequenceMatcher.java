@@ -45,4 +45,9 @@ public final class CharSequenceMatcher implements ArgumentMatcher<CharSequence> 
         }
         return expectedValue.toString().equals(argument.toString());
     }
+
+    @Override
+    public String toString() {
+        return "CharSequenceMatcher{" + expectedValue + '}';
+    }
 }
