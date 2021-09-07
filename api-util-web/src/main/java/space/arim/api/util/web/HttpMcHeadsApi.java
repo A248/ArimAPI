@@ -102,7 +102,9 @@ public class HttpMcHeadsApi implements RemoteNameHistoryApi {
 	
 	private <T> CompletableFuture<RemoteApiResult<T>> queryMcHeadsApi(String nameOrUuid,
 			Function<Map<String, Object>, T> mapAcceptorFunction) {
-		HttpRequest request = HttpRequest.newBuilder(URI.create(URL_BASE + nameOrUuid)).build();
+		HttpRequest request = HttpRequest.newBuilder(URI.create(URL_BASE + nameOrUuid))
+				.setHeader("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:15.0) Gecko/20100101 Firefox/15.0.1")
+				.build();
 		return client.sendAsync(request, BodyHandlers.ofInputStream()).thenApply((response) -> {
 
 			int responseCode = response.statusCode();
