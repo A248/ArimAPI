@@ -36,6 +36,19 @@ public interface RemoteNameUUIDApi {
 	 * @return a future which yields the result containing the name
 	 */
 	CompletableFuture<RemoteApiResult<String>> lookupName(UUID uuid);
+
+	/**
+	 * Finds whether a player exists with the given uuid. <br>
+	 * <br>
+	 * This differs from {@link #lookupName(UUID)} in that it benefits from potential
+	 * performance optimizations.
+	 *
+	 * @param uuid the uuid of the player to find
+	 * @return a future which yields the result
+	 */
+	default CompletableFuture<RemoteApiResult<Void>> lookupNameExistence(UUID uuid) {
+		return mapExistence(lookupName(uuid));
+	}
 	
 	/**
 	 * Finds the UUID of the player who presently holds a given name.
@@ -44,5 +57,38 @@ public interface RemoteNameUUIDApi {
 	 * @return a future which yields the result containing the uuid
 	 */
 	CompletableFuture<RemoteApiResult<UUID>> lookupUUID(String name);
+
+	/**
+	 * Finds whether a player exists who presently holds a given name. <br>
+	 * <br>
+	 * This differs from {@link #lookupUUID(String)} in that it benefits from potential
+	 * performance optimizations.
+	 *
+	 * @param name the name of the player to find
+	 * @return a future which yields the result
+	 */
+	default CompletableFuture<RemoteApiResult<Void>> lookupUUIDExistence(String name) {
+		return mapExistence(lookupUUID(name));
+	}
+
+	@SuppressWarnings("deprecation")
+	private <T> CompletableFuture<RemoteApiResult<Void>> mapExistence(CompletableFuture<RemoteApiResult<T>> futureResult) {
+		return futureResult.thenApply((result) -> {
+			switch (result.getResultType()) {
+			case FOUND:
+				return RemoteApiResult.foundVoid();
+			case NOT_FOUND:
+				return RemoteApiResult.notFound();
+			case RATE_LIMITED:
+				return RemoteApiResult.rateLimited();
+			case ERROR:
+				return RemoteApiResult.error(result.getException());
+			case UNKNOWN:
+				return new RemoteApiResult<>(null, RemoteApiResult.ResultType.UNKNOWN, result.getException());
+			default:
+				throw new IncompatibleClassChangeError("Did not expect " + result.getResultType());
+			}
+		});
+	}
 	
 }

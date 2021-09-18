@@ -61,6 +61,18 @@ public final class RemoteApiResult<T> {
 	}
 
 	/**
+	 * Creates a successfully found result, where the type of the result is {@code Void}. <br>
+	 * <br>
+	 * This method is required to be separate from {@link #found(Object)} since it is not
+	 * possible to obtain a non-null {@code Void} value.
+	 *
+	 * @return the found result
+	 */
+	public static RemoteApiResult<Void> foundVoid() {
+		return new RemoteApiResult<>(null, ResultType.FOUND, null);
+	}
+
+	/**
 	 * Creates a not found result
 	 *
 	 * @param <T> the type of the result object

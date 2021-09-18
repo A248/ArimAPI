@@ -36,24 +36,24 @@ public class RemoteNameUUIDApiIT {
 	
 	@ParameterizedTest
 	@ArgumentsSource(RemoteNameHistoryImplProvider.class)
-	public void testLookupUUID(RemoteNameUUIDApi remote) {
+	public void lookupUUID(RemoteNameUUIDApi remote) {
 
-		RemoteApiResult<UUID> knownResult = remote.lookupUUID(KNOWN_NAME).join();
-		assertFoundAndEquals(KNOWN_UUID, knownResult);
+		assertFoundAndEquals(KNOWN_UUID, remote.lookupUUID(KNOWN_NAME).join());
+		assertFoundAndEquals(null, remote.lookupUUIDExistence(KNOWN_NAME).join());
 
-		RemoteApiResult<UUID> unknownResult = remote.lookupUUID(UNKNOWN_NAME).join();
-		assertNotFound(unknownResult);
+		assertNotFound(remote.lookupUUID(UNKNOWN_NAME).join());
+		assertNotFound(remote.lookupUUIDExistence(UNKNOWN_NAME).join());
 	}
 	
 	@ParameterizedTest
 	@ArgumentsSource(RemoteNameHistoryImplProvider.class)
-	public void testLookupName(RemoteNameUUIDApi remote) {
+	public void lookupName(RemoteNameUUIDApi remote) {
 
-		RemoteApiResult<String> knownResult = remote.lookupName(KNOWN_UUID).join();
-		assertFoundAndEquals(KNOWN_NAME, knownResult);
+		assertFoundAndEquals(KNOWN_NAME, remote.lookupName(KNOWN_UUID).join());
+		assertFoundAndEquals(null, remote.lookupNameExistence(KNOWN_UUID).join());
 
-		RemoteApiResult<String> unknownResult = remote.lookupName(UNKNOWN_UUID).join();
-		assertNotFound(unknownResult);
+		assertNotFound(remote.lookupName(UNKNOWN_UUID).join());
+		assertNotFound(remote.lookupNameExistence(UNKNOWN_UUID).join());
 	}
 	
 }
