@@ -3,7 +3,7 @@ A very helpful library.
 
 ## Dependency
 
-The main artifact is  `space.arim.api:arimapi-all`.
+Choose one of the artifacts, e.g. arimapi-chat: `space.arim.api:arimapi-chat`.
 
 The repository URL is `https://mvn-repo.arim.space/gpl3/`.
 
@@ -16,7 +16,7 @@ Dependency:
 ```xml
 <dependency>
 	<groupId>space.arim.api</groupId>
-	<artifactId>arimapi-all</artifactId>
+	<artifactId>arimapi-chat</artifactId>
 	<version>{INSERT_LATEST_VERSION}</version>
 </dependency>
 ```
