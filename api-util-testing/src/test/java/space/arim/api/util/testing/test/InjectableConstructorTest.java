@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2022 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,11 @@
 package space.arim.api.util.testing.test;
 
 import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import org.junit.jupiter.api.Test;
 import space.arim.api.util.testing.InjectableConstructor;
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,5 +41,31 @@ public class InjectableConstructorTest {
 
         @Inject
         public SubjectOne() {}
+    }
+
+    @Test
+    public void simpleInjectableParameters() {
+        assertEquals(
+                Set.of(Integer.class, String.class),
+                new InjectableConstructor(SubjectTwo.class).injectableParameters());
+    }
+
+    public static class SubjectTwo {
+
+        @Inject
+        public SubjectTwo(Integer a, String b) {}
+    }
+
+    @Test
+    public void providedInjectableParameters() {
+        assertEquals(
+                Set.of(Integer.class, String.class),
+                new InjectableConstructor(SubjectThree.class).injectableParameters());
+    }
+
+    public static class SubjectThree {
+
+        @Inject
+        public SubjectThree(Integer a, Provider<String> b) {}
     }
 }

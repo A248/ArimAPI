@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2022 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,14 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
 import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -64,13 +70,66 @@ public class InjectableConstructor {
     }
 
     /**
+     * An injectable constructor is said to contain a parameter if either that parameter is
+     * declared directly or a {@code Provider} of that parameter is declared. <br>
+     * <br>
+     * Therefore, this method will never return {@code Provider.class} but rather the provided
+     * type itself.
+     *
+     * @return the injectable parameters
+     */
+    public Set<Class<?>> injectableParameters() {
+        Set<Class<?>> injectableParameters = new HashSet<>();
+        for (Type parameter : findConstructor().getGenericParameterTypes()) {
+            injectableParameters.add(getInjectedType(parameter));
+        }
+        return injectableParameters;
+    }
+
+    private static Class<?> getInjectedType(Type parameter) {
+        if (parameter instanceof Class) {
+            return (Class<?>) parameter;
+        }
+        if (parameter instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) parameter;
+            Type rawType = parameterizedType.getRawType();
+            if (Provider.class.equals(rawType)) {
+                return getRawInjectedType(parameterizedType.getActualTypeArguments()[0]);
+            } else {
+                return (Class<?>) rawType;
+            }
+        }
+        return getRawInjectedType(parameter);
+    }
+
+    private static Class<?> getRawInjectedType(Type type) {
+        if (type instanceof Class) {
+            return (Class<?>) type;
+        }
+        if (type instanceof ParameterizedType) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        }
+        if (type instanceof WildcardType) {
+            return getRawInjectedType(((WildcardType) type).getUpperBounds()[0]);
+        }
+        if (type instanceof TypeVariable) {
+            return getRawInjectedType(((TypeVariable<?>) type).getBounds()[0]);
+        }
+        if (type instanceof GenericArrayType) {
+            // Assume this is some odd injection system where array members are injected
+            return getRawInjectedType(((GenericArrayType) type).getGenericComponentType());
+        }
+        throw new UnsupportedOperationException(Type.class.getName() + " sub-class not supported: " + type.getClass());
+    }
+
+    /**
      * Verifies that the injectable constructor contains at least the given parameters
      *
      * @param parameters the parameter types the constructor should at least have
      * @throws AssertionError if the verification failed
      */
     public void verifyParametersContain(Set<Class<?>> parameters) {
-        Set<Class<?>> actualParameters = Set.of(findConstructor().getParameterTypes());
+        Set<Class<?>> actualParameters = injectableParameters();
         Set<Class<?>> leftovers = new HashSet<>(parameters);
         leftovers.removeAll(actualParameters);
         assertTrue(leftovers.isEmpty(),
