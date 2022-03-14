@@ -32,7 +32,7 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:git:https://github.com/A248/ArimAPI.git</developerConnection>
+		<developerConnection>scm:git:ssh://git@github.com/A248/ArimAPI.git</developerConnection>
 	  <tag>HEAD</tag>
   </scm>
 	
