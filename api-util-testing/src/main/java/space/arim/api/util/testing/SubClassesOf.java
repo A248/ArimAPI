@@ -55,6 +55,16 @@ public final class SubClassesOf {
 	}
 
 	/**
+	 * Scans for all subclasses in the same module as the superclass. If the superclass is is an unnamed module,
+	 * all subclasses are scanned for.
+	 *
+	 * @return all subclasses, restricted to the same module if the superclass module is named
+	 */
+	public Set<Class<?>> scanInSameModule() {
+		return scan(superClass.getModule());
+	}
+
+	/**
 	 * Scans for all subclasses in a given module; if the module is unnamed, then all modules are used.
 	 *
 	 * @param module if a named module, only classes in this module will be scanned
@@ -83,6 +93,7 @@ public final class SubClassesOf {
 		try (ScanResult scan = new ClassGraph()
 				.enableClassInfo()
 				.acceptModules((module == null || !module.isNamed()) ? "*" : module.getName())
+				.ignoreClassVisibility()
 				.scan()) {
 			String superclassName = superClass.getName();
 			ClassInfoList classInfoList = (superClass.isInterface()) ?
