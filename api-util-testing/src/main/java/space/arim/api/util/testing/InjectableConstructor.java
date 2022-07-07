@@ -19,9 +19,6 @@
 
 package space.arim.api.util.testing;
 
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfoList;
-import io.github.classgraph.ScanResult;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 
@@ -36,7 +33,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -151,26 +147,8 @@ public class InjectableConstructor {
      * @throws AssertionError if the verification failed
      */
     public void verifyParametersContainSubclassesOf(Class<?> superclass, Predicate<? super Class<?>> filter) {
-        Set<Class<?>> scannedClasses;
-        try (ScanResult scan = new ClassGraph()
-                .enableClassInfo()
-                .acceptModules(Objects.requireNonNullElse(subject.getModule().getName(), "*"))
-                .scan()) {
-            String superclassName = superclass.getName();
-            ClassInfoList classInfoList = (superclass.isInterface()) ?
-                    scan.getClassesImplementing(superclassName) : scan.getSubclasses(superclassName);
-            scannedClasses = classInfoList
-                    .getNames().stream()
-                    .map((name) -> {
-                        try {
-                            return Class.forName(name);
-                        } catch (ClassNotFoundException ex) {
-                            throw new IllegalStateException("Scanned class does not exist", ex);
-                        }
-                    })
-                    .filter(filter)
-                    .collect(Collectors.toUnmodifiableSet());
-        }
+        Set<Class<?>> scannedClasses = new SubClassesOf(superclass)
+                .scan(subject.getModule(), filter);
         verifyParametersContain(scannedClasses);
     }
 
