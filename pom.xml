@@ -9,7 +9,7 @@
 
 	<groupId>space.arim.api</groupId>
 	<artifactId>arimapi-parent</artifactId>
-	<version>0.24.11-SNAPSHOT</version>
+	<version>0.24.11</version>
 	<packaging>pom</packaging>
 	
 	<name>ArimAPI</name>
@@ -33,7 +33,7 @@
 
 	<scm>
 		<developerConnection>scm:git:ssh://git@github.com/A248/ArimAPI.git</developerConnection>
-	  <tag>HEAD</tag>
+	  <tag>0.24.11</tag>
   </scm>
 	
 	<licenses>
