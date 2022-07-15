@@ -17,42 +17,45 @@
  * and navigate to version 3 of the GNU General Public License.
  */
 
-package space.arim.api.env.bukkit;
+package space.arim.api.env.sponge;
 
-import org.bukkit.plugin.java.JavaPlugin;
+
+import org.spongepowered.api.Game;
+import org.spongepowered.plugin.PluginContainer;
 import space.arim.api.env.concurrent.ClosableFactoryOfTheFuture;
 import space.arim.managedwaits.LightSleepManagedWaitStrategy;
 import space.arim.managedwaits.ManagedWaitStrategy;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
 /**
- * An implementation of {@link FactoryOfTheFuture} for the Bukkit platform, using a specified
+ * An implementation of {@link FactoryOfTheFuture} for the Sponge platform, using a specified
  * plugin to execute synchronous tasks.
  *
  */
-public final class BukkitFactoryOfTheFuture {
+public final class SpongeFactoryOfTheFuture {
 
-	private BukkitFactoryOfTheFuture() {}
+	private SpongeFactoryOfTheFuture() {}
 
 	/**
-	 * Creates from a plugin to use, with the default wait strategy
+	 * Creates from a plugin and game to use, with the default wait strategy
 	 *
 	 * @param plugin the plugin
+	 * @param game the game
 	 * @return the futures factory, which should be closed when disposed of
 	 */
-	public static ClosableFactoryOfTheFuture create(JavaPlugin plugin) {
-		return create(plugin, new LightSleepManagedWaitStrategy());
+	public static ClosableFactoryOfTheFuture create(PluginContainer plugin, Game game) {
+		return create(plugin, game, new LightSleepManagedWaitStrategy());
 	}
 
 	/**
-	 * Creates from a plugin and {@link ManagedWaitStrategy} to use for managed waits
+	 * Creates from a plugin and game and {@link ManagedWaitStrategy} to use for managed waits
 	 *
 	 * @param plugin the plugin
-	 * @param waitStrategy the managed wait strategy
+	 * @param game the game
 	 * @return the futures factory, which should be closed when disposed of
 	 */
-	public static ClosableFactoryOfTheFuture create(JavaPlugin plugin, ManagedWaitStrategy waitStrategy) {
-		return BukkitFactoryOfTheFutureImpl.create(plugin, waitStrategy);
+	public static ClosableFactoryOfTheFuture create(PluginContainer plugin, Game game, ManagedWaitStrategy waitStrategy) {
+		return SpongeFactoryOfTheFutureImpl.create(plugin, game, waitStrategy);
 	}
 
 }

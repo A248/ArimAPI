@@ -15,6 +15,7 @@
 
 		<spigot.version>1.8.8-R0.1-20160221.082514-43</spigot.version>
 		<bungeecord.version>1.16-R0.4</bungeecord.version>
+		<sponge.version>9.0.0</sponge.version>
 		<velocity.version>1.1.0</velocity.version>
 	</properties>
 
@@ -22,8 +23,9 @@
 		<module>api-env</module>
 		<module>api-env-bukkit</module>
 		<module>api-env-bungee</module>
+		<module>api-env-sponge</module>
 		<module>api-env-velocity</module>
-	</modules>
+    </modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -67,6 +69,12 @@
 						<!-- SNAPSHOT -->
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.spongepowered</groupId>
+				<artifactId>spongeapi</artifactId>
+				<version>${sponge.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.velocitypowered</groupId>

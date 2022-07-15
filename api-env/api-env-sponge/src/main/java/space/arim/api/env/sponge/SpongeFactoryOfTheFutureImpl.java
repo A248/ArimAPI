@@ -17,44 +17,50 @@
  * and navigate to version 3 of the GNU General Public License.
  */
 
-package space.arim.api.env.bukkit;
+package space.arim.api.env.sponge;
 
-import org.bukkit.Server;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.Server;
+import org.spongepowered.api.scheduler.ScheduledTask;
+import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.util.Ticks;
+import org.spongepowered.plugin.PluginContainer;
 import space.arim.api.env.concurrent.ClosableFactoryOfTheFuture;
 import space.arim.api.env.concurrent.MainThreadCachingFutureFactory;
 import space.arim.managedwaits.ManagedWaitStrategy;
 import space.arim.managedwaits.SimpleTaskQueue;
 import space.arim.managedwaits.TaskQueue;
 
-final class BukkitFactoryOfTheFutureImpl extends MainThreadCachingFutureFactory implements ClosableFactoryOfTheFuture {
+final class SpongeFactoryOfTheFutureImpl extends MainThreadCachingFutureFactory implements ClosableFactoryOfTheFuture {
 
 	private final Server server;
-	private final BukkitTask task;
+	private final ScheduledTask task;
 
-	private BukkitFactoryOfTheFutureImpl(TaskQueue taskQueue, ManagedWaitStrategy waitStrategy,
-                                         Server server, BukkitTask task) {
+	private SpongeFactoryOfTheFutureImpl(TaskQueue taskQueue, ManagedWaitStrategy waitStrategy,
+										 Server server, ScheduledTask task) {
 		super(taskQueue, waitStrategy);
 		this.server = server;
 		this.task = task;
 	}
 
-	static ClosableFactoryOfTheFuture create(JavaPlugin plugin, ManagedWaitStrategy waitStrategy) {
-		Server server = plugin.getServer();
+	static ClosableFactoryOfTheFuture create(PluginContainer plugin, Game game, ManagedWaitStrategy waitStrategy) {
 		SimpleTaskQueue taskQueue = new SimpleTaskQueue();
-		BukkitTask task = server.getScheduler().runTaskTimer(plugin, taskQueue::pollAndRunAll, 0L, 1L);
+		ScheduledTask task = game.asyncScheduler().submit(Task.builder()
+				.interval(Ticks.of(1L))
+				.execute(taskQueue::pollAndRunAll)
+				.plugin(plugin)
+				.build());
 
-		BukkitFactoryOfTheFutureImpl futuresFactory = new BukkitFactoryOfTheFutureImpl(taskQueue, waitStrategy, server, task);
+		SpongeFactoryOfTheFutureImpl futuresFactory = new SpongeFactoryOfTheFutureImpl(taskQueue, waitStrategy, game.server(), task);
 		futuresFactory.isPrimaryThread(); // Init main thread if possible
 		return futuresFactory;
 	}
 
 	@Override
 	protected boolean isPrimaryThread0() {
-		return server.isPrimaryThread();
+		return server.onMainThread();
 	}
-	
+
 	@Override
 	public void close() {
 		/*

@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2022 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,17 +17,28 @@
  * and navigate to version 3 of the GNU General Public License.
  */
 
-package space.arim.api.env.bukkit;
+package space.arim.api.env.concurrent;
 
 import space.arim.managedwaits.DeadlockFreeFutureFactory;
 import space.arim.managedwaits.ManagedWaitStrategy;
 import space.arim.managedwaits.TaskQueue;
 
-abstract class MainThreadCachingFutureFactory extends DeadlockFreeFutureFactory {
+/**
+ * Assistant for extending {@link DeadlockFreeFutureFactory} which implements {@link #getPrimaryThread()}
+ * on the basis of caching the detected main thread.
+ *
+ */
+public abstract class MainThreadCachingFutureFactory extends DeadlockFreeFutureFactory {
 
 	private volatile Thread mainThread;
 
-	MainThreadCachingFutureFactory(TaskQueue taskQueue, ManagedWaitStrategy waitStrategy) {
+	/**
+	 * Creates from a task queue and wait strategy
+	 *
+	 * @param taskQueue the task queue
+	 * @param waitStrategy the wait strategy
+	 */
+	protected MainThreadCachingFutureFactory(TaskQueue taskQueue, ManagedWaitStrategy waitStrategy) {
 		super(taskQueue, waitStrategy);
 	}
 
@@ -50,6 +61,11 @@ abstract class MainThreadCachingFutureFactory extends DeadlockFreeFutureFactory 
 		return mainThread;
 	}
 
-	abstract boolean isPrimaryThread0();
+	/**
+	 * Base method for determining the primary thread
+	 *
+	 * @return true if the current thread is the primary thread
+	 */
+	protected abstract boolean isPrimaryThread0();
 
 }

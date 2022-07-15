@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2022 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,68 +16,75 @@
  * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
-package space.arim.api.env.velocity;
 
-import com.velocitypowered.api.plugin.PluginContainer;
-import com.velocitypowered.api.proxy.ProxyServer;
+package space.arim.api.env.sponge;
+
+import org.spongepowered.api.Game;
+import org.spongepowered.plugin.PluginContainer;
 import space.arim.api.env.PlatformHandle;
 import space.arim.api.env.PlatformPluginInfo;
 import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
-import space.arim.omnibus.util.concurrent.impl.IndifferentFactoryOfTheFuture;
+import space.arim.omnibus.util.concurrent.impl.SimplifiedEnhancedExecutor;
 
 import java.util.Objects;
+import java.util.concurrent.Executor;
 
 /**
- * Implementation of {@link PlatformHandle} specifically for Velocity proxies.
- * 
- * @author A248
+ * Implementation of {@link PlatformHandle} specifically for Sponge servers.
  *
  */
-public final class VelocityPlatformHandle {
+public final class SpongePlatformHandle {
 
-	private VelocityPlatformHandle() { }
+	private SpongePlatformHandle() {}
 
 	/**
-	 * Creates from a plugin and proxy server to use
+	 * Creates from a plugin and game to use
 	 *
 	 * @param plugin the plugin
-	 * @param server the server
+	 * @param game the game
 	 * @return the platform handle
 	 */
-	public static PlatformHandle create(PluginContainer plugin, ProxyServer server) {
-		return new VelocityPlatformHandleImpl(plugin, server);
+	public static PlatformHandle create(PluginContainer plugin, Game game) {
+		return new SpongePlatformHandleImpl(plugin, game);
 	}
 
 }
-final class VelocityPlatformHandleImpl implements PlatformHandle {
+final class SpongePlatformHandleImpl implements PlatformHandle {
 
 	private final PluginContainer plugin;
-	private final ProxyServer server;
+	private final Game game;
 
-	VelocityPlatformHandleImpl(PluginContainer plugin, ProxyServer server) {
+	SpongePlatformHandleImpl(PluginContainer plugin, Game game) {
 		this.plugin = Objects.requireNonNull(plugin, "plugin");
-		this.server = Objects.requireNonNull(server, "server");
+		this.game = Objects.requireNonNull(game, "game");
 	}
 
 	@Override
 	public FactoryOfTheFuture createFuturesFactory() {
-		return new IndifferentFactoryOfTheFuture();
+		return SpongeFactoryOfTheFuture.create(plugin, game);
 	}
 
 	@Override
 	public EnhancedExecutor createEnhancedExecutor() {
-		return new VelocityEnhancedExecutor(plugin, server.getScheduler());
+		Executor executor = game.asyncScheduler().executor(plugin);
+		class SpongeEnhancedExecutor extends SimplifiedEnhancedExecutor {
+
+			@Override
+			public void execute(Runnable command) {
+				executor.execute(command);
+			}
+		}
+		return new SpongeEnhancedExecutor();
 	}
 
 	@Override
 	public PlatformPluginInfo getImplementingPluginInfo() {
-		return new PlatformPluginInfo(plugin, server);
+		return new PlatformPluginInfo(plugin, game);
 	}
 
 	@Override
 	public String getPlatformVersion() {
-		return server.getVersion().getVersion();
+		return game.platform().minecraftVersion().name();
 	}
-	
 }

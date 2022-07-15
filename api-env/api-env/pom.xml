@@ -18,6 +18,11 @@
             <groupId>space.arim.omnibus</groupId>
             <artifactId>omnibus</artifactId>
         </dependency>
+        <dependency>
+            <groupId>space.arim.managedwaits</groupId>
+            <artifactId>managedwaits</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
