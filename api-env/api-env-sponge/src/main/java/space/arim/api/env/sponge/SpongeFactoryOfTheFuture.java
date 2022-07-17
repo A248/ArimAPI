@@ -55,7 +55,7 @@ public final class SpongeFactoryOfTheFuture {
 	 * @return the futures factory, which should be closed when disposed of
 	 */
 	public static ClosableFactoryOfTheFuture create(PluginContainer plugin, Game game, ManagedWaitStrategy waitStrategy) {
-		return SpongeFactoryOfTheFutureImpl.create(plugin, game, waitStrategy);
+		return SpongeFactoryOfTheFutureImpl.create(plugin, game.server(), waitStrategy);
 	}
 
 }

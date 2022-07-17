@@ -19,7 +19,6 @@
 
 package space.arim.api.env.sponge;
 
-import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.scheduler.ScheduledTask;
 import org.spongepowered.api.scheduler.Task;
@@ -43,15 +42,15 @@ final class SpongeFactoryOfTheFutureImpl extends MainThreadCachingFutureFactory 
 		this.task = task;
 	}
 
-	static ClosableFactoryOfTheFuture create(PluginContainer plugin, Game game, ManagedWaitStrategy waitStrategy) {
+	static ClosableFactoryOfTheFuture create(PluginContainer plugin, Server server, ManagedWaitStrategy waitStrategy) {
 		SimpleTaskQueue taskQueue = new SimpleTaskQueue();
-		ScheduledTask task = game.asyncScheduler().submit(Task.builder()
+		ScheduledTask task = server.scheduler().submit(Task.builder()
 				.interval(Ticks.of(1L))
 				.execute(taskQueue::pollAndRunAll)
 				.plugin(plugin)
 				.build());
 
-		SpongeFactoryOfTheFutureImpl futuresFactory = new SpongeFactoryOfTheFutureImpl(taskQueue, waitStrategy, game.server(), task);
+		SpongeFactoryOfTheFutureImpl futuresFactory = new SpongeFactoryOfTheFutureImpl(taskQueue, waitStrategy, server, task);
 		futuresFactory.isPrimaryThread(); // Init main thread if possible
 		return futuresFactory;
 	}
