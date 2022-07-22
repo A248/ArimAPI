@@ -77,14 +77,10 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
-					<executions>
-						<execution>
-							<id>default-testCompile</id>
-							<configuration>
-								<release>16</release>
-							</configuration>
-						</execution>
-					</executions>
+					<configuration>
+						<release>11</release>
+						<testRelease>17</testRelease>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

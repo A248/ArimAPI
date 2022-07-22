@@ -20,6 +20,7 @@
 package space.arim.api.jsonchat.adventure;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -99,6 +100,12 @@ public class JsonSkFormattingSerializerTest {
                 text("some "), text("text ", GREEN), text("with ", color(0xcc5941)),
                 text("formatting ", style(RED, decorationFromLetter(styleLetter))),
                 text("is annoying", style(color(0x152aa6))), text(" unless reset "), text("in fire", GRAY));
+    }
+
+    @Test
+    public void backToBackHexColors() {
+        assertRoundTrip("<#5afc93>E<#59fca2>a ",
+                text("E", TextColor.color(0x5afc93)), text("a ", TextColor.color(0x59fca2)));
     }
 
     @Test
