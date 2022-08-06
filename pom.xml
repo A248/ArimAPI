@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>space.arim.parent</groupId>
 		<artifactId>common-parent</artifactId>
-		<version>0.2.5</version>
+		<version>0.4.0</version>
 	</parent>
 
 	<groupId>space.arim.api</groupId>
@@ -20,6 +20,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>11</maven.compiler.release>
+		<common-parent.deploy-url>https://maven.cloudsmith.io/anand-beh/gpl3/</common-parent.deploy-url>
 
 		<!-- Testing dependencies -->
 		<junit.version>5.7.1</junit.version>
@@ -121,18 +122,7 @@
 		<module>api-env</module>
 		<module>api-util-testing</module>
 	</modules>
-	
-	<distributionManagement>
-		<repository>
-			<id>cloudsmith-deploy</id>
-			<url>https://maven.cloudsmith.io/anand-beh/gpl3/</url>
-		</repository>
-		<snapshotRepository>
-			<id>cloudsmith-deploy</id>
-			<url>https://maven.cloudsmith.io/anand-beh/gpl3/</url>
-		</snapshotRepository>
-	</distributionManagement>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<!-- Internal dependencies -->
