@@ -1,30 +1,32 @@
-/* 
- * ArimAPI-util-web
- * Copyright © 2020 Anand Beh <https://www.arim.space>
- * 
- * ArimAPI-util-web is free software: you can redistribute it and/or modify
+/*
+ * ArimAPI
+ * Copyright © 2022 Anand Beh
+ *
+ * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * ArimAPI-util-web is distributed in the hope that it will be useful,
+ *
+ * ArimAPI is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with ArimAPI-util-web. If not, see <https://www.gnu.org/licenses/>
+ * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
+
 package space.arim.api.util.web;
-
-import static space.arim.api.util.web.RemoteApiResultAssertions.assertFoundAndEquals;
-import static space.arim.api.util.web.RemoteApiResultAssertions.assertNotFound;
-
-import java.util.UUID;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RemoteNameUUIDApiIT {
 
@@ -33,27 +35,45 @@ public class RemoteNameUUIDApiIT {
 	
 	private static final String UNKNOWN_NAME = "asygufbhn"; // Who would ever take this name?
 	static final UUID UNKNOWN_UUID = UUID.fromString("c003d6d3-6a0b-4a80-890b-dcedf87799b3");
-	
+
+	private static <T> void assertFoundAndEquals(RemoteNameUUIDApi remote, T expected, RemoteApiResult<T> knownResult) {
+		Exception ex = knownResult.getException();
+		if (ex != null) {
+			fail(ex);
+		}
+		assertEquals(RemoteApiResult.ResultType.FOUND, knownResult.getResultType(), "Using remote " + remote);
+		assertEquals(expected, knownResult.getValue());
+	}
+
+	private static void assertNotFound(RemoteNameUUIDApi remote, RemoteApiResult<?> unknownResult) {
+		Exception ex = unknownResult.getException();
+		if (ex != null) {
+			fail(ex);
+		}
+		assertEquals(RemoteApiResult.ResultType.NOT_FOUND, unknownResult.getResultType(), "Using remote " + remote);
+		assertNull(unknownResult.getValue());
+	}
+
 	@ParameterizedTest
-	@ArgumentsSource(RemoteNameHistoryImplProvider.class)
+	@ArgumentsSource(RemoteNameUUIDApiProvider.class)
 	public void lookupUUID(RemoteNameUUIDApi remote) {
 
-		assertFoundAndEquals(KNOWN_UUID, remote.lookupUUID(KNOWN_NAME).join());
-		assertFoundAndEquals(null, remote.lookupUUIDExistence(KNOWN_NAME).join());
+		assertFoundAndEquals(remote, KNOWN_UUID, remote.lookupUUID(KNOWN_NAME).join());
+		assertFoundAndEquals(remote, null, remote.lookupUUIDExistence(KNOWN_NAME).join());
 
-		assertNotFound(remote.lookupUUID(UNKNOWN_NAME).join());
-		assertNotFound(remote.lookupUUIDExistence(UNKNOWN_NAME).join());
+		assertNotFound(remote, remote.lookupUUID(UNKNOWN_NAME).join());
+		assertNotFound(remote, remote.lookupUUIDExistence(UNKNOWN_NAME).join());
 	}
-	
+
 	@ParameterizedTest
-	@ArgumentsSource(RemoteNameHistoryImplProvider.class)
+	@ArgumentsSource(RemoteNameUUIDApiProvider.class)
 	public void lookupName(RemoteNameUUIDApi remote) {
 
-		assertFoundAndEquals(KNOWN_NAME, remote.lookupName(KNOWN_UUID).join());
-		assertFoundAndEquals(null, remote.lookupNameExistence(KNOWN_UUID).join());
+		assertFoundAndEquals(remote, KNOWN_NAME, remote.lookupName(KNOWN_UUID).join());
+		assertFoundAndEquals(remote, null, remote.lookupNameExistence(KNOWN_UUID).join());
 
-		assertNotFound(remote.lookupName(UNKNOWN_UUID).join());
-		assertNotFound(remote.lookupNameExistence(UNKNOWN_UUID).join());
+		assertNotFound(remote, remote.lookupName(UNKNOWN_UUID).join());
+		assertNotFound(remote, remote.lookupNameExistence(UNKNOWN_UUID).join());
 	}
 	
 }
