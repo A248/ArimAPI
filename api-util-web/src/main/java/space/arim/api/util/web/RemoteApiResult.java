@@ -1,21 +1,22 @@
-/* 
- * ArimAPI-util-web
- * Copyright © 2020 Anand Beh <https://www.arim.space>
- * 
- * ArimAPI-util-web is free software: you can redistribute it and/or modify
+/*
+ * ArimAPI
+ * Copyright © 2022 Anand Beh
+ *
+ * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * ArimAPI-util-web is distributed in the hope that it will be useful,
+ *
+ * ArimAPI is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with ArimAPI-util-web. If not, see <https://www.gnu.org/licenses/>
+ * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
+
 package space.arim.api.util.web;
 
 import java.util.Objects;
@@ -29,21 +30,12 @@ import java.util.Objects;
  *
  */
 public final class RemoteApiResult<T> {
-	
+
 	private final T value;
 	private final ResultType resultType;
 	private final Exception exception;
-	
-	/**
-	 * Creates a result from a value, reason, and exception
-	 * 
-	 * @param value the value, or null for none
-	 * @param resultType the reason, cannot be null
-	 * @param exception the exception, or null for none
-	 * @deprecated Use the factory methods which better maps arguments to result types.
-	 */
-	@Deprecated
-	public RemoteApiResult(T value, ResultType resultType, Exception exception) {
+
+	private RemoteApiResult(T value, ResultType resultType, Exception exception) {
 		this.value = value;
 		this.resultType = Objects.requireNonNull(resultType, "RemoteApiResult resultType must not be null");
 		this.exception = exception;
@@ -168,7 +160,7 @@ public final class RemoteApiResult<T> {
 	 *
 	 */
 	public enum ResultType {
-		
+
 		/**
 		 * Indicates the result was found
 		 * 
@@ -188,17 +180,8 @@ public final class RemoteApiResult<T> {
 		 * Indicates an unexpected exception occurred
 		 * 
 		 */
-		ERROR,
-		/**
-		 * Indicates an unknown problem
-		 *
-		 * @deprecated This result type is ambiguous, and is in all cases
-		 * best replaced by {@code ERROR}. If necessary, an explicit exception
-		 * (e.g. IllegalStateException) should be supplied.
-		 */
-		@Deprecated
-		UNKNOWN;
-		
+		ERROR
+
 	}
 	
 }
