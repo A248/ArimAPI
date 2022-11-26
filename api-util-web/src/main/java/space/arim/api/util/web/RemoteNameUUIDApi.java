@@ -72,7 +72,6 @@ public interface RemoteNameUUIDApi {
 		return mapExistence(lookupUUID(name));
 	}
 
-	@SuppressWarnings("deprecation")
 	private <T> CompletableFuture<RemoteApiResult<Void>> mapExistence(CompletableFuture<RemoteApiResult<T>> futureResult) {
 		return futureResult.thenApply((result) -> {
 			switch (result.getResultType()) {
@@ -84,8 +83,6 @@ public interface RemoteNameUUIDApi {
 				return RemoteApiResult.rateLimited();
 			case ERROR:
 				return RemoteApiResult.error(result.getException());
-			case UNKNOWN:
-				return new RemoteApiResult<>(null, RemoteApiResult.ResultType.UNKNOWN, result.getException());
 			default:
 				throw new IncompatibleClassChangeError("Did not expect " + result.getResultType());
 			}
