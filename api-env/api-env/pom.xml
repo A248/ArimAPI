@@ -4,7 +4,7 @@
     <parent>
         <groupId>space.arim.api</groupId>
         <artifactId>arimapi-env-parent</artifactId>
-        <version>0.26.2-SNAPSHOT</version>
+        <version>0.26.2</version>
     </parent>
 
     <artifactId>arimapi-env</artifactId>
