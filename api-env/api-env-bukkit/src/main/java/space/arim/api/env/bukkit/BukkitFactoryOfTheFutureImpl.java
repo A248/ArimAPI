@@ -19,40 +19,44 @@
 
 package space.arim.api.env.bukkit;
 
-import org.bukkit.Server;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.plugin.Plugin;
 import space.arim.api.env.concurrent.ClosableFactoryOfTheFuture;
 import space.arim.api.env.concurrent.MainThreadCachingFutureFactory;
 import space.arim.managedwaits.ManagedWaitStrategy;
 import space.arim.managedwaits.SimpleTaskQueue;
 import space.arim.managedwaits.TaskQueue;
+import space.arim.morepaperlib.MorePaperLib;
+import space.arim.morepaperlib.scheduling.GracefulScheduling;
+import space.arim.morepaperlib.scheduling.ScheduledTask;
 
 final class BukkitFactoryOfTheFutureImpl extends MainThreadCachingFutureFactory implements ClosableFactoryOfTheFuture {
 
-	private final Server server;
-	private final BukkitTask task;
+	private final GracefulScheduling scheduling;
+	private final ScheduledTask task;
 
 	private BukkitFactoryOfTheFutureImpl(TaskQueue taskQueue, ManagedWaitStrategy waitStrategy,
-                                         Server server, BukkitTask task) {
+                                         GracefulScheduling scheduling, ScheduledTask task) {
 		super(taskQueue, waitStrategy);
-		this.server = server;
+		this.scheduling = scheduling;
 		this.task = task;
 	}
 
-	static ClosableFactoryOfTheFuture create(JavaPlugin plugin, ManagedWaitStrategy waitStrategy) {
-		Server server = plugin.getServer();
+	static ClosableFactoryOfTheFuture create(Plugin plugin, ManagedWaitStrategy waitStrategy) {
 		SimpleTaskQueue taskQueue = new SimpleTaskQueue();
-		BukkitTask task = server.getScheduler().runTaskTimer(plugin, taskQueue::pollAndRunAll, 0L, 1L);
-
-		BukkitFactoryOfTheFutureImpl futuresFactory = new BukkitFactoryOfTheFutureImpl(taskQueue, waitStrategy, server, task);
+		GracefulScheduling scheduling = new MorePaperLib(plugin).scheduling();
+		ScheduledTask task = scheduling.globalRegionalScheduler().runAtFixedRate(
+				taskQueue::pollAndRunAll, 0L, 1L
+		);
+		BukkitFactoryOfTheFutureImpl futuresFactory = new BukkitFactoryOfTheFutureImpl(
+				taskQueue, waitStrategy, scheduling, task
+		);
 		futuresFactory.isPrimaryThread(); // Init main thread if possible
 		return futuresFactory;
 	}
 
 	@Override
 	protected boolean isPrimaryThread0() {
-		return server.isPrimaryThread();
+		return scheduling.isOnGlobalRegionThread();
 	}
 	
 	@Override

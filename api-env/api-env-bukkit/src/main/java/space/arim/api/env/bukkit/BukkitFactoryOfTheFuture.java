@@ -19,6 +19,7 @@
 
 package space.arim.api.env.bukkit;
 
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.api.env.concurrent.ClosableFactoryOfTheFuture;
 import space.arim.managedwaits.LightSleepManagedWaitStrategy;
@@ -51,7 +52,7 @@ public final class BukkitFactoryOfTheFuture {
 	 * @param waitStrategy the managed wait strategy
 	 * @return the futures factory, which should be closed when disposed of
 	 */
-	public static ClosableFactoryOfTheFuture create(JavaPlugin plugin, ManagedWaitStrategy waitStrategy) {
+	public static ClosableFactoryOfTheFuture create(Plugin plugin, ManagedWaitStrategy waitStrategy) {
 		return BukkitFactoryOfTheFutureImpl.create(plugin, waitStrategy);
 	}
 
