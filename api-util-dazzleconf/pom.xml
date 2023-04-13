@@ -4,7 +4,7 @@
     <parent>
         <groupId>space.arim.api</groupId>
         <artifactId>arimapi-parent</artifactId>
-        <version>0.26.4-SNAPSHOT</version>
+        <version>0.26.4</version>
     </parent>
 
     <artifactId>arimapi-util-dazzleconf</artifactId>
