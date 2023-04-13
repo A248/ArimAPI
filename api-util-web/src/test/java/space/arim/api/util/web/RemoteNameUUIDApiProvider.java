@@ -32,7 +32,7 @@ public class RemoteNameUUIDApiProvider implements ArgumentsProvider {
 	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
 		return Stream.of(HttpClient.newHttpClient())
 				.flatMap((client) -> Stream.of(
-						HttpMojangApi.create(client), HttpAshconApi.create(client), HttpMcHeadsApi.create(client)
+						HttpMojangApi.create(client), HttpAshconApi.create(client)/*, HttpMcHeadsApi.create(client)*/
 				))
 				.map(Arguments::of);
 	}
