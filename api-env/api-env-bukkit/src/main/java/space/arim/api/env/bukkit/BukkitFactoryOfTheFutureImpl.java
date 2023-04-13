@@ -45,7 +45,7 @@ final class BukkitFactoryOfTheFutureImpl extends MainThreadCachingFutureFactory 
 		SimpleTaskQueue taskQueue = new SimpleTaskQueue();
 		GracefulScheduling scheduling = new MorePaperLib(plugin).scheduling();
 		ScheduledTask task = scheduling.globalRegionalScheduler().runAtFixedRate(
-				taskQueue::pollAndRunAll, 0L, 1L
+				taskQueue::pollAndRunAll, 1L, 1L
 		);
 		BukkitFactoryOfTheFutureImpl futuresFactory = new BukkitFactoryOfTheFutureImpl(
 				taskQueue, waitStrategy, scheduling, task

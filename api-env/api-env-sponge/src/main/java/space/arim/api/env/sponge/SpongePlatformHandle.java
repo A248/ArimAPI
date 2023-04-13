@@ -19,7 +19,9 @@
 
 package space.arim.api.env.sponge;
 
+import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.Platform;
 import org.spongepowered.plugin.PluginContainer;
 import space.arim.api.env.PlatformHandle;
 import space.arim.api.env.PlatformPluginInfo;
@@ -85,6 +87,7 @@ final class SpongePlatformHandleImpl implements PlatformHandle {
 
 	@Override
 	public String getPlatformVersion() {
+		// ArtifactVersion version = game.platform().container(Platform.Component.IMPLEMENTATION).metadata().version();
 		return game.platform().minecraftVersion().name();
 	}
 }
