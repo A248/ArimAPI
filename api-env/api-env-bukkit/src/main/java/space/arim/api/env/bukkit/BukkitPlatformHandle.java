@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2023 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,14 @@
  * along with ArimAPI. If not, see <https://www.gnu.org/licenses/>
  * and navigate to version 3 of the GNU General Public License.
  */
+
 package space.arim.api.env.bukkit;
 
 import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.api.env.PlatformHandle;
 import space.arim.api.env.PlatformPluginInfo;
+import space.arim.morepaperlib.MorePaperLib;
 import space.arim.omnibus.util.concurrent.EnhancedExecutor;
 import space.arim.omnibus.util.concurrent.FactoryOfTheFuture;
 
@@ -48,6 +50,7 @@ public final class BukkitPlatformHandle {
 	}
 
 }
+
 final class BukkitPlatformHandleImpl implements PlatformHandle {
 
 	private final JavaPlugin plugin;
@@ -63,7 +66,9 @@ final class BukkitPlatformHandleImpl implements PlatformHandle {
 
 	@Override
 	public EnhancedExecutor createEnhancedExecutor() {
-		return new BukkitEnhancedExecutor(plugin);
+		return new BukkitEnhancedExecutor(
+				new MorePaperLib(plugin).scheduling().asyncScheduler()
+		);
 	}
 
 	@Override
