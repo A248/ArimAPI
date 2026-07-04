@@ -83,4 +83,8 @@ public interface Adventure5Compat {
     default TextComponent textOfChildren(ComponentLike...components) {
         return TextComponent.ofChildren(components);
     }
+
+    default Component join(ComponentLike separator, ComponentLike...components) {
+        return Component.join(separator, components);
+    }
 }
