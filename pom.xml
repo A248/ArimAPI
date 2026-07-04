@@ -135,7 +135,6 @@
 	
 	<modules>
 		<module>api-chat</module>
-		<module>api-configure</module>
 		<module>api-util-dazzleconf</module>
 		<module>api-util-web</module>
 		<module>api-env</module>
