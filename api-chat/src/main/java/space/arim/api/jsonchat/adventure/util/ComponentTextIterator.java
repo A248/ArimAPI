@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.util.Set;
 
 final class ComponentTextIterator extends IteratorBase<String> {
 
+    private final Adventure5Compat adventure5Compat;
     private final Iterator<Component> delegate;
     private final Set<TextGoal> goals;
 
@@ -45,7 +46,8 @@ final class ComponentTextIterator extends IteratorBase<String> {
     private static final int CLICK_VALUE = 2;
     private static final int INSERTION_VALUE = 3;
 
-    ComponentTextIterator(Iterator<Component> delegate, Set<TextGoal> goals) {
+    ComponentTextIterator(Adventure5Compat adventure5Compat, Iterator<Component> delegate, Set<TextGoal> goals) {
+        this.adventure5Compat = adventure5Compat;
         this.delegate = Objects.requireNonNull(delegate);
         this.goals = Set.copyOf(goals);
     }
@@ -89,6 +91,7 @@ final class ComponentTextIterator extends IteratorBase<String> {
                 }
                 // Traverse this iterator next
                 childIterator = new ComponentTextIterator(
+                        adventure5Compat,
                         new ComponentIterator((Component) hoverValue), TextGoal.simpleTextOnly());
                 continue;
 
@@ -100,7 +103,7 @@ final class ComponentTextIterator extends IteratorBase<String> {
                 if (clickEvent == null) {
                     continue;
                 }
-                return clickEvent.value();
+                return adventure5Compat.clickEventValue(clickEvent);
 
             case INSERTION_VALUE:
                 // The current component has been exhausted. Nullify and reset

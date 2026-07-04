@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,6 @@ import net.md_5.bungee.api.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import space.arim.api.jsonchat.adventure.implementor.MessageOnlyAudience;
 
-import java.util.Objects;
-
 import static space.arim.api.env.bungee.BungeeAudienceRepresenter.convertComponent;
 
 final class ConsoleAudience implements MessageOnlyAudience {
@@ -40,8 +38,15 @@ final class ConsoleAudience implements MessageOnlyAudience {
 
     @Override
     public void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
-        Objects.requireNonNull(source, "source");
-        Objects.requireNonNull(type, "type");
+        if (!source.equals(Identity.nil()) | !type.equals(MessageType.SYSTEM)) {
+            throw new UnsupportedOperationException(
+                    "This audience supports neither a non-system message type nor a non-default source");
+        }
+        sendMessage(message);
+    }
+
+    @Override
+    public void sendMessage(@NonNull Component message) {
         sender.sendMessage(convertComponent(message));
     }
 

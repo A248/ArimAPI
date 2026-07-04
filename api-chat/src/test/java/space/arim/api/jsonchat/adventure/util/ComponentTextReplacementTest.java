@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ public class ComponentTextReplacementTest {
 
     @BeforeEach
     public void setup() {
-        componentText = ComponentText.create(component(Function.identity()));
+        componentText = ComponentText.create(component(Function.identity()), Adventure5Compat.DEFAULT);
     }
 
     private String cleanRandomString() {

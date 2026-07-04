@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 
 package space.arim.api.jsonchat.adventure;
 
-import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.ComponentLike;
@@ -29,6 +28,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import space.arim.api.jsonchat.ChatMessageParser;
 import space.arim.api.jsonchat.ClickEventInfo;
 import space.arim.api.jsonchat.ParsingVisitor;
+import space.arim.api.jsonchat.adventure.util.Adventure5Compat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +47,7 @@ import java.util.Objects;
 public final class ComponentVisitor implements ParsingVisitor {
 
     private final FormattingSerializer formattingSerializer;
+    private final Adventure5Compat adventure5Compat;
     /**
      * Either a Component or TextComponent.Builder. Components will be changed
      * to builders if they require modification
@@ -59,20 +60,14 @@ public final class ComponentVisitor implements ParsingVisitor {
     private String currentInsertion;
 
     /**
-     * Creates from a given formatting serializer
+     * Creates from a given formatting serializer and adventure 5 compatibility
      *
      * @param formattingSerializer the formatting serializer
+     * @param adventure5Compat adventure 5 compatibility
      */
-    public ComponentVisitor(FormattingSerializer formattingSerializer) {
+    public ComponentVisitor(FormattingSerializer formattingSerializer, Adventure5Compat adventure5Compat) {
         this.formattingSerializer = Objects.requireNonNull(formattingSerializer, "formattingSerializer");
-    }
-
-    /**
-     * Creates using the default formatting serializer
-     *
-     */
-    public ComponentVisitor() {
-        this(new JsonSkFormattingSerializer());
+        this.adventure5Compat = Objects.requireNonNull(adventure5Compat, "adventure5Compat");
     }
 
     @Override
@@ -83,20 +78,7 @@ public final class ComponentVisitor implements ParsingVisitor {
 
     @Override
     public void visitClickEvent(ClickEventInfo.ClickType clickType, String value) {
-        currentClick = ClickEvent.clickEvent(clickTypeToAction(clickType), value);
-    }
-
-    static ClickEvent.Action clickTypeToAction(ClickEventInfo.ClickType clickType) {
-        switch (clickType) {
-        case RUN_COMMAND:
-            return ClickEvent.Action.RUN_COMMAND;
-        case SUGGEST_COMMAND:
-            return ClickEvent.Action.SUGGEST_COMMAND;
-        case OPEN_URL:
-            return ClickEvent.Action.OPEN_URL;
-        default:
-            throw new IllegalStateException("Unknown click type " + clickType);
-        }
+        currentClick = CompatUtil.clickEvent(clickType, value);
     }
 
     @Override
@@ -131,12 +113,15 @@ public final class ComponentVisitor implements ParsingVisitor {
         index = componentsOrBuilders.size();
     }
 
-    private static ComponentBuilder<?, ?> componentLikeToBuilder(ComponentLike componentLike) {
+    private ComponentBuilder<?, ?> componentLikeToBuilder(ComponentLike componentLike) {
         if (componentLike instanceof ComponentBuilder) {
             return (ComponentBuilder<?, ?>) componentLike;
         }
-        if (componentLike instanceof BuildableComponent) {
-            return ((BuildableComponent<?, ?>) componentLike).toBuilder();
+        if (componentLike instanceof Component) {
+            ComponentBuilder<?, ?> builder = adventure5Compat.toBuilder(componentLike.asComponent());
+            if (builder != null) {
+                return builder;
+            }
         }
         TextComponent.Builder textBuilder = Component.text();
         textBuilder.style(componentLike.asComponent().style());

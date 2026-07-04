@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 
 package space.arim.api.jsonchat.adventure.util;
 
-import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.ComponentLike;
@@ -58,10 +57,24 @@ public final class ComponentText implements ComponentLike {
 
     private final Component component;
     private final Set<TextGoal> goals;
+    private final Adventure5Compat adventure5Compat;
 
-    private ComponentText(Component component, Set<TextGoal> goals) {
+    private ComponentText(Component component, Set<TextGoal> goals, Adventure5Compat adventure5Compat) {
         this.component = Objects.requireNonNull(component, "component");
         this.goals = Set.copyOf(goals);
+        this.adventure5Compat = Objects.requireNonNull(adventure5Compat, "adventure5Compat");
+    }
+
+    /**
+     * Creates from the given component and text goals
+     *
+     * @param component the component to analyze
+     * @param goals the text goals to use
+     * @param adventure5Compat the adventure 5 compatibility layer
+     * @return the text editor
+     */
+    public static ComponentText create(Component component, Set<TextGoal> goals, Adventure5Compat adventure5Compat) {
+        return new ComponentText(component, goals, adventure5Compat);
     }
 
     /**
@@ -71,19 +84,8 @@ public final class ComponentText implements ComponentLike {
      * @param goals the text goals to use
      * @return the text editor
      */
-    public static ComponentText create(Component component, Set<TextGoal> goals) {
-        return new ComponentText(component, goals);
-    }
-
-    /**
-     * Creates from the given component and text goals
-     *
-     * @param component the component to analyze
-     * @param goals the text goals to use
-     * @return the text editor
-     */
-    public static ComponentText create(Component component, TextGoal...goals) {
-        return create(component, Set.of(goals));
+    public static ComponentText create(Component component, Adventure5Compat adventure5Compat, TextGoal...goals) {
+        return create(component, Set.of(goals), adventure5Compat);
     }
 
     /**
@@ -92,8 +94,8 @@ public final class ComponentText implements ComponentLike {
      * @param component the component to analyze
      * @return the text editor
      */
-    public static ComponentText create(Component component) {
-        return create(component, TextGoal.allGoals());
+    public static ComponentText create(Component component, Adventure5Compat adventure5Compat) {
+        return create(component, TextGoal.allGoals(), adventure5Compat);
     }
 
     /**
@@ -153,7 +155,7 @@ public final class ComponentText implements ComponentLike {
 
     // Visible for testing
     Iterator<String> iter() {
-        return new ComponentTextIterator(new ComponentIterator(component), goals);
+        return new ComponentTextIterator(adventure5Compat, new ComponentIterator(component), goals);
     }
 
     /**
@@ -174,7 +176,7 @@ public final class ComponentText implements ComponentLike {
      * Replaces all occurrence of the pattern in the source component with
      * the given replacement
      *
-     * @param regex the pattern to match match
+     * @param regex the pattern to match
      * @param replacement the replacement text
      * @return the new component text
      */
@@ -195,10 +197,14 @@ public final class ComponentText implements ComponentLike {
      */
     public ComponentText replaceText(Function<? super String, ? extends CharSequence> operator) {
         Objects.requireNonNull(operator, "operator");
-        return new ComponentText(mapComponent(component, operator, goals), goals);
+        return new ComponentText(
+                mapComponent(component, adventure5Compat, operator, goals),
+                goals,
+                adventure5Compat
+        );
     }
 
-    private static Component mapComponent(Component component,
+    private static Component mapComponent(Component component, Adventure5Compat adventure5Compat,
                                           Function<? super String, ? extends CharSequence> operator, Set<TextGoal> goals) {
         boolean changed = false;
         ComponentBuilder<?, ?> builder;
@@ -214,17 +220,18 @@ public final class ComponentText implements ComponentLike {
                 }
             }
             builder = textBuilder;
-        } else if (component instanceof BuildableComponent) {
-            builder = ((BuildableComponent<?, ?>) component).toBuilder();
         } else {
-            builder = Component.text().style(component.style()).append(component.children());
+            builder = adventure5Compat.toBuilder(component);
+            if (builder == null) {
+                builder = Component.text().style(component.style()).append(component.children());
+            }
         }
         if (goals.contains(HOVER_TEXT)) {
             HoverEvent<?> hoverEvent = component.hoverEvent();
             Object hoverValue;
             if (hoverEvent != null && (hoverValue = hoverEvent.value()) instanceof Component) {
                 Component oldHover = (Component) hoverValue;
-                Component newHover = mapComponent(oldHover, operator, TextGoal.simpleTextOnly());
+                Component newHover = mapComponent(oldHover, adventure5Compat, operator, TextGoal.simpleTextOnly());
                 if (oldHover != newHover) {
                     changed = true;
                     builder.hoverEvent(HoverEvent.showText(newHover));
@@ -234,12 +241,12 @@ public final class ComponentText implements ComponentLike {
         if (goals.contains(CLICK_VALUE)) {
             ClickEvent clickEvent = component.clickEvent();
             if (clickEvent != null) {
-                String oldClick = clickEvent.value();
+                String oldClick = adventure5Compat.clickEventValue(clickEvent);
                 String newClick = operator.apply(oldClick).toString();
                 //noinspection StringEquality
                 if (oldClick != newClick) {
                     changed = true;
-                    builder.clickEvent(ClickEvent.clickEvent(clickEvent.action(), newClick));
+                    builder.clickEvent(adventure5Compat.clickEvent(clickEvent.action(), newClick));
                 }
             }
         }
@@ -260,7 +267,7 @@ public final class ComponentText implements ComponentLike {
         {
             boolean changedChildren = false;
             for (Component oldChild : oldChildren) {
-                Component newChild = mapComponent(oldChild, operator, goals);
+                Component newChild = mapComponent(oldChild, adventure5Compat, operator, goals);
                 if (oldChild != newChild) {
                     changedChildren = true;
                 }
@@ -302,6 +309,7 @@ public final class ComponentText implements ComponentLike {
         return "ComponentText{" +
                 "component=" + component +
                 ", goals=" + goals +
+                ", adventure5Compat=" + adventure5Compat +
                 '}';
     }
 }

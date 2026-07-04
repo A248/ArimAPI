@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import space.arim.api.jsonchat.ChatMessageReconstitutor;
 import space.arim.api.jsonchat.adventure.internal.AddedFunctionalityPeekingIterator;
 import space.arim.api.jsonchat.adventure.internal.ComponentIterator;
 import space.arim.api.jsonchat.adventure.internal.ComponentToMessagePartIterator;
+import space.arim.api.jsonchat.adventure.util.Adventure5Compat;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -45,12 +46,12 @@ import java.util.Objects;
  * Like the original format, the modified format uses {@literal '&'} formatting codes.
  * See {@link JsonSkFormattingSerializer} for more information and syntax. <br>
  * <br>
- * {@code JsonSkFormattingSerializer} is used by default but may be changed by using
- * {@link #ChatMessageComponentSerializer(FormattingSerializer)} instead of the default constructor.
+ * {@code JsonSkFormattingSerializer} is recommended as a default.
  */
 public final class ChatMessageComponentSerializer implements ComponentSerializer<Component, Component, String> {
 
     private final FormattingSerializer formattingSerializer;
+    private final Adventure5Compat adventure5Compat;
 
     /**
      * Creates from a given formatting serializer, which may be used to change
@@ -61,17 +62,11 @@ public final class ChatMessageComponentSerializer implements ComponentSerializer
      * {@literal '&'} formatting codes.
      *
      * @param formattingSerializer the formatting serializer
+     * @param adventure5Compat adventure 5 compatibility
      */
-    public ChatMessageComponentSerializer(FormattingSerializer formattingSerializer) {
+    public ChatMessageComponentSerializer(FormattingSerializer formattingSerializer, Adventure5Compat adventure5Compat) {
         this.formattingSerializer = Objects.requireNonNull(formattingSerializer, "formattingSerializer");
-    }
-
-    /**
-     * Creates a serializer using the default parsing for colors and styles.
-     *
-     */
-    public ChatMessageComponentSerializer() {
-        this(new JsonSkFormattingSerializer());
+        this.adventure5Compat = Objects.requireNonNull(adventure5Compat, "adventure5Compat");
     }
 
     /**
@@ -84,7 +79,7 @@ public final class ChatMessageComponentSerializer implements ComponentSerializer
      */
     @Override
     public @NonNull Component deserialize(@NonNull String input) {
-        ComponentVisitor visitor = new ComponentVisitor(formattingSerializer);
+        ComponentVisitor visitor = new ComponentVisitor(formattingSerializer, adventure5Compat);
         new ChatMessageParser(visitor, input).parse();
         return visitor.buildResult();
     }
@@ -108,6 +103,7 @@ public final class ChatMessageComponentSerializer implements ComponentSerializer
         var reconstitutor = new ChatMessageReconstitutor();
         Iterator<ChatMessagePart> messagePartIterator =
                 new ComponentToMessagePartIterator(
+                        adventure5Compat,
                         new AddedFunctionalityPeekingIterator<>(new ComponentIterator(component)),
                         formattingSerializer
                 );

@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import space.arim.api.jsonchat.ChatMessagePart;
 import space.arim.api.jsonchat.ClickEventInfo;
 import space.arim.api.jsonchat.adventure.FormattingCodeSerializer;
 import space.arim.api.jsonchat.adventure.FormattingSerializer;
+import space.arim.api.jsonchat.adventure.util.Adventure5Compat;
 import space.arim.api.jsonchat.testing.CombinationsOfActions;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class ComponentToMessagePartIteratorTest {
         PeekingIterator<Component> peekingIter = new ListIteratorPeekingIterator<>(formatting.listIterator());
         assertEquals(
                 List.of(new ChatMessagePart.Builder().build(text)),
-                collect(new ComponentToMessagePartIterator(peekingIter, formattingSerializer)));
+                collect(new ComponentToMessagePartIterator(Adventure5Compat.DEFAULT, peekingIter, formattingSerializer)));
     }
 
     private static final Integer[] ALL_REPEAT_COUNTS = new Integer[] {1, 2, 3};
@@ -87,7 +88,7 @@ public class ComponentToMessagePartIteratorTest {
         PeekingIterator<Component> peekingIter = new ListIteratorPeekingIterator<>(allComponents.listIterator());
         assertEquals(
                 allMessageParts,
-                collect(new ComponentToMessagePartIterator(peekingIter, formattingSerializer)));
+                collect(new ComponentToMessagePartIterator(Adventure5Compat.DEFAULT, peekingIter, formattingSerializer)));
     }
 
     private enum Segment {

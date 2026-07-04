@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import space.arim.api.jsonchat.adventure.util.Adventure5Compat;
 import space.arim.api.jsonchat.adventure.util.ComponentText;
 import space.arim.api.jsonchat.adventure.util.TextGoal;
 import space.arim.dazzleconf.ConfigurationFactory;
@@ -43,10 +44,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ComponentTextSerializerTest {
 
+    private final Adventure5Compat a5Compat = Adventure5Compat.DEFAULT;
+
     private ConfigurationFactory<Config> factory(Set<TextGoal> goals) {
         ConfigurationOptions options = new ConfigurationOptions.Builder()
                 .addSerialiser(new ComponentSerializer())
-                .addSerialiser(new ComponentTextSerializer(goals)).build();
+                .addSerialiser(new ComponentTextSerializer(goals, a5Compat)).build();
         return GsonConfigurationFactory.create(Config.class, options);
     }
 
@@ -54,13 +57,13 @@ public class ComponentTextSerializerTest {
     @ArgumentsSource(TextGoalsArgumentProvider.class)
     public void deserialize(Set<TextGoal> goals) {
         Config config = factory(goals).loadDefaults();
-        assertEquals(ComponentText.create(Component.text("default text"), goals), config.componentText());
+        assertEquals(ComponentText.create(Component.text("default text"), goals, a5Compat), config.componentText());
     }
 
     @ParameterizedTest
     @ArgumentsSource(TextGoalsArgumentProvider.class)
     public void serialize(Set<TextGoal> goals) throws IOException {
-        Config config = () -> ComponentText.create(Component.text("text"), goals);
+        Config config = () -> ComponentText.create(Component.text("text"), goals, a5Compat);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         factory(goals).write(config, output);
         assertEquals("""

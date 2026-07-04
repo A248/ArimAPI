@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ public class ComponentTextIteratorTest {
     private void assertMatches(List<String> texts, Component mainComponent) {
         assertIteratorsEqual(
                 texts.iterator(),
-                ComponentText.create(mainComponent).iter());
+                ComponentText.create(mainComponent, Adventure5Compat.DEFAULT).iter());
     }
 
     @Test

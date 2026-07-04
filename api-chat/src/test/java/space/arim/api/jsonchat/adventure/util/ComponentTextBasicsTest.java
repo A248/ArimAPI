@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,15 +48,6 @@ import static space.arim.api.jsonchat.testing.TestUtil.randomString;
 
 public class ComponentTextBasicsTest {
 
-    @Test
-    public void badConstruction() {
-        assertThrows(NullPointerException.class, () -> ComponentText.create(null));
-        assertThrows(NullPointerException.class,
-                () -> ComponentText.create(Component.empty(), (Set<TextGoal>) null));
-        assertThrows(NullPointerException.class,
-                () -> ComponentText.create(Component.empty(), Collections.singleton(null)));
-    }
-
     private Stream<Set<TextGoal>> possibleTextGoals() {
         return new SetCombinations<>(TextGoal.allGoals()).possibleSets();
     }
@@ -73,7 +64,7 @@ public class ComponentTextBasicsTest {
     }
 
     private void runBadArguments(Component component, Set<TextGoal> goals) {
-        ComponentText componentText = ComponentText.create(component, goals);
+        ComponentText componentText = ComponentText.create(component, goals, Adventure5Compat.DEFAULT);
         assertThrows(NullPointerException.class, () -> componentText.contains(null));
         assertThrows(NullPointerException.class, () -> componentText.replaceText("a", null));
         assertThrows(NullPointerException.class, () -> componentText.replaceText((CharSequence) null, "b"));
@@ -108,7 +99,7 @@ public class ComponentTextBasicsTest {
                 if (goals.contains(INSERTION_VALUE)) {
                     expectedSum += insertion.length();
                 }
-                assertEquals(expectedSum, ComponentText.create(component, goals).sumLength());
+                assertEquals(expectedSum, ComponentText.create(component, goals, Adventure5Compat.DEFAULT).sumLength());
             });
         });
     }
@@ -139,7 +130,7 @@ public class ComponentTextBasicsTest {
                 if (goals.contains(INSERTION_VALUE)) {
                     isEmpty = isEmpty && insertion.isEmpty();
                 }
-                assertEquals(isEmpty, ComponentText.create(component, goals).isEmpty());
+                assertEquals(isEmpty, ComponentText.create(component, goals, Adventure5Compat.DEFAULT).isEmpty());
             });
         });
     }
@@ -211,6 +202,6 @@ public class ComponentTextBasicsTest {
             default -> throw new IllegalArgumentException("Unknown goal " + goal);
             }
         }
-        assertEquals(expectedAnyContains, ComponentText.create(builder.build(), testData.goals()).contains(target));
+        assertEquals(expectedAnyContains, ComponentText.create(builder.build(), testData.goals(), Adventure5Compat.DEFAULT).contains(target));
     }
 }

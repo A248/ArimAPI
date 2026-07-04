@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,11 +92,16 @@ final class PlayerAudience implements MessageOnlyAudience {
 
     @Override
     public void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
-        BaseComponent[] bungeeMessage = convertComponent(message);
         if (!source.equals(Identity.nil()) | !type.equals(MessageType.SYSTEM)) {
             throw new UnsupportedOperationException(
-                    "This platform supports neither a non-system message type nor a non-default source");
+                    "This audience supports neither a non-system message type nor a non-default source");
         }
+        sendMessage(message);
+    }
+
+    @Override
+    public void sendMessage(@NonNull Component message) {
+        BaseComponent[] bungeeMessage = convertComponent(message);
         player.spigot().sendMessage(bungeeMessage);
     }
 

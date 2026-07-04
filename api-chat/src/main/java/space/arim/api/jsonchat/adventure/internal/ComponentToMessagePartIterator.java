@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import space.arim.api.jsonchat.ChatMessagePart;
 import space.arim.api.jsonchat.ClickEventInfo;
 import space.arim.api.jsonchat.adventure.FormattingSerializer;
+import space.arim.api.jsonchat.adventure.util.Adventure5Compat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,13 @@ import java.util.Objects;
 
 public final class ComponentToMessagePartIterator extends IteratorBase<ChatMessagePart> {
 
+    private final Adventure5Compat adventure5Compat;
     private final PeekingIterator<Component> componentIterator;
     private final FormattingSerializer formattingSerializer;
 
-    public ComponentToMessagePartIterator(PeekingIterator<Component> componentIterator,
+    public ComponentToMessagePartIterator(Adventure5Compat adventure5Compat, PeekingIterator<Component> componentIterator,
                                           FormattingSerializer formattingSerializer) {
+        this.adventure5Compat = adventure5Compat;
         this.componentIterator = componentIterator;
         this.formattingSerializer = formattingSerializer;
     }
@@ -91,22 +94,9 @@ public final class ComponentToMessagePartIterator extends IteratorBase<ChatMessa
         if (clickEvent == null) {
             return null;
         }
-        return new ClickEventInfo(convertClickType(clickEvent.action()), clickEvent.value());
-    }
-
-    private ClickEventInfo.ClickType convertClickType(ClickEvent.Action action) {
-        switch (action) {
-        case OPEN_URL:
-            return ClickEventInfo.ClickType.OPEN_URL;
-        case RUN_COMMAND:
-            return ClickEventInfo.ClickType.RUN_COMMAND;
-        case SUGGEST_COMMAND:
-            return ClickEventInfo.ClickType.SUGGEST_COMMAND;
-        case OPEN_FILE:
-        case CHANGE_PAGE:
-        case COPY_TO_CLIPBOARD:
-        default:
-            throw new UnsupportedOperationException("Click event action " + action + " is not supported");
-        }
+        return new ClickEventInfo(
+                adventure5Compat.clickActionToType(clickEvent.action()),
+                adventure5Compat.clickEventValue(clickEvent)
+        );
     }
 }

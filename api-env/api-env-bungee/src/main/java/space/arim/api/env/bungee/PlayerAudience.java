@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,11 @@ final class PlayerAudience implements MessageOnlyAudience {
     PlayerAudience(ProxiedPlayer player, ProxyServer server) {
         this.player = player;
         this.server = server;
+    }
+
+    @Override
+    public void sendMessage(@NonNull Component message) {
+        sendMessage(Identity.nil(), message, MessageType.SYSTEM);
     }
 
     @Override

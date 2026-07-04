@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,7 @@
 package space.arim.api.jsonchat.adventure.implementor;
 
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
@@ -49,8 +47,8 @@ public abstract class DelegatingAudience implements Audience {
     protected abstract Audience delegate();
 
     @Override
-    public void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
-        delegate().sendMessage(source, message, type);
+    public void sendMessage(@NonNull Component message) {
+        delegate().sendMessage(message);
     }
 
     @Override

@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ package space.arim.api.jsonchat.adventure;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.DynamicTest;
@@ -29,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import space.arim.api.jsonchat.ClickEventInfo;
 import space.arim.api.jsonchat.ParsingVisitor;
+import space.arim.api.jsonchat.adventure.util.Adventure5Compat;
 import space.arim.api.jsonchat.testing.CombinationsOfActions;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import static space.arim.api.jsonchat.testing.TestUtil.randomString;
 public class ComponentVisitorTest {
 
     private static ComponentVisitor createVisitor() {
-        return new ComponentVisitor(new PlainTextFormattingSerializer());
+        return new ComponentVisitor(new PlainTextFormattingSerializer(), Adventure5Compat.DEFAULT);
     }
 
     @Test
@@ -104,9 +104,11 @@ public class ComponentVisitorTest {
         if (hoverEvent != null) {
             textBuilder.hoverEvent(HoverEvent.showText(text(hoverEvent)));
         }
+        Adventure5Compat adventure5Compat = Adventure5Compat.DEFAULT;
         if (clickEvent != null) {
-            textBuilder.clickEvent(ClickEvent.clickEvent(
-                    ComponentVisitor.clickTypeToAction(clickEvent.clickType()), clickEvent.value().toString()));
+            textBuilder.clickEvent(adventure5Compat.clickEvent(
+                    adventure5Compat.clickTypeToAction(clickEvent.clickType()), clickEvent.value().toString()
+            ));
         }
         if (insertion != null) {
             textBuilder.insertion(insertion);
