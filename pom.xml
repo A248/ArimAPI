@@ -67,14 +67,14 @@
 	
 	<developers>
 		<developer>
-			<id>anandbeh</id>
-			<name>Anand Beh</name>
-			<url>https://www.arim.space</url>
+			<id>a248</id>
+			<name>A248</name>
+			<email>a248-dev@tuta.io</email>
+			<url>https://github.com/A248</url>
 			<roles>
 				<role>creator</role>
 				<role>developer</role>
 			</roles>
-			<timezone>America/New_York</timezone>
 		</developer>
 	</developers>
 	
@@ -83,7 +83,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>3.0.0-M1</version>
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
@@ -96,7 +95,6 @@
 			<plugins>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.1</version>
 					<configuration>
 						<release>11</release>
 						<testRelease>17</testRelease>
@@ -108,26 +106,10 @@
 					<configuration>
 						<argLine>-XX:TieredStopAtLevel=1 -XX:-TieredCompilation</argLine>
 					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>org.junit.jupiter</groupId>
-							<artifactId>junit-jupiter-engine</artifactId>
-							<version>${junit.version}</version>
-							<scope>runtime</scope>
-						</dependency>
-					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-failsafe-plugin</artifactId>
-					<dependencies>
-						<dependency>
-							<groupId>org.junit.jupiter</groupId>
-							<artifactId>junit-jupiter-engine</artifactId>
-							<version>${junit.version}</version>
-							<scope>runtime</scope>
-						</dependency>
-					</dependencies>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -153,13 +135,7 @@
 			<!-- Testing Dependencies -->
 			<dependency>
 				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-api</artifactId>
-				<version>${junit.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-params</artifactId>
+				<artifactId>junit-jupiter</artifactId>
 				<version>${junit.version}</version>
 				<scope>test</scope>
 			</dependency>

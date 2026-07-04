@@ -31,6 +31,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import space.arim.api.jsonchat.adventure.implementor.MessageOnlyAudience;
 
 import java.time.Duration;
+import java.util.Objects;
 
 import static space.arim.api.env.bungee.BungeeAudienceRepresenter.convertComponent;
 
@@ -51,6 +52,7 @@ final class PlayerAudience implements MessageOnlyAudience {
 
     @Override
     public void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
+        Objects.requireNonNull(message, "message");
         BaseComponent[] converted = convertComponent(message);
         if (!source.equals(Identity.nil())) {
             if (!type.equals(MessageType.CHAT)) {

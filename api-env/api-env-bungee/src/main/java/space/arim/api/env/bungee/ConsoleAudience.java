@@ -26,6 +26,8 @@ import net.md_5.bungee.api.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import space.arim.api.jsonchat.adventure.implementor.MessageOnlyAudience;
 
+import java.util.Objects;
+
 import static space.arim.api.env.bungee.BungeeAudienceRepresenter.convertComponent;
 
 final class ConsoleAudience implements MessageOnlyAudience {
@@ -38,6 +40,7 @@ final class ConsoleAudience implements MessageOnlyAudience {
 
     @Override
     public void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
+        Objects.requireNonNull(message, "message");
         if (!source.equals(Identity.nil()) | !type.equals(MessageType.SYSTEM)) {
             throw new UnsupportedOperationException(
                     "This audience supports neither a non-system message type nor a non-default source");
