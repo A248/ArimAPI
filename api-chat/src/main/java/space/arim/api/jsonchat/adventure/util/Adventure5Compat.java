@@ -22,6 +22,8 @@ package space.arim.api.jsonchat.adventure.util;
 import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import space.arim.api.jsonchat.ClickEventInfo;
@@ -76,5 +78,9 @@ public interface Adventure5Compat {
             default:
                 throw new IllegalStateException("Unknown click type " + clickType);
         }
+    }
+
+    default TextComponent textOfChildren(ComponentLike...components) {
+        return TextComponent.ofChildren(components);
     }
 }
