@@ -38,7 +38,7 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.release>11</maven.compiler.release>
+		<maven.compiler.release>17</maven.compiler.release>
 		<common-parent.deploy-url>https://maven.cloudsmith.io/anand-beh/gpl3/</common-parent.deploy-url>
 
 		<!-- Testing dependencies -->
@@ -96,7 +96,6 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<release>17</release>
 						<testRelease>21</testRelease>
 					</configuration>
 				</plugin>
