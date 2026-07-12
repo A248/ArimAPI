@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ public final class ChatMessageReconstitutor {
         if (segmentBuilder.length() != 0) {
             segmentBuilder.append("||");
         }
-        CharSequence plainText = messagePart.plainText().toString();
+        String plainText = messagePart.plainText().toString();
         if (JsonTag.getTag(plainText) != JsonTag.NONE || startsWithDoublePipes(plainText)) {
             // Escape literals
             segmentBuilder.append("nil:");

@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,13 +172,13 @@ public final class ChatMessageParser {
                 visitor.visitHoverEvent(unprefixedValue);
                 break;
             case CMD:
-                visitor.visitClickEvent(RUN_COMMAND, unprefixedValue);
+                visitor.visitClickEvent(new ClickEventInfo(RUN_COMMAND, unprefixedValue));
                 break;
             case SGT:
-                visitor.visitClickEvent(SUGGEST_COMMAND, unprefixedValue);
+                visitor.visitClickEvent(new ClickEventInfo(SUGGEST_COMMAND, unprefixedValue));
                 break;
             case URL:
-                visitor.visitClickEvent(OPEN_URL, unprefixedValue);
+                visitor.visitClickEvent(new ClickEventInfo(OPEN_URL, unprefixedValue));
                 break;
             case INS:
                 visitor.visitInsertion(unprefixedValue);

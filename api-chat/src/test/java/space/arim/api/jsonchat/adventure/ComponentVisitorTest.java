@@ -21,6 +21,7 @@ package space.arim.api.jsonchat.adventure;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.DynamicTest;
@@ -92,7 +93,7 @@ public class ComponentVisitorTest {
             clickEvent = new ClickEventInfo(
                     clickValues[ThreadLocalRandom.current().nextInt(clickValues.length)],
                     randomString());
-            visitor.visitClickEvent(clickEvent.clickType(), clickEvent.value().toString());
+            visitor.visitClickEvent(clickEvent);
         }
         String insertion = null;
         if (insert) {
@@ -104,11 +105,13 @@ public class ComponentVisitorTest {
         if (hoverEvent != null) {
             textBuilder.hoverEvent(HoverEvent.showText(text(hoverEvent)));
         }
-        Adventure5Compat adventure5Compat = Adventure5Compat.DEFAULT;
         if (clickEvent != null) {
-            textBuilder.clickEvent(adventure5Compat.clickEvent(
-                    adventure5Compat.clickTypeToAction(clickEvent.clickType()), clickEvent.value().toString()
-            ));
+            String value = clickEvent.value();
+            textBuilder.clickEvent(switch (clickEvent.clickType()) {
+                case RUN_COMMAND -> ClickEvent.runCommand(value);
+                case SUGGEST_COMMAND -> ClickEvent.suggestCommand(value);
+                case OPEN_URL -> ClickEvent.openUrl(value);
+            });
         }
         if (insertion != null) {
             textBuilder.insertion(insertion);

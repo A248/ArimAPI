@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static space.arim.api.jsonchat.ClickEventInfo.clickTypeFromTag;
 import static space.arim.api.jsonchat.testing.TestUtil.randomString;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,7 +73,7 @@ public class ChatMessageParserTest {
         parse("Some text||ttp:Hover on me||" + clickTag + ":/spawn");
         verify(visitor).visitPlainText("Some text");
         verify(visitor).visitHoverEvent("Hover on me");
-        verify(visitor).visitClickEvent(clickTypeFromTag(clickTag), "/spawn");
+        verify(visitor).visitClickEvent(ClickEventInfo.newFrom((clickTag), "/spawn"));
         verifyNoMoreInteractions(visitor);
     }
 
@@ -84,7 +83,7 @@ public class ChatMessageParserTest {
         parse("Some text||ttp:Hover on me||" + clickTag + ":/spawn||continues here");
         verify(visitor).visitPlainText("Some text");
         verify(visitor).visitHoverEvent("Hover on me");
-        verify(visitor).visitClickEvent(clickTypeFromTag(clickTag), "/spawn");
+        verify(visitor).visitClickEvent(ClickEventInfo.newFrom(clickTag, "/spawn"));
         verify(visitor).visitPlainText("continues here");
         verifyNoMoreInteractions(visitor);
     }
@@ -94,7 +93,7 @@ public class ChatMessageParserTest {
     public void startWithHoverEventAndClickEventThenFurtherSegment(String clickTag) {
         parse("ttp:Hover on me||" + clickTag + ":/spawn||continues here");
         verify(visitor).visitHoverEvent("Hover on me");
-        verify(visitor).visitClickEvent(clickTypeFromTag(clickTag), "/spawn");
+        verify(visitor).visitClickEvent(ClickEventInfo.newFrom((clickTag), "/spawn"));
         verify(visitor).visitPlainText("continues here");
         verifyNoMoreInteractions(visitor);
     }

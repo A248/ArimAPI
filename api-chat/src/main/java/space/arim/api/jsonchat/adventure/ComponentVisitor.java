@@ -77,8 +77,13 @@ public final class ComponentVisitor implements ParsingVisitor {
     }
 
     @Override
-    public void visitClickEvent(ClickEventInfo.ClickType clickType, String value) {
-        currentClick = CompatUtil.clickEvent(clickType, value);
+    public void visitClickEvent(ClickEventInfo clickEventInfo) {
+        String value = clickEventInfo.value();
+        currentClick = switch (clickEventInfo.clickType()) {
+            case RUN_COMMAND -> ClickEvent.runCommand(value);
+            case SUGGEST_COMMAND -> ClickEvent.suggestCommand(value);
+            case OPEN_URL -> ClickEvent.openUrl(value);
+        };
     }
 
     @Override

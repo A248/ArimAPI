@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,61 +29,11 @@ import static space.arim.api.jsonchat.ClickEventInfo.ClickType.SUGGEST_COMMAND;
  * A click event, with a type and value
  *
  */
-public final class ClickEventInfo {
+public record ClickEventInfo(ClickType clickType, String value) {
 
-    private final ClickType clickType;
-    private final CharSequence value;
-
-    /**
-     * Creates from a click type and value
-     *
-     * @param clickType the click type
-     * @param value the value
-     */
-    public ClickEventInfo(ClickType clickType, CharSequence value) {
-        this.clickType = Objects.requireNonNull(clickType, "clickType");
-        this.value = Objects.requireNonNull(value, "value");
-    }
-
-    /**
-     * The click type
-     *
-     * @return the click type
-     */
-    public ClickType clickType() {
-        return clickType;
-    }
-
-    /**
-     * The click event value
-     *
-     * @return the value
-     */
-    public CharSequence value() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "ClickEvent{" +
-                "clickType=" + clickType +
-                ", value='" + value + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ClickEventInfo that = (ClickEventInfo) o;
-        return clickType == that.clickType && value.toString().equals(that.value.toString());
-    }
-
-    @Override
-    public int hashCode() {
-        int result = clickType.hashCode();
-        result = 31 * result + value.toString().hashCode();
-        return result;
+    public ClickEventInfo {
+        Objects.requireNonNull(clickType, "clickType");
+        Objects.requireNonNull(value, "value");
     }
 
     /**
@@ -107,20 +57,13 @@ public final class ClickEventInfo {
     }
 
     // Used for testing purposes
-    static ClickEventInfo clickEventFromValues(String tag, String value) {
-        return new ClickEventInfo(clickTypeFromTag(tag), value);
-    }
-
-    static ClickType clickTypeFromTag(String tag) {
-        switch (tag) {
-        case "cmd":
-            return RUN_COMMAND;
-        case "sgt":
-            return SUGGEST_COMMAND;
-        case "url":
-            return OPEN_URL;
-        default:
-            throw new IllegalArgumentException();
-        }
+    static ClickEventInfo newFrom(String tag, String value) {
+        ClickType clickType = switch (tag) {
+            case "cmd" -> RUN_COMMAND;
+            case "sgt" -> SUGGEST_COMMAND;
+            case "url" -> OPEN_URL;
+            default -> throw new IllegalArgumentException();
+        };
+        return new ClickEventInfo(clickType, value);
     }
 }

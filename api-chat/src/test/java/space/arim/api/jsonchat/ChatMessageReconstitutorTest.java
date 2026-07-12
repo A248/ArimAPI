@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static space.arim.api.jsonchat.ClickEventInfo.clickEventFromValues;
+import static space.arim.api.jsonchat.ClickEventInfo.newFrom;
 
 public class ChatMessageReconstitutorTest {
 
@@ -59,7 +59,7 @@ public class ChatMessageReconstitutorTest {
         assertReconstitution("Some text||ttp:Hover on me||" + clickTag + ":/spawn",
                 new ChatMessagePart.Builder()
                         .associatedHoverEvent("Hover on me")
-                        .associatedClickEvent(clickEventFromValues(clickTag, "/spawn"))
+                        .associatedClickEvent(newFrom(clickTag, "/spawn"))
                         .build("Some text"));
     }
 
@@ -69,7 +69,7 @@ public class ChatMessageReconstitutorTest {
         assertReconstitution("Some text||ttp:Hover on me||" + clickTag + ":/spawn||continues here",
                 new ChatMessagePart.Builder()
                         .associatedHoverEvent("Hover on me")
-                        .associatedClickEvent(clickEventFromValues(clickTag, "/spawn"))
+                        .associatedClickEvent(newFrom(clickTag, "/spawn"))
                         .build("Some text"),
                 simplePart("continues here"));
     }

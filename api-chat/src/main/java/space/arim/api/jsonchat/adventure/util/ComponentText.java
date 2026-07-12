@@ -195,7 +195,7 @@ public final class ComponentText implements ComponentLike {
      * @param operator the function to run all text through
      * @return the new component
      */
-    public ComponentText replaceText(Function<? super String, ? extends CharSequence> operator) {
+    public ComponentText replaceText(Function<? super String, String> operator) {
         Objects.requireNonNull(operator, "operator");
         return new ComponentText(
                 mapComponent(component, adventure5Compat, operator, goals),
@@ -205,14 +205,14 @@ public final class ComponentText implements ComponentLike {
     }
 
     private static Component mapComponent(Component component, Adventure5Compat adventure5Compat,
-                                          Function<? super String, ? extends CharSequence> operator, Set<TextGoal> goals) {
+                                          Function<? super String, String> operator, Set<TextGoal> goals) {
         boolean changed = false;
         ComponentBuilder<?, ?> builder;
         if (component instanceof TextComponent) {
             TextComponent.Builder textBuilder = ((TextComponent) component).toBuilder();
             if (goals.contains(SIMPLE_TEXT)) {
                 String oldContent = textBuilder.content();
-                String newContent = operator.apply(oldContent).toString();
+                String newContent = operator.apply(oldContent);
                 //noinspection StringEquality
                 if (oldContent != newContent) { // Intentional reference equality
                     changed = true;
@@ -239,21 +239,19 @@ public final class ComponentText implements ComponentLike {
             }
         }
         if (goals.contains(CLICK_VALUE)) {
-            ClickEvent clickEvent = component.clickEvent();
-            if (clickEvent != null) {
-                String oldClick = adventure5Compat.clickEventValue(clickEvent);
-                String newClick = operator.apply(oldClick).toString();
-                //noinspection StringEquality
+            ClickEvent oldClick = component.clickEvent();
+            if (oldClick != null) {
+                ClickEvent newClick = adventure5Compat.mapClickEventValue(oldClick, operator);
                 if (oldClick != newClick) {
                     changed = true;
-                    builder.clickEvent(adventure5Compat.clickEvent(clickEvent.action(), newClick));
+                    builder.clickEvent(newClick);
                 }
             }
         }
         if (goals.contains(INSERTION_VALUE)) {
             String oldInsert = component.insertion();
             if (oldInsert != null) {
-                String newInsert = operator.apply(oldInsert).toString();
+                String newInsert = operator.apply(oldInsert);
                 //noinspection StringEquality
                 if (oldInsert != newInsert) {
                     changed = true;

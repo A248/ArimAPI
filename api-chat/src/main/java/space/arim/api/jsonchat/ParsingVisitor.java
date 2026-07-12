@@ -1,6 +1,6 @@
 /*
  * ArimAPI
- * Copyright © 2021 Anand Beh
+ * Copyright © 2026 Anand Beh
  *
  * ArimAPI is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,10 +39,9 @@ public interface ParsingVisitor {
     /**
      * Visits a click event
      *
-     * @param clickType the click type
-     * @param value the click event value
+     * @param clickEventInfo the click event info
      */
-    void visitClickEvent(ClickEventInfo.ClickType clickType, String value);
+    void visitClickEvent(ClickEventInfo clickEventInfo);
 
     /**
      * Visits an insertion
