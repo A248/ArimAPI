@@ -41,7 +41,7 @@
 
     <repositories>
         <repository>
-            <id>paper</id>
+            <id>paper-releases</id>
             <url>https://repo.papermc.io/repository/maven-releases/</url>
         </repository>
         <repository>
